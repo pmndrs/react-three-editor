@@ -1,0 +1,73 @@
+{
+  "name": "@react-three/editor",
+  "author": {
+    "name": "Nikhil Saraf",
+    "email": "nsaraf98@gmail.com",
+    "url": "https://github.com/nksaraf"
+  },
+  "description": "",
+  "version": "0.0.1",
+  "main": "dist/react-three-editor.cjs.js",
+  "module": "dist/react-three-editor.esm.js",
+  "preconstruct": {
+    "entrypoints": [
+      "index.ts",
+      "fiber/index.ts"
+    ]
+  },
+  "files": [
+    "dist/**",
+    "fiber/**",
+    "LICENSE",
+    "README.md"
+  ],
+  "license": "MIT",
+  "sideEffects": false,
+  "scripts": {
+    "build": "preconstruct build"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react",
+      [
+        "@babel/preset-typescript",
+        {
+          "isTSX": true,
+          "allExtensions": true
+        }
+      ]
+    ]
+  },
+  "dependencies": {
+    "@babel/core": "^7.19.6",
+    "@babel/generator": "^7.20.4",
+    "@babel/helper-plugin-utils": "^7.20.2",
+    "@types/babel__generator": "^7.6.4",
+    "debug": "^4.3.4",
+    "fp-ts": "^2.12.3",
+    "fs-extra": "^10.1.0",
+    "prettier": "^2.8.0",
+    "recast": "^0.21.5",
+    "three-stdlib": "^2.13.0",
+    "tunnel-rat": "^0.1.0",
+    "vite-dev-rpc": "^0.1.0",
+    "zustand": "^3.7.2"
+  },
+  "peerDependencies": {
+    "@react-three/fiber": "^8.7.0",
+    "leva": "^0.9",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "three": "^0.143.0"
+  },
+  "devDependencies": {
+    "@types/babel__core": "^7.1.20",
+    "@types/babel__helper-plugin-utils": "^7.10.0",
+    "@types/debug": "^4.1.7",
+    "@types/fs-extra": "^9.0.13",
+    "esbuild": "^0.15.15",
+    "leva": "^0.9.34",
+    "vite": "^3.0.7"
+  }
+}
