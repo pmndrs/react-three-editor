@@ -6,7 +6,7 @@ import {
   editable,
   EditorPanel,
   Editable
-} from "@vinxi/editor/fiber"
+} from "@react-three/editor/fiber"
 function Box1(props: any) {
   const mesh = useRef<THREE.Mesh>(null!)
   const [hovered, setHover] = useState(false)

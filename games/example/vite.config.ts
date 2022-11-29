@@ -1,13 +1,13 @@
 import { defineConfig } from "vite"
 import react from "@vitejs/plugin-react"
-import vinxi from "@vinxi/editor"
+import { vite as editor, babel as editorBabel } from "@react-three/editor"
 
 export default defineConfig({
   plugins: [
-    vinxi.vite(),
+    editor(),
     react({
       babel: {
-        plugins: [vinxi.babel]
+        plugins: [editorBabel]
       }
     })
   ]

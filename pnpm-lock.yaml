@@ -125,7 +125,6 @@ importers:
       '@babel/core': ^7.19.6
       '@babel/generator': ^7.20.4
       '@babel/helper-plugin-utils': ^7.20.2
-      '@hattip/adapter-node': ^0.0.22
       '@types/babel__core': ^7.1.20
       '@types/babel__generator': ^7.6.4
       '@types/babel__helper-plugin-utils': ^7.10.0
@@ -147,7 +146,6 @@ importers:
       '@babel/core': 7.19.6
       '@babel/generator': 7.20.4
       '@babel/helper-plugin-utils': 7.20.2
-      '@hattip/adapter-node': 0.0.22
       '@types/babel__generator': 7.6.4
       debug: 4.3.4
       fp-ts: 2.12.3
@@ -1804,24 +1802,6 @@ packages:
     os: [linux]
     requiresBuild: true
     optional: true
-
-  /@hattip/adapter-node/0.0.22:
-    resolution: {integrity: sha512-Zj0gIqWnmxsNYKmJnWDoDLcQx07iuEMHQfdw0DHluHvG0TTkHM3WpUG1zQOuBJ8zz8HEBQL6mBGRsF2EPXNllw==}
-    dependencies:
-      '@hattip/core': 0.0.22
-      '@hattip/polyfills': 0.0.22
-    dev: false
-
-  /@hattip/core/0.0.22:
-    resolution: {integrity: sha512-C3SNVpDOPwDff3jigPhGr2bWe+B/1tvaFTP2nVu90VFmWCVZ6y0dT81RiBHjiRCoYX82KgAyxBiN1WD/YbgM+w==}
-    dev: false
-
-  /@hattip/polyfills/0.0.22:
-    resolution: {integrity: sha512-mb7zUl7KdCl511CNjqTFIm6eZ0mIyJ3PLYOoZB2fwWnxSUEq3LSkLl33K8RWgPhP/K0ACoFsSGuteEQN2lVuVA==}
-    dependencies:
-      '@hattip/core': 0.0.22
-      node-fetch-native: 0.1.8
-    dev: false
 
   /@istanbuljs/load-nyc-config/1.1.0:
     resolution: {integrity: sha512-VjeHSlIzpv/NyD3N0YuHfXOPDIixcA1q2ZV98wsMqcYlPmv2n3Yb2lYP9XMElnaFVXg5A7YLTeLu6V84uQDjmQ==}
@@ -6251,10 +6231,6 @@ packages:
 
   /natural-compare/1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
-    dev: false
-
-  /node-fetch-native/0.1.8:
-    resolution: {integrity: sha512-ZNaury9r0NxaT2oL65GvdGDy+5PlSaHTovT6JV5tOW07k1TQmgC0olZETa4C9KZg0+6zBr99ctTYa3Utqj9P/Q==}
     dev: false
 
   /node-int64/0.4.0:

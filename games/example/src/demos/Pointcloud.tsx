@@ -1,6 +1,6 @@
 import React, { useRef, useCallback, useMemo } from "react"
 import { extend } from "@react-three/fiber"
-import { Canvas, editable, EditorPanel } from "@vinxi/editor/fiber"
+import { Canvas, editable, EditorPanel } from "@react-three/editor/fiber"
 import * as THREE from "three"
 
 export class DotMaterial extends THREE.ShaderMaterial {
@@ -44,7 +44,13 @@ function Particles({ pointCount }: any) {
   }, [])
 
   return (
-    <points ref={points} onPointerOver={hover} onPointerOut={unhover} position={[-0.472, -0.4, 0]} rotation={[-0.4537856055185257, -0.6806784082777885, 0]}>
+    <points
+      ref={points}
+      onPointerOver={hover}
+      onPointerOut={unhover}
+      position={[-0.472, -0.4, 0]}
+      rotation={[-0.4537856055185257, -0.6806784082777885, 0]}
+    >
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
@@ -61,7 +67,7 @@ function Particles({ pointCount }: any) {
       </bufferGeometry>
       <dotMaterial vertexColors depthWrite={false} />
     </points>
-  );
+  )
 }
 
 export default function App() {

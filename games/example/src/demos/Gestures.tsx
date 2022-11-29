@@ -5,7 +5,7 @@ import {
   EditorPanel,
   editable,
   createEditable
-} from "@vinxi/editor/fiber"
+} from "@react-three/editor/fiber"
 import { useDrag } from "@use-gesture/react"
 
 function Obj({ scale = 1, z = 0, opacity = 1 }) {

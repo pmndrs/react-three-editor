@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useReducer } from "react"
-import { Canvas, editable, EditorPanel } from "@vinxi/editor/fiber"
+import { Canvas, editable, EditorPanel } from "@react-three/editor/fiber"
 import { useLoader } from "@react-three/fiber"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader"
 
@@ -25,7 +25,9 @@ export default function App() {
   return (
     <Canvas>
       <ambientLight />
-      <directionalLight position={[-1.4670737147982544, 1.8304460457201441, 0]} />
+      <directionalLight
+        position={[-1.4670737147982544, 1.8304460457201441, 0]}
+      />
       <Suspense fallback={null}>
         <group position={[1.4287701010723781, -1.7700173094345695, 0]}>
           <Test />
@@ -33,5 +35,5 @@ export default function App() {
       </Suspense>
       <EditorPanel />
     </Canvas>
-  );
+  )
 }

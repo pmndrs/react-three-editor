@@ -73,12 +73,12 @@ export default declare<State>((api) => {
     name: "transform-react-jsx-source",
     visitor: {
       ImportDeclaration(path, state) {
-        // check if there is an import from '@vinxi/editor/fiber'
+        // check if there is an import from '@react-three/editor/fiber'
         // if there is one, then save that to state
 
         const { node } = path
         const { specifiers, source } = node
-        if (source.value !== "@vinxi/editor/fiber") return
+        if (source.value !== "@react-three/editor/fiber") return
 
         state.set("editorFiberImport", node)
       },
