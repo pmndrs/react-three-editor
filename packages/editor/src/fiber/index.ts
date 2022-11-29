@@ -11,6 +11,7 @@ import React, {
 import { levaStore, useControls } from "leva"
 import { mergeRefs } from "leva/plugin"
 import {
+  applyProps,
   Canvas as FiberCanvas,
   useFrame as useFiberFrame
 } from "@react-three/fiber"
@@ -19,6 +20,8 @@ import { EditorContext, SceneElementContext } from "./EditorContext"
 import { MathUtils, Object3D } from "three"
 import { Outs } from "./Outs"
 import { TransformControls } from "three-stdlib"
+import { StoreType } from "leva/dist/declarations/src/types"
+import { eq } from "./eq"
 
 type Elements = {
   [K in keyof JSX.IntrinsicElements]: React.FC<
@@ -53,6 +56,8 @@ export class EditableElement<P = {}> extends EventTarget {
   ref: any | null = null
   dirty: any = {}
 
+  store: StoreType | null = null
+
   transformControls$?: TransformControls
   constructor(
     public id: string,
@@ -70,6 +75,13 @@ export class EditableElement<P = {}> extends EventTarget {
   }
 
   get sourceName() {
+    if (this.source.moduleName === this.source.componentName) {
+      return `${this.source.componentName}:${
+        typeof this.type === "string"
+          ? this.type
+          : this.type.displayName || this.type.name
+      }:${this.source.lineNumber}:${this.source.columnNumber}`
+    }
     return `${this.source.moduleName}:${this.source.componentName}:${
       typeof this.type === "string"
         ? this.type
@@ -92,19 +104,29 @@ export class EditableElement<P = {}> extends EventTarget {
   }
 
   setTransformFromControls(object: Object3D) {
-    this.ref.position.copy(object.position)
     this.ref.rotation.copy(object.rotation)
     this.ref.scale.copy(object.scale)
+    this.position = object.position.toArray()
     this.setLevaControls({
-      "transform.position": {
-        value: this.position
-      },
       "transform.rotation": {
         value: this.rotation
       },
       "transform.scale": {
         value: this.scale
       }
+    })
+    this.show()
+  }
+
+  show() {
+    levaStore.setSettingsAtPath(this.name, {
+      collapsed: false
+    })
+  }
+
+  hide() {
+    levaStore.setSettingsAtPath(this.name, {
+      collapsed: true
     })
   }
 
@@ -114,6 +136,18 @@ export class EditableElement<P = {}> extends EventTarget {
 
   get position() {
     return this.ref?.position.toArray()
+  }
+
+  set position(value) {
+    if (eq.array(value, this.position)) {
+      return
+    }
+    levaStore?.setSettingsAtPath(this.name, {
+      dirty: true
+    })
+    this.ref.position.set(...value)
+    this.store?.setValueAtPath("transform.position", value)
+    this.store?.setSettingsAtPath("save", { disabled: false })
   }
 
   get rotation() {
@@ -129,11 +163,15 @@ export class EditableElement<P = {}> extends EventTarget {
   }
 
   setLevaControls(controls: any) {
-    let state = levaStore.useStore.getState()
+    if (!this.store) {
+      return
+    }
+    let state = this.store.useStore.getState()
 
+    console.log(state)
     let newControls = {}
     for (let key in controls) {
-      let id = `${this.name}.${key}`
+      let id = `${key}`
       newControls[id] = {
         ...state.data[id],
         ...controls[key]
@@ -141,8 +179,7 @@ export class EditableElement<P = {}> extends EventTarget {
     }
     console.log(newControls)
 
-    levaStore.useStore.setState({
-      ...state,
+    this.store.useStore.setState({
       data: {
         ...state.data,
         ...newControls
@@ -203,6 +240,7 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
       editableElement.type = componentType
       editableElement.source = props._source
       editableElement.props = null
+      editableElement.useEditorStore = useEditorStore
 
       useLayoutEffect(() => {
         editableElement.ref = ref.current
@@ -231,6 +269,7 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
               } as any
             }
           }
+          console.log(elements)
 
           return {
             elements: {
@@ -290,6 +329,7 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
       editableElement.render = render
       editableElement.currentProps = props
       editableElement.source = props._source
+      editableElement.useEditorStore = useEditorStore
 
       const memo = editableElement
       // useMemo(
@@ -311,15 +351,11 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
       useEffect(() => {
         if (props.position || props.rotation || props.scale) {
           memo.ref = new Object3D()
-          if (props.position) {
-            memo.ref.position.set(...props.position)
-          }
-          if (props.rotation) {
-            memo.ref.rotation.set(...props.rotation)
-          }
-          if (props.scale) {
-            memo.ref.scale.set(...props.scale)
-          }
+          applyProps(memo.ref, {
+            position: props.position,
+            rotation: props.rotation,
+            scale: props.scale
+          })
         }
       }, [])
 

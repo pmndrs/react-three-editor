@@ -7,20 +7,21 @@ import {
   useStoreContext,
   button,
   levaStore,
-  LevaInputs
+  LevaInputs,
+  useCreateStore
 } from "leva"
 import { MathUtils, Object3D } from "three"
-import { EditableElement } from "."
-
+import { EditableElement, useEditor } from "."
+import { Icon } from "@iconify/react"
 import { createRPCClient } from "vite-dev-rpc"
+import { createPlugin, useInputContext } from "leva/plugin"
+import React from "react"
+import { LevaPanel } from "leva"
+import { eq } from "./eq"
 
 const client = createRPCClient("vinxi", import.meta.hot, {})
 
-const eq = {
-  array: (a, b) => a.every((i, index) => i === b[index]),
-  angles: (a, b) =>
-    a.every((i, index) => Math.round(i) === Math.round(b[index]))
-}
+window.leva = levaStore
 const getControls = (entity: EditableElement) => {
   let controls = {}
   if (entity.ref instanceof Object3D) {
@@ -113,13 +114,6 @@ const getControls = (entity: EditableElement) => {
                 entity.render()
               }
             }
-          },
-          visible: {
-            value: entity.ref.visible,
-            onChange: (value) => {
-              entity.setProp("visible", value)
-              entity.ref.visible = value
-            }
           }
         },
         {
@@ -189,100 +183,177 @@ const savedProps = (get, entity: any) => {
     }
   }
 }
-export const EntityEditor = memo(({ entity }: { entity: EditableElement }) => {
+
+const entityPanel = createPlugin({
+  normalize(input) {
+    return {
+      value: { entity: input.entity },
+      settings: {
+        collapsed: true,
+        dirty: false,
+        ...input
+      }
+    }
+  },
+  component: (props) => {
+    const context = useInputContext<{ value: { entity: EditableElement } }>()
+
+    function setCollapsed() {
+      context.setSettings({
+        collapsed: !context.settings.collapsed
+      })
+    }
+
+    const state = context.value.entity.useEditorStore((state) => state.elements)
+
+    return (
+      <div>
+        <div
+          style={{
+            display: "flex",
+            marginTop: "4px",
+            flexDirection: "row",
+            alignItems: "center",
+            color: context.settings.collapsed
+              ? "var(--leva-colors-highlight1)"
+              : "var(--leva-colors-highlight3)",
+            cursor: "pointer"
+          }}
+          onClick={() => setCollapsed((e) => !e)}
+        >
+          <Icon icon="ph:cube" />
+          <div style={{ marginLeft: "4px" }}>
+            {context.value.entity.name}
+            {context.settings.dirty ? "*" : ""}
+          </div>
+        </div>
+        <EntityChildren entity={context.value.entity} />
+        <form>
+          <LevaPanel
+            fill
+            titleBar={false}
+            flat
+            collapsed={{
+              collapsed: context.settings.collapsed,
+              onChange(e) {
+                setCollapsed(e)
+              }
+            }}
+            hideCopyButton
+            theme={{
+              space: {
+                rowGap: "2px",
+                md: "6px",
+                sm: "4px"
+              }
+            }}
+            store={context.value.entity.store}
+          />
+        </form>
+      </div>
+    )
+  }
+})
+export const EntityEditor = ({ entity }: { entity: EditableElement }) => {
   console.log(entity)
   const scene = useThree((s) => s.scene)
   const [run, setRun] = useState(0)
   function reset() {
     setRun((r) => r + 1)
   }
-  const store = useStoreContext()
-  const [, set] = useControls(() => {
-    let name = entity.name
-    let controls = getControls(entity)
-    // Object.keys(entity).forEach((key) => {
-    //   if (componentLibrary[key]) {
-    //     controls = {
-    //       ...controls,
-    //       ...(componentLibrary[key]?.controls?.(entity as any, reset, scene) ??
-    //         {})
-    //     }
-    //   }
-    // })
-    entity.controls = controls
-    return {
-      [name]: folder(
-        {
-          name: folder(
-            {
-              name: {
-                value: name,
-                onChange: (value) => {
-                  entity.name = value
-                }
-              }
-            },
-            {
-              collapsed: true
-            }
-          ),
-          ...controls
-        },
-        {
-          color: "white",
-          ...(store ? { store } : {})
-        }
-      )
-    }
-  }, [entity, run])
+  const state = useEditor((state) => state.elements)
 
-  useControls(
-    entity.name,
-    {
-      save: button(
-        (get) => {
-          let props = savedProps(get, entity)
-          let diffs = [
-            {
-              source: entity.source,
-              // value: Object.fromEntries(
-              //   Object.entries(props).filter(([key, value]) => entity.dirty[key])
-              // )
-              value: props
+  const entityStore = useCreateStore()
+  entity.store = entityStore
+  const [, set] = useControls(
+    () => {
+      let name = entity.name
+      let controls = getControls(entity)
+      entity.controls = controls
+      return {
+        name: folder(
+          {
+            name: {
+              value: name,
+              onChange: (value) => {
+                entity.name = value
+              }
             }
-          ]
-          // fetch("/__editor/write", {
-          //   method: "POST",
-          //   headers: {
-          //     "Content-Type": "application/json"
-          //   },
-          //   body: JSON.stringify(diffs)
-          // })
-          client.save(diffs[0])
+          },
+          {
+            collapsed: true
+          }
+        ),
+        [entity.name + "-visible"]: {
+          type: LevaInputs.BOOLEAN,
+          value: entity.ref.visible,
+          label: "visible",
+          onChange: (value) => {
+            console.log(entity.ref)
+            // entity.setProp("visible", value)
+            entity.ref.visible = value
+          }
         },
-        {
-          disabled: true
-        }
-      )
+
+        ...controls,
+        save: button(
+          (get) => {
+            let props = savedProps(get, entity)
+            let diffs = [
+              {
+                source: entity.source,
+                // value: Object.fromEntries(
+                //   Object.entries(props).filter(([key, value]) => entity.dirty[key])
+                // )
+                value: props
+              }
+            ]
+            // fetch("/__editor/write", {
+            //   method: "POST",
+            //   headers: {
+            //     "Content-Type": "application/json"
+            //   },
+            //   body: JSON.stringify(diffs)
+            // })
+            client.save(diffs[0])
+          },
+          {
+            disabled: true
+          }
+        )
+      }
     },
     {
-      order: 1000
+      store: entityStore
+    },
+    [entity, run]
+  )
+
+  useControls(
+    {
+      [entity.name]: entityPanel({
+        entity
+      })
+    },
+    {
+      order: 1000,
+      collapsed: true
     }
   )
 
   useFrame(function editorControlsSystem() {
     if (entity.ref && entity.ref instanceof THREE.Object3D) {
-      let state = levaStore.useStore.getState()
+      let state = entity.store?.getData()
 
       let position = entity.position
-      let id = entity.name + ".transform.position"
-      let el = state.data[id]
+      let id = "transform.position"
+      let el = state[id]
 
-      let newState = { ...state.data }
+      let newState = {}
       let edit = false
       if (!eq.array(position, el.value)) {
         newState[id] = {
-          ...state.data[id],
+          ...state[id],
           disabled: true,
           value: position
         }
@@ -290,37 +361,80 @@ export const EntityEditor = memo(({ entity }: { entity: EditableElement }) => {
       }
 
       let rotation = entity.rotation
-      id = entity.name + ".transform.rotation"
-      el = state.data[id]
+      id = "transform.rotation"
+      el = state[id]
       if (!eq.angles(rotation, el.value)) {
         newState[id] = {
-          ...state.data[id],
+          ...state[id],
           disabled: true,
           value: rotation
         }
         edit = true
       }
 
-      let scale = entity.scale
-      id = entity.name + ".transform.scale"
-      el = state.data[id]
-      if (!eq.array(scale, el.value)) {
-        newState[id] = {
-          ...state.data[id],
-          disabled: true,
-          value: scale
-        }
-        edit = true
-      }
+      // let scale = entity.scale
+      // id = entity.name + ".transform.scale"
+      // el = state.data[id]
+      // if (!eq.array(scale, el.value)) {
+      //   newState[id] = {
+      //     ...state.data[id],
+      //     disabled: true,
+      //     value: scale
+      //   }
+      //   edit = true
+      // }
 
       if (edit) {
-        levaStore.useStore.setState({
-          ...state,
-          data: newState
+        entity.store?.useStore.setState({
+          data: {
+            ...state,
+            ...newState
+          }
         })
       }
     }
   })
 
   return null
-})
+}
+function EntityChildren({ entity }) {
+  const state = entity.useEditorStore((state) => state.elements)
+  const context = useInputContext<{ value: { entity: EditableElement } }>()
+
+  console.log(state)
+  return (
+    <div
+      style={{
+        marginLeft: "8px"
+      }}
+    >
+      {entity.children
+        .filter((c) => c !== entity.id)
+        .map((c) => (
+          <>
+            <div
+              key={c}
+              style={{
+                display: "flex",
+                marginTop: "4px",
+                flexDirection: "row",
+                alignItems: "center",
+                color: context.settings.collapsed
+                  ? "var(--leva-colors-highlight1)"
+                  : "var(--leva-colors-highlight3)",
+                cursor: "pointer"
+              }}
+              onClick={() => setCollapsed((e) => !e)}
+            >
+              <Icon icon="ph:cube" />
+              <div style={{ marginLeft: "4px" }}>
+                {state[c].name}
+                {context.settings.dirty ? "*" : ""}
+              </div>
+            </div>
+            <EntityChildren entity={state[c]} />
+          </>
+        ))}
+    </div>
+  )
+}

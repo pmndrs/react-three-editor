@@ -14,7 +14,7 @@
  */
 import { declare } from "@babel/helper-plugin-utils"
 import { types as t, template } from "@babel/core"
-import { basename } from "path"
+import { basename, extname } from "path"
 
 const TRACE_ID = "_source"
 const FILE_NAME_VAR = "_jsxFileName"
@@ -72,6 +72,30 @@ export default declare<State>((api) => {
   return {
     name: "transform-react-jsx-source",
     visitor: {
+      Program: {
+        exit(e) {
+          // import { editable, Editable } from '@react-three/editor/fiber' with babel
+
+          const { node } = e
+          const { body } = node
+          const { fileNameIdentifier } = this
+          body.unshift(
+            t.importDeclaration(
+              [
+                t.importSpecifier(
+                  t.identifier("editable"),
+                  t.identifier("editable")
+                ),
+                t.importSpecifier(
+                  t.identifier("Editable"),
+                  t.identifier("Editable")
+                )
+              ],
+              t.stringLiteral("@react-three/editor/fiber")
+            )
+          )
+        }
+      },
       ImportDeclaration(path, state) {
         // check if there is an import from '@react-three/editor/fiber'
         // if there is one, then save that to state
@@ -82,19 +106,19 @@ export default declare<State>((api) => {
 
         state.set("editorFiberImport", node)
       },
-      JSXClosingElement(path, state) {
-        const { node } = path
-        if (
-          t.isJSXIdentifier(node.name) &&
-          node.name.name.match(/^[a-z]/) &&
-          transformElements.includes(node.name.name)
-        ) {
-          node.name = t.jsxMemberExpression(
-            t.jsxIdentifier("$"),
-            t.jsxIdentifier(node.name.name)
-          )
-        }
-      },
+      // JSXClosingElement(path, state) {
+      //   const { node } = path
+      //   if (
+      //     t.isJSXIdentifier(node.name) &&
+      //     node.name.name.match(/^[a-z]/) &&
+      //     transformElements.includes(node.name.name)
+      //   ) {
+      //     node.name = t.jsxMemberExpression(
+      //       t.jsxIdentifier("$"),
+      //       t.jsxIdentifier(node.name.name)
+      //     )
+      //   }
+      // },
       JSXOpeningElement(path, state) {
         const { node } = path
         if (
@@ -121,8 +145,8 @@ export default declare<State>((api) => {
         if (
           t.isJSXIdentifier(node.name) &&
           node.name.name.match(/^[a-z]/) &&
-          transformElements.includes(node.name.name) &&
-          state.get("editorFiberImport")
+          transformElements.includes(node.name.name)
+          // state.get("editorFiberImport")
         ) {
           console.log(node.name.name)
 
@@ -151,6 +175,31 @@ export default declare<State>((api) => {
             )
           )
           node.name = t.jsxIdentifier("Editable")
+        } else if (
+          t.isJSXMemberExpression(node.name) &&
+          t.isJSXIdentifier(node.name.object) &&
+          node.name.object.name !== "editable" &&
+          // has an attribute called 'position' or 'rotation' or 'scale'
+          node.attributes.some(
+            (attr) =>
+              t.isJSXAttribute(attr) &&
+              (attr.name.name === "position" ||
+                attr.name.name === "rotation" ||
+                attr.name.name === "scale")
+          )
+        ) {
+          node.attributes.push(
+            t.jsxAttribute(
+              t.jsxIdentifier("component"),
+              t.jsxExpressionContainer(
+                t.memberExpression(
+                  t.identifier(node.name.object.name),
+                  t.identifier(node.name.property.name)
+                )
+              )
+            )
+          )
+          node.name = t.jsxIdentifier("Editable")
         }
 
         if (!state.fileNameIdentifier) {
@@ -171,7 +220,7 @@ export default declare<State>((api) => {
                 t.cloneNode(state.fileNameIdentifier),
                 node.loc.start,
                 componentName,
-                basename(state.filename, ".tsx")
+                basename(state.filename, extname(state.filename))
               )
             )
           )

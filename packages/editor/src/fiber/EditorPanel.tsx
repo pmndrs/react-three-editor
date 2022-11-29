@@ -53,7 +53,7 @@ export function EditorPanel() {
         </div> */}
       </In>
       {p.map((e) =>
-        e.parentId === null ? <EntityEditor key={e.id} entity={e} /> : null
+        e.parentId == null ? <EntityEditor key={e.name} entity={e} /> : null
       )}
       {p.map((e) =>
         e.ref instanceof THREE.Object3D && e.parentId === null ? (

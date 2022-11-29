@@ -109,32 +109,7 @@ export function EntityTransformControls({
       position={entity.ref.position}
       onChange={(c) => {
         if (c?.type === "change" && c.target.object && entity.ref) {
-          // entity.ref.position.copy(c.target.object.position)
-          // entity.ref.rotation.copy(c.target.object.rotation)
-          // entity.ref.scale.copy(c.target.object.scale)
-
           entity.setTransformFromControls(c.target.object)
-
-          // let state = levaStore.useStore.getState()
-
-          // levaStore.useStore.setState({
-          //   ...state,
-          //   data: {
-          //     ...state.data,
-          //     [`${entity.name + ".transform.position"}`]: {
-          //       ...state.data[`${entity.name + ".transform.position"}`],
-          //       value: entity.controls?.transform?.schema.position.getValue()
-          //     },
-          //     [`${entity.name + ".transform.rotation"}`]: {
-          //       ...state.data[`${entity.name + ".transform.rotation"}`],
-          //       value: entity.controls?.transform?.schema.rotation.getValue()
-          //     },
-          //     [`${entity.name + ".transform.scale"}`]: {
-          //       ...state.data[`${entity.name + ".transform.scale"}`],
-          //       value: entity.controls?.transform?.schema.scale.getValue()
-          //     }
-          //   }
-          // })
         }
       }}
     />

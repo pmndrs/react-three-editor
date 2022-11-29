@@ -43,6 +43,7 @@
     "@babel/core": "^7.19.6",
     "@babel/generator": "^7.20.4",
     "@babel/helper-plugin-utils": "^7.20.2",
+    "@iconify/react": "^4.0.1",
     "@types/babel__generator": "^7.6.4",
     "debug": "^4.3.4",
     "fp-ts": "^2.12.3",
