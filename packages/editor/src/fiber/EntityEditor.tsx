@@ -11,7 +11,8 @@ import {
   useCreateStore
 } from "leva"
 import { MathUtils, Object3D } from "three"
-import { EditableElement, useEditor } from "."
+import { useEditor } from "./useEditor"
+import { EditableElement } from './editable-element'
 import { Icon } from "@iconify/react"
 import { createRPCClient } from "vite-dev-rpc"
 import { createPlugin, useInputContext } from "leva/plugin"

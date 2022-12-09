@@ -1,29 +1,23 @@
-import React, {
-  ComponentProps,
-  forwardRef,
-  useCallback,
-  useId,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useContext
-} from "react"
-import { folder, levaStore, useControls } from "leva"
-import { mergeRefs } from "leva/plugin"
 import {
   applyProps,
   Canvas as FiberCanvas,
+  RenderCallback,
   useFrame as useFiberFrame
 } from "@react-three/fiber"
-import { EditorContext, SceneElementContext } from "./contexts"
-import { MathUtils, Object3D } from "three"
+import { folder, useControls } from "leva"
+import { mergeRefs } from "leva/plugin"
+import React, {
+  ComponentProps,
+  forwardRef,
+  useCallback, useContext, useEffect, useId, useLayoutEffect,
+  useMemo
+} from "react"
+import { Object3D } from "three"
 import { Outs } from "./components"
-import { TransformControls } from "three-stdlib"
-import { StoreType } from "leva/dist/declarations/src/types"
-import { eq } from "./eq"
+import { EditorContext, SceneElementContext } from "./contexts"
 import { EditorPanel } from "./EditorPanel"
-import { createEditorStore, EditorStoreType } from "./stores"
-
+import { createEditorStore } from "./stores"
+import { EditableElement } from './editable-element'
 
 type Elements = {
   [K in keyof JSX.IntrinsicElements]: React.FC<
@@ -34,156 +28,6 @@ type Elements = {
 }
 
 const memo = {} as unknown as Elements
-
-export class EditableElement<P = {}> extends EventTarget {
-  children: string[] = []
-  props: any = {}
-  ref: any | null = null
-  dirty: any = false
-
-  store: StoreType | null = null
-
-  transformControls$?: TransformControls
-  useEditorStore: EditorStoreType = {} as any
-  constructor(
-    public id: string,
-    public source: {
-      fileName: string
-      lineNumber: number
-      columnNumber: number
-      moduleName: string
-      componentName: string
-    },
-    public type: keyof JSX.IntrinsicElements | React.FC<P>,
-    public parentId?: string | null
-  ) {
-    super()
-  }
-
-  get key() {
-    if (this.source.moduleName === this.source.componentName) {
-      return `${this.source.componentName}:${
-        typeof this.type === "string"
-          ? this.type
-          : this.type.displayName || this.type.name
-      }:${this.source.lineNumber}:${this.source.columnNumber}`
-    }
-    return `${this.source.moduleName}:${this.source.componentName}:${
-      typeof this.type === "string"
-        ? this.type
-        : this.type.displayName || this.type.name
-    }:${this.source.lineNumber}:${this.source.columnNumber}`
-  }
-
-  get name() {
-    return this.ref?.name?.length ? this.ref.name : this.key
-  }
-
-  get displayName() {
-    return this.ref?.name?.length && this.ref.name !== this.key
-      ? this.ref.name
-      : `${this.source.componentName}:${
-          typeof this.type === "string"
-            ? this.type
-            : this.type.displayName || this.type.name
-        }`
-  }
-
-  set name(v: string) {
-    if (this.ref) {
-      this.ref.name = v
-    }
-  }
-
-  setProp(prop: string, value: any) {
-    // this.props[prop] = value
-  }
-
-  setTransformFromControls(object: Object3D) {
-    this.ref.rotation.copy(object.rotation)
-    this.ref.scale.copy(object.scale)
-    this.position = object.position.toArray()
-    this.setLevaControls({
-      "transform.rotation": {
-        value: this.rotation
-      },
-      "transform.scale": {
-        value: this.scale
-      }
-    })
-  }
-
-  show() {
-    levaStore.setSettingsAtPath(this.name, {
-      collapsed: false
-    })
-  }
-
-  hide() {
-    levaStore.setSettingsAtPath(this.name, {
-      collapsed: true
-    })
-  }
-
-  setPositionFromPanel(position: [number, number, number]) {
-    this.ref.position.set(...position)
-    this.dirty = true
-  }
-
-  get position() {
-    return this.ref?.position.toArray()
-  }
-
-  set position(value) {
-    if (eq.array(value, this.position)) {
-      return
-    }
-    // levaStore?.setSettingsAtPath(`scene.` + this.name, {
-    //   dirty: true
-    // })
-    this.dirty = true
-    this.ref.position.set(...value)
-    this.store?.setValueAtPath("transform.position", value)
-    this.store?.setSettingsAtPath("save", { disabled: false })
-  }
-
-  get rotation() {
-    return [
-      MathUtils.radToDeg(this.ref.rotation.x),
-      MathUtils.radToDeg(this.ref.rotation.y),
-      MathUtils.radToDeg(this.ref.rotation.z)
-    ]
-  }
-
-  get scale() {
-    return this.ref?.scale.toArray()
-  }
-
-  setLevaControls(controls: any) {
-    if (!this.store) {
-      return
-    }
-    let state = this.store.useStore.getState()
-
-    console.log(state)
-    let newControls = {}
-    for (let key in controls) {
-      let id = `${key}`
-      newControls[id] = {
-        ...state.data[id],
-        ...controls[key]
-      }
-    }
-    console.log(newControls)
-
-    this.store.useStore.setState({
-      data: {
-        ...state.data,
-        ...newControls
-      }
-    })
-  }
-}
 
 export function Editable({ component, ...props }) {
   const mainC = useMemo(() => {
@@ -210,7 +54,7 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
   let hasRef =
     // @ts-ignore
     typeof componentType === "string" ||
-    componentType.$$typeof === Symbol.for("react.forward_ref")
+    (componentType as any).$$typeof === Symbol.for("react.forward_ref")
 
   if (hasRef) {
     return forwardRef<
@@ -236,7 +80,7 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
       editableElement.type = componentType
       editableElement.source = props._source
       editableElement.props = null
-      editableElement.useEditorStore = useEditorStore
+      editableElement.useEditorStore = useEditorStore!
 
       useLayoutEffect(() => {
         editableElement.ref = ref.current
@@ -299,7 +143,7 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
       return React.createElement(SceneElementContext.Provider, {
         value: id,
         children: React.createElement(
-          componentType,
+          componentType as any,
           {
             ...rest,
             ref: mergeRefs([ref, forwardRef]),
@@ -325,11 +169,11 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
 
       editableElement.id = id
       editableElement.parentId = parentId
-      editableElement.type = componentType
-      editableElement.render = render
-      editableElement.currentProps = props
+      editableElement.type = componentType as any
+      (editableElement as any).render = render;
+      (editableElement as any).currentProps = props
       editableElement.source = props._source
-      editableElement.useEditorStore = useEditorStore
+      editableElement.useEditorStore = useEditorStore!
 
       const memo = editableElement
       // useMemo(
@@ -386,7 +230,7 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
               if (e[parentId]) {
                 e[parentId] = {
                   ...(el.elements[parentId] ?? {}),
-                  children: e[parentId]?.children.filter((c) => c !== id)
+                  children: e[parentId]?.children.filter((c: string) => c !== id)
                 }
               }
 
@@ -415,12 +259,12 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
         children: React.createElement(
           "group",
           {
-            onPointerDown(e) {
+            onPointerDown(e: any) {
               console.log("click", componentType, memo)
             }
           },
           React.createElement(
-            componentType,
+            componentType as any,
             {
               ...rest,
               ...(memo.props ?? {})
@@ -472,7 +316,7 @@ export const Canvas = forwardRef<
   )
 })
 
-export function useFrame(fn, ...args) {
+export function useFrame(fn: RenderCallback, ...args: any) {
   const loopName = fn.name
   let controls = useControls({
     update: folder({
@@ -488,6 +332,7 @@ export function useFrame(fn, ...args) {
   }, ...args)
 }
 
-export { useThree, createPortal } from "@react-three/fiber"
+export { createPortal, useThree } from "@react-three/fiber"
+export { EditorPanel, SidebarTunnel } from "./EditorPanel"
 
-export { SidebarTunnel, EditorPanel } from "./EditorPanel"
+
