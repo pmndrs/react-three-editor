@@ -3,7 +3,7 @@ import _debug from "debug"
 import type { Plugin, ResolvedConfig, ViteDevServer } from "vite"
 import { NodePath, transformFromAst, types as t } from "@babel/core"
 import gen from "@babel/generator"
-import { parse, print } from "recast"
+import { parse, print } from "./recast"
 import { createRPCServer } from "vite-dev-rpc"
 
 let justEdited = {}
