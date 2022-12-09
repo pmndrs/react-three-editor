@@ -7,6 +7,7 @@ import { useEditor } from "."
 import create from "zustand"
 import { folder, Leva, useControls } from "leva"
 export const SidebarTunnel = tunnel()
+import { OrbitControls } from "@react-three/drei"
 
 export let useTunnels = create((set) => ({}))
 
@@ -58,6 +59,7 @@ export function EditorPanel() {
       <SceneGraph />
       <SelectedTransformControls />
       <SelectedEntityControls />
+      <OrbitControls makeDefault />
     </>
   )
 }

@@ -203,7 +203,6 @@ export class EditableElement<P = {}> extends EventTarget {
 }
 
 export function Editable({ component, ...props }) {
-  console.log(component)
   const mainC = useMemo(() => {
     if (!memo[component]) {
       memo[component] = createEditable(component)
@@ -283,8 +282,6 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
               } as any
             }
           }
-          console.log(elements)
-
           return {
             elements: {
               ...elements
@@ -385,10 +382,9 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
             elements: {
               ...el.elements,
               [id]: Object.assign(memo, el.elements[id]),
-              [parentId]: {
-                ...(el.elements[parentId] ?? {}),
+              [parentId]: Object.assign(el.elements[parentId] ?? {}, {
                 children: [...(el.elements[parentId]?.children ?? []), id]
-              }
+              })
             }
           }))
 
@@ -509,6 +505,6 @@ export function useFrame(fn, ...args) {
   }, ...args)
 }
 
-export { useThree } from "@react-three/fiber"
+export { useThree, createPortal } from "@react-three/fiber"
 
 export { SidebarTunnel, EditorPanel } from "./EditorPanel"

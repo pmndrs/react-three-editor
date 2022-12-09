@@ -168,7 +168,8 @@ export default declare<State>((api) => {
               t.isJSXAttribute(attr) &&
               (attr.name.name === "position" ||
                 attr.name.name === "rotation" ||
-                attr.name.name === "scale")
+                attr.name.name === "scale" ||
+                attr.name.name === "name")
           ) &&
           state.get("editorFiberImport")
         ) {
@@ -189,7 +190,8 @@ export default declare<State>((api) => {
               t.isJSXAttribute(attr) &&
               (attr.name.name === "position" ||
                 attr.name.name === "rotation" ||
-                attr.name.name === "scale")
+                attr.name.name === "scale" ||
+                attr.name.name === "name")
           )
         ) {
           node.attributes.push(
