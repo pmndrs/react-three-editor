@@ -15,14 +15,15 @@ import {
   Canvas as FiberCanvas,
   useFrame as useFiberFrame
 } from "@react-three/fiber"
-import create from "zustand"
-import { EditorContext, SceneElementContext } from "./EditorContext"
+import { EditorContext, SceneElementContext } from "./contexts"
 import { MathUtils, Object3D } from "three"
 import { Outs } from "./Outs"
 import { TransformControls } from "three-stdlib"
 import { StoreType } from "leva/dist/declarations/src/types"
 import { eq } from "./eq"
 import { EditorPanel } from "./EditorPanel"
+import { createEditorStore, EditorStoreType } from "./stores"
+
 
 type Elements = {
   [K in keyof JSX.IntrinsicElements]: React.FC<
@@ -32,25 +33,7 @@ type Elements = {
   >
 }
 
-export const createEditorStore = () => {
-  const store = create((set, get) => ({
-    elements: {} as { [key: string]: EditableElement },
-    selected: null as EditableElement | null
-  }))
-  return store
-}
-
 const memo = {} as unknown as Elements
-
-export function useEditor(
-  ...args: Parameters<ReturnType<typeof createEditorStore>>
-) {
-  const useEditorStore = React.useContext(EditorContext)
-  if (!useEditorStore) {
-    throw new Error("useEditorStore must be used within a EditorProvider")
-  }
-  return useEditorStore(...args)
-}
 
 export class EditableElement<P = {}> extends EventTarget {
   children: string[] = []
@@ -61,7 +44,7 @@ export class EditableElement<P = {}> extends EventTarget {
   store: StoreType | null = null
 
   transformControls$?: TransformControls
-  useEditorStore: ReturnType<typeof createEditorStore> = {} as any
+  useEditorStore: EditorStoreType = {} as any
   constructor(
     public id: string,
     public source: {
