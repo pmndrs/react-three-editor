@@ -1,28 +1,14 @@
-import * as THREE from "three"
-import React, { useId } from "react"
-import { EntityTransformControls } from "./EntityTransformControls"
-import { EntityEditor, entityPanel, EntityTree } from "./EntityEditor"
-import tunnel from "tunnel-rat"
-import { useEditor } from "."
-import create from "zustand"
-import { folder, Leva, useControls } from "leva"
-export const SidebarTunnel = tunnel()
 import { OrbitControls } from "@react-three/drei"
+import { folder, Leva, useControls } from "leva"
+import React from "react"
+import * as THREE from "three"
+import tunnel from "tunnel-rat"
+import { useEditor } from "./useEditor"
+import { EntityEditor, entityPanel } from "./EntityEditor"
+import { EntityTransformControls } from "./EntityTransformControls"
+import { In } from './components'
 
-export let useTunnels = create((set) => ({}))
-
-function In({ children }) {
-  const id = useId()
-  let oldTunnel = useTunnels((state) => state[id])
-  if (!oldTunnel) {
-    oldTunnel = tunnel()
-    useTunnels.setState({
-      [id]: oldTunnel
-    })
-  }
-
-  return <oldTunnel.In>{children}</oldTunnel.In>
-}
+export const SidebarTunnel = tunnel()
 
 export function EditorPanel() {
   return (
@@ -41,18 +27,6 @@ export function EditorPanel() {
             }
           }
         />
-        {/* <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: 100,
-            background: "white",
-            padding: 10
-          }}
-        >
-          <pre>{JSON.stringify(Object.keys(p), null, 2)}</pre>
-        </div> */}
       </In>
       {/* <TopLevelTransformControls /> */}
       {/* <TopLevelEntities /> */}
