@@ -1,4 +1,4 @@
-import create from "zustand/react";
+import create from "zustand";
 import { Tunnel } from "../types";
 
 export type TunnelsStateType = Record<string, Tunnel>
