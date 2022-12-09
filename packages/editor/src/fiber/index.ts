@@ -17,7 +17,7 @@ import {
 } from "@react-three/fiber"
 import { EditorContext, SceneElementContext } from "./contexts"
 import { MathUtils, Object3D } from "three"
-import { Outs } from "./Outs"
+import { Outs } from "./components"
 import { TransformControls } from "three-stdlib"
 import { StoreType } from "leva/dist/declarations/src/types"
 import { eq } from "./eq"
