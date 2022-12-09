@@ -63,7 +63,7 @@ importers:
       rimraf: 3.0.2
       turbo: 1.6.3
 
-  games/3d-terrain-r3f:
+  examples/3d-terrain-r3f:
     specifiers:
       '@react-spring/core': ^9.4.4
       '@react-spring/three': ^9.4.4
@@ -118,7 +118,7 @@ importers:
       typescript: 4.9.3
       vite: 3.2.5
 
-  games/complex-materials:
+  examples/complex-materials:
     specifiers:
       '@pmndrs/branding': ^0.0.8
       '@react-spring/three': ^9.5.2
@@ -157,7 +157,7 @@ importers:
       '@vitejs/plugin-react': 2.2.0_vite@3.2.5
       vite: 3.2.5
 
-  games/example:
+  examples/example:
     specifiers:
       '@react-spring/core': ^9.4.4
       '@react-spring/three': ^9.4.4
@@ -210,7 +210,7 @@ importers:
       typescript: 4.9.3
       vite: 3.2.5
 
-  games/r3f-journey-levels-level-1:
+  examples/r3f-journey-levels-level-1:
     specifiers:
       '@react-spring/three': ^9.3.2
       '@react-three/drei': ^8.2.1
@@ -241,7 +241,7 @@ importers:
       '@types/react-dom': 18.0.9
       vite: 3.2.5
 
-  games/viking-ship:
+  examples/viking-ship:
     specifiers:
       '@react-spring/three': ^9.3.2
       '@react-three/drei': ^8.2.1
@@ -4157,7 +4157,7 @@ packages:
     resolution: {integrity: sha512-9K4zoImiZc3HlIp6AVUDE4CWYx22a+lhSZMYNpbjW04+YF0KWj4pJXnEMjdnFTiQibFFmElcsasJXDbdI/EPhA==}
     dependencies:
       '@types/eslint': 8.4.10
-      '@types/estree': 0.0.51
+      '@types/estree': 1.0.0
     dev: false
 
   /@types/eslint/7.29.0:
@@ -6421,7 +6421,7 @@ packages:
       minipass-pipeline: 1.2.4
       mkdirp: 1.0.4
       p-map: 4.0.0
-      promise-inflight: 1.0.1
+      promise-inflight: 1.0.1_bluebird@3.7.2
       rimraf: 3.0.2
       ssri: 8.0.1
       tar: 6.1.12
@@ -16179,15 +16179,6 @@ packages:
   /progress/2.0.3:
     resolution: {integrity: sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==}
     engines: {node: '>=0.4.0'}
-    dev: false
-
-  /promise-inflight/1.0.1:
-    resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
-    peerDependencies:
-      bluebird: '*'
-    peerDependenciesMeta:
-      bluebird:
-        optional: true
     dev: false
 
   /promise-inflight/1.0.1_bluebird@3.7.2:
