@@ -102,6 +102,10 @@ export default declare<State>((api) => {
 
         const { node } = path
         const { specifiers, source } = node
+        if (source.value === "@react-three/fiber") {
+          source.value = "@react-three/editor/fiber"
+        }
+
         if (source.value !== "@react-three/editor/fiber") return
 
         state.set("editorFiberImport", node)

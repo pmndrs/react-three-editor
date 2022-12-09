@@ -54,7 +54,7 @@
     "postprocessing": "^6.29.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "three": "^0.145.0",
+    "three": "0.147.0",
     "ts-jest": "^28.0.8",
     "tslib": "^2.4.0",
     "typedoc": "^0.23.18",

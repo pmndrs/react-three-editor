@@ -1,14 +1,6 @@
 import { defineConfig } from "vite"
-import react from "@vitejs/plugin-react"
-import { vite as editor, babel as editorBabel } from "@react-three/editor"
+import { r3f } from "@react-three/editor/vite"
 
 export default defineConfig({
-  plugins: [
-    editor(),
-    react({
-      babel: {
-        plugins: [editorBabel]
-      }
-    })
-  ]
+  plugins: [r3f()]
 })

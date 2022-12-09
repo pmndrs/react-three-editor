@@ -29,9 +29,9 @@ export function EntityTransformControls({
       if (!control) return
       switch (event.keyCode) {
         case 16: // Shift
-          control.setTranslationSnap(0.5)
-          control.setRotationSnap(MathUtils.degToRad(15))
-          control.setScaleSnap(0.25)
+          // control.setTranslationSnap(0.5)
+          // control.setRotationSnap(MathUtils.degToRad(15))
+          // control.setScaleSnap(0.25)
           break
 
         case 87: // W

@@ -1,5 +1,5 @@
 import React, { Suspense, useState } from "react"
-import { Canvas, Editable, EditorPanel } from "@react-three/editor/fiber"
+import { Canvas } from "@react-three/fiber"
 import { Bounds, Loader, OrbitControls } from "@react-three/drei"
 import Bunny from "./Bunny"
 import Blob from "./Blob"
@@ -59,7 +59,6 @@ function App() {
         />
         {/* <OrbitControls enablePan={false} minZoom={90} maxPolarAngle={Math.PI / 2 - 0.1} minPolarAngle={0} /> */}
         <OrbitControls makeDefault />
-        <EditorPanel />
       </Canvas>
       {loaded && <Tag />}
       <Loader />

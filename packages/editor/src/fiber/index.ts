@@ -8,7 +8,7 @@ import React, {
   useMemo,
   useContext
 } from "react"
-import { levaStore, useControls } from "leva"
+import { folder, levaStore, useControls } from "leva"
 import { mergeRefs } from "leva/plugin"
 import {
   applyProps,
@@ -22,6 +22,7 @@ import { Outs } from "./Outs"
 import { TransformControls } from "three-stdlib"
 import { StoreType } from "leva/dist/declarations/src/types"
 import { eq } from "./eq"
+import { EditorPanel } from "./EditorPanel"
 
 type Elements = {
   [K in keyof JSX.IntrinsicElements]: React.FC<
@@ -33,7 +34,8 @@ type Elements = {
 
 export const createEditorStore = () => {
   const store = create((set, get) => ({
-    elements: {} as { [key: string]: EditableElement }
+    elements: {} as { [key: string]: EditableElement },
+    selected: null as EditableElement | null
   }))
   return store
 }
@@ -54,11 +56,12 @@ export class EditableElement<P = {}> extends EventTarget {
   children: string[] = []
   props: any = {}
   ref: any | null = null
-  dirty: any = {}
+  dirty: any = false
 
   store: StoreType | null = null
 
   transformControls$?: TransformControls
+  useEditorStore: ReturnType<typeof createEditorStore> = {} as any
   constructor(
     public id: string,
     public source: {
@@ -74,7 +77,7 @@ export class EditableElement<P = {}> extends EventTarget {
     super()
   }
 
-  get sourceName() {
+  get key() {
     if (this.source.moduleName === this.source.componentName) {
       return `${this.source.componentName}:${
         typeof this.type === "string"
@@ -90,7 +93,17 @@ export class EditableElement<P = {}> extends EventTarget {
   }
 
   get name() {
-    return this.ref?.name?.length ? this.ref.name : this.sourceName
+    return this.ref?.name?.length ? this.ref.name : this.key
+  }
+
+  get displayName() {
+    return this.ref?.name?.length && this.ref.name !== this.key
+      ? this.ref.name
+      : `${this.source.componentName}:${
+          typeof this.type === "string"
+            ? this.type
+            : this.type.displayName || this.type.name
+        }`
   }
 
   set name(v: string) {
@@ -115,7 +128,6 @@ export class EditableElement<P = {}> extends EventTarget {
         value: this.scale
       }
     })
-    this.show()
   }
 
   show() {
@@ -132,6 +144,7 @@ export class EditableElement<P = {}> extends EventTarget {
 
   setPositionFromPanel(position: [number, number, number]) {
     this.ref.position.set(...position)
+    this.dirty = true
   }
 
   get position() {
@@ -142,9 +155,10 @@ export class EditableElement<P = {}> extends EventTarget {
     if (eq.array(value, this.position)) {
       return
     }
-    levaStore?.setSettingsAtPath(this.name, {
-      dirty: true
-    })
+    // levaStore?.setSettingsAtPath(`scene.` + this.name, {
+    //   dirty: true
+    // })
+    this.dirty = true
     this.ref.position.set(...value)
     this.store?.setValueAtPath("transform.position", value)
     this.store?.setSettingsAtPath("save", { disabled: false })
@@ -306,7 +320,13 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
         value: id,
         children: React.createElement(
           componentType,
-          { ...rest, ref: mergeRefs([ref, forwardRef]) },
+          {
+            ...rest,
+            ref: mergeRefs([ref, forwardRef]),
+            onPointerDown(e) {
+              console.log("click", editableElement)
+            }
+          },
           children
         )
       })
@@ -414,9 +434,20 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
       return React.createElement(SceneElementContext.Provider, {
         value: id,
         children: React.createElement(
-          componentType,
-          { ...rest, ...(memo.props ?? {}) },
-          children
+          "group",
+          {
+            onPointerDown(e) {
+              console.log("click", componentType, memo)
+            }
+          },
+          React.createElement(
+            componentType,
+            {
+              ...rest,
+              ...(memo.props ?? {})
+            },
+            children
+          )
         )
       })
     }
@@ -438,9 +469,11 @@ export const editable = new Proxy(memo, {
 export const Canvas = forwardRef<
   HTMLCanvasElement,
   ComponentProps<typeof FiberCanvas> & { editor?: React.ReactNode }
->(function Canvas({ children, ...props }, ref) {
+>(function Canvas(
+  { children, editor = React.createElement(EditorPanel), ...props },
+  ref
+) {
   const store = useMemo(() => createEditorStore(), [])
-  console.log(store.getState())
   return React.createElement(
     React.Fragment,
     {},
@@ -452,13 +485,30 @@ export const Canvas = forwardRef<
         {
           value: store
         },
-        children
+        children,
+        editor
       )
     }),
     React.createElement(Outs)
   )
 })
 
-export const useFrame = useFiberFrame
+export function useFrame(fn, ...args) {
+  const loopName = fn.name
+  let controls = useControls({
+    update: folder({
+      [loopName?.length ? loopName : "loop"]: {
+        value: true
+      }
+    })
+  })
+  return useFiberFrame((...args) => {
+    if (controls.loop) {
+      fn(...args)
+    }
+  }, ...args)
+}
+
+export { useThree } from "@react-three/fiber"
 
 export { SidebarTunnel, EditorPanel } from "./EditorPanel"

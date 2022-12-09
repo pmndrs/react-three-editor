@@ -1,4 +1,4 @@
-import { Canvas, EditorPanel } from "@react-three/editor/fiber"
+import { Canvas } from "@react-three/fiber"
 import { PresentationControls } from "@react-three/drei"
 import Level from "./components/Level"
 import Sudo from "./components/Sudo"
@@ -29,7 +29,6 @@ export default function App() {
           <Pyramid />
         </group>
       </PresentationControls>
-      <EditorPanel />
     </Canvas>
   )
 }
