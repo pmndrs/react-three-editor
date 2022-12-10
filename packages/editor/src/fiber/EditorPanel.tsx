@@ -125,8 +125,9 @@ const sceneGraph = createPlugin({
     const context = useInputContext()
     return (
       <>
-        {Object.values(context.settings.items).map((v) => (
+        {Object.entries(context.settings.items).map(([key, v]) => (
           <EntityControl
+            key={key}
             selected={false}
             entity={v.entity}
             collapsed={false}
