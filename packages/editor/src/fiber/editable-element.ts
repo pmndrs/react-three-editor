@@ -1,9 +1,8 @@
-import { TransformControls } from "three-stdlib"
-import { Schema, StoreType } from "leva/dist/declarations/src/types"
-import { eq } from "./eq"
-import { EditorStoreType } from "./stores"
-import { MathUtils, Object3D } from "three"
 import { levaStore } from "leva"
+import { StoreType } from "leva/dist/declarations/src/types"
+import { MathUtils, Object3D } from "three"
+import { TransformControls } from "three-stdlib"
+import { EditorStoreType } from "./stores"
 
 export class EditableElement<P = {}> extends EventTarget {
   children: string[] = []
