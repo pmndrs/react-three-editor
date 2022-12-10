@@ -19,7 +19,7 @@ import React, {
 import { Object3D } from "three"
 import { Outs } from "./components"
 import { EditorContext, SceneElementContext } from "./contexts"
-import { EditorPanel } from "./EditorPanel"
+import { EditorCamera, EditorPanel } from "./EditorPanel"
 import { createEditorStore } from "./stores"
 import { EditableElement } from "./editable-element"
 
@@ -144,16 +144,15 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
         }
       }, [parentId, id, editableElement])
 
+      console.log("render", id, rest, componentType)
+
       return React.createElement(SceneElementContext.Provider, {
         value: id,
         children: React.createElement(
           componentType as any,
           {
             ...rest,
-            ref: mergeRefs([ref, forwardRef]),
-            onPointerDown(e) {
-              console.log("click", editableElement)
-            }
+            ref: mergeRefs([ref, forwardRef])
           },
           children
         )
@@ -264,11 +263,7 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
         value: id,
         children: React.createElement(
           "group",
-          {
-            onPointerDown(e: any) {
-              console.log("click", componentType, memo)
-            }
-          },
+          null,
           React.createElement(
             componentType as any,
             {
@@ -314,6 +309,7 @@ export const Canvas = forwardRef<
         {
           value: store
         },
+        React.createElement(EditorCamera),
         children,
         editor
       )

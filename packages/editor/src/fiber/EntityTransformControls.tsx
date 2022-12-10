@@ -1,15 +1,16 @@
-import { TransformControls } from "@react-three/drei"
+import { PivotControls, TransformControls } from "@react-three/drei"
 import { MathUtils } from "three"
 import { TransformControls as TransformControlsImpl } from "three-stdlib"
 import { useEffect, useRef } from "react"
 import React from "react"
 import { levaStore } from "leva"
+import { createPortal } from "@react-three/fiber"
+import { EditableElement } from "./editable-element"
 
 export function EntityTransformControls({
   entity
-}: // entity
-{
-  // entity: Components
+}: {
+  entity: EditableElement
 }): JSX.Element {
   let ref = useRef<TransformControlsImpl>(null)
   useEffect(() => {
@@ -99,19 +100,34 @@ export function EntityTransformControls({
     }
   })
   return (
+    // <PivotControls
+    //   ref={(r) => {
+    //     ref.current = r
+    //     entity.transformControls$ = r
+    //   }}
+    //   offset={entity.ref.position}
+    //   // position={entity.ref.position}
+    //   // onChange={(c) => {
+    //   //   if (c?.type === "change" && c.target.object && entity.ref) {
+    //   //     entity.setTransformFromControls(c.target.object)
+    //   //   }
+    //   // }}
+    // ></PivotControls>
+    // createPortal(
     <TransformControls
+      object={entity.ref}
       ref={(r) => {
         ref.current = r
         entity.transformControls$ = r
       }}
-      onPointerDown={(e) => {}}
       key={entity.id}
-      position={entity.ref.position}
       onChange={(c) => {
-        if (c?.type === "change" && c.target.object && entity.ref) {
+        console.log(c, c?.target)
+        if (c?.type === "change" && entity.ref && c.target?.object) {
           entity.setTransformFromControls(c.target.object)
         }
       }}
     />
+    // entity.ref
   )
 }

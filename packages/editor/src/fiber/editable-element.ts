@@ -23,6 +23,7 @@ export class EditableElement<P = {}> extends EventTarget {
       columnNumber: number
       moduleName: string
       componentName: string
+      elementName: string
     },
     public type: keyof JSX.IntrinsicElements | React.FC<P>,
     public parentId?: string | null
@@ -109,9 +110,8 @@ export class EditableElement<P = {}> extends EventTarget {
   }
 
   set position(value) {
-    if (eq.array(value, this.position)) {
-      return
-    }
+    console.log("setting", value)
+
     // levaStore?.setSettingsAtPath(`scene.` + this.name, {
     //   dirty: true
     // })

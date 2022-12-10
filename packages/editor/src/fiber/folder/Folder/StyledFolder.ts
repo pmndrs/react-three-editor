@@ -1,6 +1,8 @@
+import { Icon } from "@iconify/react"
 import { styled } from "leva/plugin"
 
 export const StyledFolder = styled("div", {})
+export const StyledIcon = styled(Icon, {})
 
 export const StyledWrapper = styled("div", {
   position: "relative",
@@ -61,6 +63,9 @@ export const StyledTitle = styled("div", {
     fill: "$folderWidgetColor",
     opacity: 0.6
   },
+  [`> ${StyledIcon}`]: {
+    opacity: 0
+  },
   "&:hover > svg": {
     fill: "$folderWidgetColor"
   },
@@ -73,6 +78,9 @@ export const StyledTitle = styled("div", {
   [`${StyledFolder}:hover > & > svg`]: {
     opacity: 1
   },
+  [`${StyledFolder}:hover > & > ${StyledIcon}`]: {
+    opacity: 1
+  },
   variants: {
     selected: {
       true: {
@@ -82,6 +90,12 @@ export const StyledTitle = styled("div", {
         }
       },
       false: {}
+    },
+    visible: {
+      false: {
+        opacity: 0.2
+      },
+      true: {}
     }
   }
 })

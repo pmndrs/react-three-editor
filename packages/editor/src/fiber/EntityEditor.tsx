@@ -12,7 +12,7 @@ import {
 } from "leva"
 import { MathUtils, Object3D } from "three"
 import { useEditor } from "./useEditor"
-import { EditableElement } from './editable-element'
+import { EditableElement } from "./editable-element"
 import { Icon } from "@iconify/react"
 import { createRPCClient } from "vite-dev-rpc"
 import { createPlugin, useInputContext } from "leva/plugin"
@@ -24,6 +24,7 @@ import {
   StyledContent,
   StyledFolder,
   StyledTitle,
+  StyledIcon,
   StyledWrapper
 } from "./folder/Folder/StyledFolder"
 import { Chevron } from "./folder/Folder/Chevron"
@@ -56,7 +57,7 @@ const getControls = (entity: EditableElement) => {
                 entity.ref.position.fromArray(value)
               }
               // @ts-ignore
-              entity.transformControls$?.object?.position.fromArray(value)
+              // entity.transformControls$?.object?.position.fromArray(value)
               if (entity.props) {
                 entity.props.position = value
                 entity.render()
@@ -191,12 +192,13 @@ function Collapsible({
   collapsed,
   setCollapsed,
   selected,
-  hideChevron
+  hideChevron,
+  visible
 }) {
   if (hideChevron) {
     return (
       <StyledFolder>
-        <StyledTitle selected={selected}>
+        <StyledTitle selected={selected} visible={visible}>
           <Chevron
             hidden={hideChevron}
             onClick={() => setCollapsed((e) => !e)}
@@ -216,6 +218,7 @@ function Collapsible({
         setCollapsed={setCollapsed}
         selected={selected}
         hideChevron={hideChevron}
+        visible={visible}
       />
     )
   }
@@ -227,14 +230,15 @@ function SceneEntity({
   collapsed,
   setCollapsed,
   selected,
-  hideChevron
+  hideChevron,
+  visible
 }) {
   const context = useInputContext<{ value: { entity: EditableElement } }>()
   const { wrapperRef, contentRef } = useToggle(!collapsed)
 
   return (
     <StyledFolder>
-      <StyledTitle selected={selected}>
+      <StyledTitle selected={selected} visible={visible}>
         <Chevron
           hidden={hideChevron}
           onClick={() => setCollapsed((e) => !e)}
@@ -266,112 +270,165 @@ export const entityPanel = createPlugin({
   component: (props) => {
     const context = useInputContext<{ value: { entity: EditableElement } }>()
 
-    console.log(context.settings)
     function setCollapsed() {
       context.setSettings({
         collapsed: !context.settings.collapsed
       })
     }
 
-    const selected = context.value.entity.useEditorStore(
-      (s) => s.selected === context.value.entity
-    )
-
     return (
-      <Collapsible
+      <EntityControl
+        entity={context.value.entity}
         collapsed={context.settings.collapsed}
         setCollapsed={setCollapsed}
-        selected={selected}
-        hideChevron={
-          context.settings.children &&
-          context.value.entity.children.length === 0
-        }
-        title={
-          <>
-            <Icon
-              icon="ph:cube"
-              onClick={(e) =>
-                context.value.entity.useEditorStore.setState({
-                  selected: context.value.entity
-                })
-              }
-            />
-            <div
-              style={{ marginLeft: "2px" }}
-              onClick={(e) =>
-                context.value.entity.useEditorStore.setState({
-                  selected: context.value.entity
-                })
-              }
-            >
-              {context.value.entity.displayName}
-              {context.settings.dirty ? "*" : ""}
-            </div>
-          </>
-        }
-      >
-        {!context.settings.collapsed && context.settings.children && (
-          <EntityChildren entity={context.value.entity} />
-        )}
-        {context.settings.panel && (
-          <LevaPanel
-            fill
-            titleBar={false}
-            flat
-            // collapsed={{
-            //   collapsed: context.settings.collapsed,
-            //   onChange(e) {
-            //     setCollapsed(e)
-            //   }
-            // }}
-            hideCopyButton
-            theme={{
-              space: {
-                rowGap: "2px",
-                md: "6px",
-                sm: "4px"
-              }
-            }}
-            store={context.value.entity.store}
-          />
-        )}
-      </Collapsible>
+        showChildren={context.settings.children}
+        dirty={context.settings.dirty}
+        panel={context.settings.panel}
+      />
     )
   }
 })
 export const EntityEditor = ({ entity }: { entity: EditableElement }) => {
-  console.log(entity)
+  if (entity.store) {
+    return <EntityStoreable entity={entity} />
+  } else {
+    return <StoreableEntity entity={entity} />
+  }
+}
+
+export function EntityControl({
+  collapsed,
+  onCollapse,
+  entity,
+  showChildren,
+  dirty,
+  panel
+}) {
+  const selected = entity.useEditorStore((s) => s.selected === entity)
+  const [_collapsed, setCollapsed] = useState(collapsed)
+  const [visible, setVisible] = useState(entity.ref.visible)
+  return (
+    <Collapsible
+      collapsed={_collapsed}
+      setCollapsed={(c) => {
+        onCollapse?.(c)
+        setCollapsed(c)
+      }}
+      visible={visible}
+      selected={selected}
+      hideChevron={showChildren && entity.children.length === 0}
+      title={
+        <>
+          <Icon
+            icon={entity.ref.isCamera ? "ph:video-camera-bold" : "ph:cube"}
+            onClick={(e) =>
+              entity.useEditorStore.setState({
+                selected: entity
+              })
+            }
+          />
+          <div
+            style={{ marginLeft: "2px" }}
+            onClick={(e) =>
+              entity.useEditorStore.setState({
+                selected: entity
+              })
+            }
+          >
+            {entity.displayName}
+            {dirty ? "*" : ""}
+          </div>
+          <div
+            style={{
+              marginLeft: "auto"
+            }}
+          ></div>
+          <StyledIcon
+            icon="pepicons-code"
+            onClick={(e) =>
+              fetch(
+                `/__open-in-editor?file=${encodeURIComponent(
+                  `${entity.source.fileName}:${entity.source.lineNumber}:${
+                    entity.source.columnNumber + 1
+                  }`
+                )}`
+              )
+            }
+          />
+          <StyledIcon
+            icon={visible ? "ph:eye-bold" : "ph:eye-closed-bold"}
+            style={{
+              marginLeft: 2
+            }}
+            onClick={(e) => (
+              setVisible((v) => !v), (entity.ref.visible = !entity.ref.visible)
+            )}
+          />
+        </>
+      }
+    >
+      {!_collapsed && showChildren && <EntityChildren entity={entity} />}
+      {panel && (
+        <LevaPanel
+          fill
+          titleBar={false}
+          flat
+          // collapsed={{
+          //   collapsed: context.settings.collapsed,
+          //   onChange(e) {
+          //     setCollapsed(e)
+          //   }
+          // }}
+          hideCopyButton
+          theme={{
+            space: {
+              rowGap: "2px",
+              md: "6px",
+              sm: "4px"
+            }
+          }}
+          store={entity.store}
+        />
+      )}
+    </Collapsible>
+  )
+}
+
+function StoreableEntity({ entity }) {
+  const entityStore = useCreateStore()
+  entity.store = entityStore
+  return <EntityStoreable entity={entity} />
+}
+
+function EntityStoreable({ entity }) {
   const scene = useThree((s) => s.scene)
   const [run, setRun] = useState(0)
   function reset() {
     setRun((r) => r + 1)
   }
-  const state = useEditor((state) => state.elements)
-
-  const entityStore = entity.store ? entity.store : useCreateStore()
-  entity.store = entityStore
+  let entityStore = entity.store
   const [, set] = useControls(
     () => {
       let name = entity.name
       let controls = getControls(entity)
       entity.controls = controls
       return {
-        name: {
-          value: name,
-          onChange: (value) => {
-            entity.name = value
-          }
-        },
-        visible: {
-          type: LevaInputs.BOOLEAN,
-          value: entity.ref.visible,
-          label: "visible",
-          onChange: (value) => {
-            console.log(entity.ref)
-            // entity.setProp("visible", value)
-            entity.ref.visible = value
-          }
-        },
+        // name: {
+        //   value: name,
+        //   onChange: (value) => {
+        //     entity.name = value
+        //   }
+        // },
+        // visible: {
+        //   type: LevaInputs.BOOLEAN,
+        //   value: entity.ref.visible,
+        //   label: "visible",
+        //   onChange: (value) => {
+        //     console.log(entity.ref)
+        //     // entity.setProp("visible", value)
+        //     entity.ref.visible = value
+        //   }
+        // },
 
         ...controls,
         save: button(
@@ -451,6 +508,7 @@ export const EntityEditor = ({ entity }: { entity: EditableElement }) => {
       // }
 
       if (edit) {
+        console.log("reading", position)
         entity.store?.useStore.setState({
           data: {
             ...state,
@@ -504,15 +562,18 @@ function EntityChildren({ entity }) {
   )
 }
 
-function EntityChild({ child }) {
+function EntityChild({ child }: { child: EditableElement }) {
+  // const visible = child.store.useStore((d) => d.data.visible)
+  const [visible, setVisible] = useState(child.ref.visible)
   return (
     <Togglable
       hideChevron={child.children.length === 0}
       selected={child.useEditorStore((state) => state.selected) === child}
+      visible={visible}
       title={
         <>
           <Icon
-            icon="ph:cube"
+            icon={child.ref.isCamera ? "ph:video-camera-bold" : "ph:cube"}
             onClick={(e) =>
               child.useEditorStore.setState({
                 selected: child
@@ -529,6 +590,28 @@ function EntityChild({ child }) {
           >
             {child.displayName}
           </div>
+          <div style={{ marginLeft: "auto" }} />
+          <StyledIcon
+            icon="pepicons-code"
+            onClick={(e) =>
+              fetch(
+                `/__open-in-editor?file=${encodeURIComponent(
+                  `${child.source.fileName}:${child.source.lineNumber}:${
+                    child.source.columnNumber + 1
+                  }`
+                )}`
+              )
+            }
+          />
+          <StyledIcon
+            icon={visible ? "ph:eye-bold" : "ph:eye-closed-bold"}
+            style={{
+              marginLeft: 2
+            }}
+            onClick={(e) => (
+              setVisible((v) => !v), (child.ref.visible = !child.ref.visible)
+            )}
+          />
         </>
       }
     >
@@ -539,7 +622,6 @@ function EntityChild({ child }) {
 
 function Togglable(props) {
   const [collapsed, setCollapsed] = useState(false)
-  const context = useInputContext<{ value: { entity: EditableElement } }>()
 
   return (
     <Collapsible {...props} collapsed={collapsed} setCollapsed={setCollapsed} />
