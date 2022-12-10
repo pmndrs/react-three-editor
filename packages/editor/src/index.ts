@@ -4,11 +4,13 @@ import react from "@vitejs/plugin-react"
 
 export function r3f() {
   return [
-    vite(),
+    process.env.NODE_ENV === "development" && vite(),
     react({
       babel: {
-        plugins: [babel]
+        plugins: [process.env.NODE_ENV === "development" && babel].filter(
+          Boolean
+        )
       }
     })
-  ]
+  ].filter(Boolean)
 }

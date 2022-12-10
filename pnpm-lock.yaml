@@ -241,6 +241,37 @@ importers:
       '@types/react-dom': 18.0.9
       vite: 3.2.5
 
+  examples/threejs-journey:
+    specifiers:
+      '@react-spring/three': ^9.3.2
+      '@react-three/drei': ^8.2.1
+      '@react-three/editor': workspace:^0.0.1
+      '@react-three/fiber': ^8.9.1
+      '@types/react': 18.0.25
+      '@types/react-dom': ^18.0.9
+      '@types/three': ^0.135.0
+      leva: ^0.9.34
+      react: 18.2.0
+      react-dom: 18.2.0
+      react-scripts: 4.0.3
+      three: 0.147.0
+      vite: ^3.0.7
+    dependencies:
+      '@react-spring/three': 9.5.5_7l5c7g5ph6e5ybhvldx3hsiylq
+      '@react-three/drei': 8.20.2_xa6xk36nauwxkzngvitxgjpnr4
+      '@react-three/editor': link:../../packages/editor
+      '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
+      '@types/three': 0.135.0
+      leva: 0.9.34_biqbaboplfbrettd7655fr4n2y
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-scripts: 4.0.3_react@18.2.0
+      three: 0.147.0
+    devDependencies:
+      '@types/react': 18.0.25
+      '@types/react-dom': 18.0.9
+      vite: 3.2.5
+
   examples/viking-ship:
     specifiers:
       '@react-spring/three': ^9.3.2
@@ -6458,7 +6489,7 @@ packages:
       minipass-pipeline: 1.2.4
       mkdirp: 1.0.4
       p-map: 4.0.0
-      promise-inflight: 1.0.1_bluebird@3.7.2
+      promise-inflight: 1.0.1
       rimraf: 3.0.2
       ssri: 8.0.1
       tar: 6.1.12
@@ -16216,6 +16247,15 @@ packages:
   /progress/2.0.3:
     resolution: {integrity: sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==}
     engines: {node: '>=0.4.0'}
+    dev: false
+
+  /promise-inflight/1.0.1:
+    resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
+    peerDependencies:
+      bluebird: '*'
+    peerDependenciesMeta:
+      bluebird:
+        optional: true
     dev: false
 
   /promise-inflight/1.0.1_bluebird@3.7.2:

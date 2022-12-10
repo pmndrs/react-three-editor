@@ -1,0 +1,33 @@
+{
+  "name": "r3f-journey-levels-level-1",
+  "description": "Level 1 model from Three.js Journey course implemented with react-three-fiber",
+  "main": "src/index.jsx",
+  "keywords": [
+    "react",
+    "r3f",
+    "three.js",
+    "three.js journey"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "@react-spring/three": "^9.3.2",
+    "@react-three/drei": "^8.2.1",
+    "@react-three/editor": "workspace:^0.0.1",
+    "@react-three/fiber": "^8.9.1",
+    "@types/three": "^0.135.0",
+    "leva": "^0.9.34",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-scripts": "4.0.3",
+    "three": "0.147.0"
+  },
+  "devDependencies": {
+    "@types/react": "18.0.25",
+    "@types/react-dom": "^18.0.9",
+    "vite": "^3.0.7"
+  }
+}

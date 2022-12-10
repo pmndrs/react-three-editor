@@ -10,9 +10,9 @@ export function Lights() {
       <color attach="background" args={["#f0f0f0"]} />
       <ambientLight intensity={1} />
       <pointLight position={[20, 30, 10]} />
-      <pointLight position={[-10, -10, -10]} color="blue" />
+      <pointLight position={[-11.846, 0.934, -10]} color="blue" />
     </>
-  )
+  );
 }
 
 export function Farm(props: any) {
@@ -147,11 +147,11 @@ function App() {
             <Environment preset="city" background="only" />
           </Portal>
         </Portal>
-        <Ramen scale={4} position={[-2, 0, 2]} />
-        <Soda scale={5} position={[1.5, 0, 3]} />
+        <Ramen scale={[4, 4, 4]} position={[-4.363, -0.979, 2]} />
+        <Soda scale={[5, 5, 5]} position={[4.109, -0.377, 3]} />
       </group>
     </Canvas>
-  )
+  );
 }
 
 export default App

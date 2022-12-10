@@ -32,7 +32,7 @@ export function Terrain() {
 
   return (
     <>
-      <group rotation-x={-Math.PI / 2} scale={[0.05333333333333334, 0.05333333333333334, 0.05333333333333334]} position={[5.598, 3.227, 0]} rotation={[-1.5707963267948966, 0, 0]}>
+      <group rotation-x={-Math.PI / 2} scale={[0.05333333333333334, 0.05333333333333334, 0.05333333333333334]} position={[0.562, 3.33, 0]} rotation={[-1.5707963267948966, 0, 0]}>
         <instancedMesh castShadow receiveShadow ref={ref} args={[, , dataBlocks.length]}>
           <boxGeometry />
           <meshPhongMaterial />

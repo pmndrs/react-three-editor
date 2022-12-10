@@ -1,0 +1,40 @@
+@import url('https://rsms.me/inter/inter.css');
+
+body {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  background: #1d2142;
+  color: white;
+  font-family: 'Inter var', sans-serif;
+}
+
+canvas {
+  width: 100%;
+  height: 100vh;
+}
+
+span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+canvas {
+  opacity: 0;
+  touch-action: none;
+  animation: fade-in 2s ease 0.3s forwards;
+  animation-delay: 0s;
+}
