@@ -504,7 +504,7 @@ function EntityStoreable({ entity }: { entity: EditableElement }) {
       // }
 
       if (edit) {
-        console.log("reading", position)
+        // console.log("reading", position)
         entity.store?.useStore.setState({
           data: state
         })

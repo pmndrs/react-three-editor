@@ -186,7 +186,6 @@ function SceneGraph() {
 
 function SelectedTransformControls() {
   const p = useEditor((state) => state.selected)
-  console.log(p)
   return p && p.ref instanceof THREE.Object3D ? (
     <EntityTransformControls key={p.id} entity={p} />
   ) : null
