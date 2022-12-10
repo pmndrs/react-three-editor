@@ -330,6 +330,7 @@ importers:
       prettier: ^2.8.0
       react: ^18.2.0
       react-dom: ^18.2.0
+      react-hotkeys-hook: ^4.0.6
       recast: ^0.21.5
       three-stdlib: ^2.13.0
       tunnel-rat: ^0.1.0
@@ -347,6 +348,7 @@ importers:
       fp-ts: 2.13.1
       fs-extra: 10.1.0
       prettier: 2.8.0
+      react-hotkeys-hook: 4.0.6_biqbaboplfbrettd7655fr4n2y
       recast: 0.21.5
       three-stdlib: 2.20.3
       tunnel-rat: 0.1.0_react@18.2.0
@@ -16742,6 +16744,16 @@ packages:
 
   /react-error-overlay/6.0.11:
     resolution: {integrity: sha512-/6UZ2qgEyH2aqzYZgQPxEnz33NJ2gNsnHA2o5+o4wW9bLM/JYQitNP9xPhsXwC08hMMovfGe/8retsdDsczPRg==}
+    dev: false
+
+  /react-hotkeys-hook/4.0.6_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-QYSGEuvhjrDs4JbcQ8hVGPTJe02HBmLFuibVsAZPT+rJVOLqc9FqMKL8KXdBf6YFRSN2vN8zXBxyKnTTh9DScA==}
+    peerDependencies:
+      react: '>=16.8.1'
+      react-dom: '>=16.8.1'
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
   /react-is/16.13.1:
