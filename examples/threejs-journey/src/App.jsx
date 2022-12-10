@@ -19,7 +19,7 @@ function Model(props) {
   useFrame((state, delta) => (portalMaterial.current.uTime += delta))
   return (
     <group {...props} dispose={null}>
-      <mesh geometry={nodes.portalCircle.geometry} position={[0, 0.78, -0.939]} rotation={[-1.5707963267948966, 0, 0]}>
+      <mesh geometry={nodes.portalCircle.geometry} position={[0, 0.78, 1.6]} rotation={[-Math.PI / 2, 0, 0]}>
         <portalMaterial ref={portalMaterial} blending={AdditiveBlending} uColorStart="pink" uColorEnd="white" />
       </mesh>
       <mesh geometry={nodes.lampLightL.geometry} material-color="#f0bf94" position={[0.89, 1.07, -0.14]} scale={[0.07, 0.11, 0.07]} />
@@ -28,7 +28,7 @@ function Model(props) {
         <meshBasicMaterial map={bakedTexture} map-flipY={false} />
       </mesh>
     </group>
-  );
+  )
 }
 
 extend({
