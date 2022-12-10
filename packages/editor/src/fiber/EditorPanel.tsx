@@ -6,19 +6,18 @@ import {
   PerspectiveCamera,
   useHelper
 } from "@react-three/drei"
+import { useThree } from "@react-three/fiber"
 import { folder, Leva, levaStore, useControls } from "leva"
+import { createPlugin, useInputContext } from "leva/plugin"
 import React, { useEffect } from "react"
 import * as THREE from "three"
+import { CameraHelper } from "three"
 import tunnel from "tunnel-rat"
-import { useEditor } from "./useEditor"
+import { editable } from "."
+import { In } from "./components"
 import { EntityControl, EntityEditor, entityPanel } from "./EntityEditor"
 import { EntityTransformControls } from "./EntityTransformControls"
-import { In } from "./components"
-import { createPlugin, useInputContext } from "leva/plugin"
-import { useFrame, useThree } from "@react-three/fiber"
-import { CameraHelper } from "three"
-import { eq } from "./eq"
-import { editable } from "."
+import { useEditor } from "./useEditor"
 
 export const SidebarTunnel = tunnel()
 
@@ -135,42 +134,12 @@ export function EditorPanel() {
   )
 }
 
-function TopLevelEntities() {
-  const p = useEditor((state) => Object.values(state.elements))
-  return (
-    <>
-      {p.map((e) =>
-        e.parentId == null ? <EntityEditor key={e.name} entity={e} /> : null
-      )}
-    </>
-  )
-}
-
-function TopLevelTransformControls() {
-  const p = useEditor((state) => Object.values(state.elements))
-  return (
-    <>
-      {p.map((e) =>
-        e.ref instanceof THREE.Object3D && e.parentId === null ? (
-          <EntityTransformControls key={e.id} entity={e} />
-        ) : null
-      )}
-    </>
-  )
-}
-
-const sceneGraph = createPlugin<
-  { items: object },
-  {},
-  {
-    items: object
-  }
->({
+const sceneGraph = createPlugin({
   normalize({ items }, path, data) {
     return { settings: { items }, value: {} }
   },
   component() {
-    const context = useInputContext<{ settings: { items: object } }>()
+    const context = useInputContext()
     return (
       <div style={{ maxHeight: 280, overflow: "scroll" }}>
         {Object.values(context.settings.items).map((v) => (
