@@ -12,7 +12,7 @@ export default function App() {
     <Canvas flat dpr={[1, 2]} camera={{ fov: 25, position: [0, 0, 8] }}>
       <color attach="background" args={["#e0b7ff"]} />
       <ambientLight />
-      <PresentationControls
+      <group
         global
         makeDefault
         zoom={0.8}
@@ -28,7 +28,7 @@ export default function App() {
           <Icon />
           <Pyramid />
         </group>
-      </PresentationControls>
+      </group>
     </Canvas>
   )
 }

@@ -193,6 +193,42 @@ function Collapsible({
   selected,
   hideChevron
 }) {
+  if (hideChevron) {
+    return (
+      <StyledFolder>
+        <StyledTitle selected={selected}>
+          <Chevron
+            hidden={hideChevron}
+            onClick={() => setCollapsed((e) => !e)}
+            toggled={!collapsed}
+          />
+          <div style={{ marginLeft: "2px" }} />
+          {title}
+        </StyledTitle>
+      </StyledFolder>
+    )
+  } else {
+    return (
+      <SceneEntity
+        title={title}
+        children={children}
+        collapsed={collapsed}
+        setCollapsed={setCollapsed}
+        selected={selected}
+        hideChevron={hideChevron}
+      />
+    )
+  }
+}
+
+function SceneEntity({
+  title,
+  children,
+  collapsed,
+  setCollapsed,
+  selected,
+  hideChevron
+}) {
   const context = useInputContext<{ value: { entity: EditableElement } }>()
   const { wrapperRef, contentRef } = useToggle(!collapsed)
 
@@ -435,7 +471,7 @@ export function EntityTree({ entity }) {
         [entity.name]: entityPanel({
           entity,
           panel: false,
-          collapsed: true,
+          collapsed: false,
           children: true
         })
       })
@@ -462,7 +498,7 @@ function EntityChildren({ entity }) {
       {entity.children
         .filter((c) => c !== entity.id)
         .map((c) => (
-          <EntityChild child={state[c]} />
+          <EntityChild child={state[c]} key={c} />
         ))}
     </div>
   )
@@ -502,7 +538,7 @@ function EntityChild({ child }) {
 }
 
 function Togglable(props) {
-  const [collapsed, setCollapsed] = useState(true)
+  const [collapsed, setCollapsed] = useState(false)
   const context = useInputContext<{ value: { entity: EditableElement } }>()
 
   return (

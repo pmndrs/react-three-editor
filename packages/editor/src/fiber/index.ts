@@ -9,7 +9,11 @@ import { mergeRefs } from "leva/plugin"
 import React, {
   ComponentProps,
   forwardRef,
-  useCallback, useContext, useEffect, useId, useLayoutEffect,
+  useCallback,
+  useContext,
+  useEffect,
+  useId,
+  useLayoutEffect,
   useMemo
 } from "react"
 import { Object3D } from "three"
@@ -17,7 +21,7 @@ import { Outs } from "./components"
 import { EditorContext, SceneElementContext } from "./contexts"
 import { EditorPanel } from "./EditorPanel"
 import { createEditorStore } from "./stores"
-import { EditableElement } from './editable-element'
+import { EditableElement } from "./editable-element"
 
 type Elements = {
   [K in keyof JSX.IntrinsicElements]: React.FC<
@@ -170,8 +174,8 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
       editableElement.id = id
       editableElement.parentId = parentId
       editableElement.type = componentType as any
-      (editableElement as any).render = render;
-      (editableElement as any).currentProps = props
+      ;(editableElement as any).render = render
+      ;(editableElement as any).currentProps = props
       editableElement.source = props._source
       editableElement.useEditorStore = useEditorStore!
 
@@ -230,7 +234,9 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
               if (e[parentId]) {
                 e[parentId] = {
                   ...(el.elements[parentId] ?? {}),
-                  children: e[parentId]?.children.filter((c: string) => c !== id)
+                  children: e[parentId]?.children.filter(
+                    (c: string) => c !== id
+                  )
                 }
               }
 
@@ -332,7 +338,5 @@ export function useFrame(fn: RenderCallback, ...args: any) {
   }, ...args)
 }
 
-export { createPortal, useThree } from "@react-three/fiber"
+export { createPortal, useThree, extend } from "@react-three/fiber"
 export { EditorPanel, SidebarTunnel } from "./EditorPanel"
-
-

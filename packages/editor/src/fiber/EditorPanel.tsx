@@ -33,7 +33,7 @@ export function EditorPanel() {
       <SceneGraph />
       <SelectedTransformControls />
       <SelectedEntityControls />
-      <OrbitControls makeDefault />
+      {/* <OrbitControls makeDefault /> */}
     </>
   )
 }
@@ -72,7 +72,7 @@ function SceneGraph() {
         items[v.name] = entityPanel({
           entity: v,
           panel: false,
-          collapsed: true,
+          collapsed: false,
           children: true
         })
     })

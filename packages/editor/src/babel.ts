@@ -44,12 +44,17 @@ export default declare<State>((api) => {
     fileNameIdentifier: t.Identifier,
     { line, column }: { line: number; column: number },
     componentName: string,
-    moduleName: string
+    moduleName: string,
+    elementName: string
   ) {
     const fileLineLiteral = createNodeFromNullish(line, t.numericLiteral)
     const moduleNameLiteral = createNodeFromNullish(moduleName, t.stringLiteral)
     const componentNameLiteral = createNodeFromNullish(
       componentName,
+      t.stringLiteral
+    )
+    const elementNameLiteral = createNodeFromNullish(
+      elementName,
       t.stringLiteral
     )
     const fileColumnLiteral = createNodeFromNullish(column, (c) =>
@@ -62,7 +67,8 @@ export default declare<State>((api) => {
         lineNumber: ${fileLineLiteral},
         columnNumber: ${fileColumnLiteral},
         moduleName: ${moduleNameLiteral},
-        componentName: ${componentNameLiteral}
+        componentName: ${componentNameLiteral},
+        elementName: ${elementNameLiteral}
       }`
   }
 
@@ -136,15 +142,21 @@ export default declare<State>((api) => {
 
         const parentComponent = path.findParent(
           (path) =>
-            path.isFunctionDeclaration() &&
-            path.get("id").isIdentifier() &&
-            path.get("id").node.name.match(/^[A-Z]/)
+            (path.isFunctionDeclaration() &&
+              path.get("id").isIdentifier() &&
+              path.get("id").node.name.match(/^[A-Z]/)) ||
+            (path.isVariableDeclarator() &&
+              path.get("id").isIdentifier() &&
+              path.get("id").node.name.match(/^[A-Z]/))
         )
 
         let componentName = null
         if (parentComponent) {
           componentName = parentComponent.get("id").node.name
         }
+
+        let elementName =
+          node.name.type === "JSXIdentifier" ? node.name.name : null
 
         if (
           t.isJSXIdentifier(node.name) &&
@@ -226,7 +238,8 @@ export default declare<State>((api) => {
                 t.cloneNode(state.fileNameIdentifier),
                 node.loc.start,
                 componentName,
-                basename(state.filename, extname(state.filename))
+                basename(state.filename, extname(state.filename)),
+                elementName
               )
             )
           )
