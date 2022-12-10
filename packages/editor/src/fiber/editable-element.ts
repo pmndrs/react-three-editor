@@ -1,8 +1,8 @@
-import { TransformControls } from "three-stdlib"
+import { levaStore } from "leva"
 import { StoreType } from "leva/dist/declarations/src/types"
-import { EditorStoreType } from "./stores"
 import { Group, MathUtils, Mesh, Object3D, PerspectiveCamera } from "three"
-import { position } from "./position"
+import { TransformControls } from "three-stdlib"
+import { EditorStoreType } from "./stores"
 
 export enum ChangeSource {
   Leva = 0,
