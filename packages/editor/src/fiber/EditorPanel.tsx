@@ -165,18 +165,10 @@ function SceneGraph() {
     }
   }, [p])
   return null
-  // return (
-  //   <>
-  //     {p.map((e) =>
-  //       e.parentId == null ? <EntityTree key={e.name} entity={e} /> : null
-  //     )}
-  //   </>
-  // )
 }
 
 function SelectedTransformControls() {
   const p = useEditor((state) => state.selected)
-  console.log(p)
   return p && p.ref instanceof THREE.Object3D ? (
     <EntityTransformControls key={p.id} entity={p} />
   ) : null
