@@ -144,6 +144,7 @@ const sceneGraph = createPlugin({
       <div style={{ maxHeight: 280, overflow: "scroll" }}>
         {Object.values(context.settings.items).map((v) => (
           <EntityControl
+            key={key}
             selected={false}
             entity={v}
             key={v.id}
