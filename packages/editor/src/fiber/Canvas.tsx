@@ -13,11 +13,11 @@ export const Canvas = forwardRef<HTMLCanvasElement, CanvasProps>(( {
     Editor = EditorPanel,
     children,
     ...props
-} ) => {
+}, forwardedRef ) => {
     const store = useMemo( ( ) => createEditorStore(), [] )
     return (
         <Fragment>
-            <FiberCanvas {...props}>
+            <FiberCanvas {...props} ref={forwardedRef}>
                 <EditorContext.Provider value={store}>
                     { children }
                     { Editor && <Editor />}
