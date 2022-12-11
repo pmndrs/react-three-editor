@@ -2,17 +2,18 @@
 
 🔌 A one of a kind scene editor that writes changes back into your code
 
-## Alpha
+
+https://twitter.com/nkSaraf98/status/1597140836654804994
+
+https://twitter.com/itsdouges/status/1597178413449904129
+
+## Installation (Alpha):
 
 Requirements: Using `@react-three/fiber` and `vite`
 
 ```bash
 npm install @react-three/editor -D
 ```
-
-https://twitter.com/nkSaraf98/status/1597140836654804994
-
-https://twitter.com/itsdouges/status/1597178413449904129
 
 
 Go to your `vite.config.js` file and add the following:
