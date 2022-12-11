@@ -1,14 +1,21 @@
 import { useRef } from 'react'
 import { Color, AdditiveBlending } from 'three'
 import { Canvas, extend, useFrame } from '@react-three/fiber'
-import { OrbitControls, Sparkles, shaderMaterial, useGLTF, useTexture } from '@react-three/drei'
+import { OrbitControls, Sphere, Sparkles, shaderMaterial, useGLTF, useTexture } from '@react-three/drei'
 import glsl from 'babel-plugin-glsl/macro'
 
 export const App = ({ scale = Array.from({ length: 50 }, () => 0.5 + Math.random() * 4) }) => (
   <Canvas camera={{ fov: 45, position: [-4, 2, -4] }}>
     <Sparkles count={scale.length} size={scale} position={[1.369, 0.174, 2.717]} scale={[4, 1.5, 4]} speed={0.3} />
-    <Model />
+    {/* <Model /> */}
     <OrbitControls makeDefault />
+    <mesh position={[6.948, -2.158, 0.465]}>
+      <boxBufferGeometry attach="geometry" />
+      <meshStandardMaterial attach="material" color="red" />
+    </mesh>
+    <directionalLight position={[4.224, 1.912, 3.046]} />
+    <ambientLight />
+    <Sphere position={[8.817, 1.557, 5.818]} />
   </Canvas>
 )
 
@@ -28,7 +35,7 @@ function Model(props) {
         <meshBasicMaterial map={bakedTexture} map-flipY={false} />
       </mesh>
     </group>
-  );
+  )
 }
 
 extend({

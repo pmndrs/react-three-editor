@@ -3,7 +3,7 @@ import _debug from "debug"
 import type { Plugin, ResolvedConfig, ViteDevServer } from "vite"
 import { NodePath, transformFromAst, types as t } from "@babel/core"
 import gen from "@babel/generator"
-import { parse, print } from "./recast"
+import { parse, print } from "@vinxi/recast"
 import { createRPCServer } from "vite-dev-rpc"
 
 let justEdited = {}
@@ -44,7 +44,7 @@ function transform(data: any) {
   let source = fs.readFileSync(data.source.fileName).toString()
 
   const ast2 = parse(source, {
-    parser: require("recast/parsers/babel-ts"),
+    parser: require("@vinxi/recast/parsers/babel-ts"),
     jsx: true
   })
 

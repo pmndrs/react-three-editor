@@ -1,4 +1,5 @@
 import { Icon } from "@iconify/react"
+import "@stitches/react"
 import { styled } from "leva/plugin"
 
 export const StyledFolder = styled("div", {})

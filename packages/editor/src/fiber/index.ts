@@ -31,15 +31,15 @@ type Elements = {
   >
 }
 
-const memo = {} as unknown as Elements
+const memo = new WeakMap() as unknown as WeakMap<Elements, any>
 
 export function Editable({ component, ...props }) {
   const mainC = useMemo(() => {
-    if (!memo[component]) {
-      memo[component] = createEditable(component)
+    if (!memo.get(component)) {
+      memo.set(component, createEditable(component))
     }
-    return memo[component]
-  }, [memo, component])
+    return memo.get(component)
+  }, [component])
   const isEditor = useContext(EditorContext)
   if (isEditor) {
     return React.createElement(mainC, props)
@@ -123,6 +123,9 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
         return () => {
           useEditorStore?.setState((el) => {
             // Do Cleanup
+            let e = {
+              ...el.elements
+            }
             // let e = {
             //   ...el.elements
             //   // [parent]: {
@@ -138,8 +141,8 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
             //     children: e[parentId]?.children.filter((c) => c !== id)
             //   }
             // }
-            // delete e[id]
-            // return { elements: e }
+            delete e[id]
+            return { elements: e }
           })
         }
       }, [parentId, id, editableElement])
@@ -279,7 +282,10 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
 }
 
 export const editable = new Proxy(memo, {
-  get: <K extends keyof JSX.IntrinsicElements>(target: Elements, key: K) => {
+  get: <K extends keyof JSX.IntrinsicElements>(
+    target: WeakMap<Elements, any>,
+    key: K
+  ) => {
     const value = target[key]
     if (value) {
       return value

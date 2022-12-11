@@ -8,7 +8,7 @@ import { levaStore } from "leva"
 export class EditableElement<P = {}> extends EventTarget {
   children: string[] = []
   props: any = {}
-  ref: any | null = null
+  ref: Object3D | null = null
   dirty: any = false
 
   store: StoreType | null = null
@@ -33,17 +33,9 @@ export class EditableElement<P = {}> extends EventTarget {
 
   get key() {
     if (this.source.moduleName === this.source.componentName) {
-      return `${this.source.componentName}:${
-        typeof this.type === "string"
-          ? this.type
-          : this.type.displayName || this.type.name
-      }:${this.source.lineNumber}:${this.source.columnNumber}`
+      return `${this.source.componentName}:${this.elementName}:${this.source.lineNumber}:${this.source.columnNumber}`
     }
-    return `${this.source.moduleName}:${this.source.componentName}:${
-      typeof this.type === "string"
-        ? this.type
-        : this.type.displayName || this.type.name
-    }:${this.source.lineNumber}:${this.source.columnNumber}`
+    return `${this.source.moduleName}:${this.source.componentName}:${this.elementName}:${this.source.lineNumber}:${this.source.columnNumber}`
   }
 
   get name() {

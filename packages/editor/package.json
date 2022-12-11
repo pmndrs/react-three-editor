@@ -6,7 +6,7 @@
     "url": "https://github.com/nksaraf"
   },
   "description": "",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "main": "dist/react-three-editor.cjs.js",
   "module": "dist/react-three-editor.esm.js",
   "preconstruct": {
@@ -46,13 +46,16 @@
     "@babel/generator": "^7.20.4",
     "@babel/helper-plugin-utils": "^7.20.2",
     "@iconify/react": "^4.0.1",
+    "@react-three/drei": "^9.46.4",
+    "@stitches/react": "^1.2.8",
     "@types/babel__generator": "^7.6.4",
+    "@vinxi/recast": "^0.21.5",
     "@vitejs/plugin-react": "^2.0.1",
     "debug": "^4.3.4",
     "fp-ts": "^2.12.3",
     "fs-extra": "^10.1.0",
+    "leva": "^0.9.34",
     "prettier": "^2.8.0",
-    "recast": "^0.21.5",
     "three-stdlib": "^2.13.0",
     "tunnel-rat": "^0.1.0",
     "vite-dev-rpc": "^0.1.0",
@@ -65,13 +68,11 @@
     "three": "0.147.0"
   },
   "devDependencies": {
-    "@react-three/drei": "^9.46.4",
     "@types/babel__core": "^7.1.20",
     "@types/babel__helper-plugin-utils": "^7.10.0",
     "@types/debug": "^4.1.7",
     "@types/fs-extra": "^9.0.13",
     "esbuild": "^0.15.15",
-    "leva": "^0.9.34",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "vite": "^3.0.7"

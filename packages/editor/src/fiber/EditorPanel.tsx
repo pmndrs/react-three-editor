@@ -23,18 +23,25 @@ import { editable } from "."
 export const SidebarTunnel = tunnel()
 
 export function EditorCamera() {
-  const props = useControls("editor", {
-    camera: folder({
-      enabled: true,
-      position: {
-        value: [-6.836465353768794, 3.1169378502902387, -2.747260436170274],
-        step: 0.1
-      },
-      fov: { value: 75, min: 1, max: 180 },
-      near: { value: 0.1, min: 0.1, max: 100 },
-      far: { value: 1000, min: 0.1, max: 10000 }
-    })
-  })
+  const props = useControls(
+    "editor",
+    {
+      camera: folder({
+        enabled: true,
+        position: {
+          value: [-6.836465353768794, 3.1169378502902387, -2.747260436170274],
+          step: 0.1
+        },
+        fov: { value: 75, min: 1, max: 180 },
+        near: { value: 0.1, min: 0.1, max: 100 },
+        far: { value: 1000, min: 0.1, max: 10000 }
+      })
+    },
+    {
+      collapsed: true,
+      order: 1000
+    }
+  )
 
   const camera = useThree((c) => c.camera)
 
@@ -49,6 +56,7 @@ export function EditorCamera() {
   useHelper(ref, CameraHelper)
 
   const controls = useThree((c) => c.controls)
+  const ref2 = React.useRef()
 
   useEffect(() => {
     controls?.addEventListener("change", (e) => {
@@ -68,7 +76,9 @@ export function EditorCamera() {
   return (
     <>
       {props.enabled && <PerspectiveCamera {...props} makeDefault />}
-      {!controls && <OrbitControls onChange={console.log} />}
+      {(!controls || ref2.current === controls) && (
+        <OrbitControls ref={ref2} onChange={console.log} makeDefault />
+      )}
       <editable.primitive
         name="Camera"
         object={ref.current || camera}
@@ -155,6 +165,7 @@ const sceneGraph = createPlugin({
           <EntityControl
             selected={false}
             entity={v.entity}
+            key={v.entity.id}
             collapsed={false}
             setCollapsed={() => {}}
             showChildren={true}

@@ -1,6 +1,6 @@
 import * as THREE from "three"
 import { memo, useState } from "react"
-import { useFrame, useThree } from "@react-three/fiber"
+import { applyProps, useFrame, useThree } from "@react-three/fiber"
 import {
   useControls,
   folder,
@@ -153,6 +153,33 @@ const getControls = (entity: EditableElement) => {
     })
   }
 
+  if (entity.ref?.isDirectionalLight) {
+    Object.assign(controls, {
+      color: {
+        value: entity.ref.color.getStyle(),
+        onChange(v) {
+          entity.ref.color.setStyle(v)
+          // entity.render()
+        }
+      },
+      intensity: {
+        value: entity.ref.intensity,
+        onChange(v, path, context) {
+          if (context.initial) {
+            return
+          }
+          console.log(entity.ref, v, path, context)
+          applyProps(entity.ref, {
+            memoized: entity.ref.__r3f.memoizedProps,
+            changes: [["intensity", v, false, []]]
+          })
+          // entity.set('intensity', v)
+          // entity.render()
+        }
+      }
+    })
+  }
+
   return controls
 }
 
@@ -279,6 +306,7 @@ export const entityPanel = createPlugin({
     return (
       <EntityControl
         entity={context.value.entity}
+        key={context.value.entity.id}
         collapsed={context.settings.collapsed}
         setCollapsed={setCollapsed}
         showChildren={context.settings.children}
@@ -320,7 +348,13 @@ export function EntityControl({
       title={
         <>
           <Icon
-            icon={entity.ref.isCamera ? "ph:video-camera-bold" : "ph:cube"}
+            icon={
+              entity.ref?.isCamera
+                ? "ph:video-camera-bold"
+                : entity.ref?.isLight
+                ? "ph:lightbulb-filament-bold"
+                : "ph:cube"
+            }
             onClick={(e) =>
               entity.useEditorStore.setState({
                 selected: entity
@@ -573,7 +607,13 @@ function EntityChild({ child }: { child: EditableElement }) {
       title={
         <>
           <Icon
-            icon={child.ref.isCamera ? "ph:video-camera-bold" : "ph:cube"}
+            icon={
+              child.ref?.isCamera
+                ? "ph:video-camera-bold"
+                : child.ref?.isLight
+                ? "ph:lightbulb-filament-bold"
+                : "ph:cube"
+            }
             onClick={(e) =>
               child.useEditorStore.setState({
                 selected: child
