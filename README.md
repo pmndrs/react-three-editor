@@ -44,7 +44,7 @@ You don't have to change anything in your scene, it will just work.
 ```jsx
 import { useRef } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Sphere } from '@react-three/drei'
+import { OrbitControls, Sphere, Sparkles } from '@react-three/drei'
 
 export const App = () => (
   <Canvas camera={{ fov: 45, position: [-4, 2, -4] }}>
