@@ -31,8 +31,6 @@ import { Chevron } from "./folder/Folder/Chevron"
 
 const client = createRPCClient("vinxi", import.meta.hot, {})
 
-window.leva = levaStore
-
 const getControls = (entity: EditableElement) => {
   let controls = {}
   if (entity.ref instanceof Object3D) {
@@ -443,27 +441,9 @@ function EntityStoreable({ entity }) {
   let entityStore = entity.store
   const [, set] = useControls(
     () => {
-      let name = entity.name
       let controls = getControls(entity)
       entity.controls = controls
       return {
-        // name: {
-        //   value: name,
-        //   onChange: (value) => {
-        //     entity.name = value
-        //   }
-        // },
-        // visible: {
-        //   type: LevaInputs.BOOLEAN,
-        //   value: entity.ref.visible,
-        //   label: "visible",
-        //   onChange: (value) => {
-        //     console.log(entity.ref)
-        //     // entity.setProp("visible", value)
-        //     entity.ref.visible = value
-        //   }
-        // },
-
         ...controls,
         save: button(
           (get) => {
@@ -471,19 +451,9 @@ function EntityStoreable({ entity }) {
             let diffs = [
               {
                 source: entity.source,
-                // value: Object.fromEntries(
-                //   Object.entries(props).filter(([key, value]) => entity.dirty[key])
-                // )
                 value: props
               }
             ]
-            // fetch("/__editor/write", {
-            //   method: "POST",
-            //   headers: {
-            //     "Content-Type": "application/json"
-            //   },
-            //   body: JSON.stringify(diffs)
-            // })
             client.save(diffs[0])
           },
           {
@@ -503,31 +473,24 @@ function EntityStoreable({ entity }) {
       let state = entity.store?.getData()
 
       let position = entity.position
-      let id = "transform.position"
-      let el = state[id]
-
-      let newState = {}
       let edit = false
-      if (!eq.array(position, el.value)) {
-        newState[id] = {
-          ...state[id],
-          disabled: true,
-          value: position
-        }
+      if (!eq.array(position, state["transform.position"].value)) {
+        state["transform.position"].disabled = true
+        state["transform.position"].value = position
         edit = true
       }
 
-      let rotation = entity.rotation
-      id = "transform.rotation"
-      el = state[id]
-      if (!eq.angles(rotation, el.value)) {
-        newState[id] = {
-          ...state[id],
-          disabled: true,
-          value: rotation
-        }
-        edit = true
-      }
+      // let rotation = entity.rotation
+      // id = "transform.rotation"
+      // el = state[id]
+      // if (!eq.angles(rotation, el.value)) {
+      //   newState[id] = {
+      //     ...state[id],
+      //     disabled: true,
+      //     value: rotation
+      //   }
+      //   edit = true
+      // }
 
       // let scale = entity.scale
       // id = entity.name + ".transform.scale"
@@ -544,10 +507,7 @@ function EntityStoreable({ entity }) {
       if (edit) {
         console.log("reading", position)
         entity.store?.useStore.setState({
-          data: {
-            ...state,
-            ...newState
-          }
+          data: state
         })
       }
     }

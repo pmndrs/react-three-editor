@@ -182,8 +182,7 @@ export default declare<State>((api) => {
                 attr.name.name === "rotation" ||
                 attr.name.name === "scale" ||
                 attr.name.name === "name")
-          ) &&
-          state.get("editorFiberImport")
+          )
         ) {
           node.attributes.push(
             t.jsxAttribute(

@@ -10,7 +10,7 @@
     "@react-spring/core": "^9.4.4",
     "@react-spring/three": "^9.4.4",
     "@react-three/drei": "^9.21.0",
-    "@react-three/editor": "workspace:^0.0.1",
+    "@react-three/editor": "workspace:*",
     "@react-three/fiber": "^8.8.9",
     "@use-gesture/react": "latest",
     "react": "^18.2.0",

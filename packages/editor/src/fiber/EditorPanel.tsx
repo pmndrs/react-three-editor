@@ -27,7 +27,7 @@ export function EditorCamera() {
     "editor",
     {
       camera: folder({
-        enabled: true,
+        enabled: false,
         position: {
           value: [-6.836465353768794, 3.1169378502902387, -2.747260436170274],
           step: 0.1
@@ -53,30 +53,37 @@ export function EditorCamera() {
     // console.log(camera)
   }, [])
 
-  useHelper(ref, CameraHelper)
+  // useHelper(ref, CameraHelper)
 
   const controls = useThree((c) => c.controls)
   const ref2 = React.useRef()
 
   useEffect(() => {
-    controls?.addEventListener("change", (e) => {
-      console.log(e.target.object.position)
-      levaStore.setValueAtPath(
-        "editor.camera.position",
-        e.target.object.position.toArray(),
-        false
-      )
-    })
+    function update(e) {
+      if (props.enabled) {
+        console.log(e.target.object.position)
+        levaStore.setValueAtPath(
+          "editor.camera.position",
+          e.target.object.position.toArray(),
+          false
+        )
+      }
+    }
+    controls?.addEventListener("change", update)
+
+    return () => {
+      controls?.removeEventListener("change", update)
+    }
 
     // levaStore.useStore.subscribe((s) => s.data["editor.camera.position"], {
 
     // })
-  }, [controls])
+  }, [controls, props.enabled])
 
   return (
     <>
       {props.enabled && <PerspectiveCamera {...props} makeDefault />}
-      {(!controls || ref2.current === controls) && (
+      {props.enabled && (!controls || ref2.current === controls) && (
         <OrbitControls ref={ref2} onChange={console.log} makeDefault />
       )}
       <editable.primitive

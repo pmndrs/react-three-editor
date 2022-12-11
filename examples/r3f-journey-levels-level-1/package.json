@@ -16,7 +16,7 @@
   "dependencies": {
     "@react-spring/three": "^9.3.2",
     "@react-three/drei": "^8.2.1",
-    "@react-three/editor": "workspace:^0.0.1",
+    "@react-three/editor": "workspace:*",
     "@react-three/fiber": "^8.9.1",
     "@types/three": "^0.135.0",
     "leva": "^0.9.34",
