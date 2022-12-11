@@ -47,6 +47,7 @@ import { OrbitControls, Sphere } from '@react-three/drei'
 
 export const App = () => (
   <Canvas camera={{ fov: 45, position: [-4, 2, -4] }}>
+    <Sparkles position={[1, 1, 1]} />
     <OrbitControls makeDefault />
     <mesh position={[6.948, -2.158, 0.465]}>
       <boxBufferGeometry attach="geometry" />
@@ -59,11 +60,11 @@ export const App = () => (
 )
 ```
 
+![Screenshot 2022-12-10 at 9 11 07 PM](https://user-images.githubusercontent.com/11255148/206888078-d062c942-07f8-4ce4-9bd6-023115e83146.png)
+
 By default, the editor will add some recongnized native elements, and React components that have transform-related props, eg. `position`, `rotation`, `scale` or a `name` prop. This way we can avoid the noise of having to show the whole React component tree (You have the devtools for that..).
 
-
-
-
+Please provide feedback about your experience. We are trying to learn what will be helpful.
 
 ### Development 
 
