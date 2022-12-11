@@ -38,6 +38,32 @@ npm run dev
 
 and open `localhost:5173` to play with your scene.
 
+You don't have to change anything in your scene, it will just work.
+
+```jsx
+import { useRef } from 'react'
+import { Canvas } from '@react-three/fiber'
+import { OrbitControls, Sphere } from '@react-three/drei'
+
+export const App = () => (
+  <Canvas camera={{ fov: 45, position: [-4, 2, -4] }}>
+    <OrbitControls makeDefault />
+    <mesh position={[6.948, -2.158, 0.465]}>
+      <boxBufferGeometry attach="geometry" />
+      <meshStandardMaterial attach="material" color="red" />
+    </mesh>
+    <directionalLight position={[4.224, 1.912, 3.046]} />
+    <ambientLight />
+    <Sphere position={[8.817, 1.557, 5.818]} />
+  </Canvas>
+)
+```
+
+By default, the editor will add some recongnized native elements, and React components that have transform-related props, eg. `position`, `rotation`, `scale` or a `name` prop. This way we can avoid the noise of having to show the whole React component tree (You have the devtools for that..).
+
+
+
+
 
 ### Development 
 
@@ -59,15 +85,4 @@ open another
 ```bash
 cd examples/[any example you want]
 pnpm run dev
-```
-
-later it will only require a plugin in your build chain
-
-```jsx
-import { defineConfig } from "vite"
-import { r3f } from "@react-three/editor/vite"
-
-export default defineConfig({
-  plugins: [r3f()],
-})
 ```
