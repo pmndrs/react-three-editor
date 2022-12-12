@@ -385,9 +385,9 @@ importers:
       prettier: ^2.8.0
       react: ^18.2.0
       react-dom: ^18.2.0
-      three-stdlib: ^2.20.4
       react-hotkeys-hook: ^4.0.6
       recast: ^0.21.5
+      three-stdlib: ^2.20.4
       tunnel-rat: ^0.1.0
       vite: ^3.0.7
       vite-dev-rpc: ^0.1.0
@@ -407,9 +407,9 @@ importers:
       fs-extra: 10.1.0
       leva: 0.9.34_biqbaboplfbrettd7655fr4n2y
       prettier: 2.8.0
-      three-stdlib: 2.20.4
       react-hotkeys-hook: 4.0.6_biqbaboplfbrettd7655fr4n2y
       recast: 0.21.5
+      three-stdlib: 2.20.4
       tunnel-rat: 0.1.0_react@18.2.0
       vite-dev-rpc: 0.1.0_vite@3.2.5
       zustand: 3.7.2_react@18.2.0
@@ -2407,15 +2407,6 @@ packages:
     dev: true
     optional: true
 
-  /@esbuild/android-x64/0.16.4:
-    resolution: {integrity: sha512-MW+B2O++BkcOfMWmuHXB15/l1i7wXhJFqbJhp82IBOais8RBEQv2vQz/jHrDEHaY2X0QY7Wfw86SBL2PbVOr0g==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [android]
-    requiresBuild: true
-    dev: true
-    optional: true
-
   /@esbuild/darwin-arm64/0.16.4:
     resolution: {integrity: sha512-a28X1O//aOfxwJVZVs7ZfM8Tyih2Za4nKJrBwW5Wm4yKsnwBy9aiS/xwpxiiTRttw3EaTg4Srerhcm6z0bu9Wg==}
     engines: {node: '>=12'}
@@ -2448,15 +2439,6 @@ packages:
     engines: {node: '>=12'}
     cpu: [x64]
     os: [freebsd]
-    requiresBuild: true
-    dev: true
-    optional: true
-
-  /@esbuild/linux-arm/0.16.4:
-    resolution: {integrity: sha512-A47ZmtpIPyERxkSvIv+zLd6kNIOtJH03XA0Hy7jaceRDdQaQVGSDt4mZqpWqJYgDk9rg96aglbF6kCRvPGDSUA==}
-    engines: {node: '>=12'}
-    cpu: [arm]
-    os: [linux]
     requiresBuild: true
     dev: true
     optional: true
@@ -9514,12 +9496,10 @@ packages:
     optionalDependencies:
       '@esbuild/android-arm': 0.16.4
       '@esbuild/android-arm64': 0.16.4
-      '@esbuild/android-x64': 0.16.4
       '@esbuild/darwin-arm64': 0.16.4
       '@esbuild/darwin-x64': 0.16.4
       '@esbuild/freebsd-arm64': 0.16.4
       '@esbuild/freebsd-x64': 0.16.4
-      '@esbuild/linux-arm': 0.16.4
       '@esbuild/linux-arm64': 0.16.4
       '@esbuild/linux-ia32': 0.16.4
       '@esbuild/linux-loong64': 0.16.4
@@ -18627,6 +18607,16 @@ packages:
       picomatch: 2.3.1
     dev: false
 
+  /recast/0.21.5:
+    resolution: {integrity: sha512-hjMmLaUXAm1hIuTqOdeYObMslq/q+Xff6QE3Y2P+uoHAg2nmVlLBps2hzh1UJDdMtDTMXOFewK6ky51JQIeECg==}
+    engines: {node: '>= 4'}
+    dependencies:
+      ast-types: 0.15.2
+      esprima: 4.0.1
+      source-map: 0.6.1
+      tslib: 2.4.1
+    dev: false
+
   /recursive-readdir/2.2.2:
     resolution: {integrity: sha512-nRCcW9Sj7NuZwa2XvH9co8NPeXUBhZP7CRKJtU+cS6PW9FpCIFoI5ib0NT1ZrbNuPoRy0ylyCaUL8Gih4LSyFg==}
     engines: {node: '>=0.10.0'}
@@ -19042,8 +19032,8 @@ packages:
     optionalDependencies:
       fsevents: 2.3.2
 
-  /rollup/3.7.2:
-    resolution: {integrity: sha512-orqIX5zkHyHKVsIBl8J5a2tnVikOAMte0DgOLViyW6McYuj45FG+cQPrXILhaifBSmy0D0hKbHg2RbgzFJcwTg==}
+  /rollup/3.7.3:
+    resolution: {integrity: sha512-7e68MQbAWCX6mI4/0lG1WHd+NdNAlVamg0Zkd+8LZ/oXojligdGnCNyHlzXqXCZObyjs5FRc3AH0b17iJESGIQ==}
     engines: {node: '>=14.18.0', npm: '>=8.0.0'}
     hasBin: true
     optionalDependencies:
@@ -21520,7 +21510,7 @@ packages:
       esbuild: 0.16.4
       postcss: 8.4.19
       resolve: 1.22.1
-      rollup: 3.7.2
+      rollup: 3.7.3
     optionalDependencies:
       fsevents: 2.3.2
     dev: true
