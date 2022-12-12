@@ -139,7 +139,7 @@ const sceneGraph = createPlugin({
     return { settings: { items }, value: {} }
   },
   component() {
-    const context = useInputContext()
+    const context = useInputContext<{ settings: { items: any[] } }>()
     return (
       <div style={{ maxHeight: 280, overflow: "scroll" }}>
         {Object.values(context.settings.items).map((v) => (

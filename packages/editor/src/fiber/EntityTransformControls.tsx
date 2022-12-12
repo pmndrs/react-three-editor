@@ -1,12 +1,12 @@
 import { TransformControls } from "@react-three/drei"
+import { mergeRefs } from "leva/plugin"
 import React, { FC, useCallback, useEffect, useRef } from "react"
+import { useHotkeys } from 'react-hotkeys-hook'
 import { Euler, Event, MathUtils, Vector3 } from "three"
 import { TransformControls as TransformControlsImpl } from "three-stdlib"
-import { ChangeSource, EditableElement } from "./editable-element"
-import { useHotkeys } from 'react-hotkeys-hook'
-import { useCommandHistory } from "./useCommandHistory"
 import { SetTransformFromControls } from "./commands"
-import { mergeRefs } from "leva/plugin"
+import { ChangeSource, EditableElement } from "./editable-element"
+import { useCommandHistory } from "./useCommandHistory"
 
 export type EditorTransformControlsProps = {
   entity: EditableElement

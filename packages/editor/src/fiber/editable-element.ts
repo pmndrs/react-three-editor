@@ -1,4 +1,3 @@
-import { levaStore } from "leva"
 import { StoreType } from "leva/dist/declarations/src/types"
 import { Group, MathUtils, Mesh, Object3D, PerspectiveCamera } from "three"
 import { TransformControls } from "three-stdlib"
