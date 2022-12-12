@@ -23,6 +23,7 @@ const transformElements = [
   "mesh",
   "group",
   "directionalLight",
+  "meshStandardMaterial",
   "pointLight",
   "spotLight",
   "primitive",
@@ -158,6 +159,21 @@ export default declare<State>((api) => {
         let elementName =
           node.name.type === "JSXIdentifier" ? node.name.name : null
 
+        function isEditable(node) {
+          return (
+            node.attributes.some(
+              (attr) =>
+                t.isJSXAttribute(attr) &&
+                (attr.name.name === "position" ||
+                  attr.name.name === "rotation" ||
+                  attr.name.name === "scale" ||
+                  attr.name.name === "name")
+            ) ||
+            (t.isJSXIdentifier(node.name) &&
+              ["OrbitControls"].includes(node.name.name))
+          )
+        }
+
         if (
           t.isJSXIdentifier(node.name) &&
           node.name.name.match(/^[a-z]/) &&
@@ -175,14 +191,7 @@ export default declare<State>((api) => {
           node.name.name.match(/^[A-Z]/) &&
           node.name.name !== "Editable" &&
           // has an attribute called 'position' or 'rotation' or 'scale'
-          node.attributes.some(
-            (attr) =>
-              t.isJSXAttribute(attr) &&
-              (attr.name.name === "position" ||
-                attr.name.name === "rotation" ||
-                attr.name.name === "scale" ||
-                attr.name.name === "name")
-          )
+          isEditable(node)
         ) {
           node.attributes.push(
             t.jsxAttribute(
@@ -196,14 +205,7 @@ export default declare<State>((api) => {
           t.isJSXIdentifier(node.name.object) &&
           node.name.object.name !== "editable" &&
           // has an attribute called 'position' or 'rotation' or 'scale'
-          node.attributes.some(
-            (attr) =>
-              t.isJSXAttribute(attr) &&
-              (attr.name.name === "position" ||
-                attr.name.name === "rotation" ||
-                attr.name.name === "scale" ||
-                attr.name.name === "name")
-          )
+          isEditable(node)
         ) {
           node.attributes.push(
             t.jsxAttribute(

@@ -9,8 +9,11 @@ const color = '#ff8888'
 
 const Item = ({ children }: { children: JSX.Element }) => (
     <Box padding={padding} centerAnchor>
-        <mesh>
-            <meshStandardMaterial color={color} wireframe />
+        <mesh position={[0.535, 0, 0]}>
+            <meshStandardMaterial
+                color={"rgb(167, 94, 94)"}
+                wireframe={false}
+            />
             {children}
         </mesh>
     </Box>
@@ -27,16 +30,19 @@ const App = () => {
         <>
             <directionalLight
                 ref={directionalLight}
-                intensity={0.5}
-                position={[-3, 0, 5]}
+                intensity={1.8000000000000005}
+                position={[-1.365, 0, 5]}
+                color={"rgb(255, 255, 255)"}
             />
             <ambientLight intensity={0.5} />
             <Flex
+                name="Geometries"
                 width={6}
                 height={6}
                 centerAnchor
                 flexDirection="row"
                 flexWrap="wrap"
+                position={[-1.52, 1.249, 0]}
             >
                 <Item>
                     <sphereBufferGeometry args={[0.6]} />
@@ -67,7 +73,7 @@ const App = () => {
                 </Item>
             </Flex>
         </>
-    )
+    );
 }
 
 export default () => (
@@ -78,7 +84,7 @@ export default () => (
             gl={{ outputEncoding: THREE.sRGBEncoding }}
         >
             <App />
-            <OrbitControls />
+            <OrbitControls makeDefault />
         </Canvas>
     </>
 )

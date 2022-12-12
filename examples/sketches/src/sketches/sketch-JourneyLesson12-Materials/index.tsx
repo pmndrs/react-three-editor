@@ -146,12 +146,12 @@ const Lights = () => {
         <>
             <directionalLight
                 ref={directionalLight}
-                intensity={0.3}
+                intensity={2.3999999999999977}
                 position={[-3, 0, 5]}
             />
             <ambientLight intensity={0.5} />
         </>
-    )
+    );
 }
 
 export default () => {
@@ -172,7 +172,7 @@ export default () => {
             <h1>Journey 12 - Materials</h1>
             <Canvas camera={{ position: [0, 0, 10], fov: 40 }}>
                 <Boxes position={[-2.5, 0, 0]} />
-                <Door position={[2.5, -0.5, 0]} />
+                <Door position={[-0.7, -0.5, 0]} />
 
                 <Lights />
 
@@ -183,5 +183,5 @@ export default () => {
                 <OrbitControls target={[0, -0.5, 0]} />
             </Canvas>
         </>
-    )
+    );
 }

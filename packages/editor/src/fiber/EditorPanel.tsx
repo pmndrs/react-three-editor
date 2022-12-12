@@ -7,18 +7,18 @@ import {
   useHelper
 } from "@react-three/drei"
 import { folder, Leva, levaStore, useControls } from "leva"
-import React, { useEffect } from "react"
+import React, { useEffect, useImperativeHandle } from "react"
 import * as THREE from "three"
 import tunnel from "tunnel-rat"
 import { useEditor } from "./useEditor"
 import { EntityControl, EntityEditor, entityPanel } from "./EntityEditor"
 import { EntityTransformControls } from "./EntityTransformControls"
-import { In } from "./components"
 import { createPlugin, useInputContext } from "leva/plugin"
 import { useFrame, useThree } from "@react-three/fiber"
 import { CameraHelper } from "three"
 import { eq } from "./eq"
 import { editable } from "."
+import { In } from "./components/Tunnels"
 
 export const SidebarTunnel = tunnel()
 
@@ -46,6 +46,7 @@ export function EditorCamera() {
   const camera = useThree((c) => c.camera)
 
   const ref = React.useRef()
+
   useEffect(() => {
     if (!ref.current) {
       ref.current = camera
@@ -178,7 +179,7 @@ const sceneGraph = createPlugin<
             selected={false}
             entity={v}
             key={v.id}
-            collapsed={true}
+            collapsed={false}
             setCollapsed={() => {}}
             showChildren={true}
             dirty={false}
@@ -196,7 +197,7 @@ function SceneGraph() {
   useControls(() => {
     const items = {}
     p.forEach((v) => {
-      if (v.parentId == null) items[v.name] = v
+      if (v.parentId == null) items[v.id] = v
     })
     return {
       scene: folder(
@@ -216,7 +217,6 @@ function SceneGraph() {
 
 function SelectedTransformControls() {
   const p = useEditor((state) => state.selected)
-  console.log(p)
   return p && p.ref instanceof THREE.Object3D ? (
     <EntityTransformControls key={p.id} entity={p} />
   ) : null
@@ -225,9 +225,8 @@ function SelectedTransformControls() {
 function SelectedEntityControls() {
   const p = useEditor((state) => state.selected)
   console.log(p)
-
   return p ? (
-    <React.Fragment key={p.name}>
+    <React.Fragment key={p.id}>
       <EntityEditor entity={p} />
       <EntityControls entity={p} />
     </React.Fragment>
@@ -238,7 +237,7 @@ function EntityControls({ entity }) {
   useControls(
     "entity",
     {
-      [entity.name]: entityPanel({
+      [entity.id]: entityPanel({
         entity,
         panel: true,
         collapsed: false,
@@ -247,7 +246,8 @@ function EntityControls({ entity }) {
     },
     {
       order: -1
-    }
+    },
+    [entity]
   )
   return null
 }

@@ -85,6 +85,10 @@ function transform(data: any) {
                         t.numericLiteral(value[2])
                       ])
                     )
+                  : typeof value === "string"
+                  ? t.jsxExpressionContainer(t.stringLiteral(value))
+                  : typeof value === "number"
+                  ? t.jsxExpressionContainer(t.numericLiteral(value))
                   : t.jsxExpressionContainer(t.booleanLiteral(value))
 
                 if (attr) {

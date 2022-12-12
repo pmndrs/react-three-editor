@@ -1,6 +1,6 @@
 import { OrbitControls } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
-import { useControls } from 'leva'
+import { useControls } from '@react-three/editor/fiber'
 import { useRef } from 'react'
 import * as THREE from 'three'
 import { Canvas } from '../Canvas'
@@ -146,7 +146,7 @@ void main()
 
 `
 
-const App = () => {
+const Water = (props) => {
     const uTime = useRef({ value: 0 })
 
     const {
@@ -203,7 +203,7 @@ const App = () => {
 
     return (
         <mesh
-            rotation-x={-Math.PI * 0.5}
+            rotation={[-Math.PI * 0.5, 0, 0]}
             key={[
                 uWavesElevation,
                 uWavesFrequency,
@@ -217,6 +217,7 @@ const App = () => {
                 uSmallWavesSpeed,
                 uSmallIterations,
             ].join('-')}
+            {...props}
         >
             <shaderMaterial
                 vertexShader={vertexShader}
@@ -245,12 +246,18 @@ const App = () => {
     )
 }
 
-export default () => (
-    <>
-        <h1>Journey 28 - Raging Sea</h1>
-        <Canvas camera={{ position: [3, 3, 3] }}>
-            <App />
-            <OrbitControls />
-        </Canvas>
-    </>
-)
+export default function App() {
+    return (
+        <>
+            <h1>Journey 28 - Raging Sea</h1>
+            <Canvas camera={{ position: [3, 3, 3] }}>
+                <Water
+                    position={[2.959, 1.124, 0.058]}
+                    rotation={[-2.051, -0.281, 0.32]}
+                    scale={[0.9, 0.9, 0.9]}
+                />
+                <OrbitControls makeDefault />
+            </Canvas>
+        </>
+    );
+}

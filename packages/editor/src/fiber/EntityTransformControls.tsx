@@ -8,6 +8,8 @@ import { createPortal } from "@react-three/fiber"
 import { ChangeSource, EditableElement } from "./editable-element"
 import { mergeRefs } from "leva/plugin"
 
+
+
 export function EntityTransformControls({
   entity
 }: {
@@ -101,20 +103,6 @@ export function EntityTransformControls({
     }
   })
   return (
-    // <PivotControls
-    //   ref={(r) => {
-    //     ref.current = r
-    //     entity.transformControls$ = r
-    //   }}
-    //   offset={entity.ref.position}
-    //   // position={entity.ref.position}
-    //   // onChange={(c) => {
-    //   //   if (c?.type === "change" && c.target.object && entity.ref) {
-    //   //     entity.setTransformFromControls(c.target.object)
-    //   //   }
-    //   // }}
-    // ></PivotControls>
-    // createPortal(
     <TransformControls
       object={entity.ref!}
       ref={mergeRefs([
@@ -138,6 +126,11 @@ export function EntityTransformControls({
               MathUtils.radToDeg(c.target.object.rotation.y),
               MathUtils.radToDeg(c.target.object.rotation.z)
             ],
+            ChangeSource.TransformControls
+          )
+          entity.setProp(
+            "scale",
+            c.target.object.scale.toArray(),
             ChangeSource.TransformControls
           )
         }

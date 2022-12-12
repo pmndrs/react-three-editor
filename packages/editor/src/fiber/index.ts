@@ -4,7 +4,7 @@ import {
   RenderCallback,
   useFrame as useFiberFrame
 } from "@react-three/fiber"
-import { folder, useControls } from "leva"
+import { folder, useControls, useCreateStore } from "leva"
 import { mergeRefs } from "leva/plugin"
 import React, {
   ComponentProps,
@@ -17,11 +17,12 @@ import React, {
   useMemo
 } from "react"
 import { Object3D } from "three"
-import { Outs } from "./components"
 import { EditorContext, SceneElementContext } from "./contexts"
 import { EditorCamera, EditorPanel } from "./EditorPanel"
 import { createEditorStore } from "./stores"
 import { EditableElement } from "./editable-element"
+import { Outs } from "./components/Tunnels"
+import { Instance } from "@react-three/fiber/dist/declarations/src/core/renderer"
 
 type Elements = {
   [K in keyof JSX.IntrinsicElements]: React.FC<
@@ -31,7 +32,7 @@ type Elements = {
   >
 }
 
-const memo = new WeakMap() as unknown as WeakMap<Elements, any>
+const memo = new WeakMap() as unknown as WeakMap<Elements, any> & Elements
 
 export const Editable = forwardRef(({ component, ...props }, ref) => {
   const mainC = useMemo(() => {
@@ -61,36 +62,39 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
     (componentType as any).$$typeof === Symbol.for("react.forward_ref")
 
   if (hasRef) {
-    return forwardRef<
-      JSX.IntrinsicElements[K]["ref"],
-      JSX.IntrinsicElements[K]
-    >(function Editable(
-      props: JSX.IntrinsicElements[K]["ref"] & { _source?: any },
-      forwardRef
-    ) {
+    return forwardRef(function Editable(props: any, forwardRef) {
       const { children, ...rest } = props
       const useEditorStore = React.useContext(EditorContext)
-      const parentId = React.useContext(SceneElementContext)
+      const parent = React.useContext(SceneElementContext)
       const ref = React.useRef()
       const id = useId()
 
       let source = props._source
       const editableElement = useMemo(() => {
-        return new EditableElement<P>(id, source, componentType)
+        return new EditableElement(id, source, componentType)
       }, [id])
 
+      const store = useCreateStore()
+
       editableElement.id = id
-      editableElement.parentId = parentId
+      editableElement.parentId = parent?.id
       editableElement.type = componentType
       editableElement.source = props._source
+      editableElement.currentProps = props
       editableElement.props = null
+      editableElement.store = store
       editableElement.useEditorStore = useEditorStore!
 
       useLayoutEffect(() => {
         editableElement.ref = ref.current
+        if (editableElement.ref.__r3f) {
+          editableElement.ref.__r3f.editable = editableElement
+        }
       }, [editableElement, ref])
 
       useEffect(() => {})
+
+      let parentId = parent?.id
 
       useLayoutEffect(() => {
         useEditorStore?.setState(({ elements }) => {
@@ -150,7 +154,7 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
       console.log("render", id, rest, componentType, forwardRef)
 
       return React.createElement(SceneElementContext.Provider, {
-        value: id,
+        value: editableElement,
         children: React.createElement(
           componentType as any,
           {
@@ -162,47 +166,34 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
       })
     })
   } else {
-    return function Editable(props) {
+    return function Editable(props: any) {
       const { children, ...rest } = props
       const useEditorStore = React.useContext(EditorContext)
-      const parentId = React.useContext(SceneElementContext)
+      const parent = React.useContext(SceneElementContext)
       const id = useId()
       const render = useRerender()
 
       const editableElement = useMemo(() => {
-        return new EditableElement<P>(id, props._source, componentType)
+        return new EditableElement(id, props._source, componentType)
       }, [id])
+      const store = useCreateStore()
 
       editableElement.id = id
-      editableElement.parentId = parentId
+      editableElement.parentId = parent?.id
       editableElement.type = componentType as any
-      ;(editableElement as any).render = render
-      ;(editableElement as any).currentProps = props
+      editableElement.render = render
+      editableElement.currentProps = props
+      editableElement.store = store
       editableElement.source = props._source
       editableElement.useEditorStore = useEditorStore!
 
       const memo = editableElement
-      // useMemo(
-      //   () => ({
-      //     id,
-      //     children: [],
-      //     parent: parentId,
-      //     type: key,
-      //     props: {},
-      //     render
-      //   }),
-      //   [parentId, key, render]
-      // )
-
-      useEffect(() => {
-        memo.source = props._source
-      }, [props._source, memo])
-
       const item = useMemo(() => new Object3D(), [])
+
       useEffect(() => {
         if (props.position || props.rotation || props.scale) {
           memo.ref = item
-          applyProps(item, {
+          applyProps(item as unknown as Instance, {
             position: props.position,
             rotation: props.rotation,
             scale: props.scale
@@ -210,6 +201,7 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
         }
       }, [item])
 
+      let parentId = parent?.id
       useEffect(() => {
         if (parentId) {
           useEditorStore?.setState((el) => ({
@@ -262,11 +254,11 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
             })
           }
         }
-      }, [parentId, memo])
+      }, [parent?.id, memo])
       return React.createElement(
         SceneElementContext.Provider,
         {
-          value: id
+          value: editableElement
         },
         React.createElement("primitive", { object: item }),
         React.createElement(
@@ -283,10 +275,7 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
 }
 
 export const editable = new Proxy(memo, {
-  get: <K extends keyof JSX.IntrinsicElements>(
-    target: WeakMap<Elements, any>,
-    key: K
-  ) => {
+  get: (target: any, key: any) => {
     const value = target[key]
     if (value) {
       return value
@@ -343,3 +332,12 @@ export function useFrame(fn: RenderCallback, ...args: any) {
 
 export { createPortal, useThree, extend } from "@react-three/fiber"
 export { EditorPanel, SidebarTunnel } from "./EditorPanel"
+
+function useEditorControls(...args) {
+  const editor = React.useContext(SceneElementContext)
+  return useControls(...args, {
+    store: editor?.store
+  })
+}
+
+export { useEditorControls as useControls }
