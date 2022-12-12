@@ -121,18 +121,13 @@ const Door = (props: { position: Vector3 }) => {
     return (
         <>
             <Float floatIntensity={5} position={props.position}>
-                <mesh>
+                <mesh rotation={[0.297, 0.75, 0]} scale={[2.2, 2.4, 1]}>
                     <planeGeometry ref={planeGeometryRef} args={[4, 4, 100, 100]} />
-                    <meshStandardMaterial
-                        {...doorTextureProps}
-                        transparent
-                        aoMapIntensity={1.2}
-                        displacementScale={0.2}
-                    />
+                    <meshStandardMaterial {...doorTextureProps} transparent aoMapIntensity={1.2} displacementScale={0.2} wireframe={true} />
                 </mesh>
             </Float>
         </>
-    )
+    );
 }
 
 const Lights = () => {
@@ -172,7 +167,7 @@ export default () => {
             <h1>Journey 12 - Materials</h1>
             <Canvas camera={{ position: [0, 0, 10], fov: 40 }}>
                 <Boxes position={[-2.5, 0, 0]} />
-                <Door position={[-0.7, -0.5, 0]} />
+                <Door position={[-3.598, -1.187, -0.552]} />
 
                 <Lights />
 

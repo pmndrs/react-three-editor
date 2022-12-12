@@ -1,5 +1,5 @@
 import create from "zustand"
-import { EditableElement } from "../editable-element"
+import { EditableElement } from "./EditableElement"
 
 export type EditorStoreStateType = {
   selected: null | EditableElement

@@ -21,7 +21,7 @@ export function Chevron({
   toggled,
   hidden,
   ...props
-}: React.SVGProps<SVGSVGElement> & { toggled?: boolean }) {
+}: React.SVGProps<SVGSVGElement> & { toggled?: boolean; hidden?: boolean }) {
   return (
     <Svg
       width="9"

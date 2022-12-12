@@ -21,7 +21,7 @@ const App = () => {
                     map-rotation={Math.PI / 4}
                 />
             </mesh>
-            <mesh position={[2.5, 0, 0]}>
+            <mesh position={[6.899, 0, 0]}>
                 <boxBufferGeometry args={[3, 3, 3]} />
                 <meshBasicMaterial
                     map={minecraftTexture}
@@ -29,7 +29,7 @@ const App = () => {
                 />
             </mesh>
         </>
-    )
+    );
 }
 
 export default () => (

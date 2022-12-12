@@ -385,6 +385,7 @@ importers:
       prettier: ^2.8.0
       react: ^18.2.0
       react-dom: ^18.2.0
+      react-dropzone: ^14.2.3
       three-stdlib: ^2.20.4
       tunnel-rat: ^0.1.0
       vite: ^3.0.7
@@ -417,6 +418,7 @@ importers:
       esbuild: 0.15.18
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+      react-dropzone: 14.2.3_react@18.2.0
       vite: 3.2.5
 
 packages:
@@ -10673,6 +10675,13 @@ packages:
     dependencies:
       tslib: 2.4.1
 
+  /file-selector/0.6.0:
+    resolution: {integrity: sha512-QlZ5yJC0VxHxQQsQhXvBaC7VRJ2uaxTf+Tfpu4Z/OcVQJVpZO+DGU0rkoVW5ce2SccxugvpBJoMvUs59iILYdw==}
+    engines: {node: '>= 12'}
+    dependencies:
+      tslib: 2.4.1
+    dev: true
+
   /file-type/10.11.0:
     resolution: {integrity: sha512-uzk64HRpUZyTGZtVuvrjP0FYxzQrBf4rojot6J65YMEbwBLB0CWm0CLojVpwpmFmxcE/lkvYICgfcGozbBq6rw==}
     engines: {node: '>=6'}
@@ -18215,6 +18224,18 @@ packages:
       file-selector: 0.5.0
       prop-types: 15.8.1
       react: 18.2.0
+
+  /react-dropzone/14.2.3_react@18.2.0:
+    resolution: {integrity: sha512-O3om8I+PkFKbxCukfIR3QAGftYXDZfOE2N1mr/7qebQJHs7U+/RSL/9xomJNpRg9kM5h9soQSdf0Gc7OHF5Fug==}
+    engines: {node: '>= 10.13'}
+    peerDependencies:
+      react: '>= 16.8 || 18.0.0'
+    dependencies:
+      attr-accept: 2.2.2
+      file-selector: 0.6.0
+      prop-types: 15.8.1
+      react: 18.2.0
+    dev: true
 
   /react-error-overlay/6.0.11:
     resolution: {integrity: sha512-/6UZ2qgEyH2aqzYZgQPxEnz33NJ2gNsnHA2o5+o4wW9bLM/JYQitNP9xPhsXwC08hMMovfGe/8retsdDsczPRg==}

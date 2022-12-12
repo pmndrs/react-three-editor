@@ -1,33 +1,18 @@
-import { PivotControls, TransformControls } from "@react-three/drei"
-import { MathUtils, Object3D, Event } from "three"
+import { TransformControls } from "@react-three/drei"
+import { MathUtils, Event } from "three"
 import { TransformControls as TransformControlsImpl } from "three-stdlib"
 import { useEffect, useRef } from "react"
 import React from "react"
-import { levaStore } from "leva"
-import { createPortal } from "@react-three/fiber"
-import { ChangeSource, EditableElement } from "./editable-element"
+import { EditableElement } from "../editable/EditableElement"
 import { mergeRefs } from "leva/plugin"
-
-
-
-export function EntityTransformControls({
-  entity
+import { eq } from "../editable/eq"
+export function ElementTransformControls({
+  element
 }: {
-  entity: EditableElement
+  element: EditableElement
 }): JSX.Element {
   let ref = useRef<TransformControlsImpl>(null)
   useEffect(() => {
-    //   if (ref.current) {
-    //     ref.current.layers.mask = bitmask(Layers.Default, 1)
-    //     // @ts-expect-error
-    //     ref.current.raycaster.layers.mask = bitmask(Layers.Default, 1)
-    //     // @ts-expect-error
-    //     ref.current.camera.layers.mask = bitmask(Layers.Default, 1)
-    //     ref.current.traverse((o) => {
-    //       o.layers.mask = bitmask(Layers.Default, 1)
-    //     })
-    //   }
-
     function keyDown(event: KeyboardEvent) {
       let control = ref.current
       if (!control) return
@@ -104,34 +89,54 @@ export function EntityTransformControls({
   })
   return (
     <TransformControls
-      object={entity.ref!}
+      object={element.ref!}
       ref={mergeRefs([
         ref,
         (r: TransformControlsImpl) => {
-          entity.transformControls$ = r
+          element.transformControls$ = r
         }
       ])}
-      key={entity.id}
+      key={element.id}
       onChange={(c: Event | undefined) => {
-        if (c?.type === "change" && entity.ref && c.target?.object) {
-          entity.setProp(
+        if (c?.type === "change" && element.ref && c.target?.object) {
+          let position = c.target.object.position.toArray()
+          if (eq.array(element.store?.get("transform.position"), position))
+            return
+          // when we get an update from the transform controls, we know that the `ref` and the
+          // transformControls are correctly set. We need to set the leva controls, mark it dirty,
+          // and set the props if needed
+          element.store?.setValueAtPath("transform.position", position, false)
+          element.dirtyProp(
             "position",
-            c.target.object.position.toArray(),
-            ChangeSource.TransformControls
+            position?.map((v) => Number(v.toFixed(3)))
           )
-          entity.setProp(
+
+          let rotation = [
+            MathUtils.radToDeg(c.target.object.rotation.x),
+            MathUtils.radToDeg(c.target.object.rotation.y),
+            MathUtils.radToDeg(c.target.object.rotation.z)
+          ]
+          if (eq.angles(element.store?.get("transform.rotation"), rotation))
+            return
+          // when we get an update from the transform controls, we know that the `ref` and the
+          // transformControls are correctly set. We need to set the leva controls, mark it dirty,
+          // and set the props if needed
+          let radians = rotation.map((v) => MathUtils.degToRad(v))
+          element.store?.setValueAtPath("transform.rotation", rotation, false)
+          element.dirtyProp(
             "rotation",
-            [
-              MathUtils.radToDeg(c.target.object.rotation.x),
-              MathUtils.radToDeg(c.target.object.rotation.y),
-              MathUtils.radToDeg(c.target.object.rotation.z)
-            ],
-            ChangeSource.TransformControls
+            radians?.map((v) => Number(v.toFixed(3)))
           )
-          entity.setProp(
+
+          let scale = c.target.object.scale.toArray()
+          if (eq.array(element.store?.get("transform.scale"), scale)) return
+          // when we get an update from the transform controls, we know that the `ref` and the
+          // transformControls are correctly set. We need to set the leva controls, mark it dirty,
+          // and set the props if needed
+          element.store?.setValueAtPath("transform.scale", scale, false)
+          element.dirtyProp(
             "scale",
-            c.target.object.scale.toArray(),
-            ChangeSource.TransformControls
+            scale?.map((v) => Number(v.toFixed(3)))
           )
         }
       }}

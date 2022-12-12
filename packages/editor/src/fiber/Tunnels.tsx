@@ -1,10 +1,14 @@
-import React, { FC, PropsWithChildren, useId } from "react"
+import React, { PropsWithChildren, useId } from "react"
 import tunnel from "tunnel-rat"
-
 import create from "zustand"
-import { Tunnel } from "../types"
 
-export type TunnelsStateType = Record<string, Tunnel>
+export type TunnelsStateType = Record<
+  string,
+  {
+    In: ({ children }: any) => null
+    Out: () => JSX.Element
+  }
+>
 
 export const useTunnels = create<TunnelsStateType>(() => ({}))
 
