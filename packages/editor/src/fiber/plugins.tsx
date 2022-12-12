@@ -12,19 +12,19 @@ export const transform = {
         {
           position: prop.vector3d({
             element: entity,
-            path: ["position"],
+            path: ["ref", "position"],
             lock: true,
             step: 0.1
           }),
           rotation: prop.euler({
             lock: true,
             step: 1,
-            path: ["rotation"],
+            path: ["ref", "rotation"],
             element: entity
           }),
           scale: prop.vector3d({
             element: entity,
-            path: ["scale"],
+            path: ["ref", "scale"],
             lock: true,
             step: 0.1
           })
@@ -44,15 +44,15 @@ export const meshMaterial = {
       material: folder({
         color: prop.color({
           element: entity,
-          path: ["material", "color"]
+          path: ["ref", "material", "color"]
         }),
         wireframe: prop.bool({
           element: entity,
-          path: ["material", "wireframe"]
+          path: ["ref", "material", "wireframe"]
         }),
         diffuseMap: prop.texture({
           element: entity,
-          path: ["material", "map"]
+          path: ["ref", "material", "map"]
         })
       })
     }
@@ -65,11 +65,11 @@ export const material = {
       material: folder({
         color: prop.color({
           element: entity,
-          path: ["color"]
+          path: ["ref", "color"]
         }),
         wireframe: prop.bool({
           element: entity,
-          path: ["wireframe"]
+          path: ["ref", "wireframe"]
         })
       })
     }
@@ -81,11 +81,34 @@ export const orbitControls = {
     return {
       target: prop.ref({
         element: entity,
-        path: ["object"]
-      })
+        path: ["ref", "object"]
+      }),
+      enabled: prop.bool({
+        element: entity,
+        path: ["ref", "enabled"]
+      }),
+      makeDefault: prop(
+        {
+          get(o, p) {
+            return o[p] ?? false
+          },
+          set() {},
+          init() {
+            console.log("HELLOOO")
+            entity.props.makeDefault = true
+            entity.render()
+            console.log(entity)
+          }
+        },
+        {
+          element: entity,
+          path: ["currentProps", "makeDefault"]
+        }
+      )
     }
   }
 }
+
 export const directionalLight = {
   applicable: (entity: EditableElement) =>
     entity.ref instanceof DirectionalLight,

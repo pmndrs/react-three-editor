@@ -6,7 +6,7 @@ import {
   ImagePreview,
   Instructions,
   Remove
-} from "./image"
+} from "../../editable/controls/image"
 import { useDropzone } from "react-dropzone"
 import { useCallback } from "react"
 import React from "react"

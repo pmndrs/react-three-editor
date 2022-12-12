@@ -192,7 +192,7 @@ const Game = () => {
             />
 
             {/* lamp posts */}
-            <LampPost position={[10, 0, 0]} />
+            <LampPost position={[5.405, 0, 0]} />
             <LampPost position={[-6.799, 0, 25]} rotation-y={Math.PI} />
             <LampPost position={[10, 0, 50]} />
             <LampPost position={[-10, 0, 75]} rotation-y={Math.PI} />
@@ -205,7 +205,7 @@ const Game = () => {
 
             <TrafficCone position={[-2.902, 0, 16]} />
             <TrafficCone position={[3.81, 0, 18]} />
-            <TrafficCone position={[5.764, 1.369, 20.276]} />
+            <TrafficCone position={[-0.228, 1.369, 20.276]} />
 
             {/* ramp */}
             <RigidBody type="fixed">

@@ -57,6 +57,7 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
       const parent = React.useContext(EditableElementContext)
       const ref = React.useRef()
       const id = useId()
+      const render = useRerender()
 
       let source = props._source
       const editableElement = useMemo(() => {
@@ -70,7 +71,7 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
       editableElement.type = componentType
       editableElement.source = props._source
       editableElement.currentProps = props
-      editableElement.props = null
+      editableElement.render = render
       editableElement.store = store
       editableElement.editor = editor!
 
@@ -133,6 +134,7 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
           componentType as any,
           {
             ...rest,
+            ...editableElement.props,
             ref: mergeRefs([ref, forwardRef])
           },
           children
@@ -160,6 +162,7 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
       editableElement.store = store
       editableElement.source = props._source
       editableElement.editor = editor!
+      editableElement.propped = true
 
       const memo = editableElement
       const item = useMemo(() => new Object3D(), [])

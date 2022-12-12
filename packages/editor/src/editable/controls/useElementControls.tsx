@@ -22,7 +22,9 @@ export function useElementControls(
       })
     },
     {
-      order: -1,
+      order: -1
+    },
+    {
       store
     },
     [entity]

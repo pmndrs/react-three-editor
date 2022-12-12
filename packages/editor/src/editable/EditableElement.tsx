@@ -3,32 +3,17 @@ import { Group, Mesh, Object3D } from "three"
 import React from "react"
 import { Editor } from "./Editor"
 
-export function getEditableElement(obj: any): EditableElement {
-  return obj?.__r3f?.editable
-}
-
 export class EditableElement<
   Ref extends Object3D = Object3D
 > extends EventTarget {
-  async save(client: { save: (data: any) => Promise<void> }) {
-    let diffs = Object.values(this.changes).map(({ _source, ...value }) => ({
-      value,
-      source: _source
-    }))
-
-    for (var diff of diffs) {
-      await client.save(diff)
-    }
-    this.store?.setSettingsAtPath("save", { disabled: true })
-  }
+  propped: boolean = false
   children: string[] = []
   props: any = {}
   render: () => void = () => {}
   ref?: Object3D | Group | Mesh | Ref
   dirty: any = false
-
   store: StoreType | null = null
-
+  changes: Record<string, Record<string, any>> = {}
   editor: Editor = {} as any
   currentProps: any
 
@@ -79,8 +64,6 @@ export class EditableElement<
     }
   }
 
-  changes: Record<string, Record<string, any>> = {}
-
   addChange(element: EditableElement, prop: string, value: any) {
     if (!this.changes[element.id]) {
       this.changes[element.id] = { _source: element.source }
@@ -105,7 +88,7 @@ export class EditableElement<
 
     this.addChange(this, arg0, arg1)
 
-    if (this.props) {
+    if (this.propped) {
       this.props[arg0] = arg1
       this.render()
     }
@@ -121,5 +104,17 @@ export class EditableElement<
     })
 
     return controls
+  }
+
+  async save(client: { save: (data: any) => Promise<void> }) {
+    let diffs = Object.values(this.changes).map(({ _source, ...value }) => ({
+      value,
+      source: _source
+    }))
+
+    for (var diff of diffs) {
+      await client.save(diff)
+    }
+    this.store?.setSettingsAtPath("save", { disabled: true })
   }
 }

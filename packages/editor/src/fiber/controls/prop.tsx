@@ -1,8 +1,11 @@
 import { MathUtils, TextureLoader } from "three"
 import { ref } from "../../editable/controls/ref"
+import { EditableElement } from "../../editable/EditableElement"
 import { texture } from "./texture"
-import { getEditableElement } from "../../editable/EditableElement"
 
+export function getEditableElement(obj: any): EditableElement {
+  return obj?.__r3f?.editable
+}
 export function createProp(
   type: {
     get: (obj: any, prop: string) => any
@@ -23,7 +26,7 @@ export function createProp(
     lock?: boolean
   }
 ) {
-  let el = element.ref
+  let el = element
   let editable = element
   if (path.length > 0) {
     for (let i = 0; i < path.length - 1; i++) {
