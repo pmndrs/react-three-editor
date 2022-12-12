@@ -33,7 +33,7 @@ type Elements = {
 
 const memo = new WeakMap() as unknown as WeakMap<Elements, any>
 
-export function Editable({ component, ...props }) {
+export const Editable = forwardRef(({ component, ...props }, ref) => {
   const mainC = useMemo(() => {
     if (!memo.get(component)) {
       memo.set(component, createEditable(component))
@@ -42,10 +42,10 @@ export function Editable({ component, ...props }) {
   }, [component])
   const isEditor = useContext(EditorContext)
   if (isEditor) {
-    return React.createElement(mainC, props)
+    return React.createElement(mainC, { ...props, ref })
   }
-  return React.createElement(component, props)
-}
+  return React.createElement(component, { ...props, ref })
+})
 
 function useRerender() {
   const [, rerender] = React.useState(0)
@@ -147,7 +147,7 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
         }
       }, [parentId, id, editableElement])
 
-      console.log("render", id, rest, componentType)
+      console.log("render", id, rest, componentType, forwardRef)
 
       return React.createElement(SceneElementContext.Provider, {
         value: id,
@@ -198,16 +198,17 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
         memo.source = props._source
       }, [props._source, memo])
 
+      const item = useMemo(() => new Object3D(), [])
       useEffect(() => {
         if (props.position || props.rotation || props.scale) {
-          memo.ref = new Object3D()
-          applyProps(memo.ref, {
+          memo.ref = item
+          applyProps(item, {
             position: props.position,
             rotation: props.rotation,
             scale: props.scale
           })
         }
-      }, [])
+      }, [item])
 
       useEffect(() => {
         if (parentId) {
@@ -262,21 +263,21 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
           }
         }
       }, [parentId, memo])
-      return React.createElement(SceneElementContext.Provider, {
-        value: id,
-        children: React.createElement(
-          "group",
-          null,
-          React.createElement(
-            componentType as any,
-            {
-              ...rest,
-              ...(memo.props ?? {})
-            },
-            children
-          )
+      return React.createElement(
+        SceneElementContext.Provider,
+        {
+          value: id
+        },
+        React.createElement("primitive", { object: item }),
+        React.createElement(
+          componentType as any,
+          {
+            ...rest,
+            ...(memo.props ?? {})
+          },
+          children
         )
-      })
+      )
     }
   }
 }

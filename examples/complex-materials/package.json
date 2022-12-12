@@ -11,7 +11,7 @@
     "@pmndrs/branding": "^0.0.8",
     "@react-spring/three": "^9.5.2",
     "@react-three/cannon": "^6.3.0",
-    "@react-three/drei": "^9.19.7",
+    "@react-three/drei": "^9.46.4",
     "@react-three/editor": "workspace:*",
     "@react-three/fiber": "^8.3.1",
     "@types/react": "^18.0.17",

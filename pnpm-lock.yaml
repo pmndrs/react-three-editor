@@ -67,7 +67,7 @@ importers:
     specifiers:
       '@react-spring/core': ^9.4.4
       '@react-spring/three': ^9.4.4
-      '@react-three/drei': ^9.21.0
+      '@react-three/drei': latest
       '@react-three/editor': workspace:*
       '@react-three/fiber': ^8.8.9
       '@types/react': ^18.0.0
@@ -84,7 +84,7 @@ importers:
       styled-components: ^5.3.5
       suspend-react: ^0.0.8
       three: 0.147.0
-      three-stdlib: ^2.13.0
+      three-stdlib: ^2.20.4
       typescript: ^4.6.3
       use-error-boundary: ^2.0.6
       vite: ^3.0.7
@@ -93,7 +93,7 @@ importers:
     dependencies:
       '@react-spring/core': 9.5.5_react@18.2.0
       '@react-spring/three': 9.5.5_7l5c7g5ph6e5ybhvldx3hsiylq
-      '@react-three/drei': 9.46.3_xa6xk36nauwxkzngvitxgjpnr4
+      '@react-three/drei': 9.46.4_xa6xk36nauwxkzngvitxgjpnr4
       '@react-three/editor': link:../../packages/editor
       '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
       '@use-gesture/react': 10.2.23_react@18.2.0
@@ -105,7 +105,7 @@ importers:
       styled-components: 5.3.6_biqbaboplfbrettd7655fr4n2y
       suspend-react: 0.0.8_react@18.2.0
       three: 0.147.0
-      three-stdlib: 2.20.3_three@0.147.0
+      three-stdlib: 2.20.4_three@0.147.0
       use-error-boundary: 2.0.6_biqbaboplfbrettd7655fr4n2y
       wouter: 2.9.0_react@18.2.0
       zustand: 4.1.1_immer@9.0.16+react@18.2.0
@@ -123,7 +123,7 @@ importers:
       '@pmndrs/branding': ^0.0.8
       '@react-spring/three': ^9.5.2
       '@react-three/cannon': ^6.3.0
-      '@react-three/drei': ^9.19.7
+      '@react-three/drei': ^9.46.4
       '@react-three/editor': workspace:*
       '@react-three/fiber': ^8.3.1
       '@types/react': ^18.0.17
@@ -141,7 +141,7 @@ importers:
       '@pmndrs/branding': 0.0.8_biqbaboplfbrettd7655fr4n2y
       '@react-spring/three': 9.5.5_7l5c7g5ph6e5ybhvldx3hsiylq
       '@react-three/cannon': 6.5.0_5vev7faaoviyued4os46ge772q
-      '@react-three/drei': 9.46.3_xa6xk36nauwxkzngvitxgjpnr4
+      '@react-three/drei': 9.46.4_xa6xk36nauwxkzngvitxgjpnr4
       '@react-three/editor': link:../../packages/editor
       '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
       '@types/react': 18.0.26
@@ -161,7 +161,7 @@ importers:
     specifiers:
       '@react-spring/core': ^9.4.4
       '@react-spring/three': ^9.4.4
-      '@react-three/drei': ^9.21.0
+      '@react-three/drei': ^9.46.4
       '@react-three/editor': workspace:*
       '@react-three/fiber': ^8.8.9
       '@types/react': ^18.0.0
@@ -177,7 +177,7 @@ importers:
       styled-components: ^5.3.5
       suspend-react: ^0.0.8
       three: 0.147.0
-      three-stdlib: ^2.13.0
+      three-stdlib: ^2.20.4
       typescript: ^4.6.3
       use-error-boundary: ^2.0.6
       vite: ^3.0.7
@@ -186,7 +186,7 @@ importers:
     dependencies:
       '@react-spring/core': 9.5.5_react@18.2.0
       '@react-spring/three': 9.5.5_7l5c7g5ph6e5ybhvldx3hsiylq
-      '@react-three/drei': 9.46.3_xa6xk36nauwxkzngvitxgjpnr4
+      '@react-three/drei': 9.46.4_xa6xk36nauwxkzngvitxgjpnr4
       '@react-three/editor': link:../../packages/editor
       '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
       '@use-gesture/react': 10.2.23_react@18.2.0
@@ -198,7 +198,7 @@ importers:
       styled-components: 5.3.6_biqbaboplfbrettd7655fr4n2y
       suspend-react: 0.0.8_react@18.2.0
       three: 0.147.0
-      three-stdlib: 2.20.3_three@0.147.0
+      three-stdlib: 2.20.4_three@0.147.0
       use-error-boundary: 2.0.6_biqbaboplfbrettd7655fr4n2y
       wouter: 2.9.0_react@18.2.0
       zustand: 3.7.2_react@18.2.0
@@ -213,7 +213,7 @@ importers:
   examples/r3f-journey-levels-level-1:
     specifiers:
       '@react-spring/three': ^9.3.2
-      '@react-three/drei': ^8.2.1
+      '@react-three/drei': ^9.46.4
       '@react-three/editor': workspace:*
       '@react-three/fiber': ^8.9.1
       '@types/react': 18.0.25
@@ -227,7 +227,7 @@ importers:
       vite: ^3.0.7
     dependencies:
       '@react-spring/three': 9.5.5_7l5c7g5ph6e5ybhvldx3hsiylq
-      '@react-three/drei': 8.20.2_xa6xk36nauwxkzngvitxgjpnr4
+      '@react-three/drei': 9.46.4_xa6xk36nauwxkzngvitxgjpnr4
       '@react-three/editor': link:../../packages/editor
       '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
       '@types/three': 0.135.0
@@ -334,7 +334,7 @@ importers:
   examples/viking-ship:
     specifiers:
       '@react-spring/three': ^9.3.2
-      '@react-three/drei': ^8.2.1
+      '@react-three/drei': ^9.46.4
       '@react-three/editor': workspace:*
       '@react-three/fiber': ^8.9.1
       '@types/react': 18.0.25
@@ -348,7 +348,7 @@ importers:
       vite: ^3.0.7
     dependencies:
       '@react-spring/three': 9.5.5_7l5c7g5ph6e5ybhvldx3hsiylq
-      '@react-three/drei': 8.20.2_xa6xk36nauwxkzngvitxgjpnr4
+      '@react-three/drei': 9.46.4_xa6xk36nauwxkzngvitxgjpnr4
       '@react-three/editor': link:../../packages/editor
       '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
       '@types/three': 0.135.0
@@ -385,7 +385,7 @@ importers:
       prettier: ^2.8.0
       react: ^18.2.0
       react-dom: ^18.2.0
-      three-stdlib: ^2.13.0
+      three-stdlib: ^2.20.4
       tunnel-rat: ^0.1.0
       vite: ^3.0.7
       vite-dev-rpc: ^0.1.0
@@ -405,7 +405,7 @@ importers:
       fs-extra: 10.1.0
       leva: 0.9.34_biqbaboplfbrettd7655fr4n2y
       prettier: 2.8.0
-      three-stdlib: 2.20.3
+      three-stdlib: 2.20.4
       tunnel-rat: 0.1.0_react@18.2.0
       vite-dev-rpc: 0.1.0_vite@3.2.5
       zustand: 3.7.2_react@18.2.0
@@ -3962,75 +3962,6 @@ packages:
       three: 0.147.0
     transitivePeerDependencies:
       - typescript
-    dev: false
-
-  /@react-three/drei/8.20.2_xa6xk36nauwxkzngvitxgjpnr4:
-    resolution: {integrity: sha512-V2P/YHYg2+N58eWtIqmOJf0t5nWGTcmpT+ci4tB5gt3CsWU2vuoeQFhvBmqEF+cXwZD5ZYKPfQDf/06NzTx/lw==}
-    peerDependencies:
-      '@react-three/fiber': '>=6.0'
-      react: '>=17.0'
-      react-dom: '>=17.0'
-      three: '>=0.137'
-    peerDependenciesMeta:
-      react-dom:
-        optional: true
-    dependencies:
-      '@babel/runtime': 7.20.6
-      '@react-spring/three': 9.5.5_7l5c7g5ph6e5ybhvldx3hsiylq
-      '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
-      '@use-gesture/react': 10.2.23_react@18.2.0
-      detect-gpu: 4.0.50
-      glsl-noise: 0.0.0
-      lodash.omit: 4.5.0
-      lodash.pick: 4.4.0
-      meshline: 2.0.4_three@0.147.0
-      react: 18.2.0
-      react-composer: 5.0.3_react@18.2.0
-      react-dom: 18.2.0_react@18.2.0
-      react-merge-refs: 1.1.0
-      stats.js: 0.17.0
-      suspend-react: 0.0.8_react@18.2.0
-      three: 0.147.0
-      three-mesh-bvh: 0.5.19_three@0.147.0
-      three-stdlib: 2.20.3_three@0.147.0
-      troika-three-text: 0.46.4_three@0.147.0
-      utility-types: 3.10.0
-      zustand: 3.7.2_react@18.2.0
-    dev: false
-
-  /@react-three/drei/9.46.3_xa6xk36nauwxkzngvitxgjpnr4:
-    resolution: {integrity: sha512-POUrahuah3apUpM8LnQTkf0F/nn9sj3XRQrwiiZWqibE0Y9bGzZi4LzoSCgD7ykqWZ14HIj72QdLVTOZxlfIaA==}
-    peerDependencies:
-      '@react-three/fiber': '>=8.0'
-      react: '>=18.0'
-      react-dom: '>=18.0'
-      three: '>=0.137'
-    peerDependenciesMeta:
-      react-dom:
-        optional: true
-    dependencies:
-      '@babel/runtime': 7.20.6
-      '@react-spring/three': 9.5.5_7l5c7g5ph6e5ybhvldx3hsiylq
-      '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
-      '@use-gesture/react': 10.2.23_react@18.2.0
-      detect-gpu: 4.0.50
-      glsl-noise: 0.0.0
-      lodash.clamp: 4.0.3
-      lodash.omit: 4.5.0
-      lodash.pick: 4.4.0
-      meshline: 2.0.4_three@0.147.0
-      react: 18.2.0
-      react-composer: 5.0.3_react@18.2.0
-      react-dom: 18.2.0_react@18.2.0
-      react-merge-refs: 1.1.0
-      stats.js: 0.17.0
-      suspend-react: 0.0.8_react@18.2.0
-      three: 0.147.0
-      three-mesh-bvh: 0.5.19_three@0.147.0
-      three-stdlib: 2.20.3_three@0.147.0
-      troika-three-text: 0.46.4_three@0.147.0
-      utility-types: 3.10.0
-      zustand: 3.7.2_react@18.2.0
     dev: false
 
   /@react-three/drei/9.46.4_biqbaboplfbrettd7655fr4n2y:
@@ -8681,12 +8612,6 @@ packages:
   /destroy/1.2.0:
     resolution: {integrity: sha512-2sJGJTaXIIaR1w4iJSNoN0hnMY7Gpc/n8D4qSCJw8QqFWXf7cuAgnEHxBpweaVcPevC2l3KpjYCx3NypQQgaJg==}
     engines: {node: '>= 0.8', npm: 1.2.8000 || >= 1.4.16}
-    dev: false
-
-  /detect-gpu/4.0.50:
-    resolution: {integrity: sha512-T67HE5+ONONN8rPXCBJPupyCg2QT8+l2NUUMuPxAppsMJBDPG/Jg0URLs6GyDzLm2niUE+oncIHSuy3VinoPeQ==}
-    dependencies:
-      webgl-constants: 1.1.1
     dev: false
 
   /detect-gpu/5.0.1:
@@ -15134,14 +15059,6 @@ packages:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
     engines: {node: '>= 8'}
 
-  /meshline/2.0.4_three@0.147.0:
-    resolution: {integrity: sha512-Jh6DJl/zLqA4xsKvGv5950jr2ukyXQE1wgxs8u94cImHrvL6soVIggqjP+2hVHZXGYaKnWszhtjuCbKNeQyYiw==}
-    peerDependencies:
-      three: '>=0.137'
-    dependencies:
-      three: 0.147.0
-    dev: false
-
   /meshline/3.0.4:
     resolution: {integrity: sha512-o4kwwnhgYLyNwcB6i+qHejuN9l129p7mdF0vsqzWEAHGw5SBwD9q0ut+tX3G3om8PUW7GOQQa5V4t3I7wMN41Q==}
     peerDependencies:
@@ -20619,43 +20536,6 @@ packages:
       three: '>= 0.123.0'
     dependencies:
       three: 0.147.0
-    dev: false
-
-  /three-stdlib/2.20.3:
-    resolution: {integrity: sha512-XYZaXesGBkTQCnBp4N5WySDMNi+5AJC25DRL/XWFtmsS1uCGPLHVMGTNdbGdJlOn3RgOrjzoLQYhW+UMorHXWg==}
-    peerDependencies:
-      three: '>=0.122.0'
-    dependencies:
-      '@babel/runtime': 7.20.6
-      '@types/offscreencanvas': 2019.7.0
-      '@webgpu/glslang': 0.0.15
-      chevrotain: 10.4.2
-      draco3d: 1.5.5
-      fflate: 0.6.10
-      ktx-parse: 0.4.5
-      mmd-parser: 1.0.4
-      opentype.js: 1.3.4
-      potpack: 1.0.2
-      zstddec: 0.0.2
-    dev: false
-
-  /three-stdlib/2.20.3_three@0.147.0:
-    resolution: {integrity: sha512-XYZaXesGBkTQCnBp4N5WySDMNi+5AJC25DRL/XWFtmsS1uCGPLHVMGTNdbGdJlOn3RgOrjzoLQYhW+UMorHXWg==}
-    peerDependencies:
-      three: '>=0.122.0'
-    dependencies:
-      '@babel/runtime': 7.20.6
-      '@types/offscreencanvas': 2019.7.0
-      '@webgpu/glslang': 0.0.15
-      chevrotain: 10.4.2
-      draco3d: 1.5.5
-      fflate: 0.6.10
-      ktx-parse: 0.4.5
-      mmd-parser: 1.0.4
-      opentype.js: 1.3.4
-      potpack: 1.0.2
-      three: 0.147.0
-      zstddec: 0.0.2
     dev: false
 
   /three-stdlib/2.20.4:

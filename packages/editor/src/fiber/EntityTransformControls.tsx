@@ -1,11 +1,12 @@
 import { PivotControls, TransformControls } from "@react-three/drei"
-import { MathUtils } from "three"
+import { MathUtils, Object3D, Event } from "three"
 import { TransformControls as TransformControlsImpl } from "three-stdlib"
 import { useEffect, useRef } from "react"
 import React from "react"
 import { levaStore } from "leva"
 import { createPortal } from "@react-three/fiber"
-import { EditableElement } from "./editable-element"
+import { ChangeSource, EditableElement } from "./editable-element"
+import { mergeRefs } from "leva/plugin"
 
 export function EntityTransformControls({
   entity
@@ -115,19 +116,32 @@ export function EntityTransformControls({
     // ></PivotControls>
     // createPortal(
     <TransformControls
-      object={entity.ref}
-      ref={(r) => {
-        ref.current = r
-        entity.transformControls$ = r
-      }}
+      object={entity.ref!}
+      ref={mergeRefs([
+        ref,
+        (r: TransformControlsImpl) => {
+          entity.transformControls$ = r
+        }
+      ])}
       key={entity.id}
-      onChange={(c) => {
-        console.log(c, c?.target)
+      onChange={(c: Event | undefined) => {
         if (c?.type === "change" && entity.ref && c.target?.object) {
-          entity.setTransformFromControls(c.target.object)
+          entity.setProp(
+            "position",
+            c.target.object.position.toArray(),
+            ChangeSource.TransformControls
+          )
+          entity.setProp(
+            "rotation",
+            [
+              MathUtils.radToDeg(c.target.object.rotation.x),
+              MathUtils.radToDeg(c.target.object.rotation.y),
+              MathUtils.radToDeg(c.target.object.rotation.z)
+            ],
+            ChangeSource.TransformControls
+          )
         }
       }}
     />
-    // entity.ref
   )
 }

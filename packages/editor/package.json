@@ -6,7 +6,7 @@
     "url": "https://github.com/nksaraf"
   },
   "description": "",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": "dist/react-three-editor.cjs.js",
   "module": "dist/react-three-editor.esm.js",
   "preconstruct": {
@@ -56,7 +56,7 @@
     "fs-extra": "^10.1.0",
     "leva": "^0.9.34",
     "prettier": "^2.8.0",
-    "three-stdlib": "^2.13.0",
+    "three-stdlib": "^2.20.4",
     "tunnel-rat": "^0.1.0",
     "vite-dev-rpc": "^0.1.0",
     "zustand": "^3.7.2"

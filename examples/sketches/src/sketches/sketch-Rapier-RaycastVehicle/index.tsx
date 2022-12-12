@@ -156,7 +156,6 @@ const Game = () => {
         if (gameState.displayMode !== 'drive') return
 
         const chassis = raycastVehicle.current?.chassisRigidBody
-        console.log('updating', raycastVehicle)
         if (!chassis?.current) return
 
         const t = 1.0 - Math.pow(0.01, delta)
@@ -194,23 +193,23 @@ const Game = () => {
 
             {/* lamp posts */}
             <LampPost position={[10, 0, 0]} />
-            <LampPost position={[-10, 0, 25]} rotation-y={Math.PI} />
+            <LampPost position={[-6.799, 0, 25]} rotation-y={Math.PI} />
             <LampPost position={[10, 0, 50]} />
             <LampPost position={[-10, 0, 75]} rotation-y={Math.PI} />
-            <LampPost position={[10, 0, 100]} />
+            <LampPost position={[5.178, 0, 100]} />
 
             {/* traffic cones */}
-            <TrafficCone position={[4, 0, 6]} />
-            <TrafficCone position={[2, 0, 8]} />
+            <TrafficCone position={[6.467, 0, 6]} />
+            <TrafficCone position={[5.535, 2.518, 8]} />
             <TrafficCone position={[4, 0, 10]} />
 
-            <TrafficCone position={[-4, 0, 16]} />
-            <TrafficCone position={[-2, 0, 18]} />
-            <TrafficCone position={[-4, 0, 20]} />
+            <TrafficCone position={[-2.902, 0, 16]} />
+            <TrafficCone position={[3.81, 0, 18]} />
+            <TrafficCone position={[5.764, 1.369, 20.276]} />
 
             {/* ramp */}
             <RigidBody type="fixed">
-                <mesh rotation-x={-0.3} position={[0, -1, 30]}>
+                <mesh name="ramp" rotation-x={-0.3} position={[0, -1, 30]}>
                     <boxGeometry args={[10, 1, 10]} />
                     <meshStandardMaterial color="orange" />
                 </mesh>
@@ -284,7 +283,7 @@ const Game = () => {
 
             {debug ? <Debug /> : null}
         </>
-    )
+    );
 }
 
 export default () => {

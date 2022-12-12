@@ -159,28 +159,33 @@ function TopLevelTransformControls() {
   )
 }
 
-const sceneGraph = createPlugin({
+const sceneGraph = createPlugin<
+  { items: object },
+  {},
+  {
+    items: object
+  }
+>({
   normalize({ items }, path, data) {
-    return { settings: { items } }
+    return { settings: { items }, value: {} }
   },
   component() {
-    const context = useInputContext()
-    console.log(context.settings.items)
+    const context = useInputContext<{ settings: { items: object } }>()
     return (
-      <>
+      <div style={{ maxHeight: 280, overflow: "scroll" }}>
         {Object.values(context.settings.items).map((v) => (
           <EntityControl
             selected={false}
-            entity={v.entity}
-            key={v.entity.id}
-            collapsed={false}
+            entity={v}
+            key={v.id}
+            collapsed={true}
             setCollapsed={() => {}}
             showChildren={true}
             dirty={false}
             panel={false}
           />
         ))}
-      </>
+      </div>
     )
   }
 })
@@ -191,30 +196,22 @@ function SceneGraph() {
   useControls(() => {
     const items = {}
     p.forEach((v) => {
-      if (v.parentId == null)
-        items[v.name] = {
-          entity: v,
-          panel: false,
-          collapsed: false,
-          children: true
-        }
+      if (v.parentId == null) items[v.name] = v
     })
     return {
-      scene: folder({
-        graph: sceneGraph({
-          items
-        })
-      })
+      scene: folder(
+        {
+          graph: sceneGraph({
+            items
+          })
+        },
+        {
+          order: -2
+        }
+      )
     }
   }, [p])
   return null
-  // return (
-  //   <>
-  //     {p.map((e) =>
-  //       e.parentId == null ? <EntityTree key={e.name} entity={e} /> : null
-  //     )}
-  //   </>
-  // )
 }
 
 function SelectedTransformControls() {
@@ -238,13 +235,19 @@ function SelectedEntityControls() {
 }
 
 function EntityControls({ entity }) {
-  useControls("entity", {
-    [entity.name]: entityPanel({
-      entity,
-      panel: true,
-      collapsed: false,
-      children: false
-    })
-  })
+  useControls(
+    "entity",
+    {
+      [entity.name]: entityPanel({
+        entity,
+        panel: true,
+        collapsed: false,
+        children: false
+      })
+    },
+    {
+      order: -1
+    }
+  )
   return null
 }

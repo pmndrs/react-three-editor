@@ -12,7 +12,7 @@ import {
 } from "leva"
 import { MathUtils, Object3D } from "three"
 import { useEditor } from "./useEditor"
-import { EditableElement } from "./editable-element"
+import { ChangeSource, EditableElement } from "./editable-element"
 import { Icon } from "@iconify/react"
 import { createRPCClient } from "vite-dev-rpc"
 import { createPlugin, useInputContext } from "leva/plugin"
@@ -29,7 +29,9 @@ import {
 } from "./folder/Folder/StyledFolder"
 import { Chevron } from "./folder/Folder/Chevron"
 
-const client = createRPCClient("vinxi", import.meta.hot, {})
+const client = createRPCClient<{
+  save: (data: any) => Promise<void>
+}>("vinxi", import.meta.hot!, {})
 
 const getControls = (entity: EditableElement) => {
   let controls = {}
@@ -40,90 +42,79 @@ const getControls = (entity: EditableElement) => {
           position: {
             lock: true,
             step: 0.1,
-            value: entity.ref.position.toArray(),
+            value: entity.getProp("position", true),
+            // disabled: true,
 
             onChange: (value, path, context) => {
-              // if (value && context.fromPanel) {
-              //   entity.setPositionFromPanel(value)
-              // }
-              if (!value) {
-                return null
-              }
-
-              console.log(value, path, context)
-              if (!eq.array(value, entity.ref.position.toArray())) {
-                entity.ref.position.fromArray(value)
-              }
-              // @ts-ignore
-              // entity.transformControls$?.object?.position.fromArray(value)
-              if (entity.props) {
-                entity.props.position = value
-                entity.render()
-              }
-            }
-          },
-          rotation: {
-            lock: true,
-            step: 1,
-            value: entity.rotation,
-
-            onChange: (value) => {
-              if (!value) {
+              console.log(entity.store?.getData())
+              if (!value || !context.fromPanel || context.initial) {
                 return
               }
-
-              value = value.map((v) =>
-                typeof v === "string" ? Number(v.substring(0, v.length - 1)) : v
-              )
-
-              let rad = value.map((v) => MathUtils.degToRad(v))
-              let euler = [...rad, "XYZ"]
-
-              if (!eq.array(rad, entity.ref.rotation.toArray())) {
-                entity.ref.rotation.fromArray(euler)
-              }
-
-              entity.transformControls$?.object?.rotation.fromArray(euler)
-
-              if (entity.props) {
-                entity.props.rotation = rad
-                entity.render()
-              }
-            }
-          },
-          scale: {
-            lock: true,
-            step: 0.1,
-            type: LevaInputs.VECTOR3D,
-            value: entity.scale,
-            onChange: (value) => {
-              if (!value) {
-                return
-              }
-              if (typeof entity.ref?.__r3f?.memoizedProps.scale === "number") {
-                console.log(entity.ref.__r3f.memoizedProps.scale)
-                // levaStore.useStore.setState(({ data }) => ({
-                //   data: {
-                //     ...data,
-                //     [`${entity.name}.transform.scale`]: {
-                //       ...data[`${entity.name}.transform.scale`],
-                //       locked: true
-                //     }
-                //   }
-                // }))
-                // levaStore.setSettingsAtPath(`${entity.name}.transform.scale`, {
-                //   locked: true
-                // })
-                console.log(levaStore.useStore.getState())
-              }
-              entity.ref.scale.fromArray(value)
-              entity.transformControls$?.object?.scale.fromArray(value)
-              if (entity.props) {
-                entity.props.scale = value
-                entity.render()
-              }
+              entity.setProp("position", value, ChangeSource.Leva)
             }
           }
+          // rotation: {
+          //   lock: true,
+          //   step: 1,
+          //   value: entity.rotation,
+
+          //   onChange: (value) => {
+          //     if (!value) {
+          //       return
+          //     }
+
+          //     value = value.map((v) =>
+          //       typeof v === "string" ? Number(v.substring(0, v.length - 1)) : v
+          //     )
+
+          //     let rad = value.map((v) => MathUtils.degToRad(v))
+          //     let euler = [...rad, "XYZ"]
+
+          //     if (!eq.array(rad, entity.ref.rotation.toArray())) {
+          //       entity.ref.rotation.fromArray(euler)
+          //     }
+
+          //     entity.transformControls$?.object?.rotation.fromArray(euler)
+
+          //     if (entity.props) {
+          //       entity.props.rotation = rad
+          //       entity.render()
+          //     }
+          //   }
+          // },
+          // scale: {
+          //   lock: true,
+          //   step: 0.1,
+          //   type: LevaInputs.VECTOR3D,
+          //   value: entity.scale,
+          //   onChange: (value) => {
+          //     if (!value) {
+          //       return
+          //     }
+          //     if (typeof entity.ref?.__r3f?.memoizedProps.scale === "number") {
+          //       console.log(entity.ref.__r3f.memoizedProps.scale)
+          //       // levaStore.useStore.setState(({ data }) => ({
+          //       //   data: {
+          //       //     ...data,
+          //       //     [`${entity.name}.transform.scale`]: {
+          //       //       ...data[`${entity.name}.transform.scale`],
+          //       //       locked: true
+          //       //     }
+          //       //   }
+          //       // }))
+          //       // levaStore.setSettingsAtPath(`${entity.name}.transform.scale`, {
+          //       //   locked: true
+          //       // })
+          //       console.log(levaStore.useStore.getState())
+          //     }
+          //     entity.ref.scale.fromArray(value)
+          //     entity.transformControls$?.object?.scale.fromArray(value)
+          //     if (entity.props) {
+          //       entity.props.scale = value
+          //       entity.render()
+          //     }
+          //   }
+          // }
         },
         {
           collapsed: false
@@ -181,35 +172,35 @@ const getControls = (entity: EditableElement) => {
   return controls
 }
 
-const savedProps = (get, entity: EditableElement) => {
-  if (entity.ref instanceof Object3D) {
-    const store = entity.store!.useStore.getState()
-    return {
-      position: !eq.array(store.data[`transform.position`].value, [0, 0, 0])
-        ? store.data[`transform.position`].value.map((v) =>
-            Number(v.toFixed(3))
-          )
-        : undefined,
-      rotation: !eq.array(store.data[`transform.rotation`].value, [0, 0, 0])
-        ? store.data[`transform.rotation`].value.map((i) =>
-            MathUtils.degToRad(i)
-          )
-        : undefined,
-      scale: !eq.array(store.data[`transform.scale`].value, [1, 1, 1])
-        ? store.data[`transform.scale`].value
-        : undefined
+// const savedProps = (get, entity: EditableElement) => {
+//   if (entity.ref instanceof Object3D) {
+//     const store = entity.store!.useStore.getState()
+//     return {
+//       position: !eq.array(store.data[`transform.position`].value, [0, 0, 0])
+//         ? store.data[`transform.position`].value.map((v) =>
+//             Number(v.toFixed(3))
+//           )
+//         : undefined
+//       // rotation: !eq.array(store.data[`transform.rotation`].value, [0, 0, 0])
+//       //   ? store.data[`transform.rotation`].value.map((i) =>
+//       //       MathUtils.degToRad(i)
+//       //     )
+//       //   : undefined,
+//       // scale: !eq.array(store.data[`transform.scale`].value, [1, 1, 1])
+//       //   ? store.data[`transform.scale`].value
+//       //   : undefined
 
-      // scale: get(`${entity.name}.transform.scale`),
-      // rotation: get(`${entity.name}.transform.rotation`).map((i) =>
-      //   MathUtils.degToRad(i)
-      // )
-    }
-  } else if (entity.ref?.isMaterial) {
-    return {
-      wireframe: get(`${entity.name}.material.wireframe`)
-    }
-  }
-}
+//       // scale: get(`${entity.name}.transform.scale`),
+//       // rotation: get(`${entity.name}.transform.rotation`).map((i) =>
+//       //   MathUtils.degToRad(i)
+//       // )
+//     }
+//   } else if (entity.ref?.isMaterial) {
+//     return {
+//       wireframe: get(`${entity.name}.material.wireframe`)
+//     }
+//   }
+// }
 
 function Collapsible({
   title,
@@ -329,6 +320,13 @@ export function EntityControl({
   showChildren,
   dirty,
   panel
+}: {
+  collapsed: boolean
+  onCollapse?: (c: boolean) => void
+  entity: EditableElement
+  showChildren?: boolean
+  dirty?: boolean
+  panel?: boolean
 }) {
   const selected = entity.useEditorStore((s) => s.selected === entity)
   const [_collapsed, setCollapsed] = useState(collapsed)
@@ -377,7 +375,8 @@ export function EntityControl({
           ></div>
           <StyledIcon
             icon="pepicons-code"
-            onClick={(e) =>
+            onClick={(e) => {
+              console.log(entity)
               fetch(
                 `/__open-in-editor?file=${encodeURIComponent(
                   `${entity.source.fileName}:${entity.source.lineNumber}:${
@@ -385,7 +384,7 @@ export function EntityControl({
                   }`
                 )}`
               )
-            }
+            }}
           />
           <StyledIcon
             icon={visible ? "ph:eye-bold" : "ph:eye-closed-bold"}
@@ -426,35 +425,35 @@ export function EntityControl({
   )
 }
 
-function StoreableEntity({ entity }) {
+function StoreableEntity({ entity }: { entity: EditableElement }) {
   const entityStore = useCreateStore()
   entity.store = entityStore
   return <EntityStoreable entity={entity} />
 }
 
-function EntityStoreable({ entity }) {
+function EntityStoreable({ entity }: { entity: EditableElement }) {
   const scene = useThree((s) => s.scene)
   const [run, setRun] = useState(0)
   function reset() {
     setRun((r) => r + 1)
   }
-  let entityStore = entity.store
+  let entityStore = entity.store!
   const [, set] = useControls(
     () => {
       let controls = getControls(entity)
-      entity.controls = controls
       return {
         ...controls,
         save: button(
-          (get) => {
-            let props = savedProps(get, entity)
+          async (get) => {
+            let props = entity.store?.getData()["save"].settings.changed
             let diffs = [
               {
                 source: entity.source,
                 value: props
               }
             ]
-            client.save(diffs[0])
+            await client.save(diffs[0])
+            entity.store?.setSettingsAtPath("save", { disabled: true })
           },
           {
             disabled: !entity.dirty
@@ -472,7 +471,7 @@ function EntityStoreable({ entity }) {
     if (entity.ref && entity.ref instanceof THREE.Object3D) {
       let state = entity.store?.getData()
 
-      let position = entity.position
+      let position = entity.getProp("position", false)
       let edit = false
       if (!eq.array(position, state["transform.position"].value)) {
         state["transform.position"].disabled = true
@@ -621,7 +620,7 @@ function EntityChild({ child }: { child: EditableElement }) {
 }
 
 function Togglable(props) {
-  const [collapsed, setCollapsed] = useState(false)
+  const [collapsed, setCollapsed] = useState(true)
 
   return (
     <Collapsible {...props} collapsed={collapsed} setCollapsed={setCollapsed} />

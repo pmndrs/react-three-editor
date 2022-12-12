@@ -4,7 +4,7 @@ import { PCFSoftShadowMap } from 'three'
 import { Canvas } from '../Canvas'
 
 const Cube = () => (
-    <mesh position={[0, -0.5, 0]} receiveShadow castShadow>
+    <mesh position-y={-0.5} receiveShadow castShadow>
         <boxBufferGeometry args={[1, 1, 1]} />
         <meshStandardMaterial color="#ff8888" />
     </mesh>
