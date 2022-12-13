@@ -2,7 +2,7 @@ import { StoreType } from "leva/dist/declarations/src/types"
 import React from "react"
 import { Editor } from "./Editor"
 
-type JSXSource = {
+export type JSXSource = {
   fileName: string
   lineNumber: number
   columnNumber: number

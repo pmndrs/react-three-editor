@@ -6,12 +6,10 @@ import React, {
   useContext,
   useEffect,
   useId,
-  useLayoutEffect,
-  useMemo,
-  useRef
+  useMemo
 } from "react"
 import { EditorContext, EditableElementContext } from "./contexts"
-import { EditableElement } from "./EditableElement"
+import { EditableElement, JSXSource } from "./EditableElement"
 
 type Elements = {
   [K in keyof JSX.IntrinsicElements]: React.FC<
@@ -22,22 +20,24 @@ type Elements = {
 }
 const memo = new WeakMap() as unknown as WeakMap<Elements, any> & Elements
 
-export const Editable = forwardRef(({ component, ...props }, ref) => {
-  const mainC = useMemo(() => {
-    if (!memo.get(component)) {
-      memo.set(component, createEditable(component))
+export const Editable = forwardRef(
+  ({ component, ...props }: { component: any }, ref) => {
+    const mainC = useMemo(() => {
+      if (!memo.get(component)) {
+        memo.set(component, createEditable(component))
+      }
+      return memo.get(component)
+    }, [component])
+    const isEditor = useContext(EditorContext)
+    if (isEditor) {
+      return React.createElement(mainC, { ...props, ref })
     }
-    return memo.get(component)
-  }, [component])
-  const isEditor = useContext(EditorContext)
-  if (isEditor) {
-    return React.createElement(mainC, { ...props, ref })
+    return React.createElement(component, { ...props, ref })
   }
-  return React.createElement(component, { ...props, ref })
-})
+)
 
 export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
-  Component: K | React.FC<P>
+  Component: any
 ) {
   let hasRef =
     // @ts-ignore
@@ -96,7 +96,7 @@ function useRerender() {
 function useEditableElement(
   componentType: string | React.FC,
   source: JSXSource,
-  props
+  props: any
 ) {
   const editor = React.useContext(EditorContext)
   const parent = React.useContext(EditableElementContext)
@@ -119,7 +119,7 @@ function useEditableElement(
   editableElement.editor = editor!
 
   let memo = editableElement
-  let parentId = parent?.id
+  let parentId = parent?.id!
 
   useEffect(() => {
     if (parentId) {
@@ -179,7 +179,7 @@ function useEditableRef(editableElement: EditableElement) {
 
 function Helpers() {
   const editor = useContext(EditorContext)
-  const element = useContext(EditableElementContext)
+  const element = useContext(EditableElementContext)!
 
   return (
     <>
