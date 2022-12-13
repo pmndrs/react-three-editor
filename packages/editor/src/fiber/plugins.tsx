@@ -245,6 +245,26 @@ const transformWithoutRef = {
   }
 }
 
+const propControls = {
+  applicable: (entity: EditableElement) =>
+    entity.type !== "string" && entity.type.controls,
+  controls: (entity: EditableElement) => {
+    return Object.fromEntries(
+      Object.entries(entity.type.controls).map(([k, { type, value, ...v }]) => {
+        return [
+          k,
+          prop[type]({
+            ...v,
+            element: entity,
+            path: ["currentProps", k],
+            default: value
+          })
+        ]
+      })
+    )
+  }
+}
+
 export const DEFAULT_EDITOR_PLUGINS = [
   transform,
   transformWithoutRef,
@@ -256,27 +276,6 @@ export const DEFAULT_EDITOR_PLUGINS = [
   pointLight,
   ambientLight,
   spotLight,
-  {
-    applicable: (entity: EditableElement) =>
-      entity.type !== "string" && entity.type.controls,
-    controls: (entity: EditableElement) => {
-      return Object.fromEntries(
-        Object.entries(entity.type.controls).map(
-          ([k, { type, value, ...v }]) => {
-            return [
-              k,
-              prop[type]({
-                ...v,
-                element: entity,
-                path: ["currentProps", k],
-                default: value
-              })
-            ]
-          }
-        )
-      )
-    }
-  }
   // {
   //   applicable: (entity: EditableElement) =>
   //     !entity.forwardedRef || entity.type !== "string",
@@ -319,7 +318,8 @@ export const DEFAULT_EDITOR_PLUGINS = [
   //         })
   //     )
   //   }
-  // }
+  // },
+  propControls
 ]
 
 export function addPlugin(plugin: any) {
