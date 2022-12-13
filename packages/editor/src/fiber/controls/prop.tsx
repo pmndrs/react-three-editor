@@ -155,7 +155,7 @@ const textureT: {
 } = {
   control: texture,
   get(obj: any, prop: string) {
-    return obj[prop].source.data.src
+    return obj[prop]?.source.data.src
   },
   set(obj: any, prop: string, value: any) {
     console.log("set", obj, prop, value)
