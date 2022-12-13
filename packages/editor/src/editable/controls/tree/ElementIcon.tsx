@@ -2,7 +2,6 @@ import { ComponentProps } from "react"
 import { EditableElement } from "../../EditableElement"
 import { Icon } from "@iconify/react"
 import React from "react"
-import { OrbitControls } from "three-stdlib"
 
 export function ElementIcon({
   element,
@@ -12,7 +11,7 @@ export function ElementIcon({
     <Icon
       icon={element.icon}
       onClick={(e) =>
-        element.editor.setState({
+        element.editor.store.setState({
           selected: element
         })
       }

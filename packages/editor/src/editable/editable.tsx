@@ -1,4 +1,3 @@
-import { applyProps } from "@react-three/fiber"
 import { useCreateStore } from "leva"
 import { mergeRefs } from "leva/plugin"
 import React, {
@@ -8,9 +7,9 @@ import React, {
   useEffect,
   useId,
   useLayoutEffect,
-  useMemo
+  useMemo,
+  useRef
 } from "react"
-import { Object3D } from "three"
 import { EditorContext, EditableElementContext } from "./contexts"
 import { EditableElement } from "./EditableElement"
 
@@ -36,12 +35,69 @@ export const Editable = forwardRef(({ component, ...props }, ref) => {
   }
   return React.createElement(component, { ...props, ref })
 })
+
+export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
+  Component: K | React.FC<P>
+) {
+  let hasRef =
+    // @ts-ignore
+    typeof Component === "string" ||
+    (Component as any).$$typeof === Symbol.for("react.forward_ref") ||
+    ((Component as any).$$typeof === Symbol.for("react.memo") &&
+      Component["type"]?.["$$typeof"] === Symbol.for("react.forward_ref"))
+
+  if (hasRef) {
+    return forwardRef(function Editable(props: any, forwardRef) {
+      const { children, ...rest } = props
+      let source = props._source
+      const editableElement = useEditableElement(Component, source, props)
+
+      let ref = useEditableRef(editableElement)
+      editableElement.forwardedRef = true
+      const [mounted, setMounted] = React.useState(false)
+
+      return (
+        <EditableElementContext.Provider value={editableElement}>
+          <Component
+            {...rest}
+            {...editableElement.props}
+            ref={mergeRefs([ref, forwardRef, (r) => setMounted(true)])}
+          >
+            {children}
+          </Component>
+          {mounted && <Helpers />}
+        </EditableElementContext.Provider>
+      )
+    })
+  } else {
+    return function Editable(props: any) {
+      const { children, ...rest } = props
+      let source = props._source
+      const editableElement = useEditableElement(Component, source, props)
+      editableElement.forwardedRef = false
+
+      return (
+        <EditableElementContext.Provider value={editableElement}>
+          <Component {...rest} {...(editableElement.props ?? {})}>
+            {children}
+          </Component>
+          <Helpers />
+        </EditableElementContext.Provider>
+      )
+    }
+  }
+}
+
 function useRerender() {
   const [, rerender] = React.useState(0)
   return useCallback(() => rerender((i) => i + 1), [rerender])
 }
 
-function useEditableElement(componentType, source, props) {
+function useEditableElement(
+  componentType: string | React.FC,
+  source: JSXSource,
+  props
+) {
   const editor = React.useContext(EditorContext)
   const parent = React.useContext(EditableElementContext)
   const id = useId()
@@ -113,83 +169,30 @@ function useEditableElement(componentType, source, props) {
   return editableElement
 }
 
-export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
-  Component: K | React.FC<P>
-) {
-  let hasRef =
-    // @ts-ignore
-    typeof Component === "string" ||
-    (Component as any).$$typeof === Symbol.for("react.forward_ref") ||
-    ((Component as any).$$typeof === Symbol.for("react.memo") &&
-      Component["type"]?.["$$typeof"] === Symbol.for("react.forward_ref"))
+function useEditableRef(editableElement: EditableElement) {
+  const ref = useRef()
+  useLayoutEffect(() => {
+    editableElement.setRef(ref.current)
+  }, [editableElement, ref])
 
-  if (hasRef) {
-    return forwardRef(function Editable(props: any, forwardRef) {
-      const { children, ...rest } = props
-      let source = props._source
-      const editableElement = useEditableElement(Component, source, props)
-      const ref = React.useRef()
-
-      useLayoutEffect(() => {
-        editableElement.ref = ref.current
-        if (editableElement.ref?.__r3f) {
-          editableElement.ref.__r3f.editable = editableElement
-        }
-      }, [editableElement, ref])
-      return (
-        <EditableElementContext.Provider value={editableElement}>
-          <Component
-            {...rest}
-            {...editableElement.props}
-            ref={mergeRefs([ref, forwardRef])}
-          >
-            {children}
-          </Component>
-        </EditableElementContext.Provider>
-      )
-    })
-  } else {
-    return function Editable(props: any) {
-      const { children, ...rest } = props
-      let source = props._source
-      const editableElement = useEditableElement(Component, source, props)
-
-      return (
-        <EditableElementContext.Provider value={editableElement}>
-          <DummyObject editableElement={editableElement} props={props} />
-          <Component {...rest} {...(editableElement.props ?? {})}>
-            {children}
-          </Component>
-        </EditableElementContext.Provider>
-      )
-    }
-  }
+  return ref
 }
 
-function DummyObject({
-  editableElement,
-  props
-}: {
-  editableElement: EditableElement
-  props: any
-}) {
-  editableElement.propped = true
+function Helpers() {
+  const editor = useContext(EditorContext)
+  const element = useContext(EditableElementContext)
 
-  const item = useMemo(() => new Object3D(), [])
-
-  useEffect(() => {
-    if (props.position || props.rotation || props.scale) {
-      editableElement.ref = item
-
-      applyProps(item as unknown, {
-        position: props.position,
-        rotation: props.rotation,
-        scale: props.scale
-      })
-    }
-  }, [item])
-
-  return <primitive object={item} />
+  return (
+    <>
+      {editor?.plugins
+        .filter((p) => p.helper && p.applicable(element))
+        .map((plugin) => (
+          <React.Fragment key={element.id}>
+            <plugin.helper element={element} />
+          </React.Fragment>
+        ))}
+    </>
+  )
 }
 
 export const editable = new Proxy(memo, {

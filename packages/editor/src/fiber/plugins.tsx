@@ -8,11 +8,15 @@ import {
   MeshStandardMaterial,
   Object3D,
   PointLight,
-  SpotLight
+  SpotLight,
+  SpotLightHelper
 } from "three"
 import { folder } from "leva"
 import { prop } from "./controls/prop"
 import { EditableElement } from "../editable/EditableElement"
+import { TransformHelper } from "./TransformHelper"
+import React from "react"
+import { useHelper } from "@react-three/drei"
 
 export const transform = {
   applicable: (entity: EditableElement) => entity.ref instanceof Object3D,
@@ -201,12 +205,37 @@ export const spotLight = {
       target: prop.ref({
         element: entity,
         path: ["ref", "target"]
+      }),
+      angle: prop.number({
+        element: entity,
+        step: 0.1,
+        path: ["ref", "angle"]
       })
     }
+  },
+  helper: ({ element }: { element: EditableElement }) => {
+    useHelper(element, SpotLightHelper, "hotpink")
+    return null
   }
 }
+
+const transformWithoutRef = {
+  applicable: (entity: EditableElement) => !entity.forwardedRef,
+  icon: (entity: EditableElement) => "mdi:react",
+  helper: ({ element }: { element: EditableElement }) => {
+    return (
+      <TransformHelper
+        key={element.id}
+        editableElement={element}
+        props={element.currentProps}
+      />
+    )
+  }
+}
+
 export const DEFAULT_EDITOR_PLUGINS = [
   transform,
+  transformWithoutRef,
   camera,
   meshMaterial,
   material,

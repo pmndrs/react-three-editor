@@ -217,14 +217,11 @@ export const Vehicle = forwardRef<VehicleRef, VehicleProps>(
                     ref={chassisRigidBodyRef}
                     mass={150}
                 >
-                    <primitive
-                        name="LeftHeadlightTarget"
-                        object={leftHeadlightTarget}
-                    />
+                    <primitive name="LeftHeadlightTarget" object={leftHeadlightTarget} position={[10, -0.281, -8.8]} />
                     <spotLight
                         position={[2.5, -0.2, -0.7]}
                         target={leftHeadlightTarget}
-                        angle={0.4}
+                        angle={0.7000000000000013}
                         distance={50}
                         castShadow
                         penumbra={1}
@@ -291,6 +288,6 @@ export const Vehicle = forwardRef<VehicleRef, VehicleProps>(
                     />
                 </group>
             </>
-        )
+        );
     }
 )

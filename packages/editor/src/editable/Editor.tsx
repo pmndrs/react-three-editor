@@ -1,5 +1,9 @@
-import { EditorStoreType } from "./store"
+import { createEditorStore, EditorStoreType } from "./store"
 
 export class Editor {
-  constructor(public store: EditorStoreType, public plugins: any[]) {}
+  store: EditorStoreType
+  constructor(public plugins: any[]) {
+    this.store = createEditorStore()
+  }
+  setRef(element: any, ref: any) {}
 }
