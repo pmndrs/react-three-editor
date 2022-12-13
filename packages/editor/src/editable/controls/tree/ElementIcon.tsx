@@ -10,15 +10,7 @@ export function ElementIcon({
 }: { element: EditableElement } & Omit<ComponentProps<typeof Icon>, "icon">) {
   return (
     <Icon
-      icon={
-        element.ref?.isCamera
-          ? "ph:video-camera-bold"
-          : element.ref?.isLight
-          ? "ph:lightbulb-filament-bold"
-          : element.ref instanceof OrbitControls
-          ? "mdi:orbit-variant"
-          : "ph:cube"
-      }
+      icon={element.icon}
       onClick={(e) =>
         element.editor.setState({
           selected: element

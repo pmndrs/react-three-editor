@@ -1,5 +1,3 @@
-import { EditableElement } from "../../EditableElement"
-import { useInputContext } from "leva/plugin"
 import React from "react"
 import { useToggle } from "../folder/useToggle"
 import {
@@ -74,7 +72,7 @@ function CollapsibleTreeItem({
   visible: boolean
   remeasure: boolean
 }) {
-  const context = useInputContext<{ value: { element: EditableElement } }>()
+  // const context = useInputContext<{ value: { element: EditableElement } }>()
   const { wrapperRef, contentRef } = useToggle(!collapsed)
   const ref = React.useRef<HTMLDivElement>(null)
 

@@ -84,10 +84,9 @@ function useEditableElement(componentType, source, props) {
           }
 
           if (e[parentId]) {
-            e[parentId] = {
-              ...(el.elements[parentId] ?? {}),
-              children: e[parentId]?.children.filter((c: string) => c !== id)
-            }
+            e[parentId].children = e[parentId]?.children.filter(
+              (c: string) => c !== id
+            )
           }
 
           delete e[id]
@@ -120,7 +119,9 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
   let hasRef =
     // @ts-ignore
     typeof Component === "string" ||
-    (Component as any).$$typeof === Symbol.for("react.forward_ref")
+    (Component as any).$$typeof === Symbol.for("react.forward_ref") ||
+    ((Component as any).$$typeof === Symbol.for("react.memo") &&
+      Component["type"]?.["$$typeof"] === Symbol.for("react.forward_ref"))
 
   if (hasRef) {
     return forwardRef(function Editable(props: any, forwardRef) {

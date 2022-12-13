@@ -25,6 +25,7 @@ const transformElements = [
   "directionalLight",
   "meshStandardMaterial",
   "pointLight",
+  "ambientLight",
   "spotLight",
   "primitive",
   "points"

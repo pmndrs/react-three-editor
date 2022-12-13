@@ -106,6 +106,16 @@ export class EditableElement<
     return controls
   }
 
+  get icon() {
+    for (var i = this.editor.plugins.length - 1; i >= 0; i--) {
+      let plugin = this.editor.plugins[i]
+      if (plugin.icon && plugin.applicable(this)) {
+        return plugin.icon(this)
+      }
+    }
+
+    return "ph:cube"
+  }
   async save(client: { save: (data: any) => Promise<void> }) {
     let diffs = Object.values(this.changes).map(({ _source, ...value }) => ({
       value,

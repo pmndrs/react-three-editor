@@ -8,14 +8,7 @@ import { Editor } from "../editable/Editor"
 import { SceneTree } from "./SceneTree"
 import { EditorGizmos } from "./EditorGizmos"
 import { SelectedElement } from "./SelectedElement"
-
-import {
-  transform,
-  meshMaterial,
-  material,
-  orbitControls,
-  directionalLight
-} from "./plugins"
+import { DEFAULT_EDITOR_PLUGINS } from "./plugins"
 
 export const Canvas = forwardRef<
   HTMLCanvasElement,
@@ -35,14 +28,7 @@ export const Canvas = forwardRef<
   ref
 ) {
   const store = useMemo(
-    () =>
-      new Editor(createEditorStore(), [
-        transform,
-        meshMaterial,
-        material,
-        orbitControls,
-        directionalLight
-      ]),
+    () => new Editor(createEditorStore(), DEFAULT_EDITOR_PLUGINS),
     []
   )
   return (
