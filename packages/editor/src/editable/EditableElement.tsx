@@ -1,36 +1,40 @@
 import { StoreType } from "leva/dist/declarations/src/types"
-import { Group, Mesh, Object3D } from "three"
 import React from "react"
 import { Editor } from "./Editor"
 
+type JSXSource = {
+  fileName: string
+  lineNumber: number
+  columnNumber: number
+  moduleName: string
+  componentName: string
+  elementName: string
+}
+
 export class EditableElement<
-  Ref extends Object3D = Object3D
+  Ref extends { name?: string } = any
 > extends EventTarget {
-  propped: boolean = false
+  forwardedRef: boolean = false
   children: string[] = []
   props: any = {}
   render: () => void = () => {}
-  ref?: Object3D | Group | Mesh | Ref
+  ref?: Ref
   dirty: any = false
   store: StoreType | null = null
   changes: Record<string, Record<string, any>> = {}
   editor: Editor = {} as any
   currentProps: any
-
   constructor(
     public id: string,
-    public source: {
-      fileName: string
-      lineNumber: number
-      columnNumber: number
-      moduleName: string
-      componentName: string
-      elementName: string
-    },
-    public type: keyof JSX.IntrinsicElements | React.FC<any>,
+    public source: JSXSource,
+    public type: any,
     public parentId?: string | null
   ) {
     super()
+  }
+
+  get current() {
+    return this.ref
   }
 
   get key() {
@@ -42,6 +46,11 @@ export class EditableElement<
 
   get name() {
     return this.ref?.name?.length ? this.ref.name : this.key
+  }
+
+  setRef(el: Ref) {
+    this.ref = el
+    this.editor.setRef(this, el)
   }
 
   get elementName() {
@@ -88,7 +97,7 @@ export class EditableElement<
 
     this.addChange(this, arg0, arg1)
 
-    if (this.propped) {
+    if (this.forwardedRef) {
       this.props[arg0] = arg1
       this.render()
     }
@@ -98,7 +107,7 @@ export class EditableElement<
     let controls = {}
     let entity = this
     this.editor.plugins.forEach((plugin) => {
-      if (plugin.applicable(entity)) {
+      if (plugin.controls && plugin.applicable(entity)) {
         Object.assign(controls, plugin.controls(entity))
       }
     })
@@ -106,6 +115,16 @@ export class EditableElement<
     return controls
   }
 
+  get icon() {
+    for (var i = this.editor.plugins.length - 1; i >= 0; i--) {
+      let plugin = this.editor.plugins[i]
+      if (plugin.icon && plugin.applicable(this)) {
+        return plugin.icon(this)
+      }
+    }
+
+    return "ph:cube"
+  }
   async save(client: { save: (data: any) => Promise<void> }) {
     let diffs = Object.values(this.changes).map(({ _source, ...value }) => ({
       value,
