@@ -15,7 +15,7 @@ export function useElementControls(
     "entity",
     {
       [entity.id]: element({
-        entity,
+        element: entity,
         panel: true,
         collapsed: false,
         children: false

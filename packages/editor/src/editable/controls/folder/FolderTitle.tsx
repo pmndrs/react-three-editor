@@ -1,6 +1,5 @@
 import React from "react"
 import { StyledTitle } from "./StyledFolder"
-import { Components } from "leva/plugin"
 import { Chevron } from "./Chevron"
 
 export type FolderTitleProps = {

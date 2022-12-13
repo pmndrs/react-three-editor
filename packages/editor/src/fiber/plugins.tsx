@@ -1,5 +1,12 @@
 import { OrbitControls } from "three-stdlib"
-import { DirectionalLight, Material, Mesh, Object3D } from "three"
+import {
+  DirectionalLight,
+  Material,
+  Mesh,
+  MeshBasicMaterial,
+  MeshStandardMaterial,
+  Object3D
+} from "three"
 import { folder } from "leva"
 import { prop } from "./controls/prop"
 import { EditableElement } from "../editable/EditableElement"
@@ -42,17 +49,23 @@ export const meshMaterial = {
   controls: (entity: EditableElement) => {
     return {
       material: folder({
-        color: prop.color({
-          element: entity,
-          path: ["ref", "material", "color"]
-        }),
+        ...(entity instanceof MeshStandardMaterial ||
+        entity.ref.material instanceof MeshBasicMaterial
+          ? {
+              color: prop.color({
+                element: entity,
+                path: ["ref", "material", "color"]
+              }),
+              map: prop.texture({
+                element: entity,
+                path: ["ref", "material", "map"]
+              })
+            }
+          : {}),
+
         wireframe: prop.bool({
           element: entity,
           path: ["ref", "material", "wireframe"]
-        }),
-        diffuseMap: prop.texture({
-          element: entity,
-          path: ["ref", "material", "map"]
         })
       })
     }

@@ -252,7 +252,7 @@ export default function App() {
             <h1>Journey 28 - Raging Sea</h1>
             <Canvas camera={{ position: [3, 3, 3] }}>
                 <Water
-                    position={[2.959, 1.124, 0.058]}
+                    position={[-2.48, 0.264, 4.896]}
                     rotation={[-2.051, -0.281, 0.32]}
                     scale={[0.9, 0.9, 0.9]}
                 />

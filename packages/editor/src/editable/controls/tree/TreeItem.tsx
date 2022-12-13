@@ -74,21 +74,23 @@ function CollapsibleTreeItem({
   visible: boolean
   remeasure: boolean
 }) {
-  const context = useInputContext<{ value: { entity: EditableElement } }>()
-  const { wrapperRef, contentRef } = useToggle(!collapsed, context.value.entity)
+  const context = useInputContext<{ value: { element: EditableElement } }>()
+  const { wrapperRef, contentRef } = useToggle(!collapsed)
   const ref = React.useRef<HTMLDivElement>(null)
 
-  React.useLayoutEffect(() => {
-    if (remeasure) {
-      let el = ref.current?.parentElement?.parentElement?.parentElement
-      if (!el) {
-        return
-      }
-      const { height } = contentRef.current!.getBoundingClientRect()
-      console.log(el, height)
-      if (height > 0) el.style.height = height + 20 + "px"
-    }
-  }, [context.value.entity])
+  // React.useEffect(() => {
+  //   if (remeasure) {
+  //     let el = ref.current?.parentElement?.parentElement?.parentElement
+  //     let el2 = ref.current?.parentElement?.parentElement
+  //     console.log(el, el2, wrapperRef.current, ref.current?.parentElement)
+  //     if (!el) {
+  //       return
+  //     }
+  //     const { height } = ref.current?.parentElement!.getBoundingClientRect()
+  //     console.log(height)
+  //     if (height > 0) el.style.height = height + 20 + "px"
+  //   }
+  // }, [context.value.element, remeasure])
 
   return (
     <StyledFolder ref={ref}>
