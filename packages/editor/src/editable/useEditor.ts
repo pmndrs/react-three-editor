@@ -3,7 +3,7 @@ import { EqualityChecker, StateSelector } from "zustand"
 import { EditorContext } from "./contexts"
 import { EditorStoreStateType } from "./store"
 
-export const useEditor = <U>(
+export const useEditorStore = <U>(
   selector: StateSelector<EditorStoreStateType, U>,
   equalityChecker?: EqualityChecker<U>
 ): U => {
