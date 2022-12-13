@@ -113,7 +113,7 @@ function useEditableElement(
   editableElement.parentId = parent?.id
   editableElement.type = componentType
   editableElement.source = source
-  editableElement.currentProps = props
+  editableElement.currentProps = { ...props }
   editableElement.render = render
   editableElement.store = store
   editableElement.editor = editor!
@@ -170,12 +170,11 @@ function useEditableElement(
 }
 
 function useEditableRef(editableElement: EditableElement) {
-  const ref = useRef()
-  useLayoutEffect(() => {
-    editableElement.setRef(ref.current)
-  }, [editableElement, ref])
-
-  return ref
+  return (el: any) => {
+    if (el) {
+      editableElement.setRef(el)
+    }
+  }
 }
 
 function Helpers() {

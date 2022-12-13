@@ -87,9 +87,17 @@ export function ElementTransformControls({
       window.removeEventListener("keyup", keyUp)
     }
   })
+  const [object, setObject] = React.useState(element.ref!)
+
+  React.useEffect(() => {
+    element.addEventListener("ref-changed", (e) => {
+      setObject(element.ref)
+    })
+  }, [element])
+
   return (
     <TransformControls
-      object={element.ref!}
+      object={object}
       ref={mergeRefs([
         ref,
         (r: TransformControlsImpl) => {

@@ -1,7 +1,7 @@
-import { OrbitControls } from "three-stdlib"
 import {
   AmbientLight,
   DirectionalLight,
+  DirectionalLightHelper,
   Material,
   Mesh,
   MeshBasicMaterial,
@@ -16,7 +16,7 @@ import { prop } from "./controls/prop"
 import { EditableElement } from "../editable/EditableElement"
 import { TransformHelper } from "./TransformHelper"
 import React from "react"
-import { useHelper } from "@react-three/drei"
+import { useHelper, OrbitControls } from "@react-three/drei"
 
 export const transform = {
   applicable: (entity: EditableElement) => entity.ref instanceof Object3D,
@@ -62,7 +62,7 @@ export const meshMaterial = {
   controls: (entity: EditableElement) => {
     return {
       material: folder({
-        ...(entity instanceof MeshStandardMaterial ||
+        ...(entity.ref.material instanceof MeshStandardMaterial ||
         entity.ref.material instanceof MeshBasicMaterial
           ? {
               color: prop.color({
@@ -97,13 +97,21 @@ export const material = {
         wireframe: prop.bool({
           element: entity,
           path: ["ref", "wireframe"]
+        }),
+        map: prop.texture({
+          element: entity,
+          path: ["ref", "map"]
+        }),
+        displacementMap: prop.texture({
+          element: entity,
+          path: ["ref", "displacementMap"]
         })
       })
     }
   }
 }
 export const orbitControls = {
-  applicable: (entity: EditableElement) => entity.ref instanceof OrbitControls,
+  applicable: (entity: EditableElement) => entity.type === OrbitControls,
   icon: (entity) => "mdi:orbit-variant",
   controls: (entity: EditableElement) => {
     return {
@@ -153,6 +161,10 @@ export const directionalLight = {
         path: ["ref", "intensity"]
       })
     }
+  },
+  helper: ({ element }: { element: EditableElement }) => {
+    useHelper(element, DirectionalLightHelper)
+    return null
   }
 }
 
@@ -243,5 +255,75 @@ export const DEFAULT_EDITOR_PLUGINS = [
   directionalLight,
   pointLight,
   ambientLight,
-  spotLight
+  spotLight,
+  {
+    applicable: (entity: EditableElement) =>
+      entity.type !== "string" && entity.type.controls,
+    controls: (entity: EditableElement) => {
+      return Object.fromEntries(
+        Object.entries(entity.type.controls).map(
+          ([k, { type, value, ...v }]) => {
+            return [
+              k,
+              prop[type]({
+                ...v,
+                element: entity,
+                path: ["currentProps", k],
+                default: value
+              })
+            ]
+          }
+        )
+      )
+    }
+  }
+  // {
+  //   applicable: (entity: EditableElement) =>
+  //     !entity.forwardedRef || entity.type !== "string",
+  //   controls: (entity: EditableElement) => {
+  //     return Object.fromEntries(
+  //       Object.entries(entity.currentProps)
+  //         .filter(
+  //           ([e]) =>
+  //             ![
+  //               "position",
+  //               "rotation",
+  //               "scale",
+  //               "_source",
+  //               "children",
+  //               "ref",
+  //               "key"
+  //             ].includes(e)
+  //         )
+  //         .map(([k, v]) => {
+  //           return [
+  //             k,
+  //             prop(
+  //               {
+  //                 get(o, p) {
+  //                   return o[p] ?? v
+  //                 },
+  //                 set(o, p) {
+  //                   o[p] = v
+  //                   return true
+  //                 }
+  //               },
+  //               {
+  //                 ...(entity.type.controls?.[k] ?? {}),
+  //                 element: entity,
+  //                 path: ["currentProps", k],
+  //                 default: v
+  //               }
+  //             )
+  //           ]
+  //         })
+  //     )
+  //   }
+  // }
 ]
+
+export function addPlugin(plugin: any) {
+  if (!DEFAULT_EDITOR_PLUGINS.includes(plugin)) {
+    DEFAULT_EDITOR_PLUGINS.push(plugin)
+  }
+}

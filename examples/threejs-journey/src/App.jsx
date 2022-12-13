@@ -4,20 +4,48 @@ import { Canvas, extend, useFrame } from '@react-three/fiber'
 import { OrbitControls, Sphere, Sparkles, shaderMaterial, useGLTF, useTexture } from '@react-three/drei'
 import glsl from 'babel-plugin-glsl/macro'
 
+Sparkles.controls = {
+  count: {
+    type: 'number',
+    step: 1,
+  },
+  speed: {
+    type: 'number',
+    step: 1,
+  },
+}
+
 export const App = ({ scale = Array.from({ length: 50 }, () => 0.5 + Math.random() * 4) }) => (
   <Canvas camera={{ fov: 45, position: [-4, 2, -4] }}>
-    <Sparkles count={scale.length} size={scale} position={[1.369, 0.174, 2.717]} scale={[4, 1.5, 4]} speed={0.3} />
+    <Sparkles count={50} size={scale} position={[-1.931, 0.174, -0.725]} scale={[1, 1, 1]} speed={1} />
     {/* <Model /> */}
     <OrbitControls makeDefault />
-    <mesh position={[6.948, -2.158, 0.465]}>
-      <boxBufferGeometry attach="geometry" />
-      <meshStandardMaterial attach="material" color="red" />
-    </mesh>
-    <directionalLight position={[4.224, 1.912, 3.046]} />
+    <Cont position={[6.948, -2.158, 0.465]} color={'#335d86'} />
+    <directionalLight position={[-0.245, 1.232, 3.046]} color={'rgb(255, 253, 253)'} intensity={4.2} />
     <ambientLight />
-    <Sphere position={[8.817, 1.557, 5.818]} />
+    <Sphere position={[-0.987, -0.684, 4.8]} />
   </Canvas>
 )
+
+function Cont(props) {
+  return (
+    <mesh {...props}>
+      <boxBufferGeometry attach="geometry" args={[10, 10, 10, 100, 100, 100]} />
+      <meshStandardMaterial attach="material" color={props.color} />
+    </mesh>
+  )
+}
+
+Cont.controls = {
+  color: {
+    value: '#abcdef',
+    type: 'colorstring',
+  },
+  'material-wireframe': {
+    value: true,
+    type: 'bool',
+  },
+}
 
 function Model(props) {
   const portalMaterial = useRef()

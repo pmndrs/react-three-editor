@@ -6,7 +6,7 @@ import {
     RigidBodyProps,
     useRapier,
 } from '@react-three/rapier'
-import { useControls as useLeva } from 'leva'
+import { useControls as useLeva } from '@react-three/editor/fiber'
 import {
     forwardRef,
     RefObject,
@@ -217,7 +217,11 @@ export const Vehicle = forwardRef<VehicleRef, VehicleProps>(
                     ref={chassisRigidBodyRef}
                     mass={150}
                 >
-                    <primitive name="LeftHeadlightTarget" object={leftHeadlightTarget} position={[10, -0.281, -8.8]} />
+                    <primitive
+                        name="LeftHeadlightTarget"
+                        object={leftHeadlightTarget}
+                        position={[10, -0.281, -8.8]}
+                    />
                     <spotLight
                         position={[2.5, -0.2, -0.7]}
                         target={leftHeadlightTarget}
@@ -288,6 +292,6 @@ export const Vehicle = forwardRef<VehicleRef, VehicleProps>(
                     />
                 </group>
             </>
-        );
+        )
     }
 )

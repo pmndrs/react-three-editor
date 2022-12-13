@@ -85,7 +85,7 @@ export function TreeElement({
           }}
         >
           {element.children
-            .filter((c) => c !== element.id)
+            .filter((c) => c !== element.id && state[c])
             .map((c) => (
               <TreeElement
                 element={state[c]}

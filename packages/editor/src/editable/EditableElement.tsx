@@ -51,6 +51,7 @@ export class EditableElement<
   setRef(el: Ref) {
     this.ref = el
     this.editor.setRef(this, el)
+    this.dispatchEvent(new CustomEvent("ref-changed", {}))
   }
 
   get elementName() {
@@ -97,7 +98,7 @@ export class EditableElement<
 
     this.addChange(this, arg0, arg1)
 
-    if (this.forwardedRef) {
+    if (!this.forwardedRef || this.type !== "string") {
       this.props[arg0] = arg1
       this.render()
     }
@@ -135,5 +136,6 @@ export class EditableElement<
       await client.save(diff)
     }
     this.store?.setSettingsAtPath("save", { disabled: true })
+    this.changes = {}
   }
 }
