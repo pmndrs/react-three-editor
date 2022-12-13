@@ -116,12 +116,12 @@ export const directionalLight = {
     return {
       color: prop.color({
         element: entity,
-        path: ["color"]
+        path: ["ref", "color"]
       }),
       intensity: prop.number({
         element: entity,
         step: 0.1,
-        path: ["intensity"]
+        path: ["ref", "intensity"]
       })
     }
   }
