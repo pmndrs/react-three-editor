@@ -1,6 +1,6 @@
 import { TransformControls } from "@react-three/drei"
 import { mergeRefs } from "leva/plugin"
-import React from "react"
+import React, { useContext } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
 import { Event, MathUtils, Object3D, Vector3Tuple } from "three"
 import { TransformControls as TransformControlsImpl } from "three-stdlib"
@@ -48,8 +48,8 @@ export function ElementTransformControls({
   )
   useHotkeys("s", () => element.changed && element.save())
   useHotkeys("=", () => ref.current.setSize((ref.current as any).size + 0.1))
-  useHotkeys("meta+z", () => editor?.commandManager.undo() )
-  useHotkeys("meta+y", () => editor?.commandManager.redo() )
+  useHotkeys("meta+z", () => editor?.commandManager.undo())
+  useHotkeys("meta+y", () => editor?.commandManager.redo())
 
 
   const updateElementTransforms = React.useCallback(

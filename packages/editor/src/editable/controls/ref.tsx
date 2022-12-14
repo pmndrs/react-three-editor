@@ -7,9 +7,9 @@ import { OpenInEditorButton } from "./tree/OpenInEditorButton"
 
 export function ElementRef({ element }: { element: EditableElement }) {
 
-  const onClick = useCallback( ( ) => {
+  const onClick = useCallback(() => {
     element.editor.select( element )
-  }, [] )
+  }, [])
 
   return (
     <>
