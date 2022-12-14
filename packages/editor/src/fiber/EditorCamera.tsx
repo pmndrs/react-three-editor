@@ -4,7 +4,7 @@ import React, { useEffect, useContext } from "react"
 import { useThree } from "@react-three/fiber"
 import { editable } from "../editable/editable"
 import { usePersistedControls } from "../editable/controls/usePersistedControls"
-import { EditorContext, useEditor } from "../editable/Editor"
+import { EditorContext, useEditorStore } from "../editable/Editor"
 
 window.leva = levaStore
 export function EditorCamera() {
@@ -19,7 +19,7 @@ export function EditorCamera() {
     far: { value: 1000, min: 0.1, max: 10000 }
   })
 
-  const selectedElement = useEditor((s) => s.selectedId)
+  const selectedElement = useEditorStore((s) => s.selectedId)
   const editor = useContext(EditorContext)
   const [p, set] = usePersistedControls("editor.scene", {
     selected: {

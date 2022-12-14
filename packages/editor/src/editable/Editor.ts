@@ -64,7 +64,7 @@ export class Editor {
     }
     // let element = this.store.getState().elements[id]
     this.store.setState({
-      selectedId: id,
+      selectedId: id
       // selectedKey: element.key
     })
   }
@@ -83,7 +83,7 @@ export class Editor {
 
 export const EditorContext = createContext<Editor | null>(null)
 
-export const useEditor = <U>(
+export const useEditorStore = <U>(
   selector: StateSelector<EditorStoreStateType, U>,
   equalityChecker?: EqualityChecker<U>
 ): U => {

@@ -4,10 +4,12 @@ import * as THREE from "three"
 import { ElementTransformControls } from "./ElementTransformControls"
 import { useElementControls } from "../editable/controls/useElementControls"
 import { EditableElement } from "../editable/EditableElement"
-import { useEditor } from "../editable/Editor"
+import { useEditorStore } from "../editable/Editor"
 
 export function SelectedElement() {
-  const selectedElement = useEditor((state) => state.elements[state.selectedId])
+  const selectedElement = useEditorStore((state) =>
+    state.selectedId ? state.elements[state.selectedId] : null
+  )
   console.log(selectedElement)
   return selectedElement ? (
     <React.Fragment key={selectedElement.id}>
