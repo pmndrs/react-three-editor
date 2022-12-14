@@ -1,10 +1,12 @@
 import { TransformControls } from "@react-three/drei"
 import { mergeRefs } from "leva/plugin"
-import React from "react"
+import React, { useContext } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
 import { Event, MathUtils, Object3D, Vector3Tuple } from "three"
 import { TransformControls as TransformControlsImpl } from "three-stdlib"
 import { eq } from "../editable/controls/eq"
+import { EditorContext } from "../editable/Editor"
+import { SetTransformControls } from "../editable/commands"
 import { EditableElement } from "../editable/EditableElement"
 
 const serializeTransform = (
@@ -26,6 +28,17 @@ export function ElementTransformControls({
   element
 }: ElementTransformControlsProps) {
   const ref = React.useRef<TransformControlsImpl>(null!)
+  const draggingRef = React.useRef<boolean>(false)
+  const editor = useContext( EditorContext )
+  const oldTransform = React.useRef<{
+    position: Vector3Tuple,
+    rotation: Vector3Tuple,
+    scale: Vector3Tuple
+  }>({
+    position: [0,0,0],
+    rotation: [0,0,0],
+    scale: [0,0,0]
+  })
 
   useHotkeys("w", () => ref.current.setMode("translate"))
   useHotkeys("e", () => ref.current.setMode("rotate"))
@@ -35,7 +48,9 @@ export function ElementTransformControls({
   )
   useHotkeys("s", () => element.changed && element.save())
   useHotkeys("=", () => ref.current.setSize((ref.current as any).size + 0.1))
-  const draggingRef = React.useRef<boolean>(false)
+  useHotkeys("meta+z", () => editor?.commandManager.undo())
+  useHotkeys("meta+y", () => editor?.commandManager.redo())
+
 
   const updateElementTransforms = React.useCallback(
     (object: Object3D, mode: "translate" | "rotation" | "scale") => {
@@ -85,8 +100,13 @@ export function ElementTransformControls({
   React.useEffect(() => {
     if (ref.current) {
       const control = ref.current
-      const draggingChanged = ({ value }: any) => {
+      const draggingChanged = ({ value, target }: any) => {
         draggingRef.current = !!value
+        if ( !draggingRef.current ) {
+          editor?.commandManager.execute( new SetTransformControls( editor, element, serializeTransform(target.object), Object.assign({}, oldTransform.current) ) )
+        } else {
+          oldTransform.current = serializeTransform(target.object)
+        }
       }
       control.addEventListener("dragging-changed", draggingChanged)
       return () => {

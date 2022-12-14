@@ -9,7 +9,7 @@ export function r3f() {
       babel: {
         plugins: [process.env.NODE_ENV === "development" && babel].filter(
           Boolean
-        )
+        ) as any
       }
     })
   ].filter(Boolean)

@@ -86,7 +86,7 @@ export const TreeWrapper = React.memo(
               // @ts-expect-error
               <Control
                 key={value.path}
-                valueKey={value.valueKey}
+                valueKey={(value as any).valueKey}
                 path={value.path}
               />
             ) : (

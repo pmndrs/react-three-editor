@@ -3,6 +3,7 @@ import { EqualityChecker, StateSelector } from "zustand"
 import { EditableElement } from "./EditableElement"
 
 import create from "zustand"
+import { CommandManager } from "./CommandManager"
 
 export type EditorStoreStateType = {
   selectedId: null | string
@@ -29,6 +30,8 @@ type Diff = {
 
 export class Editor {
   store: EditorStoreType
+
+  commandManager: CommandManager = new CommandManager()
 
   constructor(
     public plugins: any[],

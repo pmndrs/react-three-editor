@@ -81,7 +81,7 @@ export class EditableElement<
   }
 
   get changed() {
-    let data = this.store?.getData()
+    let data = this.store?.getData()!
     console.log(data.save)
     if (data && data["save"]) {
       return !data["save"].settings.disabled
