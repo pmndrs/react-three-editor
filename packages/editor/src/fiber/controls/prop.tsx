@@ -201,7 +201,10 @@ const textureT: {
     obj.needsUpdate = true
   },
   serialize(obj: any, prop: string, value: any) {
-    return undefined
+    return {
+      src: value,
+      loader: "TextureLoader"
+    }
   }
 }
 

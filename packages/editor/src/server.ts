@@ -21,6 +21,33 @@ export default function editor(): Plugin {
         }
       }
     })
+
+    server.middlewares.use("/__editor/save", async (req, res) => {
+      console.log(req.url)
+      const { default: formidable, errors } = await import("formidable")
+      formidable({
+        multiples: true,
+        keepExtensions: true,
+        filename: req.url.slice(1)
+      }).parse(req, (err, fields, files) => {
+        if (err) {
+          // example to check for a very specific error
+          if (err.code === errors.maxFieldsExceeded) {
+          }
+          res.writeHead(err.httpCode || 400, { "Content-Type": "text/plain" })
+          res.end(String(err))
+          return
+        }
+
+        let p = "public/textures/" + req.url.slice(1)
+        if (fs.existsSync(p)) {
+          fs.removeSync(p)
+        }
+        console.log(fs.moveSync(files["file"].filepath, p))
+        res.writeHead(200, { "Content-Type": "application/json" })
+        res.end(JSON.stringify("/textures/" + req.url.slice(1), null, 2))
+      })
+    })
   }
 
   return {
@@ -78,12 +105,21 @@ function transform(data: any) {
 
                 let value = data.value[prop]
 
+                console.log(value)
+
                 let expr = Array.isArray(value)
                   ? t.jsxExpressionContainer(
                       t.arrayExpression([
                         t.numericLiteral(value[0]),
                         t.numericLiteral(value[1]),
                         t.numericLiteral(value[2])
+                      ])
+                    )
+                  : typeof value === "object"
+                  ? t.jsxExpressionContainer(
+                      t.callExpression(t.identifier("useLoader"), [
+                        t.identifier("TextureLoader"),
+                        t.stringLiteral(value.src)
                       ])
                     )
                   : typeof value === "string"

@@ -1,6 +1,6 @@
 import { useControls, folder } from "leva"
 import { useEffect } from "react"
-import { Schema } from "leva/dist/declarations/src/types"
+import { Schema, SchemaToValues } from "leva/dist/declarations/src/types"
 
 let editorName = "r3f-editor"
 
@@ -37,11 +37,29 @@ function manageProps(folderName, props: any) {
   })
 }
 
-export function usePersistedControls<A extends string, T extends Schema>(
-  folderName: A,
+// <S extends Schema, F extends SchemaOrFn<S> | string, G extends SchemaOrFn<S>>(schemaOrFolderName: F, settingsOrDepsOrSchema?: HookSettings | React.DependencyList | G, depsOrSettingsOrFolderSettings?: React.DependencyList | HookSettings | FolderSettings, depsOrSettings?: React.DependencyList | HookSettings, depsOrUndefined?: React.DependencyList): HookReturnType<F, G>
+
+type SchemaOrFn<S extends Schema = Schema> = S | (() => S)
+type FunctionReturnType<S extends Schema> = [
+  SchemaToValues<S>,
+  (value: {
+    [K in keyof Partial<SchemaToValues<S, true>>]: SchemaToValues<S, true>[K]
+  }) => void,
+  <T extends keyof SchemaToValues<S, true>>(
+    path: T
+  ) => SchemaToValues<S, true>[T]
+]
+type ReturnType<F extends SchemaOrFn> = F extends SchemaOrFn<infer S>
+  ? F extends Function
+    ? FunctionReturnType<S>
+    : SchemaToValues<S>
+  : never
+
+export function usePersistedControls<S extends Schema, T extends SchemaOrFn<S>>(
+  folderName: string,
   props: T,
   deps = []
-) {
+): ReturnType<() => S> {
   const [values, set] = useControls(() => {
     // Object.keys(props).forEach((key) => {
     //   let read = JSON.parse(
@@ -80,5 +98,5 @@ export function usePersistedControls<A extends string, T extends Schema>(
     })
   }, [folderName, values])
 
-  return [values, set] as const
+  return [values, set] as any
 }
