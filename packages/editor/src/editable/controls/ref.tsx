@@ -1,21 +1,22 @@
 import { Components, createPlugin, useInputContext } from "leva/plugin"
-import React from "react"
+import React, { useCallback } from "react"
 import { EditableElement } from "../EditableElement"
 import { StyledFolder, StyledTitle } from "./folder/StyledFolder"
 import { ElementIcon } from "./tree/ElementIcon"
 import { OpenInEditorButton } from "./tree/OpenInEditorButton"
 
 export function ElementRef({ element }: { element: EditableElement }) {
+
+  const onClick = useCallback( ( ) => {
+    element.editor.select( element )
+  }, [] )
+
   return (
     <>
       <ElementIcon element={element} />
       <div
         style={{ marginLeft: "4px" }}
-        onClick={(e) =>
-          element.editor.store.setState({
-            selectedId: element.id
-          })
-        }
+        onClick={onClick}
       >
         {element.displayName}
       </div>
