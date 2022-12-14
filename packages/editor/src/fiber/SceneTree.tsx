@@ -1,5 +1,5 @@
 import { folder, useControls } from "leva"
-import { useEditor } from "../editable/useEditor"
+import { useEditor } from "../editable/Editor"
 import { tree } from "../editable/controls/tree/tree"
 
 export function SceneTree() {

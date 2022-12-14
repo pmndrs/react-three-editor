@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react"
 import React from "react"
 import { EditableElement } from "../editable/EditableElement"
 import { mergeRefs } from "leva/plugin"
-import { eq } from "../editable/eq"
+import { eq } from "../editable/controls/eq"
 export function ElementTransformControls({
   element
 }: {

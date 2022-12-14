@@ -220,7 +220,7 @@ export const Vehicle = forwardRef<VehicleRef, VehicleProps>(
                     <primitive
                         name="LeftHeadlightTarget"
                         object={leftHeadlightTarget}
-                        position={[10, -0.281, -8.8]}
+                        position={[34.178, 1.381, -17.246]}
                     />
                     <spotLight
                         position={[2.5, -0.2, -0.7]}
@@ -292,6 +292,6 @@ export const Vehicle = forwardRef<VehicleRef, VehicleProps>(
                     />
                 </group>
             </>
-        )
+        );
     }
 )

@@ -29,6 +29,18 @@ export const ref = createPlugin({
   component: () => {
     const context = useInputContext<{ value: EditableElement }>()
 
+    if (!context.value) {
+      return (
+        <Components.Row input>
+          <Components.Label>{context.key}</Components.Label>
+          <StyledFolder>
+            <StyledTitle>
+              {/* <ElementRef element={context.value} key={context.value.id} /> */}
+            </StyledTitle>
+          </StyledFolder>
+        </Components.Row>
+      )
+    }
     return (
       <Components.Row input>
         <Components.Label>{context.key}</Components.Label>

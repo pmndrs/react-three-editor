@@ -1,6 +1,7 @@
 import { useCreateStore } from "leva"
 import { mergeRefs } from "leva/plugin"
 import React, {
+  createContext,
   forwardRef,
   useCallback,
   useContext,
@@ -8,8 +9,8 @@ import React, {
   useId,
   useMemo
 } from "react"
-import { EditorContext, EditableElementContext } from "./contexts"
 import { EditableElement, JSXSource } from "./EditableElement"
+import { EditorContext } from "./Editor"
 
 type Elements = {
   [K in keyof JSX.IntrinsicElements]: React.FC<
@@ -18,6 +19,11 @@ type Elements = {
     }
   >
 }
+
+export const EditableElementContext = createContext<EditableElement | null>(
+  null
+)
+
 const memo = new WeakMap() as unknown as WeakMap<Elements, any> & Elements
 
 export const Editable = forwardRef(
@@ -122,6 +128,10 @@ function useEditableElement(
   let parentId = parent?.id!
 
   useEffect(() => {
+    // editor?.addElement(editableElement, parent)
+    // return () => {
+    //   editor?.removeElement(editableElement, parent)
+    // }
     if (parentId) {
       editor?.store?.setState((el) => ({
         elements: {

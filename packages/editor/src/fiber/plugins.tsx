@@ -98,13 +98,37 @@ export const material = {
           element: entity,
           path: ["ref", "wireframe"]
         }),
-        map: prop.texture({
+        texture: prop.texture({
           element: entity,
           path: ["ref", "map"]
         }),
-        displacementMap: prop.texture({
-          element: entity,
-          path: ["ref", "displacementMap"]
+        displacement: folder({
+          map: prop.texture({
+            element: entity,
+            path: ["ref", "displacementMap"]
+          }),
+          scale: prop.number({
+            element: entity,
+            path: ["ref", "displacementScale"]
+          }),
+          bias: prop.number({
+            element: entity,
+            path: ["ref", "displacementBias"]
+          })
+        }),
+        bump: folder({
+          map: prop.texture({
+            element: entity,
+            path: ["ref", "displacementMap"]
+          }),
+          scale: prop.number({
+            element: entity,
+            path: ["ref", "displacementScale"]
+          }),
+          bias: prop.number({
+            element: entity,
+            path: ["ref", "displacementBias"]
+          })
         })
       })
     }
@@ -112,7 +136,7 @@ export const material = {
 }
 export const orbitControls = {
   applicable: (entity: EditableElement) => entity.type === OrbitControls,
-  icon: (entity) => "mdi:orbit-variant",
+  icon: (entity: EditableElement) => "mdi:orbit-variant",
   controls: (entity: EditableElement) => {
     return {
       target: prop.ref({
@@ -250,17 +274,19 @@ const propControls = {
     entity.type !== "string" && entity.type.controls,
   controls: (entity: EditableElement) => {
     return Object.fromEntries(
-      Object.entries(entity.type.controls).map(([k, { type, value, ...v }]) => {
-        return [
-          k,
-          prop[type]({
-            ...v,
-            element: entity,
-            path: ["currentProps", k],
-            default: value
-          })
-        ]
-      })
+      Object.entries(entity.type.controls).map(
+        ([k, { type, value, ...v }]: any) => {
+          return [
+            k,
+            prop[type as keyof typeof prop]({
+              ...v,
+              element: entity,
+              path: ["currentProps", k],
+              default: value
+            })
+          ]
+        }
+      )
     )
   }
 }

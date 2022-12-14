@@ -1,13 +1,13 @@
 import { levaStore } from "leva"
 import React from "react"
 import * as THREE from "three"
-import { useEditor } from "../editable/useEditor"
 import { ElementTransformControls } from "./ElementTransformControls"
 import { useElementControls } from "../editable/controls/useElementControls"
 import { EditableElement } from "../editable/EditableElement"
+import { useEditor } from "../editable/Editor"
 
 export function SelectedElement() {
-  const selectedElement = useEditor((state) => state.selected)
+  const selectedElement = useEditor((state) => state.elements[state.selected])
   console.log(selectedElement)
   return selectedElement ? (
     <React.Fragment key={selectedElement.id}>
@@ -26,6 +26,6 @@ export function ElementControls({
   element: EditableElement
   store: typeof levaStore
 }) {
-  useElementControls(element, store)
+  useElementControls("entity", element, { store, order: -1 })
   return null
 }

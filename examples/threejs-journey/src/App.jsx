@@ -17,23 +17,24 @@ Sparkles.controls = {
 
 export const App = ({ scale = Array.from({ length: 50 }, () => 0.5 + Math.random() * 4) }) => (
   <Canvas camera={{ fov: 45, position: [-4, 2, -4] }}>
-    <Sparkles count={50} size={scale} position={[-1.931, 0.174, -0.725]} scale={[1, 1, 1]} speed={1} />
-    {/* <Model /> */}
+    <Sparkles count={50} size={scale} position={[21.093, 0.174, -0.725]} scale={[1, 1, 1]} speed={1} />
     <OrbitControls makeDefault />
     <Cont position={[6.948, -2.158, 0.465]} color={'#335d86'} />
-    <directionalLight position={[-0.245, 1.232, 3.046]} color={'rgb(255, 253, 253)'} intensity={4.2} />
+    <directionalLight position={[3.487, 0.363, 12.014]} color={"rgb(219, 45, 45)"} intensity={15.2} />
     <ambientLight />
-    <Sphere position={[-0.987, -0.684, 4.8]} />
+    {/* <Sphere position={[2.144, -0.885, 1.568]}>
+      <meshStandardMaterial />
+    </Sphere> */}
   </Canvas>
 )
 
 function Cont(props) {
   return (
-    <mesh {...props}>
+    <mesh {...props} position={[-6.222, -28.317, -4.05]}>
       <boxBufferGeometry attach="geometry" args={[10, 10, 10, 100, 100, 100]} />
       <meshStandardMaterial attach="material" color={props.color} />
     </mesh>
-  )
+  );
 }
 
 Cont.controls = {
