@@ -72,7 +72,7 @@ export function TreeElement({
               marginLeft: 2
             }}
             onClick={(e) => (
-              setVisible((v) => !v), (element.visible = !element.visible)
+              setVisible((v: boolean) => !v), (element.visible = !element.visible)
             )}
           />
         </>

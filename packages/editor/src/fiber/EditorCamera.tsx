@@ -5,7 +5,10 @@ import { useThree } from "@react-three/fiber"
 import { editable } from "../editable/editable"
 import { usePersistedControls } from "../editable/controls/usePersistedControls"
 import { EditorContext, useEditorStore } from "../editable/Editor"
+import { Camera, Event } from "three"
+import { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 
+// @ts-ignore
 window.leva = levaStore
 export function EditorCamera() {
   const [props] = usePersistedControls("editor.camera", {
@@ -45,7 +48,7 @@ export function EditorCamera() {
 
   const camera = useThree((c) => c.camera)
 
-  const ref = React.useRef()
+  const ref = React.useRef<Camera>(null!)
 
   useEffect(() => {
     if (!ref.current) {
@@ -56,12 +59,11 @@ export function EditorCamera() {
 
   // useHelper(ref, CameraHelper)
   const controls = useThree((c) => c.controls)
-  const ref2 = React.useRef()
+  const ref2 = React.useRef<OrbitControlsImpl>(null!)
 
   useEffect(() => {
-    function update(e) {
+    function update(e: Event) {
       if (props.enabled) {
-        console.log(e.target.object.position)
         levaStore.setValueAtPath(
           "editor.camera.position",
           e.target.object.position.toArray(),

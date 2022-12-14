@@ -8,7 +8,7 @@ import {
   Remove
 } from "../../editable/controls/image"
 import { useDropzone } from "react-dropzone"
-import { useCallback } from "react"
+import { MouseEvent, useCallback } from "react"
 import React from "react"
 import { usePopin } from "../../editable/controls/usePopin"
 
@@ -31,7 +31,7 @@ export const texture = createPlugin({
     )
 
     const clear = useCallback(
-      (e: Event) => {
+      (e: MouseEvent) => {
         e.stopPropagation()
         onUpdate(undefined)
       },

@@ -183,6 +183,7 @@ const textureT: {
   set: (obj: any, prop: string, value: any) => void
   control?: any
   init?: ((obj: any, prop: string, value: any) => void) | undefined
+  serialize( obj: any, prop: string, value: any ): any
 } = {
   control: texture,
   get(obj: any, prop: string) {

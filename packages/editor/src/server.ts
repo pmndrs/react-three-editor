@@ -6,13 +6,13 @@ import gen from "@babel/generator"
 import { parse, print } from "@vinxi/recast"
 import { createRPCServer } from "vite-dev-rpc"
 
-let justEdited = {}
+let justEdited: Record<string, boolean> = {}
 
 export default function editor(): Plugin {
   let config: ResolvedConfig
   function configureServer(server: ViteDevServer) {
     createRPCServer("vinxi", server.ws, {
-      save(data) {
+      save(data: any) {
         try {
           transform(data)
         } catch (e) {
@@ -46,9 +46,10 @@ function transform(data: any) {
   const ast2 = parse(source, {
     parser: require("@vinxi/recast/parsers/babel-ts"),
     jsx: true
-  })
+  } as any)
 
   transformFromAst(ast2, undefined, {
+    // @ts-ignore
     cloneInputAst: false,
     filename: data.source.fileName,
     ast: true,
@@ -58,8 +59,8 @@ function transform(data: any) {
           visitor: {
             JSXOpeningElement: (path: NodePath<t.JSXOpeningElement>) => {
               if (
-                path.node.loc.start.line === data.source.lineNumber &&
-                path.node.loc.start.column === data.source.columnNumber - 1
+                path.node?.loc?.start.line === data.source.lineNumber &&
+                path.node?.loc?.start.column === data.source.columnNumber - 1
               ) {
                 justEdited[data.source.fileName] = true
                 Object.keys(data.value).forEach((v) => {
@@ -67,12 +68,12 @@ function transform(data: any) {
                 })
               }
 
-              function addAttribute(prop) {
+              function addAttribute(prop: any) {
                 let attr = path
                   .get("attributes")
                   .find(
                     (attr) =>
-                      t.isJSXAttribute(attr) && attr.node.name.name === prop
+                      t.isJSXAttribute(attr) && (attr.node as any).name.name === prop
                   )
 
                 let value = data.value[prop]
