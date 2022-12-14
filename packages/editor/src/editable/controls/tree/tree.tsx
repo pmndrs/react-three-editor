@@ -15,7 +15,7 @@ export const tree = createPlugin<
   component() {
     const context = useInputContext<{ settings: { items: object } }>()
     return (
-      <div style={{ maxHeight: 280, overflow: "scroll" }}>
+      <div>
         {Object.values(context.settings.items).map((v) => (
           <TreeElement
             element={v}
