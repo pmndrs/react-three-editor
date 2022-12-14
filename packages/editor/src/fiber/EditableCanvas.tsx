@@ -9,6 +9,7 @@ import { DEFAULT_EDITOR_PLUGINS } from "./plugins"
 import { ThreeEditor } from "./ThreeEditor"
 import { EditorContext } from "../editable/Editor"
 import { client } from "../vite/client"
+import { useControls } from "leva"
 
 export const Canvas = forwardRef<
   HTMLCanvasElement,
@@ -31,6 +32,8 @@ export const Canvas = forwardRef<
     () => new ThreeEditor(DEFAULT_EDITOR_PLUGINS, client),
     []
   )
+
+  useControls("editor", {}, { collapsed: true })
   return (
     <>
       <FiberCanvas ref={ref} {...props}>

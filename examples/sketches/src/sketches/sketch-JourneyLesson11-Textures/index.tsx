@@ -10,16 +10,9 @@ const App = () => {
 
     return (
         <>
-            <mesh position={[-2.5, 0, 0]}>
+            <mesh position={[-3.834, -1.099, 0]} material-wireframe={true}>
                 <boxBufferGeometry args={[3, 3, 3]} />
-                <meshBasicMaterial
-                    map={doorTexture}
-                    map-wrapS={THREE.MirroredRepeatWrapping}
-                    map-wrapT={THREE.MirroredRepeatWrapping}
-                    map-offset-x={-0.2}
-                    map-offset-y={0.5}
-                    map-rotation={Math.PI / 4}
-                />
+                <meshBasicMaterial map={doorTexture} map-wrapS={THREE.MirroredRepeatWrapping} map-wrapT={THREE.MirroredRepeatWrapping} map-offset-x={-0.2} map-offset-y={0.5} map-rotation={Math.PI / 4} wireframe={false} color={"rgb(144, 96, 96)"} />
             </mesh>
             <mesh position={[6.899, 0, 0]}>
                 <boxBufferGeometry args={[3, 3, 3]} />

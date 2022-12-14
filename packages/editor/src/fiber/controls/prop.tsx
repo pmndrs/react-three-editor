@@ -94,7 +94,8 @@ export function createProp(
               element.addChange(editable, prop, serializale)
               element.changed = true
             } else {
-              element.dirtyProp(prop, serializale)
+              let [_, ...p] = path
+              element.dirtyProp(p.join("-"), serializale)
             }
           }
         },
