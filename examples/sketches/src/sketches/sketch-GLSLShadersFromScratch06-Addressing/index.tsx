@@ -1,5 +1,6 @@
 import { OrthographicCamera, useTexture } from '@react-three/drei'
 import * as THREE from 'three'
+import { Texture } from 'three'
 import { Canvas } from '../Canvas'
 import dogImage from './dog.jpeg'
 
@@ -28,19 +29,18 @@ void main() {
 `
 
 const App = () => {
-    const dogTexture = useTexture(dogImage)
+    const dogTexture = useTexture(dogImage, (dogTexture: Texture) => {
+        dogTexture.wrapS = THREE.MirroredRepeatWrapping
+        dogTexture.wrapT = THREE.MirroredRepeatWrapping
+    })
 
-    // address modes
-    dogTexture.wrapS = THREE.MirroredRepeatWrapping;
-    dogTexture.wrapT = THREE.MirroredRepeatWrapping;
-    
     return (
         <mesh position={[0.5, 0.5, 0]}>
             <shaderMaterial
                 vertexShader={vertexShader}
                 fragmentShader={fragmentShader}
                 uniforms={{
-                    diffuse: { value: dogTexture }, 
+                    diffuse: { value: dogTexture },
                     tint: { value: new THREE.Vector4(1, 0.5, 0.5) },
                 }}
             />
@@ -63,7 +63,7 @@ export default () => (
                 right={1}
                 near={0.1}
                 far={1000}
-                position={[0, 0, 0.5]}
+                position={[0, 0.3, 0.1]}
             />
         </Canvas>
     </>

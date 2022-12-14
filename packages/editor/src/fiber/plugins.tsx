@@ -1,7 +1,8 @@
-import { OrbitControls } from "three-stdlib"
 import {
   AmbientLight,
+  CameraHelper,
   DirectionalLight,
+  DirectionalLightHelper,
   Material,
   Mesh,
   MeshBasicMaterial,
@@ -16,7 +17,8 @@ import { prop } from "./controls/prop"
 import { EditableElement } from "../editable/EditableElement"
 import { TransformHelper } from "./TransformHelper"
 import React from "react"
-import { useHelper } from "@react-three/drei"
+import { useHelper, OrbitControls } from "@react-three/drei"
+import { usePersistedControls } from "../editable/controls/usePersistedControls"
 
 export const transform = {
   applicable: (entity: EditableElement) => entity.ref instanceof Object3D,
@@ -54,15 +56,64 @@ export const transform = {
 
 export const camera = {
   applicable: (entity: EditableElement) => entity.ref?.isCamera,
-  icon: (entity: EditableElement) => "ph:video-camera-bold"
+  icon: (entity: EditableElement) => "ph:video-camera-bold",
+  controls: (entity: EditableElement) => {
+    return {
+      camera: folder({
+        near: prop.number({
+          element: entity,
+          path: ["ref", "near"],
+          min: 0.1,
+          max: 100
+        }),
+        far: prop.number({
+          element: entity,
+          path: ["ref", "far"],
+          min: 0.1,
+          max: 10000
+        }),
+        top: prop.number({
+          element: entity,
+          path: ["currentProps", "top"]
+        }),
+        bottom: prop.number({
+          element: entity,
+          path: ["currentProps", "bottom"]
+        }),
+        left: prop.number({
+          element: entity,
+          path: ["currentProps", "left"]
+        }),
+        right: prop.number({
+          element: entity,
+          path: ["currentProps", "right"]
+        })
+
+        // fov: prop.number({
+        //   element: entity,
+        //   path: ["ref", "fov"],
+        //   min: 1,
+        //   max: 180
+        // })
+      })
+    }
+  },
+  helper: ({ element }: { element: EditableElement }) => {
+    const [{ camera }] = usePersistedControls("editor.helpers", {
+      camera: { value: true }
+    })
+    useHelper(camera ? element : undefined, CameraHelper)
+    return null
+  }
 }
+
 export const meshMaterial = {
   applicable: (entity: EditableElement) =>
     entity.ref instanceof Mesh && entity.ref.material,
   controls: (entity: EditableElement) => {
     return {
       material: folder({
-        ...(entity instanceof MeshStandardMaterial ||
+        ...(entity.ref.material instanceof MeshStandardMaterial ||
         entity.ref.material instanceof MeshBasicMaterial
           ? {
               color: prop.color({
@@ -97,14 +148,46 @@ export const material = {
         wireframe: prop.bool({
           element: entity,
           path: ["ref", "wireframe"]
+        }),
+        texture: prop.texture({
+          element: entity,
+          path: ["ref", "map"]
+        }),
+        displacement: folder({
+          map: prop.texture({
+            element: entity,
+            path: ["ref", "displacementMap"]
+          }),
+          scale: prop.number({
+            element: entity,
+            path: ["ref", "displacementScale"]
+          }),
+          bias: prop.number({
+            element: entity,
+            path: ["ref", "displacementBias"]
+          })
+        }),
+        bump: folder({
+          map: prop.texture({
+            element: entity,
+            path: ["ref", "displacementMap"]
+          }),
+          scale: prop.number({
+            element: entity,
+            path: ["ref", "displacementScale"]
+          }),
+          bias: prop.number({
+            element: entity,
+            path: ["ref", "displacementBias"]
+          })
         })
       })
     }
   }
 }
 export const orbitControls = {
-  applicable: (entity: EditableElement) => entity.ref instanceof OrbitControls,
-  icon: (entity) => "mdi:orbit-variant",
+  applicable: (entity: EditableElement) => entity.type === OrbitControls,
+  icon: (entity: EditableElement) => "mdi:orbit-variant",
   controls: (entity: EditableElement) => {
     return {
       target: prop.ref({
@@ -153,6 +236,13 @@ export const directionalLight = {
         path: ["ref", "intensity"]
       })
     }
+  },
+  helper: ({ element }: { element: EditableElement }) => {
+    const [{ directionalLight }] = usePersistedControls("editor.helpers", {
+      directionalLight: { value: true }
+    })
+    useHelper(directionalLight ? element : undefined, DirectionalLightHelper)
+    return null
   }
 }
 
@@ -214,7 +304,10 @@ export const spotLight = {
     }
   },
   helper: ({ element }: { element: EditableElement }) => {
-    useHelper(element, SpotLightHelper, "hotpink")
+    const [{ spotLight }] = usePersistedControls("editor.helpers", {
+      spotLight: { value: true }
+    })
+    useHelper(spotLight ? element : undefined, SpotLightHelper, "hotpink")
     return null
   }
 }
@@ -233,6 +326,28 @@ const transformWithoutRef = {
   }
 }
 
+const propControls = {
+  applicable: (entity: EditableElement) =>
+    entity.type !== "string" && entity.type.controls,
+  controls: (entity: EditableElement) => {
+    return Object.fromEntries(
+      Object.entries(entity.type.controls).map(
+        ([k, { type, value, ...v }]: any) => {
+          return [
+            k,
+            prop[type as keyof typeof prop]({
+              ...v,
+              element: entity,
+              path: ["currentProps", k],
+              default: value
+            })
+          ]
+        }
+      )
+    )
+  }
+}
+
 export const DEFAULT_EDITOR_PLUGINS = [
   transform,
   transformWithoutRef,
@@ -243,5 +358,55 @@ export const DEFAULT_EDITOR_PLUGINS = [
   directionalLight,
   pointLight,
   ambientLight,
-  spotLight
+  spotLight,
+  // {
+  //   applicable: (entity: EditableElement) =>
+  //     !entity.forwardedRef || entity.type !== "string",
+  //   controls: (entity: EditableElement) => {
+  //     return Object.fromEntries(
+  //       Object.entries(entity.currentProps)
+  //         .filter(
+  //           ([e]) =>
+  //             ![
+  //               "position",
+  //               "rotation",
+  //               "scale",
+  //               "_source",
+  //               "children",
+  //               "ref",
+  //               "key"
+  //             ].includes(e)
+  //         )
+  //         .map(([k, v]) => {
+  //           return [
+  //             k,
+  //             prop(
+  //               {
+  //                 get(o, p) {
+  //                   return o[p] ?? v
+  //                 },
+  //                 set(o, p) {
+  //                   o[p] = v
+  //                   return true
+  //                 }
+  //               },
+  //               {
+  //                 ...(entity.type.controls?.[k] ?? {}),
+  //                 element: entity,
+  //                 path: ["currentProps", k],
+  //                 default: v
+  //               }
+  //             )
+  //           ]
+  //         })
+  //     )
+  //   }
+  // },
+  propControls
 ]
+
+export function addPlugin(plugin: any) {
+  if (!DEFAULT_EDITOR_PLUGINS.includes(plugin)) {
+    DEFAULT_EDITOR_PLUGINS.push(plugin)
+  }
+}

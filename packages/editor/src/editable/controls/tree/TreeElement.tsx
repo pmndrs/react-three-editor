@@ -21,7 +21,7 @@ export function TreeElement({
   panel?: boolean
   collapsible?: boolean
 }) {
-  const selected = element.editor.store((s) => s.selected === element)
+  const selected = element.editor.store((s) => s.selectedId === element?.id)
 
   const [_collapsed, setCollapsed] = useState(collapsed)
 
@@ -31,6 +31,9 @@ export function TreeElement({
 
   const state = element.editor.store((state) => state.elements)
 
+  const dirty = element.store.useStore(
+    (s) => Object.keys(element.changes).length > 0
+  )
   return (
     <TreeItem
       collapsed={_collapsed}
@@ -50,18 +53,16 @@ export function TreeElement({
           : false
       }
       remeasure={panel}
+      dirty={dirty}
       title={
         <>
           <ElementIcon element={element} />
           <div
             style={{ marginLeft: "4px" }}
-            onClick={(e) =>
-              element.editor.store.setState({
-                selected: element
-              })
-            }
+            onClick={(e) => element.editor.select(element)}
           >
             {element.displayName}
+            {dirty ? "*" : ""}
           </div>
           <div style={{ marginLeft: "auto" }} />
           <OpenInEditorButton element={element} />
@@ -85,7 +86,7 @@ export function TreeElement({
           }}
         >
           {element.children
-            .filter((c) => c !== element.id)
+            .filter((c) => c !== element.id && state[c])
             .map((c) => (
               <TreeElement
                 element={state[c]}

@@ -16,7 +16,8 @@ export function TreeItem({
   selected,
   visible,
   remeasure,
-  collapsible
+  collapsible,
+  dirty
 }: {
   title: React.ReactNode
   children: React.ReactNode
@@ -26,10 +27,11 @@ export function TreeItem({
   visible: boolean
   remeasure: boolean
   collapsible: boolean
+  dirty: boolean
 }) {
   if (!collapsible) {
     return (
-      <StyledFolder>
+      <StyledFolder dirty={dirty}>
         <StyledTitle selected={selected} visible={visible}>
           <Chevron hidden={true} toggled={!collapsed} />
           <div style={{ marginLeft: "2px" }} />
@@ -40,6 +42,7 @@ export function TreeItem({
   } else {
     return (
       <CollapsibleTreeItem
+        dirty={dirty}
         title={title}
         children={children}
         collapsed={collapsed}
@@ -55,6 +58,7 @@ export function TreeItem({
 
 function CollapsibleTreeItem({
   title,
+  dirty,
   children,
   collapsed,
   setCollapsed,
@@ -71,6 +75,7 @@ function CollapsibleTreeItem({
   hideChevron: boolean
   visible: boolean
   remeasure: boolean
+  dirty: boolean
 }) {
   // const context = useInputContext<{ value: { element: EditableElement } }>()
   const { wrapperRef, contentRef } = useToggle(!collapsed)
@@ -91,7 +96,7 @@ function CollapsibleTreeItem({
   // }, [context.value.element, remeasure])
 
   return (
-    <StyledFolder ref={ref}>
+    <StyledFolder ref={ref} dirty={dirty}>
       <StyledTitle selected={selected} visible={visible}>
         <Chevron
           hidden={hideChevron}

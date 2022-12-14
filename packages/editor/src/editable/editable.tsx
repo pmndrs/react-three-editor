@@ -1,17 +1,16 @@
 import { useCreateStore } from "leva"
 import { mergeRefs } from "leva/plugin"
 import React, {
+  createContext,
   forwardRef,
   useCallback,
   useContext,
   useEffect,
   useId,
-  useLayoutEffect,
-  useMemo,
-  useRef
+  useMemo
 } from "react"
-import { EditorContext, EditableElementContext } from "./contexts"
-import { EditableElement } from "./EditableElement"
+import { EditableElement, JSXSource } from "./EditableElement"
+import { EditorContext } from "./Editor"
 
 type Elements = {
   [K in keyof JSX.IntrinsicElements]: React.FC<
@@ -20,24 +19,31 @@ type Elements = {
     }
   >
 }
+
+export const EditableElementContext = createContext<EditableElement | null>(
+  null
+)
+
 const memo = new WeakMap() as unknown as WeakMap<Elements, any> & Elements
 
-export const Editable = forwardRef(({ component, ...props }, ref) => {
-  const mainC = useMemo(() => {
-    if (!memo.get(component)) {
-      memo.set(component, createEditable(component))
+export const Editable = forwardRef(
+  ({ component, ...props }: { component: any }, ref) => {
+    const mainC = useMemo(() => {
+      if (!memo.get(component)) {
+        memo.set(component, createEditable(component))
+      }
+      return memo.get(component)
+    }, [component])
+    const isEditor = useContext(EditorContext)
+    if (isEditor) {
+      return React.createElement(mainC, { ...props, ref })
     }
-    return memo.get(component)
-  }, [component])
-  const isEditor = useContext(EditorContext)
-  if (isEditor) {
-    return React.createElement(mainC, { ...props, ref })
+    return React.createElement(component, { ...props, ref })
   }
-  return React.createElement(component, { ...props, ref })
-})
+)
 
 export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
-  Component: K | React.FC<P>
+  Component: any
 ) {
   let hasRef =
     // @ts-ignore
@@ -96,7 +102,7 @@ function useRerender() {
 function useEditableElement(
   componentType: string | React.FC,
   source: JSXSource,
-  props
+  props: any
 ) {
   const editor = React.useContext(EditorContext)
   const parent = React.useContext(EditableElementContext)
@@ -113,15 +119,19 @@ function useEditableElement(
   editableElement.parentId = parent?.id
   editableElement.type = componentType
   editableElement.source = source
-  editableElement.currentProps = props
+  editableElement.currentProps = { ...props }
   editableElement.render = render
   editableElement.store = store
   editableElement.editor = editor!
 
   let memo = editableElement
-  let parentId = parent?.id
+  let parentId = parent?.id!
 
   useEffect(() => {
+    // editor?.addElement(editableElement, parent)
+    // return () => {
+    //   editor?.removeElement(editableElement, parent)
+    // }
     if (parentId) {
       editor?.store?.setState((el) => ({
         elements: {
@@ -170,17 +180,16 @@ function useEditableElement(
 }
 
 function useEditableRef(editableElement: EditableElement) {
-  const ref = useRef()
-  useLayoutEffect(() => {
-    editableElement.setRef(ref.current)
-  }, [editableElement, ref])
-
-  return ref
+  return (el: any) => {
+    if (el) {
+      editableElement.setRef(el)
+    }
+  }
 }
 
 function Helpers() {
   const editor = useContext(EditorContext)
-  const element = useContext(EditableElementContext)
+  const element = useContext(EditableElementContext)!
 
   return (
     <>

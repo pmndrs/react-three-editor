@@ -6,6 +6,7 @@ import { texture } from "./texture"
 export function getEditableElement(obj: any): EditableElement {
   return obj?.__r3f?.editable
 }
+
 export function createProp(
   type: {
     get: (obj: any, prop: string) => any
@@ -15,8 +16,9 @@ export function createProp(
     serialize?: (obj: any, prop: string, value: any) => any
   },
   {
-    element,
-    path,
+    element = {} as any,
+    path = [],
+    persist,
     ...settings
   }: PropInput & {
     step?: number
@@ -24,22 +26,29 @@ export function createProp(
     max?: number
     options?: string[]
     lock?: boolean
+    default?: any
+    persist?: boolean
   }
 ) {
   let el = element
   let editable = element
-  if (path.length > 0) {
+  if (path.length > 1) {
     for (let i = 0; i < path.length - 1; i++) {
       el = el?.[path[i]]
     }
     editable = getEditableElement(el)
   }
+
   let prop = path[path.length - 1]
+
+  let initialValue = type.get(el, prop) ?? settings.default
   return type.control
     ? type.control({
-        value: type.get(el, prop),
+        value: initialValue,
         onChange(value: any, _: string, context: any) {
           if (value !== null && context.initial) {
+            if (persist) {
+            }
             type.init?.(el, prop, value)
           }
           if (value === null || !context.fromPanel || context.initial) {
@@ -48,16 +57,24 @@ export function createProp(
 
           type.set(el, prop, value)
 
-          if (editable) {
-            element.addChange(editable, prop, value)
-            element.changed = true
-          } else {
-            element.dirtyProp(path.join("-"), value)
+          let serializale = type.serialize
+            ? type.serialize(el, prop, value)
+            : value
+
+          if (serializale !== undefined && element instanceof EditableElement) {
+            if (editable) {
+              element.addChange(editable, prop, serializale)
+              element.changed = true
+            } else {
+              let [_, ...p] = path
+              element.dirtyProp(p.join("-"), serializale)
+            }
           }
-        }
+        },
+        ...settings
       })
     : {
-        value: type.get(el, prop),
+        value: initialValue,
         onChange(value: any, _: string, context: any) {
           if (value !== null && context.initial) {
             type.init?.(el, prop, value)
@@ -72,11 +89,13 @@ export function createProp(
             ? type.serialize(el, prop, value)
             : value
 
-          if (editable) {
-            element.addChange(editable, prop, serializale)
-            element.changed = true
-          } else {
-            element.dirtyProp(path.join("-"), serializale)
+          if (serializale !== undefined) {
+            if (editable) {
+              element.addChange(editable, prop, serializale)
+              element.changed = true
+            } else {
+              element.dirtyProp(prop, serializale)
+            }
           }
         },
         ...settings
@@ -84,8 +103,8 @@ export function createProp(
 }
 
 export interface PropInput {
-  path: string[]
-  element: any
+  path?: string[]
+  element?: any
 
   step?: number
   min?: number
@@ -100,6 +119,15 @@ const color = {
   },
   set: (obj: any, prop: string, value: any) => {
     obj[prop].setStyle(value)
+  }
+}
+
+const colorstring = {
+  get: (obj: any, prop: string) => {
+    return obj[prop]
+  },
+  set: (obj: any, prop: string, value: any) => {
+    obj[prop] = value
   }
 }
 const vector3d = {
@@ -144,6 +172,9 @@ const number = {
   },
   set: (obj: any, prop: string, value: any) => {
     obj[prop] = value
+  },
+  serialize: (obj: any, prop: string, value: any) => {
+    return Number(value.toFixed(3))
   }
 }
 
@@ -155,16 +186,21 @@ const textureT: {
 } = {
   control: texture,
   get(obj: any, prop: string) {
-    return obj[prop]?.source.data.src
+    return obj[prop]?.source?.data?.src
   },
   set(obj: any, prop: string, value: any) {
     console.log("set", obj, prop, value)
     obj[prop] = new TextureLoader().load(value)
+    obj.needsUpdate = true
+  },
+  serialize(obj: any, prop: string, value: any) {
+    return undefined
   }
 }
 
 export const prop = Object.assign(createProp, {
   color: (props: PropInput) => createProp(color, props),
+  colorstring: (props: PropInput) => createProp(colorstring, props),
   number: (props: PropInput) => createProp(number, props),
   texture: (props: PropInput) => createProp(textureT, props),
   bool: (props: PropInput) => createProp(bool, props),
@@ -174,7 +210,7 @@ export const prop = Object.assign(createProp, {
     createProp(
       {
         get(obj: any, prop: string) {
-          return obj[prop]?.__r3f.editable
+          return getEditableElement(obj[prop])
         },
         control: ref,
         set(obj: any, prop: string, value: any) {}

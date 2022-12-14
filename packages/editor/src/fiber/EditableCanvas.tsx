@@ -1,6 +1,7 @@
 import { Canvas as FiberCanvas } from "@react-three/fiber"
 import React, { ComponentProps, forwardRef, useMemo } from "react"
-import { EditorContext } from "../editable/contexts"
+import { EditorContext } from "../editable/Editor"
+import { client } from "../vite/client"
 import { EditorCamera } from "./EditorCamera"
 import { EditorGizmos } from "./EditorGizmos"
 import { DEFAULT_EDITOR_PLUGINS } from "./plugins"
@@ -26,7 +27,10 @@ export const Canvas = forwardRef<
   },
   ref
 ) {
-  const store = useMemo(() => new ThreeEditor(DEFAULT_EDITOR_PLUGINS), [])
+  const store = useMemo(
+    () => new ThreeEditor(DEFAULT_EDITOR_PLUGINS, client),
+    []
+  )
   return (
     <>
       <FiberCanvas ref={ref} {...props}>

@@ -192,7 +192,7 @@ const Game = () => {
             />
 
             {/* lamp posts */}
-            <LampPost position={[11.366, 0, 0]} />
+            <LampPost position={[4.799, 0, 0]} />
             <LampPost position={[-6.799, 0, 25]} rotation-y={Math.PI} />
             <LampPost position={[10, 0, 50]} />
             <LampPost position={[-10, 0, 75]} rotation-y={Math.PI} />

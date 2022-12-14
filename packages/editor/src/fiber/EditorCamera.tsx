@@ -1,29 +1,47 @@
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei"
 import { folder, levaStore, useControls } from "leva"
-import React, { useEffect } from "react"
+import React, { useEffect, useContext } from "react"
 import { useThree } from "@react-three/fiber"
 import { editable } from "../editable/editable"
+import { usePersistedControls } from "../editable/controls/usePersistedControls"
+import { EditorContext, useEditorStore } from "../editable/Editor"
 
+window.leva = levaStore
 export function EditorCamera() {
-  const props = useControls(
-    "editor",
-    {
-      camera: folder({
-        enabled: false,
-        position: {
-          value: [-6.836465353768794, 3.1169378502902387, -2.747260436170274],
-          step: 0.1
-        },
-        fov: { value: 75, min: 1, max: 180 },
-        near: { value: 0.1, min: 0.1, max: 100 },
-        far: { value: 1000, min: 0.1, max: 10000 }
-      })
+  const [props] = usePersistedControls("editor.camera", {
+    enabled: false,
+    position: {
+      value: [-6.836465353768794, 3.1169378502902387, -2.747260436170274],
+      step: 0.1
     },
-    {
-      collapsed: true,
-      order: 1000
+    fov: { value: 75, min: 1, max: 180 },
+    near: { value: 0.1, min: 0.1, max: 100 },
+    far: { value: 1000, min: 0.1, max: 10000 }
+  })
+
+  const selectedElement = useEditorStore((s) => s.selectedId)
+  const editor = useContext(EditorContext)
+  const [p, set] = usePersistedControls("editor.scene", {
+    selected: {
+      onChange(e, path, context) {
+        if (context.initial) {
+          console.log(e)
+          editor?.selectId(e === "" ? null : e)
+        }
+      },
+      transient: false,
+      value: selectedElement ?? ""
     }
-  )
+  })
+
+  React.useEffect(() => {
+    console.log("selectedElement", selectedElement)
+    levaStore.setValueAtPath(
+      "editor.scene.selected",
+      selectedElement ?? "",
+      false
+    )
+  }, [selectedElement, set])
 
   const camera = useThree((c) => c.camera)
 
