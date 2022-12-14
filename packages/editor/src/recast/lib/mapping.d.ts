@@ -12,4 +12,5 @@ export default class Mapping {
     subtract(line: number, column: number): Mapping;
     indent(by: number, skipFirstLine?: boolean, noNegativeColumns?: boolean): Mapping;
 }
-export {};
+export { };
+

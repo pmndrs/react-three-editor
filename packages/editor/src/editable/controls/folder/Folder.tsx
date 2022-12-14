@@ -1,10 +1,10 @@
-import React, { useLayoutEffect, useRef, useState } from "react"
 import { useStoreContext } from "leva"
-import { useToggle } from "./useToggle"
+import { Tree } from "leva/dist/declarations/src/types"
 import { useTh } from "leva/plugin"
+import React, { useLayoutEffect, useRef, useState } from "react"
 import { FolderTitle } from "./FolderTitle"
 import { StyledContent, StyledFolder, StyledWrapper } from "./StyledFolder"
-import { Tree } from "leva/dist/declarations/src/types"
+import { useToggle } from "./useToggle"
 
 export const join = (...args: (string | undefined)[]) =>
   args.filter(Boolean).join(".")

@@ -1,5 +1,5 @@
-import { Options } from "./options";
 import { namedTypes } from "ast-types";
+import { Options } from "./options";
 declare type Pos = namedTypes.Position;
 declare type LineInfo = {
     readonly line: string;
@@ -59,4 +59,5 @@ export declare function countSpaces(spaces: any, tabWidth?: number): number;
  */
 export declare function fromString(string: string | Lines, options?: Options): Lines;
 export declare function concat(elements: any): Lines;
-export {};
+export { };
+

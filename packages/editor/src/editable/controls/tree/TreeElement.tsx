@@ -1,11 +1,10 @@
-import { useState } from "react"
-import { EditableElement } from "../../EditableElement"
-import React from "react"
 import { LevaPanel } from "leva"
-import { TreeItem } from "./TreeItem"
-import { ElementIcon } from "./ElementIcon"
+import React, { useState } from "react"
+import { EditableElement } from "../../EditableElement"
 import { StyledIcon } from "../folder/StyledFolder"
+import { ElementIcon } from "./ElementIcon"
 import { OpenInEditorButton } from "./OpenInEditorButton"
+import { TreeItem } from "./TreeItem"
 
 export function TreeElement({
   collapsed = false,

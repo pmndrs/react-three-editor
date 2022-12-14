@@ -1,16 +1,6 @@
 import * as types from "ast-types";
-import { parse } from "./lib/parser";
 import { Options } from "./lib/options";
-export { 
-/**
- * Parse a string of code into an augmented syntax tree suitable for
- * arbitrary modification and reprinting.
- */
-parse, 
-/**
- * Convenient shorthand for the ast-types package.
- */
-types, };
+import { parse } from "./lib/parser";
 /**
  * Traverse and potentially modify an abstract syntax tree using a
  * convenient visitor syntax:
@@ -29,6 +19,13 @@ export { visit } from "ast-types";
  * Options shared between parsing and printing.
  */
 export { Options } from "./lib/options";
+export {
+    parse,
+    /**
+     * Convenient shorthand for the ast-types package.
+     */
+    types,
+};
 /**
  * Reprint a modified syntax tree using as much of the original source
  * code as possible.

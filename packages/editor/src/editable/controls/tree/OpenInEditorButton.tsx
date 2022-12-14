@@ -1,5 +1,5 @@
-import { EditableElement } from "../../EditableElement"
 import React from "react"
+import { EditableElement } from "../../EditableElement"
 import { StyledIcon } from "../folder/StyledFolder"
 
 export function OpenInEditorButton({ element }: { element: EditableElement }) {

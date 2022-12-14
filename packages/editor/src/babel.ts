@@ -12,8 +12,8 @@
  * var __jsxFileName = 'this/file.js';
  * <sometag __source={{fileName: __jsxFileName, lineNumber: 10, columnNumber: 1}}/>
  */
+import { template, types as t } from "@babel/core"
 import { declare } from "@babel/helper-plugin-utils"
-import { types as t, template } from "@babel/core"
 import { basename, extname } from "path"
 
 const TRACE_ID = "_source"

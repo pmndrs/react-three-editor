@@ -1,6 +1,6 @@
-import React from "react"
-import { TreeElement as TreeElement } from "./TreeElement"
 import { createPlugin, useInputContext } from "leva/plugin"
+import React from "react"
+import { TreeElement } from "./TreeElement"
 
 export const tree = createPlugin<
   { items: object },

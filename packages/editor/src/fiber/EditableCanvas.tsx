@@ -1,15 +1,15 @@
 import { Canvas as FiberCanvas } from "@react-three/fiber"
+import { useControls } from "leva"
 import React, { ComponentProps, forwardRef, useMemo } from "react"
-import { EditorCamera } from "./EditorCamera"
-import { Outs } from "./Tunnels"
-import { SceneTree } from "./SceneTree"
-import { EditorGizmos } from "./EditorGizmos"
-import { SelectedElement } from "./SelectedElement"
-import { DEFAULT_EDITOR_PLUGINS } from "./plugins"
-import { ThreeEditor } from "./ThreeEditor"
 import { EditorContext } from "../editable/Editor"
 import { client } from "../vite/client"
-import { useControls } from "leva"
+import { EditorCamera } from "./EditorCamera"
+import { EditorGizmos } from "./EditorGizmos"
+import { DEFAULT_EDITOR_PLUGINS } from "./plugins"
+import { SceneTree } from "./SceneTree"
+import { SelectedElement } from "./SelectedElement"
+import { ThreeEditor } from "./ThreeEditor"
+import { Outs } from "./Tunnels"
 
 export const Canvas = forwardRef<
   HTMLCanvasElement,

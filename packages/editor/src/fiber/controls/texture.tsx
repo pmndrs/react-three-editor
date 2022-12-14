@@ -1,4 +1,6 @@
 import { Components, createPlugin, useInputContext } from "leva/plugin"
+import React, { useCallback } from "react"
+import { useDropzone } from "react-dropzone"
 import {
   DropZone,
   ImageContainer,
@@ -7,9 +9,6 @@ import {
   Instructions,
   Remove
 } from "../../editable/controls/image"
-import { useDropzone } from "react-dropzone"
-import { useCallback } from "react"
-import React from "react"
 import { usePopin } from "../../editable/controls/usePopin"
 
 export const texture = createPlugin({

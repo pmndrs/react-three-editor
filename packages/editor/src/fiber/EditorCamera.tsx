@@ -1,11 +1,11 @@
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei"
-import { folder, levaStore, useControls } from "leva"
-import React, { useEffect, useContext } from "react"
 import { useThree } from "@react-three/fiber"
-import { editable } from "../editable/editable"
-import { usePersistedControls } from "../editable/controls/usePersistedControls"
-import { EditorContext, useEditorStore } from "../editable/Editor"
+import { levaStore } from "leva"
+import React, { useContext, useEffect } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
+import { usePersistedControls } from "../editable/controls/usePersistedControls"
+import { editable } from "../editable/editable"
+import { EditorContext, useEditorStore } from "../editable/Editor"
 
 export function EditorCamera() {
   const [props, setCamera] = usePersistedControls("editor.camera", {

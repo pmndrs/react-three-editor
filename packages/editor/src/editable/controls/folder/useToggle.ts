@@ -1,4 +1,4 @@
-import { useRef, useEffect, useLayoutEffect } from "react"
+import { useEffect, useLayoutEffect, useRef } from "react"
 
 export function useToggle(toggled: boolean) {
   const wrapperRef = useRef<HTMLDivElement>(null)

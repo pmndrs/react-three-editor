@@ -1,5 +1,5 @@
-import React from "react"
-import { styled } from "leva/plugin"
+import { styled } from "leva/plugin";
+import React from "react";
 
 // TODO remove as any when this is corrected by stitches
 const Svg = styled("svg", {
