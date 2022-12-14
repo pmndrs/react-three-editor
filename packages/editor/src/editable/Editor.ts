@@ -1,7 +1,6 @@
-import { createContext } from "react"
-import { EditableElement } from "./EditableElement"
-import { useContext } from "react"
+import { createContext, useContext } from "react"
 import { EqualityChecker, StateSelector } from "zustand"
+import { EditableElement } from "./EditableElement"
 
 import create from "zustand"
 import { CommandManager } from "./CommandManager"

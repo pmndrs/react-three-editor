@@ -1,13 +1,13 @@
 import { useCreateStore } from "leva"
 import { mergeRefs } from "leva/plugin"
 import React, {
-  createContext,
-  forwardRef,
-  useCallback,
-  useContext,
-  useEffect,
-  useId,
-  useMemo
+    createContext,
+    forwardRef,
+    useCallback,
+    useContext,
+    useEffect,
+    useId,
+    useMemo
 } from "react"
 import { EditableElement, JSXSource } from "./EditableElement"
 import { EditorContext } from "./Editor"

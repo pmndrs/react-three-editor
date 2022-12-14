@@ -1,3 +1,6 @@
+import { OrbitControls, useHelper } from "@react-three/drei"
+import { folder } from "leva"
+import React from "react"
 import {
   AmbientLight,
   CameraHelper,
@@ -13,14 +16,11 @@ import {
   SpotLight,
   SpotLightHelper
 } from "three"
-import { folder } from "leva"
-import { prop } from "./controls/prop"
-import { EditableElement } from "../editable/EditableElement"
-import { TransformHelper } from "./TransformHelper"
-import React from "react"
-import { useHelper, OrbitControls } from "@react-three/drei"
 import { usePersistedControls } from "../editable/controls/usePersistedControls"
+import { EditableElement } from "../editable/EditableElement"
 import { useEditorStore } from "../editable/Editor"
+import { prop } from "./controls/prop"
+import { TransformHelper } from "./TransformHelper"
 
 export const transform = {
   applicable: (entity: EditableElement) => entity.ref instanceof Object3D,

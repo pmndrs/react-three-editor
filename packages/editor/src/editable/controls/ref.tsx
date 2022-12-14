@@ -1,6 +1,6 @@
+import { Components, createPlugin, useInputContext } from "leva/plugin"
 import React from "react"
 import { EditableElement } from "../EditableElement"
-import { createPlugin, useInputContext, Components } from "leva/plugin"
 import { StyledFolder, StyledTitle } from "./folder/StyledFolder"
 import { ElementIcon } from "./tree/ElementIcon"
 import { OpenInEditorButton } from "./tree/OpenInEditorButton"

@@ -1,7 +1,7 @@
-import { useState } from "react"
-import { useControls, button, levaStore } from "leva"
-import { EditableElement } from "../EditableElement"
-import { element } from "./tree/element"
+import { button, levaStore, useControls } from "leva";
+import { useState } from "react";
+import { EditableElement } from "../EditableElement";
+import { element } from "./tree/element";
 
 export function useElementControls(
   folderName: string,

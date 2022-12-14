@@ -1,13 +1,13 @@
-import React, { useContext } from "react"
-import { EditableElement } from "../editable/EditableElement"
 import { TransformControls } from "@react-three/drei"
-import { TransformControls as TransformControlsImpl } from "three-stdlib"
-import { MathUtils, Event, Object3D, Vector3Tuple } from "three"
-import { useHotkeys } from "react-hotkeys-hook"
 import { mergeRefs } from "leva/plugin"
+import React from "react"
+import { useHotkeys } from "react-hotkeys-hook"
+import { Event, MathUtils, Object3D, Vector3Tuple } from "three"
+import { TransformControls as TransformControlsImpl } from "three-stdlib"
 import { eq } from "../editable/controls/eq"
 import { EditorContext } from "../editable/Editor"
 import { SetTransformControls } from "../editable/commands"
+import { EditableElement } from "../editable/EditableElement"
 
 const serializeTransform = (
   object?: Object3D

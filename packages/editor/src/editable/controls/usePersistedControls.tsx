@@ -1,6 +1,6 @@
-import { useControls, folder } from "leva"
-import { useEffect } from "react"
+import { folder, useControls } from "leva"
 import { Schema, SchemaToValues } from "leva/dist/declarations/src/types"
+import { useEffect } from "react"
 
 let editorName = "r3f-editor"
 

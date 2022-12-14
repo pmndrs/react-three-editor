@@ -145,4 +145,5 @@ interface DeprecatedOptions {
 }
 export declare type NormalizedOptions = Required<Omit<Options, keyof DeprecatedOptions>>;
 export declare function normalize(opts?: Options): NormalizedOptions;
-export {};
+export { };
+

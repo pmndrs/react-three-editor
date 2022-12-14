@@ -1,6 +1,6 @@
 import { folder, useControls } from "leva"
-import { useEditorStore } from "../editable/Editor"
 import { tree } from "../editable/controls/tree/tree"
+import { useEditorStore } from "../editable/Editor"
 
 export function SceneTree() {
   const p = useEditorStore((state) => Object.values(state.elements))

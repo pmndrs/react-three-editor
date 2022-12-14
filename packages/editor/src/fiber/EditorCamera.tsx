@@ -3,8 +3,6 @@ import { useThree } from "@react-three/fiber"
 import { levaStore } from "leva"
 import React, { useContext, useEffect } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
-import { Camera, Event } from "three"
-import { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import { usePersistedControls } from "../editable/controls/usePersistedControls"
 import { editable } from "../editable/editable"
 import { EditorContext, useEditorStore } from "../editable/Editor"

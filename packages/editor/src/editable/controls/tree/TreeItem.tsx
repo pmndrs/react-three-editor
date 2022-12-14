@@ -1,12 +1,12 @@
 import React from "react"
-import { useToggle } from "../folder/useToggle"
+import { Chevron } from "../folder/Chevron"
 import {
   StyledContent,
   StyledFolder,
   StyledTitle,
   StyledWrapper
 } from "../folder/StyledFolder"
-import { Chevron } from "../folder/Chevron"
+import { useToggle } from "../folder/useToggle"
 
 export function TreeItem({
   title,
