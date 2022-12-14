@@ -6,7 +6,7 @@ import {
     RigidBodyProps,
     useRapier,
 } from '@react-three/rapier'
-import { useControls as useLeva } from 'leva'
+import { useControls as useLeva } from '@react-three/editor/fiber'
 import {
     forwardRef,
     RefObject,
@@ -217,25 +217,26 @@ export const Vehicle = forwardRef<VehicleRef, VehicleProps>(
                     ref={chassisRigidBodyRef}
                     mass={150}
                 >
-                    <primitive object={leftHeadlightTarget} />
+                    <primitive
+                        name="LeftHeadlightTarget"
+                        object={leftHeadlightTarget}
+                        position={[34.178, 1.381, -17.246]}
+                    />
                     <spotLight
                         position={[2.5, -0.2, -0.7]}
                         target={leftHeadlightTarget}
-                        angle={0.4}
+                        angle={0.7000000000000013}
                         distance={50}
                         castShadow
                         penumbra={1}
+                        intensity={3.3999999999999915}
                     />
 
-                    <primitive object={rightHeadlightTarget} />
-                    <spotLight
-                        position={[2.5, -0.2, 0.7]}
-                        target={rightHeadlightTarget}
-                        angle={0.4}
-                        distance={50}
-                        castShadow
-                        penumbra={1}
+                    <primitive
+                        name="RightHeadlightTarget"
+                        object={rightHeadlightTarget}
                     />
+                    <spotLight position={[2.5, -0.2, 0.7]} target={rightHeadlightTarget} angle={3.7} distance={50} castShadow penumbra={1} intensity={2.8} />
 
                     <Chassis
                         ref={chassisRef}
@@ -284,6 +285,6 @@ export const Vehicle = forwardRef<VehicleRef, VehicleProps>(
                     />
                 </group>
             </>
-        )
+        );
     }
 )

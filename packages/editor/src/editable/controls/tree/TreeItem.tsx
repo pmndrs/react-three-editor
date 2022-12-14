@@ -1,5 +1,3 @@
-import { EditableElement } from "../../EditableElement"
-import { useInputContext } from "leva/plugin"
 import React from "react"
 import { useToggle } from "../folder/useToggle"
 import {
@@ -18,7 +16,8 @@ export function TreeItem({
   selected,
   visible,
   remeasure,
-  collapsible
+  collapsible,
+  dirty
 }: {
   title: React.ReactNode
   children: React.ReactNode
@@ -28,10 +27,11 @@ export function TreeItem({
   visible: boolean
   remeasure: boolean
   collapsible: boolean
+  dirty: boolean
 }) {
   if (!collapsible) {
     return (
-      <StyledFolder>
+      <StyledFolder dirty={dirty}>
         <StyledTitle selected={selected} visible={visible}>
           <Chevron hidden={true} toggled={!collapsed} />
           <div style={{ marginLeft: "2px" }} />
@@ -42,6 +42,7 @@ export function TreeItem({
   } else {
     return (
       <CollapsibleTreeItem
+        dirty={dirty}
         title={title}
         children={children}
         collapsed={collapsed}
@@ -57,6 +58,7 @@ export function TreeItem({
 
 function CollapsibleTreeItem({
   title,
+  dirty,
   children,
   collapsed,
   setCollapsed,
@@ -73,25 +75,28 @@ function CollapsibleTreeItem({
   hideChevron: boolean
   visible: boolean
   remeasure: boolean
+  dirty: boolean
 }) {
-  const context = useInputContext<{ value: { entity: EditableElement } }>()
-  const { wrapperRef, contentRef } = useToggle(!collapsed, context.value.entity)
+  // const context = useInputContext<{ value: { element: EditableElement } }>()
+  const { wrapperRef, contentRef } = useToggle(!collapsed)
   const ref = React.useRef<HTMLDivElement>(null)
 
-  React.useLayoutEffect(() => {
-    if (remeasure) {
-      let el = ref.current?.parentElement?.parentElement?.parentElement
-      if (!el) {
-        return
-      }
-      const { height } = contentRef.current!.getBoundingClientRect()
-      console.log(el, height)
-      if (height > 0) el.style.height = height + 20 + "px"
-    }
-  }, [context.value.entity])
+  // React.useEffect(() => {
+  //   if (remeasure) {
+  //     let el = ref.current?.parentElement?.parentElement?.parentElement
+  //     let el2 = ref.current?.parentElement?.parentElement
+  //     console.log(el, el2, wrapperRef.current, ref.current?.parentElement)
+  //     if (!el) {
+  //       return
+  //     }
+  //     const { height } = ref.current?.parentElement!.getBoundingClientRect()
+  //     console.log(height)
+  //     if (height > 0) el.style.height = height + 20 + "px"
+  //   }
+  // }, [context.value.element, remeasure])
 
   return (
-    <StyledFolder ref={ref}>
+    <StyledFolder ref={ref} dirty={dirty}>
       <StyledTitle selected={selected} visible={visible}>
         <Chevron
           hidden={hideChevron}

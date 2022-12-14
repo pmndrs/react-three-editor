@@ -5,14 +5,14 @@ import { TreeElement } from "./TreeElement"
 
 export const element = createPlugin({
   normalize(input: {
-    entity: EditableElement
+    element: EditableElement
     collapsed?: boolean
     children?: boolean
     dirty?: boolean
     panel?: boolean
   }) {
     return {
-      value: { entity: input.entity },
+      value: { element: input.element },
       settings: {
         collapsed: false,
         ...input
@@ -21,7 +21,7 @@ export const element = createPlugin({
   },
   component: (props) => {
     const context = useInputContext<{
-      value: { entity: EditableElement }
+      value: { element: EditableElement }
       settings: {
         collapsed: boolean
         children: boolean
@@ -38,8 +38,8 @@ export const element = createPlugin({
 
     return (
       <TreeElement
-        element={context.value.entity}
-        key={context.value.entity.id}
+        element={context.value.element}
+        key={context.value.element.id}
         collapsed={context.settings.collapsed}
         onCollapse={setCollapsed}
         showChildren={false}

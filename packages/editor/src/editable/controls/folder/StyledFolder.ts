@@ -2,7 +2,18 @@ import { Icon } from "@iconify/react"
 import "@stitches/react"
 import { styled } from "leva/plugin"
 
-export const StyledFolder = styled("div", {})
+export const StyledFolder = styled("div", {
+  variants: {
+    dirty: {
+      true: {
+        borderRight: "$borderWidths$folder solid $colors$accent2"
+      },
+      false: {
+        borderRight: "$borderWidths$folder solid $colors$elevation2"
+      }
+    }
+  }
+})
 export const StyledIcon = styled(Icon, {})
 
 export const StyledWrapper = styled("div", {

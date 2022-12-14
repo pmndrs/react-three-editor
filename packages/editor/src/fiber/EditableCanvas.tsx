@@ -1,21 +1,14 @@
 import { Canvas as FiberCanvas } from "@react-three/fiber"
 import React, { ComponentProps, forwardRef, useMemo } from "react"
-import { EditorContext } from "../editable/contexts"
 import { EditorCamera } from "./EditorCamera"
-import { createEditorStore } from "../editable/store"
 import { Outs } from "./Tunnels"
-import { Editor } from "../editable/Editor"
 import { SceneTree } from "./SceneTree"
 import { EditorGizmos } from "./EditorGizmos"
 import { SelectedElement } from "./SelectedElement"
-
-import {
-  transform,
-  meshMaterial,
-  material,
-  orbitControls,
-  directionalLight
-} from "./plugins"
+import { DEFAULT_EDITOR_PLUGINS } from "./plugins"
+import { ThreeEditor } from "./ThreeEditor"
+import { EditorContext } from "../editable/Editor"
+import { client } from "../vite/client"
 
 export const Canvas = forwardRef<
   HTMLCanvasElement,
@@ -35,14 +28,7 @@ export const Canvas = forwardRef<
   ref
 ) {
   const store = useMemo(
-    () =>
-      new Editor(createEditorStore(), [
-        transform,
-        meshMaterial,
-        material,
-        orbitControls,
-        directionalLight
-      ]),
+    () => new ThreeEditor(DEFAULT_EDITOR_PLUGINS, client),
     []
   )
   return (

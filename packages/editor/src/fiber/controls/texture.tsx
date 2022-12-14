@@ -31,7 +31,7 @@ export const texture = createPlugin({
     )
 
     const clear = useCallback(
-      (e) => {
+      (e: Event) => {
         e.stopPropagation()
         onUpdate(undefined)
       },

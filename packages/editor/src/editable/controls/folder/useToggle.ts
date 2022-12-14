@@ -1,6 +1,6 @@
 import { useRef, useEffect, useLayoutEffect } from "react"
 
-export function useToggle(toggled: boolean, entity) {
+export function useToggle(toggled: boolean) {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
   const firstRender = useRef(true)

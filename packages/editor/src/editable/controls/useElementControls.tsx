@@ -1,34 +1,15 @@
 import { useState } from "react"
 import { useControls, button, levaStore } from "leva"
 import { EditableElement } from "../EditableElement"
-import { client } from "../client"
 import { element } from "./tree/element"
 
 export function useElementControls(
+  folderName: string,
   entity: EditableElement,
-  store?: typeof levaStore
+  { store, ...options }: { store: typeof levaStore; order: number }
 ) {
   const [run, setRun] = useState(0)
   let entityStore = entity.store!
-
-  useControls(
-    "entity",
-    {
-      [entity.id]: element({
-        entity,
-        panel: true,
-        collapsed: false,
-        children: false
-      })
-    },
-    {
-      order: -1
-    },
-    {
-      store
-    },
-    [entity]
-  )
 
   useControls(
     () => {
@@ -36,10 +17,10 @@ export function useElementControls(
         ...entity.controls,
         save: button(
           async () => {
-            entity.save(client)
+            entity.save()
           },
           {
-            disabled: !entity.dirty
+            disabled: true
           }
         )
       }
@@ -48,6 +29,20 @@ export function useElementControls(
       store: entityStore
     },
     [entity, run]
+  )
+
+  useControls(
+    {
+      [entity.id]: element({
+        element: entity,
+        panel: true,
+        collapsed: false,
+        children: false,
+        order: -1
+      })
+    },
+    options,
+    [entity]
   )
 
   return entityStore
