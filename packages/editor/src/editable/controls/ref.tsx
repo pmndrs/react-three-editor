@@ -13,7 +13,7 @@ export function ElementRef({ element }: { element: EditableElement }) {
         style={{ marginLeft: "4px" }}
         onClick={(e) =>
           element.editor.store.setState({
-            selected: element
+            selectedId: element
           })
         }
       >

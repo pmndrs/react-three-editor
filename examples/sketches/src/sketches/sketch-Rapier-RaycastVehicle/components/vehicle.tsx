@@ -236,14 +236,7 @@ export const Vehicle = forwardRef<VehicleRef, VehicleProps>(
                         name="RightHeadlightTarget"
                         object={rightHeadlightTarget}
                     />
-                    <spotLight
-                        position={[2.5, -0.2, 0.7]}
-                        target={rightHeadlightTarget}
-                        angle={0.4}
-                        distance={50}
-                        castShadow
-                        penumbra={1}
-                    />
+                    <spotLight position={[2.5, -0.2, 0.7]} target={rightHeadlightTarget} angle={3.7} distance={50} castShadow penumbra={1} intensity={2.8} />
 
                     <Chassis
                         ref={chassisRef}

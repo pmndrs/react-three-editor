@@ -1,5 +1,6 @@
 import {
   AmbientLight,
+  CameraHelper,
   DirectionalLight,
   DirectionalLightHelper,
   Material,
@@ -17,6 +18,7 @@ import { EditableElement } from "../editable/EditableElement"
 import { TransformHelper } from "./TransformHelper"
 import React from "react"
 import { useHelper, OrbitControls } from "@react-three/drei"
+import { usePersistedControls } from "../editable/controls/usePersistedControls"
 
 export const transform = {
   applicable: (entity: EditableElement) => entity.ref instanceof Object3D,
@@ -54,8 +56,57 @@ export const transform = {
 
 export const camera = {
   applicable: (entity: EditableElement) => entity.ref?.isCamera,
-  icon: (entity: EditableElement) => "ph:video-camera-bold"
+  icon: (entity: EditableElement) => "ph:video-camera-bold",
+  controls: (entity: EditableElement) => {
+    return {
+      camera: folder({
+        near: prop.number({
+          element: entity,
+          path: ["ref", "near"],
+          min: 0.1,
+          max: 100
+        }),
+        far: prop.number({
+          element: entity,
+          path: ["ref", "far"],
+          min: 0.1,
+          max: 10000
+        }),
+        top: prop.number({
+          element: entity,
+          path: ["currentProps", "top"]
+        }),
+        bottom: prop.number({
+          element: entity,
+          path: ["currentProps", "bottom"]
+        }),
+        left: prop.number({
+          element: entity,
+          path: ["currentProps", "left"]
+        }),
+        right: prop.number({
+          element: entity,
+          path: ["currentProps", "right"]
+        })
+
+        // fov: prop.number({
+        //   element: entity,
+        //   path: ["ref", "fov"],
+        //   min: 1,
+        //   max: 180
+        // })
+      })
+    }
+  },
+  helper: ({ element }: { element: EditableElement }) => {
+    const [{ camera }] = usePersistedControls("editor.helpers", {
+      camera: { value: true }
+    })
+    useHelper(camera ? element : undefined, CameraHelper)
+    return null
+  }
 }
+
 export const meshMaterial = {
   applicable: (entity: EditableElement) =>
     entity.ref instanceof Mesh && entity.ref.material,
@@ -187,7 +238,10 @@ export const directionalLight = {
     }
   },
   helper: ({ element }: { element: EditableElement }) => {
-    useHelper(element, DirectionalLightHelper)
+    const [{ directionalLight }] = usePersistedControls("editor.helpers", {
+      directionalLight: { value: true }
+    })
+    useHelper(directionalLight ? element : undefined, DirectionalLightHelper)
     return null
   }
 }
@@ -250,7 +304,10 @@ export const spotLight = {
     }
   },
   helper: ({ element }: { element: EditableElement }) => {
-    useHelper(element, SpotLightHelper, "hotpink")
+    const [{ spotLight }] = usePersistedControls("editor.helpers", {
+      spotLight: { value: true }
+    })
+    useHelper(spotLight ? element : undefined, SpotLightHelper, "hotpink")
     return null
   }
 }

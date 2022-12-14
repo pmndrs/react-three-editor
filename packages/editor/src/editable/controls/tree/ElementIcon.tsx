@@ -12,7 +12,7 @@ export function ElementIcon({
       icon={element.icon}
       onClick={(e) =>
         element.editor.store.setState({
-          selected: element
+          selectedId: element
         })
       }
       {...props}

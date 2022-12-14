@@ -7,7 +7,7 @@ import { EditableElement } from "../editable/EditableElement"
 import { useEditor } from "../editable/Editor"
 
 export function SelectedElement() {
-  const selectedElement = useEditor((state) => state.elements[state.selected])
+  const selectedElement = useEditor((state) => state.elements[state.selectedId])
   console.log(selectedElement)
   return selectedElement ? (
     <React.Fragment key={selectedElement.id}>

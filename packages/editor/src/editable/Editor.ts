@@ -6,13 +6,15 @@ import { EqualityChecker, StateSelector } from "zustand"
 import create from "zustand"
 
 export type EditorStoreStateType = {
-  selected: null | string
+  selectedId: null | string
+  selectedKey: null | string
   elements: Record<string, EditableElement>
 }
 
 const createEditorStore = () => {
   return create<EditorStoreStateType>(() => ({
-    selected: null,
+    selectedId: null,
+    selectedKey: null,
     elements: {}
   }))
 }
@@ -52,13 +54,25 @@ export class Editor {
 
   select(element: EditableElement<any>): void {
     this.store.setState({
-      selected: element.id
+      selectedId: element.id
+    })
+  }
+
+  selectId(id: string): void {
+    if (!id) {
+      return
+    }
+    // let element = this.store.getState().elements[id]
+    this.store.setState({
+      selectedId: id,
+      // selectedKey: element.key
     })
   }
 
   clearSelection(): void {
     this.store.setState({
-      selected: null
+      selectedId: null,
+      selectedKey: null
     })
   }
 

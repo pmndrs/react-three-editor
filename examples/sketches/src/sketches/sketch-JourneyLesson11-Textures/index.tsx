@@ -37,7 +37,7 @@ export default () => (
         <h1>Journey 11 - Textures</h1>
         <Canvas camera={{ position: [0, 0, 10], fov: 60 }}>
             <App />
-            <OrbitControls />
+            <OrbitControls makeDefault={true} />
         </Canvas>
     </>
 )
