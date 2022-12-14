@@ -5,10 +5,11 @@ import { useThree } from "@react-three/fiber"
 import { editable } from "../editable/editable"
 import { usePersistedControls } from "../editable/controls/usePersistedControls"
 import { EditorContext, useEditorStore } from "../editable/Editor"
+import { useHotkeys } from "react-hotkeys-hook"
 
 window.leva = levaStore
 export function EditorCamera() {
-  const [props] = usePersistedControls("editor.camera", {
+  const [props, setCamera] = usePersistedControls("editor.camera", {
     enabled: false,
     position: {
       value: [-6.836465353768794, 3.1169378502902387, -2.747260436170274],
@@ -18,6 +19,15 @@ export function EditorCamera() {
     near: { value: 0.1, min: 0.1, max: 100 },
     far: { value: 1000, min: 0.1, max: 10000 }
   })
+
+  useHotkeys(
+    "space",
+    () =>
+      setCamera({
+        enabled: !props.enabled
+      }),
+    [props.enabled]
+  )
 
   const selectedElement = useEditorStore((s) => s.selectedId)
   const editor = useContext(EditorContext)

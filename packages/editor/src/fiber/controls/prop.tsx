@@ -19,6 +19,7 @@ export function createProp(
     element = {} as any,
     path = [],
     persist,
+    onChange,
     ...settings
   }: PropInput & {
     step?: number
@@ -85,6 +86,8 @@ export function createProp(
 
           type.set(el, prop, value)
 
+          onChange?.(value, prop, context)
+
           let serializale = type.serialize
             ? type.serialize(el, prop, value)
             : value
@@ -112,6 +115,8 @@ export interface PropInput {
   max?: number
   options?: string[]
   lock?: boolean
+
+  onChange?: (value: any, prop: string, context: any) => void
 }
 
 const color = {
@@ -179,12 +184,7 @@ const number = {
   }
 }
 
-const textureT: {
-  get: (obj: any, prop: string) => any
-  set: (obj: any, prop: string, value: any) => void
-  control?: any
-  init?: ((obj: any, prop: string, value: any) => void) | undefined
-} = {
+const textureT = {
   control: texture,
   get(obj: any, prop: string) {
     return obj[prop]?.source?.data?.src
