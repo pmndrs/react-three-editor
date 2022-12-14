@@ -33,6 +33,7 @@ export function ElementTransformControls({
   useHotkeys("-", () =>
     ref.current.setSize(Math.max((ref.current as any).size - 0.1, 0.1))
   )
+  useHotkeys("s", () => element.changed && element.save())
   useHotkeys("=", () => ref.current.setSize((ref.current as any).size + 0.1))
   const draggingRef = React.useRef<boolean>(false)
 

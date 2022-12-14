@@ -8,6 +8,7 @@ import {
   MeshBasicMaterial,
   MeshStandardMaterial,
   Object3D,
+  OrthographicCamera,
   PointLight,
   SpotLight,
   SpotLightHelper
@@ -19,6 +20,7 @@ import { TransformHelper } from "./TransformHelper"
 import React from "react"
 import { useHelper, OrbitControls } from "@react-three/drei"
 import { usePersistedControls } from "../editable/controls/usePersistedControls"
+import { useEditorStore } from "../editable/Editor"
 
 export const transform = {
   applicable: (entity: EditableElement) => entity.ref instanceof Object3D,
@@ -72,29 +74,38 @@ export const camera = {
           min: 0.1,
           max: 10000
         }),
-        top: prop.number({
-          element: entity,
-          path: ["currentProps", "top"]
-        }),
-        bottom: prop.number({
-          element: entity,
-          path: ["currentProps", "bottom"]
-        }),
-        left: prop.number({
-          element: entity,
-          path: ["currentProps", "left"]
-        }),
-        right: prop.number({
-          element: entity,
-          path: ["currentProps", "right"]
-        })
+        ...(entity.ref instanceof OrthographicCamera
+          ? {
+              zoom: prop.number({
+                element: entity,
+                path: ["ref", "zoom"]
+              }),
+              top: prop.number({
+                element: entity,
+                path: ["currentProps", "top"]
+              }),
+              bottom: prop.number({
+                element: entity,
+                path: ["currentProps", "bottom"]
+              }),
+              left: prop.number({
+                element: entity,
+                path: ["currentProps", "left"]
+              }),
+              right: prop.number({
+                element: entity,
+                path: ["currentProps", "right"]
+              })
+            }
+          : {}),
 
-        // fov: prop.number({
-        //   element: entity,
-        //   path: ["ref", "fov"],
-        //   min: 1,
-        //   max: 180
-        // })
+        fov: prop.number({
+          element: entity,
+          path: ["ref", "fov"],
+          onChange(value) {
+            entity.ref.updateProjectionMatrix()
+          }
+        })
       })
     }
   },
@@ -102,7 +113,10 @@ export const camera = {
     const [{ camera }] = usePersistedControls("editor.helpers", {
       camera: { value: true }
     })
-    useHelper(camera ? element : undefined, CameraHelper)
+    const isSelected = useEditorStore(
+      (state) => state.selectedId === element.id
+    )
+    useHelper(camera || isSelected ? element : undefined, CameraHelper)
     return null
   }
 }
@@ -120,7 +134,7 @@ export const meshMaterial = {
                 element: entity,
                 path: ["ref", "material", "color"]
               }),
-              map: prop.texture({
+              texture: prop.texture({
                 element: entity,
                 path: ["ref", "material", "map"]
               })
@@ -140,48 +154,55 @@ export const material = {
   icon: (entity: EditableElement) => "ph:paint-brush-broad-duotone",
   controls: (entity: EditableElement) => {
     return {
-      material: folder({
-        color: prop.color({
-          element: entity,
-          path: ["ref", "color"]
-        }),
-        wireframe: prop.bool({
-          element: entity,
-          path: ["ref", "wireframe"]
-        }),
-        texture: prop.texture({
-          element: entity,
-          path: ["ref", "map"]
-        }),
-        displacement: folder({
-          map: prop.texture({
-            element: entity,
-            path: ["ref", "displacementMap"]
-          }),
-          scale: prop.number({
-            element: entity,
-            path: ["ref", "displacementScale"]
-          }),
-          bias: prop.number({
-            element: entity,
-            path: ["ref", "displacementBias"]
-          })
-        }),
-        bump: folder({
-          map: prop.texture({
-            element: entity,
-            path: ["ref", "displacementMap"]
-          }),
-          scale: prop.number({
-            element: entity,
-            path: ["ref", "displacementScale"]
-          }),
-          bias: prop.number({
-            element: entity,
-            path: ["ref", "displacementBias"]
-          })
-        })
-      })
+      color: prop.color({
+        element: entity,
+        path: ["ref", "color"]
+      }),
+      wireframe: prop.bool({
+        element: entity,
+        path: ["ref", "wireframe"]
+      }),
+      ...(entity.ref instanceof MeshStandardMaterial ||
+      entity.ref instanceof MeshBasicMaterial
+        ? {
+            texture: prop.texture({
+              element: entity,
+              path: ["ref", "map"]
+            })
+          }
+        : {}),
+      ...(entity.ref instanceof MeshStandardMaterial
+        ? {
+            displacement: folder({
+              map: prop.texture({
+                element: entity,
+                path: ["ref", "displacementMap"]
+              }),
+              scale: prop.number({
+                element: entity,
+                path: ["ref", "displacementScale"]
+              }),
+              bias: prop.number({
+                element: entity,
+                path: ["ref", "displacementBias"]
+              })
+            }),
+            bump: folder({
+              map: prop.texture({
+                element: entity,
+                path: ["ref", "bumpMap"]
+              }),
+              scale: prop.number({
+                element: entity,
+                path: ["ref", "bumpScale"]
+              }),
+              bias: prop.number({
+                element: entity,
+                path: ["ref", "bumpBias"]
+              })
+            })
+          }
+        : {})
     }
   }
 }

@@ -1,4 +1,5 @@
 import { Canvas as FiberCanvas } from "@react-three/fiber"
+import { useControls } from "leva"
 import React, { ComponentProps, forwardRef, useMemo } from "react"
 import { EditorContext } from "../editable/Editor"
 import { client } from "../vite/client"
@@ -31,6 +32,8 @@ export const Canvas = forwardRef<
     () => new ThreeEditor(DEFAULT_EDITOR_PLUGINS, client),
     []
   )
+
+  useControls("editor", {}, { collapsed: true })
   return (
     <>
       <FiberCanvas ref={ref} {...props}>

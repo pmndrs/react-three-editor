@@ -19,6 +19,7 @@ export function createProp(
     element = {} as any,
     path = [],
     persist,
+    onChange,
     ...settings
   }: PropInput & {
     step?: number
@@ -85,6 +86,8 @@ export function createProp(
 
           type.set(el, prop, value)
 
+          onChange?.(value, prop, context)
+
           let serializale = type.serialize
             ? type.serialize(el, prop, value)
             : value
@@ -94,7 +97,8 @@ export function createProp(
               element.addChange(editable, prop, serializale)
               element.changed = true
             } else {
-              element.dirtyProp(prop, serializale)
+              let [_, ...p] = path
+              element.dirtyProp(p.join("-"), serializale)
             }
           }
         },
@@ -111,6 +115,8 @@ export interface PropInput {
   max?: number
   options?: string[]
   lock?: boolean
+
+  onChange?: (value: any, prop: string, context: any) => void
 }
 
 const color = {
