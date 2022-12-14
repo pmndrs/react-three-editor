@@ -24,8 +24,21 @@ export const texture = createPlugin({
     const { popinRef, wrapperRef, shown, show, hide } = usePopin()
 
     const onDrop = useCallback(
-      (acceptedFiles: File[]) => {
-        if (acceptedFiles.length) onUpdate(acceptedFiles[0])
+      async (acceptedFiles: File[]) => {
+        console.log(acceptedFiles)
+        if (acceptedFiles.length) {
+          let data = new FormData()
+          data.append("file", acceptedFiles[0])
+          let response = await fetch(
+            `/__editor/save/${acceptedFiles[0].name}`,
+            {
+              method: "POST",
+              body: data
+            }
+          )
+          let json = await response.json()
+          onUpdate(json)
+        }
       },
       [onUpdate]
     )

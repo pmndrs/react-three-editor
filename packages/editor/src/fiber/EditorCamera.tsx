@@ -7,7 +7,6 @@ import { usePersistedControls } from "../editable/controls/usePersistedControls"
 import { EditorContext, useEditorStore } from "../editable/Editor"
 import { useHotkeys } from "react-hotkeys-hook"
 
-window.leva = levaStore
 export function EditorCamera() {
   const [props, setCamera] = usePersistedControls("editor.camera", {
     enabled: false,
