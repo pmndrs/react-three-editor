@@ -93,7 +93,7 @@ importers:
     dependencies:
       '@react-spring/core': 9.5.5_react@18.2.0
       '@react-spring/three': 9.5.5_7l5c7g5ph6e5ybhvldx3hsiylq
-      '@react-three/drei': 9.46.4_xa6xk36nauwxkzngvitxgjpnr4
+      '@react-three/drei': 9.46.5_xa6xk36nauwxkzngvitxgjpnr4
       '@react-three/editor': link:../../packages/editor
       '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
       '@use-gesture/react': 10.2.23_react@18.2.0
@@ -410,6 +410,7 @@ importers:
       fs-extra: 10.1.0
       leva: 0.9.34_biqbaboplfbrettd7655fr4n2y
       prettier: 2.8.0
+      react-dropzone: 14.2.3_react@18.2.0
       react-hotkeys-hook: 4.0.6_biqbaboplfbrettd7655fr4n2y
       three-stdlib: 2.20.4
       tunnel-rat: 0.1.0_react@18.2.0
@@ -424,7 +425,6 @@ importers:
       esbuild: 0.15.18
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      react-dropzone: 14.2.3_react@18.2.0
       vite: 3.2.5
 
 packages:
@@ -4026,6 +4026,41 @@ packages:
       lodash.omit: 4.5.0
       lodash.pick: 4.4.0
       meshline: 3.0.4_three@0.147.0
+      react: 18.2.0
+      react-composer: 5.0.3_react@18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-merge-refs: 1.1.0
+      stats.js: 0.17.0
+      suspend-react: 0.0.8_react@18.2.0
+      three: 0.147.0
+      three-mesh-bvh: 0.5.19_three@0.147.0
+      three-stdlib: 2.20.4_three@0.147.0
+      troika-three-text: 0.46.4_three@0.147.0
+      utility-types: 3.10.0
+      zustand: 3.7.2_react@18.2.0
+    dev: false
+
+  /@react-three/drei/9.46.5_xa6xk36nauwxkzngvitxgjpnr4:
+    resolution: {integrity: sha512-iPCMHxOIQ9SXRTpIWFNLl6/fpyKr/xW5bdl3MuqiNS9F/h8eI99cejj0hMlDbtDpG/l5WUgujhEryE75Q0DxGg==}
+    peerDependencies:
+      '@react-three/fiber': '>=8.0'
+      react: '>=18.0'
+      react-dom: '>=18.0'
+      three: '>=0.137'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.20.6
+      '@react-spring/three': 9.5.5_7l5c7g5ph6e5ybhvldx3hsiylq
+      '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
+      '@use-gesture/react': 10.2.23_react@18.2.0
+      detect-gpu: 5.0.1
+      glsl-noise: 0.0.0
+      lodash.clamp: 4.0.3
+      lodash.omit: 4.5.0
+      lodash.pick: 4.4.0
+      meshline: 3.1.6_three@0.147.0
       react: 18.2.0
       react-composer: 5.0.3_react@18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -10699,7 +10734,7 @@ packages:
     engines: {node: '>= 12'}
     dependencies:
       tslib: 2.4.1
-    dev: true
+    dev: false
 
   /file-type/10.11.0:
     resolution: {integrity: sha512-uzk64HRpUZyTGZtVuvrjP0FYxzQrBf4rojot6J65YMEbwBLB0CWm0CLojVpwpmFmxcE/lkvYICgfcGozbBq6rw==}
@@ -15115,6 +15150,14 @@ packages:
       three: 0.147.0
     dev: false
 
+  /meshline/3.1.6_three@0.147.0:
+    resolution: {integrity: sha512-8JZJOdaL5oz3PI/upG8JvP/5FfzYUOhrkJ8np/WKvXzl0/PZ2V9pqTvCIjSKv+w9ccg2xb+yyBhXAwt6ier3ug==}
+    peerDependencies:
+      three: '>=0.137'
+    dependencies:
+      three: 0.147.0
+    dev: false
+
   /methods/1.1.2:
     resolution: {integrity: sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w==}
     engines: {node: '>= 0.6'}
@@ -18268,7 +18311,7 @@ packages:
       file-selector: 0.6.0
       prop-types: 15.8.1
       react: 18.2.0
-    dev: true
+    dev: false
 
   /react-error-overlay/6.0.11:
     resolution: {integrity: sha512-/6UZ2qgEyH2aqzYZgQPxEnz33NJ2gNsnHA2o5+o4wW9bLM/JYQitNP9xPhsXwC08hMMovfGe/8retsdDsczPRg==}
