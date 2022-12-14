@@ -6,18 +6,14 @@ import { ElementIcon } from "./tree/ElementIcon"
 import { OpenInEditorButton } from "./tree/OpenInEditorButton"
 
 export function ElementRef({ element }: { element: EditableElement }) {
-
   const onClick = useCallback(() => {
-    element.editor.select( element )
+    element.editor.select(element)
   }, [])
 
   return (
     <>
       <ElementIcon element={element} />
-      <div
-        style={{ marginLeft: "4px" }}
-        onClick={onClick}
-      >
+      <div style={{ marginLeft: "4px" }} onClick={onClick}>
         {element.displayName}
       </div>
       <div style={{ marginLeft: "auto" }} />
