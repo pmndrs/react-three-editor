@@ -16,7 +16,7 @@ function manageProps(folderName, props: any) {
           )
           console.log(`${editorName}.${folderName}.${key}`, read)
 
-          if (read !== null) {
+          if (read != null) {
             props[key].value = read
           }
         } catch (e) {
@@ -29,7 +29,7 @@ function manageProps(folderName, props: any) {
           localStorage.getItem(`${editorName}.${folderName}.${key}`) ?? "null"
         )
 
-        if (read !== null) {
+        if (read != null) {
           props[key] = read
         }
       } catch (e) {

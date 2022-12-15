@@ -10,6 +10,7 @@ export function SelectedElementControls() {
     state.selectedId ? state.elements[state.selectedId] : null
   )
 
+  console.log("selected", selectedElement)
   return selectedElement ? (
     <React.Fragment key={selectedElement.id}>
       <ElementControls element={selectedElement} store={levaStore} />

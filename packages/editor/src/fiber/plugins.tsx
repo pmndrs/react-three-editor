@@ -101,6 +101,8 @@ export const camera = {
 
         fov: prop.number({
           element: entity,
+          min: 0,
+          max: 100,
           path: ["ref", "fov"],
           onChange(value) {
             entity.ref.updateProjectionMatrix()
@@ -173,34 +175,90 @@ export const material = {
         : {}),
       ...(entity.ref instanceof MeshStandardMaterial
         ? {
-            displacement: folder({
-              map: prop.texture({
-                element: entity,
-                path: ["ref", "displacementMap"]
-              }),
-              scale: prop.number({
-                element: entity,
-                path: ["ref", "displacementScale"]
-              }),
-              bias: prop.number({
-                element: entity,
-                path: ["ref", "displacementBias"]
-              })
-            }),
-            bump: folder({
-              map: prop.texture({
-                element: entity,
-                path: ["ref", "bumpMap"]
-              }),
-              scale: prop.number({
-                element: entity,
-                path: ["ref", "bumpScale"]
-              }),
-              bias: prop.number({
-                element: entity,
-                path: ["ref", "bumpBias"]
-              })
-            })
+            displacement: folder(
+              {
+                map: prop.texture({
+                  element: entity,
+                  path: ["ref", "displacementMap"]
+                }),
+                scale: prop.number({
+                  element: entity,
+                  path: ["ref", "displacementScale"]
+                }),
+                bias: prop.number({
+                  element: entity,
+                  path: ["ref", "displacementBias"]
+                })
+              },
+              {
+                collapsed: true
+              }
+            ),
+            bump: folder(
+              {
+                bumpMap: prop.texture({
+                  element: entity,
+                  path: ["ref", "bumpMap"],
+                  label: "map"
+                }),
+                bumpScale: prop.number({
+                  element: entity,
+                  path: ["ref", "bumpScale"],
+                  label: "scale"
+                })
+              },
+              {
+                collapsed: true
+              }
+            ),
+            ao: folder(
+              {
+                aoMap: prop.texture({
+                  element: entity,
+                  path: ["ref", "aoMap"],
+                  label: "map"
+                }),
+                intensity: prop.number({
+                  element: entity,
+                  path: ["ref", "aoMapIntensity"]
+                })
+              },
+              {
+                collapsed: true
+              }
+            ),
+            roughness: folder(
+              {
+                roughness: prop.number({
+                  element: entity,
+                  path: ["ref", "roughness"]
+                }),
+                roughnessMap: prop.texture({
+                  element: entity,
+                  path: ["ref", "roughnessMap"],
+                  label: "map"
+                })
+              },
+              {
+                collapsed: true
+              }
+            ),
+            metalness: folder(
+              {
+                metalness: prop.number({
+                  element: entity,
+                  path: ["ref", "metalness"]
+                }),
+                metalnessMap: prop.texture({
+                  element: entity,
+                  path: ["ref", "metalnessMap"],
+                  label: "map"
+                })
+              },
+              {
+                collapsed: true
+              }
+            )
           }
         : {})
     }

@@ -4,7 +4,6 @@ import React, { useContext } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
 import { Event, MathUtils, Object3D, Vector3Tuple } from "three"
 import { TransformControls as TransformControlsImpl } from "three-stdlib"
-import { SetTransformControls } from "../editable/commands"
 import { eq } from "../editable/controls/eq"
 import { EditableElement } from "../editable/EditableElement"
 import { EditorContext } from "../editable/Editor"
@@ -101,18 +100,18 @@ export function ElementTransformControls({
       const control = ref.current
       const draggingChanged = ({ value, target }: any) => {
         draggingRef.current = !!value
-        if (!draggingRef.current) {
-          editor?.commandManager.execute(
-            new SetTransformControls(
-              editor,
-              element,
-              serializeTransform(target.object),
-              Object.assign({}, oldTransform.current)
-            )
-          )
-        } else {
-          oldTransform.current = serializeTransform(target.object)
-        }
+        // if (!draggingRef.current) {
+        //   editor?.commandManager.execute(
+        //     new SetTransformControls(
+        //       editor,
+        //       element,
+        //       serializeTransform(target.object),
+        //       Object.assign({}, oldTransform.current)
+        //     )
+        //   )
+        // } else {
+        //   oldTransform.current = serializeTransform(target.object)
+        // }
       }
       control.addEventListener("dragging-changed", draggingChanged)
       return () => {
