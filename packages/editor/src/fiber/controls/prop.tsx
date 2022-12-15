@@ -2,6 +2,7 @@ import { MathUtils, TextureLoader } from "three"
 import { ref } from "../../editable/controls/ref"
 import { EditableElement } from "../../editable/EditableElement"
 import { texture } from "./texture"
+import { get } from "object-path"
 
 export interface PropInput {
   path?: string[]
@@ -13,8 +14,10 @@ export interface PropInput {
   options?: string[] | Record<any, any>
   lock?: boolean
   default?: any
+  label?: string
 
   onChange?: (value: any, prop: string, context: any) => void
+  render?(get: (prop: string) => any): boolean
 }
 
 export function getEditableElement(obj: any): EditableElement {
@@ -210,7 +213,6 @@ const textureT: {
     return obj[prop]?.source?.data?.src
   },
   set(obj: any, prop: string, value: any) {
-    console.log("set", obj, prop, value)
     obj[prop] = new TextureLoader().load(value)
     obj.needsUpdate = true
   },
