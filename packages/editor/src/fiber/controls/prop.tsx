@@ -154,7 +154,7 @@ const vector3d = {
 
 const vector2d = {
   get: (obj: any, prop: string): [number, number] => {
-    return obj[prop].toArray()
+    return obj?.[prop]?.toArray()
   },
   set: (obj: any, prop: string, value: [number, number]) => {
     obj[prop].fromArray(value)
@@ -226,7 +226,7 @@ const textureT: {
 
 const select = {
   get(obj: any, prop: string) {
-    return obj[prop]
+    return obj?.[prop]
   },
   set(obj: any, prop: string, value: any) {
     obj[prop]

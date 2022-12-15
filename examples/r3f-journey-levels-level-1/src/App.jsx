@@ -11,7 +11,12 @@ export default function App() {
   return (
     <Canvas flat dpr={[1, 2]} camera={{ fov: 25, position: [0, 0, 8] }}>
       <color attach="background" args={["#e0b7ff"]} />
+      <mesh>
+        <sphereGeometry />
+        <meshStandardMaterial />
+      </mesh>
       <ambientLight />
+      <directionalLight />
       <group
         global
         makeDefault
@@ -30,5 +35,5 @@ export default function App() {
         </group>
       </group>
     </Canvas>
-  )
+  );
 }
