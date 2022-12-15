@@ -1,6 +1,20 @@
-import { createPlugin, useInputContext } from "leva/plugin"
+import { createPlugin, styled, useInputContext } from "leva/plugin"
 import React from "react"
 import { TreeElement } from "./TreeElement"
+
+const StyledWrapper = styled("div", {
+  maxHeight: 180,
+  overflow: "auto",
+  "&::-webkit-scrollbar": {
+    width: "8px",
+    height: "100%",
+    backgroundColor: "rgba(0,0,0,0.5)"
+  },
+  "&::-webkit-scrollbar-thumb": {
+    backgroundColor: "$elevation3",
+    borderRadius: "$lg"
+  }
+})
 
 export const tree = createPlugin<
   { items: object },
@@ -15,7 +29,7 @@ export const tree = createPlugin<
   component() {
     const context = useInputContext<{ settings: { items: object } }>()
     return (
-      <div style={{ maxHeight: 280, overflow: "scroll" }}>
+      <StyledWrapper>
         {Object.values(context.settings.items).map((v) => (
           <TreeElement
             element={v}
@@ -26,7 +40,7 @@ export const tree = createPlugin<
             panel={false}
           />
         ))}
-      </div>
+      </StyledWrapper>
     )
   }
 })
