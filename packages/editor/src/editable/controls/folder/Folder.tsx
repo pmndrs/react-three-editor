@@ -1,7 +1,7 @@
 import { useStoreContext } from "leva"
 import { Tree } from "leva/dist/declarations/src/types"
 import { useTh } from "leva/plugin"
-import React, { useLayoutEffect, useRef, useState } from "react"
+import { memo, useLayoutEffect, useRef, useState } from "react"
 import { FolderTitle } from "./FolderTitle"
 import { StyledContent, StyledFolder, StyledWrapper } from "./StyledFolder"
 import { useToggle } from "./useToggle"
@@ -56,7 +56,7 @@ type TreeWrapperProps = {
   toggled: boolean
 }
 
-export const TreeWrapper = React.memo(
+export const TreeWrapper = memo(
   ({
     isRoot = false,
     fill = false,

@@ -1,15 +1,20 @@
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei"
 import { useThree } from "@react-three/fiber"
 import { levaStore } from "leva"
-import React, { useContext, useEffect } from "react"
+import { useContext, useEffect, useRef } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
+import { Camera, Event } from "three"
 import { usePersistedControls } from "../editable/controls/usePersistedControls"
 import { editable } from "../editable/editable"
 import { EditorContext, useEditorStore } from "../editable/Editor"
+import { OrbitControls as OrbitControlsImpl } from "three-stdlib"
 
 // @ts-ignore
 window.leva = levaStore
 export function EditorCamera() {
+  const ref = useRef<Camera>(null!)
+  const ref2 = useRef<OrbitControlsImpl>(null!)
+
   const [props, setCamera] = usePersistedControls("editor.camera", {
     enabled: false,
     position: {
@@ -45,7 +50,7 @@ export function EditorCamera() {
     }
   })
 
-  React.useEffect(() => {
+  useEffect(() => {
     console.log("selectedElement", selectedElement)
     levaStore.setValueAtPath(
       "editor.scene.selected",
@@ -56,18 +61,13 @@ export function EditorCamera() {
 
   const camera = useThree((c) => c.camera)
 
-  const ref = React.useRef<Camera>(null!)
-
   useEffect(() => {
     if (!ref.current) {
       ref.current = camera
     }
-    // console.log(camera)
   }, [])
 
-  // useHelper(ref, CameraHelper)
   const controls = useThree((c) => c.controls)
-  const ref2 = React.useRef<OrbitControlsImpl>(null!)
 
   useEffect(() => {
     function update(e: Event) {

@@ -4,7 +4,7 @@ import { useEffect } from "react"
 
 let editorName = "r3f-editor"
 
-function manageProps(folderName, props: any) {
+function manageProps(folderName: string, props: any) {
   Object.keys(props).forEach((key) => {
     if (typeof props[key] === "object") {
       if (props[key].type === "FOLDER") {
@@ -38,8 +38,6 @@ function manageProps(folderName, props: any) {
     }
   })
 }
-
-// <S extends Schema, F extends SchemaOrFn<S> | string, G extends SchemaOrFn<S>>(schemaOrFolderName: F, settingsOrDepsOrSchema?: HookSettings | React.DependencyList | G, depsOrSettingsOrFolderSettings?: React.DependencyList | HookSettings | FolderSettings, depsOrSettings?: React.DependencyList | HookSettings, depsOrUndefined?: React.DependencyList): HookReturnType<F, G>
 
 type SchemaOrFn<S extends Schema = Schema> = S | (() => S)
 type FunctionReturnType<S extends Schema> = [

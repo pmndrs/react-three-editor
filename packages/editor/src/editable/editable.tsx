@@ -1,21 +1,26 @@
 import { useCreateStore } from "leva"
 import { mergeRefs } from "leva/plugin"
-import React, {
-    createContext,
-    forwardRef,
-    useCallback,
-    useContext,
-    useEffect,
-    useId,
-    useMemo
+import {
+  createContext,
+  createElement,
+  FC,
+  forwardRef,
+  Fragment,
+  Ref,
+  useCallback,
+  useContext,
+  useEffect,
+  useId,
+  useMemo,
+  useState
 } from "react"
 import { EditableElement, JSXSource } from "./EditableElement"
 import { EditorContext } from "./Editor"
 
 type Elements = {
-  [K in keyof JSX.IntrinsicElements]: React.FC<
+  [K in keyof JSX.IntrinsicElements]: FC<
     JSX.IntrinsicElements[K] & {
-      ref?: React.Ref<any>
+      ref?: Ref<any>
     }
   >
 }
@@ -36,9 +41,9 @@ export const Editable = forwardRef(
     }, [component])
     const isEditor = useContext(EditorContext)
     if (isEditor) {
-      return React.createElement(mainC, { ...props, ref })
+      return createElement(mainC, { ...props, ref })
     }
-    return React.createElement(component, { ...props, ref })
+    return createElement(component, { ...props, ref })
   }
 )
 
@@ -48,9 +53,9 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
   let hasRef =
     // @ts-ignore
     typeof Component === "string" ||
-    (Component as any).$$typeof === Symbol.for("react.forward_ref") ||
-    ((Component as any).$$typeof === Symbol.for("react.memo") &&
-      Component["type"]?.["$$typeof"] === Symbol.for("react.forward_ref"))
+    (Component as any).$$typeof === Symbol.for("forward_ref") ||
+    ((Component as any).$$typeof === Symbol.for("memo") &&
+      Component["type"]?.["$$typeof"] === Symbol.for("forward_ref"))
 
   if (hasRef) {
     return forwardRef(function Editable(props: any, forwardRef) {
@@ -60,7 +65,7 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
 
       let ref = useEditableRef(editableElement)
       editableElement.forwardedRef = true
-      const [mounted, setMounted] = React.useState(false)
+      const [mounted, setMounted] = useState(false)
 
       return (
         <EditableElementContext.Provider value={editableElement}>
@@ -95,17 +100,17 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
 }
 
 function useRerender() {
-  const [, rerender] = React.useState(0)
+  const [, rerender] = useState(0)
   return useCallback(() => rerender((i) => i + 1), [rerender])
 }
 
 function useEditableElement(
-  componentType: string | React.FC,
+  componentType: string | FC,
   source: JSXSource,
   props: any
 ) {
-  const editor = React.useContext(EditorContext)
-  const parent = React.useContext(EditableElementContext)
+  const editor = useContext(EditorContext)
+  const parent = useContext(EditableElementContext)
   const id = useId()
   const render = useRerender()
 
@@ -196,9 +201,9 @@ function Helpers() {
       {editor?.plugins
         .filter((p) => p.helper && p.applicable(element))
         .map((plugin) => (
-          <React.Fragment key={element.id}>
+          <Fragment key={element.id}>
             <plugin.helper element={element} />
-          </React.Fragment>
+          </Fragment>
         ))}
     </>
   )

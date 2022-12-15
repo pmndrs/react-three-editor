@@ -1,6 +1,6 @@
 import { Canvas as FiberCanvas } from "@react-three/fiber"
 import { useControls } from "leva"
-import React, { ComponentProps, forwardRef, useMemo } from "react"
+import { ComponentProps, forwardRef, ReactNode, useMemo } from "react"
 import { EditorContext } from "../editable/Editor"
 import { client } from "../vite/client"
 import { EditorCamera } from "./EditorCamera"
@@ -13,7 +13,7 @@ import { Outs } from "./Tunnels"
 
 export const Canvas = forwardRef<
   HTMLCanvasElement,
-  ComponentProps<typeof FiberCanvas> & { editor?: React.ReactNode }
+  ComponentProps<typeof FiberCanvas> & { editor?: ReactNode }
 >(function Canvas(
   {
     children,

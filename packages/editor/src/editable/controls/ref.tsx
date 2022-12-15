@@ -1,5 +1,5 @@
 import { Components, createPlugin, useInputContext } from "leva/plugin"
-import React, { useCallback } from "react"
+import { useCallback } from "react"
 import { EditableElement } from "../EditableElement"
 import { StyledFolder, StyledTitle } from "./folder/StyledFolder"
 import { ElementIcon } from "./tree/ElementIcon"

@@ -1,5 +1,5 @@
 import { LevaPanel } from "leva"
-import React, { useState } from "react"
+import { useState } from "react"
 import { EditableElement } from "../../EditableElement"
 import { StyledIcon } from "../folder/StyledFolder"
 import { ElementIcon } from "./ElementIcon"
@@ -71,7 +71,8 @@ export function TreeElement({
               marginLeft: 2
             }}
             onClick={(e) => (
-              setVisible((v: boolean) => !v), (element.visible = !element.visible)
+              setVisible((v: boolean) => !v),
+              (element.visible = !element.visible)
             )}
           />
         </>

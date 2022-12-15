@@ -1,5 +1,5 @@
 import { Components, createPlugin, useInputContext } from "leva/plugin"
-import React, { useCallback } from "react"
+import { MouseEvent, useCallback } from "react"
 import { useDropzone } from "react-dropzone"
 import {
   DropZone,

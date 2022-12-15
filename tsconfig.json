@@ -5,12 +5,18 @@
     "moduleResolution": "node",
     "declaration": true,
     "strict": true,
-    "jsx": "react",
+    "jsx": "react-jsx",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "isolatedModules": true,
     "skipLibCheck": true
   },
-  "include": ["packages/*/src/**/*"],
-  "exclude": ["**/node_modules/**/*", "**/*.spec.ts", "**/*.test.ts"]
+  "include": [
+    "packages/*/src/**/*"
+  ],
+  "exclude": [
+    "**/node_modules/**/*",
+    "**/*.spec.ts",
+    "**/*.test.ts"
+  ]
 }

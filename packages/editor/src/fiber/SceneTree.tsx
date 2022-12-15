@@ -1,6 +1,6 @@
 import { useThree } from "@react-three/fiber"
 import { folder, LevaPanel, useControls, useCreateStore } from "leva"
-import React, { useState } from "react"
+import { useState } from "react"
 import { tree } from "../editable/controls/tree/tree"
 import { useEditorStore } from "../editable/Editor"
 import { In } from "./Tunnels"
@@ -29,7 +29,7 @@ export function ScenePanel() {
     y: 0
   })
 
-  React.useEffect(() => {
+  useEffect(() => {
     setCollapsed(false)
   }, [])
   return (

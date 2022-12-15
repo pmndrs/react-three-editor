@@ -1,5 +1,5 @@
 import { applyProps } from "@react-three/fiber"
-import React, { useEffect, useMemo } from "react"
+import { useEffect, useMemo } from "react"
 import { Object3D } from "three"
 import { EditableElement } from "../editable/EditableElement"
 
@@ -16,7 +16,7 @@ export function TransformHelper({
     if (props.position || props.rotation || props.scale) {
       element.ref = item
 
-      applyProps(item as unknown, {
+      applyProps(item as unknown as any, {
         position: props.position,
         rotation: props.rotation,
         scale: props.scale

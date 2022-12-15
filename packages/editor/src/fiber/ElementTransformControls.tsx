@@ -1,6 +1,6 @@
 import { TransformControls } from "@react-three/drei"
 import { mergeRefs } from "leva/plugin"
-import React, { useContext } from "react"
+import { useCallback, useContext, useEffect, useRef } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
 import { Event, MathUtils, Object3D, Vector3Tuple } from "three"
 import { TransformControls as TransformControlsImpl } from "three-stdlib"
@@ -26,10 +26,10 @@ export type ElementTransformControlsProps = {
 export function ElementTransformControls({
   element
 }: ElementTransformControlsProps) {
-  const ref = React.useRef<TransformControlsImpl>(null!)
-  const draggingRef = React.useRef<boolean>(false)
+  const ref = useRef<TransformControlsImpl>(null!)
+  const draggingRef = useRef<boolean>(false)
   const editor = useContext(EditorContext)
-  const oldTransform = React.useRef<{
+  const oldTransform = useRef<{
     position: Vector3Tuple
     rotation: Vector3Tuple
     scale: Vector3Tuple
@@ -50,7 +50,7 @@ export function ElementTransformControls({
   useHotkeys("meta+z", () => editor?.commandManager.undo())
   useHotkeys("meta+y", () => editor?.commandManager.redo())
 
-  const updateElementTransforms = React.useCallback(
+  const updateElementTransforms = useCallback(
     (object: Object3D, mode: "translate" | "rotation" | "scale") => {
       const { position, rotation, scale } = serializeTransform(object)
       if (
@@ -95,7 +95,7 @@ export function ElementTransformControls({
     [element]
   )
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (ref.current) {
       const control = ref.current
       const draggingChanged = ({ value, target }: any) => {
@@ -120,7 +120,7 @@ export function ElementTransformControls({
     }
   }, [element])
 
-  const onChange = React.useCallback(
+  const onChange = useCallback(
     (event?: Event) => {
       if (
         event?.type === "change" &&
