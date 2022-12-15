@@ -1,10 +1,9 @@
-import { button, levaStore, useControls } from "leva";
-import { useState } from "react";
-import { EditableElement } from "../EditableElement";
-import { element } from "./tree/element";
+import { button, levaStore, useControls } from "leva"
+import { useState } from "react"
+import { EditableElement } from "../EditableElement"
+import { element } from "./tree/element"
 
 export function useElementControls(
-  folderName: string,
   entity: EditableElement,
   { store, ...options }: { store: typeof levaStore; order: number }
 ) {
@@ -46,4 +45,15 @@ export function useElementControls(
   )
 
   return entityStore
+}
+
+export function ElementControls({
+  element,
+  store
+}: {
+  element: EditableElement
+  store: typeof levaStore
+}) {
+  useElementControls(element, { store, order: -1 })
+  return null
 }

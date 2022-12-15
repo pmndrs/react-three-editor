@@ -97,6 +97,8 @@ export const camera = {
 
         fov: prop.number({
           element: entity,
+          min: 0,
+          max: 100,
           path: ["ref", "fov"],
           onChange(value) {
             entity.ref.updateProjectionMatrix()

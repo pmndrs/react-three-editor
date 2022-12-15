@@ -6,8 +6,8 @@ import { client } from "../vite/client"
 import { EditorCamera } from "./EditorCamera"
 import { EditorGizmos } from "./EditorGizmos"
 import { DEFAULT_EDITOR_PLUGINS } from "./plugins"
-import { SceneTree } from "./SceneTree"
-import { SelectedElement } from "./SelectedElement"
+import { SceneControls } from "./SceneTree"
+import { SelectedElementControls } from "./SelectedElement"
 import { ThreeEditor } from "./ThreeEditor"
 import { Outs } from "./Tunnels"
 
@@ -19,8 +19,8 @@ export const Canvas = forwardRef<
     children,
     editor = (
       <>
-        <SceneTree />
-        <SelectedElement />
+        <SceneControls />
+        <SelectedElementControls />
         <EditorGizmos />
       </>
     ),
