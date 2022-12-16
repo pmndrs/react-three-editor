@@ -38,13 +38,19 @@ export default function editor(): Plugin {
           return
         }
 
-        let p = "public/textures/" + req.url.slice(1)
+        let p = "public/textures/" + decodeURIComponent(req.url.slice(1))
         if (fs.existsSync(p)) {
           fs.removeSync(p)
         }
         console.log(fs.moveSync(files["file"].filepath, p))
         res.writeHead(200, { "Content-Type": "application/json" })
-        res.end(JSON.stringify("/textures/" + req.url.slice(1), null, 2))
+        res.end(
+          JSON.stringify(
+            "/textures/" + decodeURIComponent(req.url.slice(1)),
+            null,
+            2
+          )
+        )
       })
     })
   }
