@@ -237,7 +237,18 @@ const textureT: {
   serialize(obj: any, prop: string, value: any) {
     return {
       src: value,
-      loader: "TextureLoader"
+      loader: "TextureLoader",
+      expression: `useLoader(TextureLoader, '${value}')`,
+      imports: [
+        {
+          import: ["useLoader"],
+          importPath: "@react-three/fiber"
+        },
+        {
+          import: ["TextureLoader"],
+          importPath: "three"
+        }
+      ]
     }
   }
 }

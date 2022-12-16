@@ -1,4 +1,5 @@
 import { NodePath, transformFromAst, types as t } from "@babel/core"
+import template from "@babel/template"
 import gen from "@babel/generator"
 import { parse, print } from "@vinxi/recast"
 import fs from "fs-extra"
@@ -75,6 +76,15 @@ function transform(data: any) {
   if (!data) throw "no data"
   let source = fs.readFileSync(data.source.fileName).toString()
 
+  function getDataImports(_data: any) {
+    let imports = Object.values(_data).flatMap((value: any) => {
+      if (value.imports) {
+        return value.imports
+      }
+    })
+    return imports
+  }
+
   const ast2 = parse(source, {
     parser: require("@vinxi/recast/parsers/babel-ts"),
     jsx: true
@@ -89,6 +99,52 @@ function transform(data: any) {
       () => {
         return {
           visitor: {
+            Program: (path: NodePath<t.Program>, opts: any) => {
+              const imports = getDataImports(data.value)
+              imports.forEach(({ importPath, import: _import }: any) => {
+                let specifiers: string[] = _import
+                if (!Array.isArray(_import)) {
+                  specifiers = [_import]
+                }
+                const importDeclaration = path.node.body.find((bodyNode) => {
+                  return (
+                    t.isImportDeclaration(bodyNode) &&
+                    bodyNode.source.value === importPath
+                  )
+                }) as t.ImportDeclaration | undefined
+                if (importDeclaration) {
+                  specifiers.forEach((specifier) => {
+                    const existingIdentifier =
+                      importDeclaration.specifiers.find((s) => {
+                        return (
+                          t.isImportSpecifier(s) &&
+                          t.isIdentifier(s.imported) &&
+                          s.imported.name === specifier
+                        )
+                      })
+                    if (!existingIdentifier) {
+                      importDeclaration.specifiers.push(
+                        t.importSpecifier(
+                          t.identifier(specifier),
+                          t.identifier(specifier)
+                        )
+                      )
+                    }
+                  })
+                } else {
+                  path.node.body.unshift(
+                    t.importDeclaration(
+                      [
+                        ...specifiers.map((s) =>
+                          t.importSpecifier(t.identifier(s), t.identifier(s))
+                        )
+                      ],
+                      t.stringLiteral(importPath)
+                    )
+                  )
+                }
+              })
+            },
             JSXOpeningElement: (path: NodePath<t.JSXOpeningElement>) => {
               if (
                 path.node?.loc?.start.line === data.source.lineNumber &&
@@ -110,33 +166,41 @@ function transform(data: any) {
                   )
 
                 let value = data.value[prop]
-
-                console.log(value)
-
-                let expr = Array.isArray(value)
-                  ? t.jsxExpressionContainer(
-                      t.arrayExpression(value.map((v) => t.numericLiteral(v)))
-                    )
-                  : typeof value === "object"
-                  ? t.jsxExpressionContainer(
-                      t.callExpression(t.identifier("useLoader"), [
-                        t.identifier("TextureLoader"),
-                        t.stringLiteral(value.src)
-                      ])
-                    )
-                  : typeof value === "string"
-                  ? t.jsxExpressionContainer(t.stringLiteral(value))
-                  : typeof value === "number"
-                  ? t.jsxExpressionContainer(t.numericLiteral(value))
-                  : t.jsxExpressionContainer(t.booleanLiteral(value))
-
-                if (attr) {
-                  attr.set("value", expr)
+                let expr: any
+                if (typeof value.expression === "string") {
+                  const templ = template(value.expression)
+                  const ast = templ({})
+                  if (t.isExpressionStatement(ast)) {
+                    expr = t.jsxExpressionContainer(ast.expression)
+                  }
                 } else {
-                  justEdited[data.source.fileName] = false
-                  path.node.attributes.push(
-                    t.jsxAttribute(t.jsxIdentifier(prop), expr)
-                  )
+                  expr = Array.isArray(value)
+                    ? t.jsxExpressionContainer(
+                        t.arrayExpression(value.map((v) => t.numericLiteral(v)))
+                      )
+                    : typeof value === "object"
+                    ? t.jsxExpressionContainer(
+                        t.callExpression(t.identifier("useLoader"), [
+                          t.identifier("TextureLoader"),
+                          t.stringLiteral(value.src)
+                        ])
+                      )
+                    : typeof value === "string"
+                    ? t.jsxExpressionContainer(t.stringLiteral(value))
+                    : typeof value === "number"
+                    ? t.jsxExpressionContainer(t.numericLiteral(value))
+                    : t.jsxExpressionContainer(t.booleanLiteral(value))
+                }
+
+                if (expr) {
+                  if (attr) {
+                    attr.set("value", expr)
+                  } else {
+                    justEdited[data.source.fileName] = false
+                    path.node.attributes.push(
+                      t.jsxAttribute(t.jsxIdentifier(prop), expr)
+                    )
+                  }
                 }
               }
             }
