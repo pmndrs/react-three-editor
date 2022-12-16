@@ -1,6 +1,6 @@
 import { GizmoHelper, GizmoViewcube, GizmoViewport } from "@react-three/drei"
 
-export function EditorGizmos() {
+export function CameraGizmos() {
   return (
     <GizmoHelper alignment="bottom-right" margin={[100, 100]}>
       <group scale={0.85}>

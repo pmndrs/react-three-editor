@@ -1,4 +1,5 @@
 import { StoreType } from "leva/dist/declarations/src/types"
+import { getEditableElement } from "../fiber/controls/prop"
 import { Editor } from "./Editor"
 
 export type JSXSource = {
@@ -22,6 +23,22 @@ export class EditableElement<
       // editable = getEditableElement(el)
     }
     return el
+  }
+  getEditableObjectByPath(path: string[]) {
+    let el = this
+    let editable = this
+    let remainingPath = path
+    if (path.length > 1) {
+      for (let i = 0; i < path.length - 1; i++) {
+        el = el?.[path[i]]
+        let edit = getEditableElement(el)
+        if (edit) {
+          editable = edit
+          remainingPath = path.slice(i + 1)
+        }
+      }
+    }
+    return [el, editable, remainingPath]
   }
   forwardedRef: boolean = false
   children: string[] = []
@@ -110,11 +127,8 @@ export class EditableElement<
   }
 
   dirtyProp(arg0: string, arg1: number[]) {
-    this.store?.setSettingsAtPath("save", {
-      disabled: false
-    })
-
     this.addChange(this, arg0, arg1)
+    this.changed = true
 
     if (!this.forwardedRef || this.type !== "string") {
       this.props[arg0] = arg1

@@ -53,9 +53,9 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
   let hasRef =
     // @ts-ignore
     typeof Component === "string" ||
-    (Component as any).$$typeof === Symbol.for("forward_ref") ||
-    ((Component as any).$$typeof === Symbol.for("memo") &&
-      Component["type"]?.["$$typeof"] === Symbol.for("forward_ref"))
+    (Component as any).$$typeof === Symbol.for("react.forward_ref") ||
+    ((Component as any).$$typeof === Symbol.for("react.memo") &&
+      Component["type"]?.["$$typeof"] === Symbol.for("react.forward_ref"))
 
   if (hasRef) {
     return forwardRef(function Editable(props: any, forwardRef) {

@@ -1,37 +1,58 @@
-import { PropsWithChildren, useId } from "react"
+import { PropsWithChildren, ReactNode, useEffect, useId } from "react"
 import tunnel from "tunnel-rat"
 import create from "zustand"
 
 export type TunnelsStateType = Record<
   string,
-  {
-    In: ({ children }: any) => null
-    Out: () => JSX.Element
-  }
+  | {
+      In: ({ children }: any) => null
+      Out: () => JSX.Element
+    }
+  | undefined
 >
 
-export const useTunnels = create<TunnelsStateType>(() => ({}))
+export function createMultiTunnel() {
+  const useTunnels = create<TunnelsStateType>(() => ({}))
 
-export function In({ children }: PropsWithChildren<{}>) {
-  const id = useId()
-  let OldTunnel = useTunnels((state) => state[id])
-  if (!OldTunnel) {
-    OldTunnel = tunnel()
-    useTunnels.setState({
-      [id]: OldTunnel
-    })
+  function In({ children }: PropsWithChildren<{}>) {
+    const id = useId()
+    let OldTunnel = useTunnels((state) => state[id])
+    if (!OldTunnel) {
+      OldTunnel = tunnel()
+      useTunnels.setState({
+        [id]: OldTunnel
+      })
+    }
+
+    useEffect(() => {
+      return () => {
+        useTunnels.setState({
+          [id]: undefined
+        })
+      }
+    }, [OldTunnel])
+
+    return <OldTunnel.In>{children}</OldTunnel.In>
   }
 
-  return <OldTunnel.In>{children}</OldTunnel.In>
-}
+  function Outs({ fallback }: { fallback?: ReactNode }) {
+    const tunnels = useTunnels()
+    let activeTunnels = Object.entries(tunnels).filter(([k, v]) => v)
 
-export function Outs() {
-  const tunnels = useTunnels()
-  return (
-    <>
-      {Object.entries(tunnels).map(([key, { Out }]) => (
-        <Out key={key} />
-      ))}
-    </>
-  )
+    if (activeTunnels.length === 0 && fallback) return <>{fallback}</>
+
+    return (
+      <>
+        {activeTunnels.map(([key, { Out }]) => (
+          <Out key={key} />
+        ))}
+      </>
+    )
+  }
+
+  return {
+    In,
+    Outs,
+    useTunnels
+  }
 }

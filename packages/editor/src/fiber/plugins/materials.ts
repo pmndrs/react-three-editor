@@ -93,7 +93,7 @@ const meshBasicMaterialControls = (
 const createTextureFolder = (
   element: EditableElement,
   prefix: string,
-  path: string[] = ["ref"],
+  path: string[],
   otherControls: any = {}
 ) => {
   const texturePropName = `${prefix !== "map" ? prefix + "Map" : "map"}`
@@ -130,12 +130,6 @@ const createTextureFolder = (
           onChange(v) {
             let o = element.getObjectByPath<Texture>([...path, texturePropName])
             o.needsUpdate = true
-          },
-          render: (get) => {
-            return (
-              get(`${prefix}.${prefix}Map`) !== null &&
-              get(`${prefix}.${prefix}Map`) !== undefined
-            )
           }
         }),
         [`${prefix}MapWrapT`]: prop.select({
@@ -149,10 +143,8 @@ const createTextureFolder = (
           default: RepeatWrapping,
           label: "wrapT",
           render: (get) => {
-            return (
-              get(`${prefix}.${prefix}Map`) !== null &&
-              get(`${prefix}.${prefix}Map`) !== undefined
-            )
+            let o = element.getObjectByPath<Texture>([...path, texturePropName])
+            return o && o.source?.data?.src
           },
           onChange(v) {
             let o = element.getObjectByPath<Texture>([...path, texturePropName])
@@ -166,10 +158,8 @@ const createTextureFolder = (
           default: [1, 1],
           step: 0.1,
           render: (get) => {
-            return (
-              get(`${prefix}.${prefix}Map`) !== null &&
-              get(`${prefix}.${prefix}Map`) !== undefined
-            )
+            let o = element.getObjectByPath<Texture>([...path, texturePropName])
+            return o && o.source?.data?.src
           }
         })
       },
@@ -198,11 +188,11 @@ const meshStandardMaterialControls = (
       element,
       path: [...path, "fog"]
     }),
-    ...createTextureFolder(element, "map"),
-    ...createTextureFolder(element, "alpha"),
-    ...createTextureFolder(element, "ao"),
-    ...createTextureFolder(element, "bump"),
-    ...createTextureFolder(element, "displacement"),
+    ...createTextureFolder(element, "map", path),
+    ...createTextureFolder(element, "alpha", path),
+    ...createTextureFolder(element, "ao", path),
+    ...createTextureFolder(element, "bump", path),
+    ...createTextureFolder(element, "displacement", path),
     ...createTextureFolder(element, "emissive", path, {
       emissiveColor: prop.color({
         element,
@@ -210,8 +200,8 @@ const meshStandardMaterialControls = (
         label: "color"
       })
     }),
-    ...createTextureFolder(element, "env"),
-    ...createTextureFolder(element, "light"),
+    ...createTextureFolder(element, "env", path),
+    ...createTextureFolder(element, "light", path),
     ...createTextureFolder(element, "metalness", path, {
       metalnessValue: prop.number({
         element,
@@ -232,7 +222,7 @@ const meshStandardMaterialControls = (
         step: 0.1
       })
     }),
-    ...createTextureFolder(element, "normal")
+    ...createTextureFolder(element, "normal", path)
   }
 }
 
@@ -241,6 +231,14 @@ export const material = {
   icon: (entity: EditableElement) => "ph:paint-brush-broad-duotone",
   controls: (entity: EditableElement) => {
     return {
+      type: prop.select({
+        element: entity,
+        path: ["elementName"],
+        options: {
+          meshBasicMaterial: "meshBasicMaterial",
+          meshStandardMaterial: "meshStandardMaterial"
+        }
+      }),
       ...(entity.ref instanceof MeshBasicMaterial
         ? meshBasicMaterialControls(entity, ["ref"])
         : {}),

@@ -2,33 +2,39 @@ import { createPlugin, styled, useInputContext } from "leva/plugin"
 import { TreeElement } from "./TreeElement"
 
 const StyledWrapper = styled("div", {
-  maxHeight: 180,
-  overflow: "auto",
-  "&::-webkit-scrollbar": {
-    width: "8px",
-    height: "100%",
-    backgroundColor: "rgba(0,0,0,0.5)"
-  },
-  "&::-webkit-scrollbar-thumb": {
-    backgroundColor: "$elevation3",
-    borderRadius: "$lg"
+  variants: {
+    scrollable: {
+      true: {
+        maxHeight: 180,
+        overflow: "auto",
+        "&::-webkit-scrollbar": {
+          width: "8px",
+          height: "100%",
+          backgroundColor: "rgba(0,0,0,0.5)"
+        },
+        "&::-webkit-scrollbar-thumb": {
+          backgroundColor: "$elevation3",
+          borderRadius: "$lg"
+        }
+      },
+      false: {}
+    }
   }
 })
 
-export const tree = createPlugin<
-  { items: object },
-  {},
-  {
-    items: object
-  }
->({
-  normalize({ items }, path, data) {
-    return { settings: { items }, value: {} }
+type Settings = {
+  items: object
+  scrollable: boolean
+}
+
+export const tree = createPlugin<Settings, {}, Settings>({
+  normalize({ items, scrollable }, path, data) {
+    return { settings: { items, scrollable }, value: {} }
   },
   component() {
-    const context = useInputContext<{ settings: { items: object } }>()
+    const context = useInputContext<{ settings: Settings }>()
     return (
-      <StyledWrapper>
+      <StyledWrapper scrollable={context.settings.scrollable}>
         {Object.values(context.settings.items).map((v) => (
           <TreeElement
             element={v}

@@ -1,6 +1,6 @@
 import { NodePath, transformFromAst, types as t } from "@babel/core"
-import template from "@babel/template"
 import gen from "@babel/generator"
+import template from "@babel/template"
 import { parse, print } from "@vinxi/recast"
 import fs from "fs-extra"
 import type { Plugin, ResolvedConfig, ViteDevServer } from "vite"
@@ -77,11 +77,13 @@ function transform(data: any) {
   let source = fs.readFileSync(data.source.fileName).toString()
 
   function getDataImports(_data: any) {
-    let imports = Object.values(_data).flatMap((value: any) => {
-      if (value.imports) {
-        return value.imports
-      }
-    })
+    let imports = Object.values(_data)
+      .flatMap((value: any) => {
+        if (value.imports) {
+          return value.imports
+        }
+      })
+      .filter(Boolean)
     return imports
   }
 

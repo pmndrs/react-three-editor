@@ -1,9 +1,35 @@
 import { useThree } from "@react-three/fiber"
 import { folder, LevaPanel, useControls, useCreateStore } from "leva"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { tree } from "../editable/controls/tree/tree"
 import { useEditorStore } from "../editable/Editor"
-import { In } from "./Tunnels"
+import { In } from "./CanvasTunnel"
+
+export function SceneControls() {
+  const p = useEditorStore((state) => Object.values(state.elements))
+
+  useControls(() => {
+    const items: Record<string, any> = {}
+    p.forEach((v) => {
+      if (v.parentId == null) items[v.id] = v
+    })
+
+    return {
+      scene: folder(
+        {
+          graph: tree({
+            items,
+            scrollable: true
+          })
+        },
+        {
+          order: -2
+        }
+      )
+    }
+  }, [p])
+  return null
+}
 
 export function ScenePanel() {
   const p = useEditorStore((state) => Object.values(state.elements))
@@ -16,7 +42,8 @@ export function ScenePanel() {
   useControls(
     {
       graph: tree({
-        items
+        items,
+        scrollable: false
       })
     },
     { store },
@@ -32,6 +59,10 @@ export function ScenePanel() {
   useEffect(() => {
     setCollapsed(false)
   }, [])
+
+  useEffect(() => {
+    setPosition({ x: -size.width + 320, y: 0 })
+  }, [size])
   return (
     <In>
       <LevaPanel
@@ -47,29 +78,4 @@ export function ScenePanel() {
       />
     </In>
   )
-}
-
-export function SceneControls() {
-  const p = useEditorStore((state) => Object.values(state.elements))
-
-  useControls(() => {
-    const items: Record<string, any> = {}
-    p.forEach((v) => {
-      if (v.parentId == null) items[v.id] = v
-    })
-
-    return {
-      scene: folder(
-        {
-          graph: tree({
-            items
-          })
-        },
-        {
-          order: -2
-        }
-      )
-    }
-  }, [p])
-  return null
 }

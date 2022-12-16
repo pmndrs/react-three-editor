@@ -91,7 +91,7 @@ export function TreeElement({
               <TreeElement
                 element={state[c]}
                 key={c}
-                collapsed={true}
+                collapsed={false}
                 showChildren
               />
             ))}

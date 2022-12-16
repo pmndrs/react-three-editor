@@ -47,14 +47,16 @@ export function createProp(
     persist?: boolean
   }
 ) {
-  let el = element
-  let editable = element
-  if (path.length > 1) {
-    for (let i = 0; i < path.length - 1; i++) {
-      el = el?.[path[i]]
-    }
-    editable = getEditableElement(el)
-  }
+  // let el = element
+  // let editable = element
+  // if (path.length > 1) {
+  //   for (let i = 0; i < path.length - 1; i++) {
+  //     el = el?.[path[i]]
+  //   }
+  //   editable = getEditableElement(el)
+  // }
+
+  const [el] = element.getObjectByPath(path)
 
   let prop = path[path.length - 1]
 
@@ -63,14 +65,8 @@ export function createProp(
     ? type.control({
         value: initialValue,
         onChange(value: any, controlPath: string, context: any) {
-          let el = element
-          let editable = element
-          if (path.length > 1) {
-            for (let i = 0; i < path.length - 1; i++) {
-              el = el?.[path[i]]
-            }
-            editable = getEditableElement(el)
-          }
+          const [el, editable, remaining] =
+            element.getEditableObjectByPath(path)
 
           if (value !== null && context.initial) {
             if (persist) {
@@ -90,8 +86,13 @@ export function createProp(
 
           if (serializale !== undefined && element instanceof EditableElement) {
             if (editable) {
-              element.addChange(editable, prop, serializale)
-              element.changed = true
+              if (element === editable) {
+                let [_, ...p] = path
+                element.dirtyProp(p.join("-"), serializale)
+              } else {
+                element.addChange(editable, remaining.join("-"), serializale)
+                element.changed = true
+              }
             } else {
               let [_, ...p] = path
               element.dirtyProp(p.join("-"), serializale)
@@ -103,14 +104,8 @@ export function createProp(
     : {
         value: initialValue,
         onChange(value: any, controlPath: string, context: any) {
-          let el = element
-          let editable = element
-          if (path.length > 1) {
-            for (let i = 0; i < path.length - 1; i++) {
-              el = el?.[path[i]]
-            }
-            editable = getEditableElement(el)
-          }
+          const [el, editable, remaining] =
+            element.getEditableObjectByPath(path)
 
           if (value !== null && context.initial) {
             type.init?.(el, prop, value)
@@ -129,8 +124,13 @@ export function createProp(
 
           if (serializale !== undefined) {
             if (editable) {
-              element.addChange(editable, prop, serializale)
-              element.changed = true
+              if (element === editable) {
+                let [_, ...p] = path
+                element.dirtyProp(p.join("-"), serializale)
+              } else {
+                element.addChange(editable, remaining.join("-"), serializale)
+                element.changed = true
+              }
             } else {
               let [_, ...p] = path
               element.dirtyProp(p.join("-"), serializale)
