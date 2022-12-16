@@ -15,7 +15,12 @@ export interface PropInput {
   default?: any
   label?: string
 
-  onChange?: (value: any, prop: string, context: any) => void
+  onChange?: (
+    value: any,
+    prop: string,
+    controlPath: string,
+    context: any
+  ) => void
   render?(get: (prop: string) => any): boolean
 }
 
@@ -47,16 +52,7 @@ export function createProp(
     persist?: boolean
   }
 ) {
-  // let el = element
-  // let editable = element
-  // if (path.length > 1) {
-  //   for (let i = 0; i < path.length - 1; i++) {
-  //     el = el?.[path[i]]
-  //   }
-  //   editable = getEditableElement(el)
-  // }
-
-  const [el] = element.getObjectByPath(path)
+  const [el] = element.getEditableObjectByPath(path)
 
   let prop = path[path.length - 1]
 
