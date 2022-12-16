@@ -5,21 +5,17 @@ import {
   CameraHelper,
   DirectionalLight,
   DirectionalLightHelper,
-  Material,
-  Mesh,
-  MeshBasicMaterial,
-  MeshStandardMaterial,
   Object3D,
   OrthographicCamera,
   PointLight,
   SpotLight,
   SpotLightHelper
 } from "three"
-import { usePersistedControls } from "../editable/controls/usePersistedControls"
-import { EditableElement } from "../editable/EditableElement"
-import { useEditorStore } from "../editable/Editor"
-import { prop } from "./controls/prop"
-import { TransformHelper } from "./TransformHelper"
+import { usePersistedControls } from "../../editable/controls/usePersistedControls"
+import { EditableElement } from "../../editable/EditableElement"
+import { useEditorStore } from "../../editable/Editor"
+import { prop } from "../controls/prop"
+import { TransformHelper } from "../TransformHelper"
 
 export const transform = {
   applicable: (entity: EditableElement) => entity.ref instanceof Object3D,
@@ -122,147 +118,35 @@ export const camera = {
   }
 }
 
-export const meshMaterial = {
-  applicable: (entity: EditableElement) =>
-    entity.ref instanceof Mesh && entity.ref.material,
-  controls: (entity: EditableElement) => {
-    return {
-      material: folder({
-        ...(entity.ref.material instanceof MeshStandardMaterial ||
-        entity.ref.material instanceof MeshBasicMaterial
-          ? {
-              color: prop.color({
-                element: entity,
-                path: ["ref", "material", "color"]
-              }),
-              texture: prop.texture({
-                element: entity,
-                path: ["ref", "material", "map"]
-              })
-            }
-          : {}),
+// export const meshMaterial = {
+//   applicable: (entity: EditableElement) =>
+//     entity.ref instanceof Mesh && entity.ref.material,
+//   controls: (entity: EditableElement) => {
+//     return {
+//       material: folder({
+//         ...(entity.ref.material instanceof MeshStandardMaterial ||
+//         entity.ref.material instanceof MeshBasicMaterial
+//           ? {
+//               color: prop.color({
+//                 element: entity,
+//                 path: ["ref", "material", "color"]
+//               }),
+//               texture: prop.texture({
+//                 element: entity,
+//                 path: ["ref", "material", "map"]
+//               })
+//             }
+//           : {}),
 
-        wireframe: prop.bool({
-          element: entity,
-          path: ["ref", "material", "wireframe"]
-        })
-      })
-    }
-  }
-}
-export const material = {
-  applicable: (entity: EditableElement) => entity.ref instanceof Material,
-  icon: (entity: EditableElement) => "ph:paint-brush-broad-duotone",
-  controls: (entity: EditableElement) => {
-    return {
-      color: prop.color({
-        element: entity,
-        path: ["ref", "color"]
-      }),
-      wireframe: prop.bool({
-        element: entity,
-        path: ["ref", "wireframe"]
-      }),
-      ...(entity.ref instanceof MeshStandardMaterial ||
-      entity.ref instanceof MeshBasicMaterial
-        ? {
-            texture: prop.texture({
-              element: entity,
-              path: ["ref", "map"]
-            })
-          }
-        : {}),
-      ...(entity.ref instanceof MeshStandardMaterial
-        ? {
-            displacement: folder(
-              {
-                map: prop.texture({
-                  element: entity,
-                  path: ["ref", "displacementMap"]
-                }),
-                scale: prop.number({
-                  element: entity,
-                  path: ["ref", "displacementScale"]
-                }),
-                bias: prop.number({
-                  element: entity,
-                  path: ["ref", "displacementBias"]
-                })
-              },
-              {
-                collapsed: true
-              }
-            ),
-            bump: folder(
-              {
-                bumpMap: prop.texture({
-                  element: entity,
-                  path: ["ref", "bumpMap"],
-                  label: "map"
-                }),
-                bumpScale: prop.number({
-                  element: entity,
-                  path: ["ref", "bumpScale"],
-                  label: "scale"
-                })
-              },
-              {
-                collapsed: true
-              }
-            ),
-            ao: folder(
-              {
-                aoMap: prop.texture({
-                  element: entity,
-                  path: ["ref", "aoMap"],
-                  label: "map"
-                }),
-                intensity: prop.number({
-                  element: entity,
-                  path: ["ref", "aoMapIntensity"]
-                })
-              },
-              {
-                collapsed: true
-              }
-            ),
-            roughness: folder(
-              {
-                roughness: prop.number({
-                  element: entity,
-                  path: ["ref", "roughness"]
-                }),
-                roughnessMap: prop.texture({
-                  element: entity,
-                  path: ["ref", "roughnessMap"],
-                  label: "map"
-                })
-              },
-              {
-                collapsed: true
-              }
-            ),
-            metalness: folder(
-              {
-                metalness: prop.number({
-                  element: entity,
-                  path: ["ref", "metalness"]
-                }),
-                metalnessMap: prop.texture({
-                  element: entity,
-                  path: ["ref", "metalnessMap"],
-                  label: "map"
-                })
-              },
-              {
-                collapsed: true
-              }
-            )
-          }
-        : {})
-    }
-  }
-}
+//         wireframe: prop.bool({
+//           element: entity,
+//           path: ["ref", "material", "wireframe"]
+//         })
+//       })
+//     }
+//   }
+// }
+
 export const orbitControls = {
   applicable: (entity: EditableElement) => entity.type === OrbitControls,
   icon: (entity: EditableElement) => "mdi:orbit-variant",
@@ -390,7 +274,7 @@ export const spotLight = {
   }
 }
 
-const transformWithoutRef = {
+export const transformWithoutRef = {
   applicable: (entity: EditableElement) => !entity.forwardedRef,
   icon: (entity: EditableElement) => "mdi:react",
   helper: ({ element }: { element: EditableElement }) => {
@@ -404,7 +288,7 @@ const transformWithoutRef = {
   }
 }
 
-const propControls = {
+export const propControls = {
   applicable: (entity: EditableElement) =>
     entity.type !== "string" && entity.type.controls,
   controls: (entity: EditableElement) => {
@@ -423,68 +307,5 @@ const propControls = {
         }
       )
     )
-  }
-}
-
-export const DEFAULT_EDITOR_PLUGINS = [
-  transform,
-  transformWithoutRef,
-  camera,
-  meshMaterial,
-  material,
-  orbitControls,
-  directionalLight,
-  pointLight,
-  ambientLight,
-  spotLight,
-  // {
-  //   applicable: (entity: EditableElement) =>
-  //     !entity.forwardedRef || entity.type !== "string",
-  //   controls: (entity: EditableElement) => {
-  //     return Object.fromEntries(
-  //       Object.entries(entity.currentProps)
-  //         .filter(
-  //           ([e]) =>
-  //             ![
-  //               "position",
-  //               "rotation",
-  //               "scale",
-  //               "_source",
-  //               "children",
-  //               "ref",
-  //               "key"
-  //             ].includes(e)
-  //         )
-  //         .map(([k, v]) => {
-  //           return [
-  //             k,
-  //             prop(
-  //               {
-  //                 get(o, p) {
-  //                   return o[p] ?? v
-  //                 },
-  //                 set(o, p) {
-  //                   o[p] = v
-  //                   return true
-  //                 }
-  //               },
-  //               {
-  //                 ...(entity.type.controls?.[k] ?? {}),
-  //                 element: entity,
-  //                 path: ["currentProps", k],
-  //                 default: v
-  //               }
-  //             )
-  //           ]
-  //         })
-  //     )
-  //   }
-  // },
-  propControls
-]
-
-export function addPlugin(plugin: any) {
-  if (!DEFAULT_EDITOR_PLUGINS.includes(plugin)) {
-    DEFAULT_EDITOR_PLUGINS.push(plugin)
   }
 }
