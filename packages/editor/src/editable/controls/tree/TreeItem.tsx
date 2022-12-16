@@ -1,4 +1,5 @@
-import React from "react"
+import { useRef } from "react"
+import { ReactNode } from "react"
 import { Chevron } from "../folder/Chevron"
 import {
   StyledContent,
@@ -19,8 +20,8 @@ export function TreeItem({
   collapsible,
   dirty
 }: {
-  title: React.ReactNode
-  children: React.ReactNode
+  title: ReactNode
+  children: ReactNode
   collapsed: boolean
   setCollapsed: (flag: boolean) => void
   selected: boolean
@@ -67,8 +68,8 @@ function CollapsibleTreeItem({
   visible,
   remeasure
 }: {
-  title: React.ReactNode
-  children: React.ReactNode
+  title: ReactNode
+  children: ReactNode
   collapsed: boolean
   setCollapsed: (flag: boolean) => void
   selected: boolean
@@ -79,21 +80,7 @@ function CollapsibleTreeItem({
 }) {
   // const context = useInputContext<{ value: { element: EditableElement } }>()
   const { wrapperRef, contentRef } = useToggle(!collapsed)
-  const ref = React.useRef<HTMLDivElement>(null)
-
-  // React.useEffect(() => {
-  //   if (remeasure) {
-  //     let el = ref.current?.parentElement?.parentElement?.parentElement
-  //     let el2 = ref.current?.parentElement?.parentElement
-  //     console.log(el, el2, wrapperRef.current, ref.current?.parentElement)
-  //     if (!el) {
-  //       return
-  //     }
-  //     const { height } = ref.current?.parentElement!.getBoundingClientRect()
-  //     console.log(height)
-  //     if (height > 0) el.style.height = height + 20 + "px"
-  //   }
-  // }, [context.value.element, remeasure])
+  const ref = useRef<HTMLDivElement>(null)
 
   return (
     <StyledFolder ref={ref} dirty={dirty}>

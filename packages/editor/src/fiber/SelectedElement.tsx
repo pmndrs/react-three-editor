@@ -1,5 +1,5 @@
 import { levaStore } from "leva"
-import React from "react"
+import { Fragment } from "react"
 import * as THREE from "three"
 import { ElementControls } from "../editable/controls/useElementControls"
 import { useEditorStore } from "../editable/Editor"
@@ -10,11 +10,11 @@ export function SelectedElementControls() {
     state.selectedId ? state.elements[state.selectedId] : null
   )
   return selectedElement ? (
-    <React.Fragment key={selectedElement.id}>
+    <Fragment key={selectedElement.id}>
       <ElementControls element={selectedElement} store={levaStore} />
       {selectedElement.ref instanceof THREE.Object3D && (
         <ElementTransformControls element={selectedElement} />
       )}
-    </React.Fragment>
+    </Fragment>
   ) : null
 }

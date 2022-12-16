@@ -1,6 +1,5 @@
 import { OrbitControls, useHelper } from "@react-three/drei"
 import { folder } from "leva"
-import React from "react"
 import {
   AmbientLight,
   CameraHelper,

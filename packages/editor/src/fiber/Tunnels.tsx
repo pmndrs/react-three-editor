@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useId } from "react"
+import { PropsWithChildren, useId } from "react"
 import tunnel from "tunnel-rat"
 import create from "zustand"
 

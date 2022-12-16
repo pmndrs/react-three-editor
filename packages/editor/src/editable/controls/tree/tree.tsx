@@ -1,5 +1,4 @@
 import { createPlugin, styled, useInputContext } from "leva/plugin"
-import React from "react"
 import { TreeElement } from "./TreeElement"
 
 const StyledWrapper = styled("div", {
