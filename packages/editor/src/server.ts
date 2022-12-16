@@ -1,9 +1,8 @@
-import fs from "fs-extra"
-import _debug from "debug"
-import type { Plugin, ResolvedConfig, ViteDevServer } from "vite"
 import { NodePath, transformFromAst, types as t } from "@babel/core"
 import gen from "@babel/generator"
 import { parse, print } from "@vinxi/recast"
+import fs from "fs-extra"
+import type { Plugin, ResolvedConfig, ViteDevServer } from "vite"
 import { createRPCServer } from "vite-dev-rpc"
 
 let justEdited: Record<string, boolean> = {}
@@ -100,7 +99,8 @@ function transform(data: any) {
                   .get("attributes")
                   .find(
                     (attr) =>
-                      t.isJSXAttribute(attr) && (attr.node as any).name.name === prop
+                      t.isJSXAttribute(attr) &&
+                      (attr.node as any).name.name === prop
                   )
 
                 let value = data.value[prop]
@@ -109,11 +109,7 @@ function transform(data: any) {
 
                 let expr = Array.isArray(value)
                   ? t.jsxExpressionContainer(
-                      t.arrayExpression([
-                        t.numericLiteral(value[0]),
-                        t.numericLiteral(value[1]),
-                        t.numericLiteral(value[2])
-                      ])
+                      t.arrayExpression(value.map((v) => t.numericLiteral(v)))
                     )
                   : typeof value === "object"
                   ? t.jsxExpressionContainer(

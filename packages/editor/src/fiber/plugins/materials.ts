@@ -164,6 +164,7 @@ const createTextureFolder = (
           path: [...path, texturePropName, "repeat"],
           label: "repeat",
           default: [1, 1],
+          step: 0.1,
           render: (get) => {
             return (
               get(`${prefix}.${prefix}Map`) !== null &&
