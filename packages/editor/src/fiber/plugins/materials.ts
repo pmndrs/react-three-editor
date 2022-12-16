@@ -127,6 +127,10 @@ const createTextureFolder = (
           },
           default: RepeatWrapping,
           label: "wrapS",
+          onChange(v) {
+            let o = element.getObjectByPath<Texture>([...path, texturePropName])
+            o.needsUpdate = true
+          },
           render: (get) => {
             return (
               get(`${prefix}.${prefix}Map`) !== null &&
@@ -149,6 +153,10 @@ const createTextureFolder = (
               get(`${prefix}.${prefix}Map`) !== null &&
               get(`${prefix}.${prefix}Map`) !== undefined
             )
+          },
+          onChange(v) {
+            let o = element.getObjectByPath<Texture>([...path, texturePropName])
+            o.needsUpdate = true
           }
         }),
         [`${prefix}MapRepeat`]: prop.vector2d({
