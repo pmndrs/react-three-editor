@@ -31,7 +31,7 @@ export function SceneControls() {
   return null
 }
 
-export function ScenePanel() {
+export function ScenePanel({ collapsed = false }) {
   const p = useEditorStore((state) => Object.values(state.elements))
   const store = useCreateStore()
   const items: Record<string, any> = {}
@@ -50,15 +50,15 @@ export function ScenePanel() {
     [items]
   )
   const size = useThree((s) => s.size)
-  const [collapsed, setCollapsed] = useState(true)
+  const [_collapsed, setCollapsed] = useState(true)
   const [position, setPosition] = useState({
     x: -size.width + 320,
     y: 0
   })
 
   useEffect(() => {
-    setCollapsed(false)
-  }, [])
+    setCollapsed(collapsed)
+  }, [collapsed])
 
   useEffect(() => {
     setPosition({ x: -size.width + 320, y: 0 })
@@ -74,7 +74,7 @@ export function ScenePanel() {
           },
           title: "Scene"
         }}
-        collapsed={{ collapsed, onChange: setCollapsed }}
+        collapsed={{ collapsed: _collapsed, onChange: setCollapsed }}
       />
     </In>
   )

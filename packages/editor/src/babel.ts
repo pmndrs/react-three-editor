@@ -98,6 +98,10 @@ export default declare<State>((api) => {
                 t.importSpecifier(
                   t.identifier("Editable"),
                   t.identifier("Editable")
+                ),
+                t.importSpecifier(
+                  t.identifier("useEditorFrame"),
+                  t.identifier("useEditorFrame")
                 )
               ],
               t.stringLiteral("@react-three/editor/fiber")
@@ -247,6 +251,40 @@ export default declare<State>((api) => {
             )
           )
         )
+      },
+      CallExpression(path, state) {
+        // check if we are calling `useFrame` and replace it with `useEditorFrame` and use the name of the parent component as the first argument
+
+        const { node } = path
+        if (
+          t.isIdentifier(node.callee) &&
+          node.callee.name === "useFrame" &&
+          node.arguments.length === 1
+        ) {
+          const parentComponent = path.findParent(
+            (path) =>
+              (path.isFunctionDeclaration() &&
+                path.get("id").isIdentifier() &&
+                path.get("id").node.name.match(/^[A-Z]/)) ||
+              (path.isVariableDeclarator() &&
+                path.get("id").isIdentifier() &&
+                path.get("id").node.name.match(/^[A-Z]/))
+          )
+
+          if (parentComponent) {
+            const componentName = parentComponent.get("id").node.name
+            parentComponent.state = parentComponent.state?.["count"]
+              ? { count: parentComponent.state?.["count"] + 1 }
+              : { count: 0 }
+
+            node.arguments.unshift(
+              t.stringLiteral(
+                componentName + ":" + parentComponent.state["count"]
+              )
+            )
+            node.callee.name = "useEditorFrame"
+          }
+        }
       }
     }
   }

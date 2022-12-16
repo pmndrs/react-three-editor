@@ -52,7 +52,7 @@ export function createProp(
     persist?: boolean
   }
 ) {
-  const [el] = element.getEditableObjectByPath(path)
+  const el = element.getObjectByPath(path.slice(0, path.length - 1))
 
   let prop = path[path.length - 1]
 

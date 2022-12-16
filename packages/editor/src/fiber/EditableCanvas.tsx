@@ -26,15 +26,13 @@ export const Canvas = forwardRef<
   )
 
   useControls("editor", {}, { collapsed: true })
+
   return (
     <>
       <FiberCanvas
         ref={ref}
         onPointerMissed={(e) => {
-          console.log("heree")
-          store.store.setState(() => ({
-            selectedId: null
-          }))
+          store.clearSelection()
         }}
         {...props}
       >

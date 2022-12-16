@@ -1,4 +1,3 @@
-import { StoreType } from "leva/dist/declarations/src/types"
 import { getEditableElement } from "../fiber/controls/prop"
 import { Editor } from "./Editor"
 
@@ -16,11 +15,8 @@ export class EditableElement<
 > extends EventTarget {
   getObjectByPath<T>(path: string[]): T {
     let el: any = this
-    if (path.length > 1) {
-      for (let i = 0; i < path.length; i++) {
-        el = el?.[path[i]]
-      }
-      // editable = getEditableElement(el)
+    for (let i = 0; i < path.length; i++) {
+      el = el?.[path[i]]
     }
     return el
   }
