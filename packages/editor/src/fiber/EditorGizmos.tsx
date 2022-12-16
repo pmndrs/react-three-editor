@@ -1,5 +1,4 @@
 import { GizmoHelper, GizmoViewcube, GizmoViewport } from "@react-three/drei"
-import React from "react"
 
 export function EditorGizmos() {
   return (

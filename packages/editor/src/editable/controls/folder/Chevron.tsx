@@ -1,5 +1,5 @@
-import { styled } from "leva/plugin";
-import React from "react";
+import { styled } from "leva/plugin"
+import { SVGProps } from "react"
 
 // TODO remove as any when this is corrected by stitches
 const Svg = styled("svg", {
@@ -21,7 +21,7 @@ export function Chevron({
   toggled,
   hidden,
   ...props
-}: React.SVGProps<SVGSVGElement> & { toggled?: boolean; hidden?: boolean }) {
+}: SVGProps<SVGSVGElement> & { toggled?: boolean; hidden?: boolean }) {
   return (
     <Svg
       width="9"

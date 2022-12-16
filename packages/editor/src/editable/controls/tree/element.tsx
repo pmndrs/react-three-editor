@@ -1,5 +1,4 @@
 import { createPlugin, useInputContext } from "leva/plugin"
-import React from "react"
 import { EditableElement } from "../../EditableElement"
 import { TreeElement } from "./TreeElement"
 
