@@ -45,6 +45,7 @@
     "@babel/core": "^7.19.6",
     "@babel/generator": "^7.20.4",
     "@babel/helper-plugin-utils": "^7.20.2",
+    "@babel/template": "^7.18.10",
     "@iconify/react": "^4.0.1",
     "@react-three/drei": "^9.46.4",
     "@stitches/react": "^1.2.8",
@@ -57,11 +58,11 @@
     "fs-extra": "^10.1.0",
     "leva": "^0.9.34",
     "prettier": "^2.8.0",
+    "react-dropzone": "^14.2.3",
     "react-hotkeys-hook": "^4.0.6",
     "three-stdlib": "^2.20.4",
     "tunnel-rat": "^0.1.0",
     "vite-dev-rpc": "^0.1.0",
-    "react-dropzone": "^14.2.3",
     "zustand": "^3.7.2"
   },
   "peerDependencies": {
@@ -73,6 +74,7 @@
   "devDependencies": {
     "@types/babel__core": "^7.1.20",
     "@types/babel__helper-plugin-utils": "^7.10.0",
+    "@types/babel__template": "^7.4.1",
     "@types/debug": "^4.1.7",
     "@types/formidable": "^2.0.5",
     "@types/fs-extra": "^9.0.13",
