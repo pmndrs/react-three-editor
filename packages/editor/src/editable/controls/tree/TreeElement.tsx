@@ -106,7 +106,7 @@ export function TreeElement({
           theme={{
             space: {
               rowGap: "2px",
-              md: "6px",
+              // md: "6px",
               sm: "4px"
             }
           }}

@@ -4,10 +4,10 @@ import { levaStore } from "leva"
 import { useContext, useEffect, useRef } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
 import { Camera, Event } from "three"
+import { OrbitControls as OrbitControlsImpl } from "three-stdlib"
 import { usePersistedControls } from "../editable/controls/usePersistedControls"
 import { editable } from "../editable/editable"
 import { EditorContext, useEditorStore } from "../editable/Editor"
-import { OrbitControls as OrbitControlsImpl } from "three-stdlib"
 
 // @ts-ignore
 window.leva = levaStore
@@ -51,7 +51,11 @@ export function EditorCamera() {
   })
 
   useEffect(() => {
-    console.log("selectedElement", selectedElement)
+    console.log(
+      "selectedElement",
+      selectedElement,
+      selectedElement && editor?.store.getState().elements[selectedElement]
+    )
     levaStore.setValueAtPath(
       "editor.scene.selected",
       selectedElement ?? "",

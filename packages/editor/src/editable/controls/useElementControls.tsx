@@ -9,6 +9,9 @@ export function useElementControls(
 ) {
   const [run, setRun] = useState(0)
   let entityStore = entity.store!
+  entity.resetControls = () => {
+    setRun((r) => r + 1)
+  }
 
   useControls(
     () => {

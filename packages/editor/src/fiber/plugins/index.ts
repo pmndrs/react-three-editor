@@ -1,21 +1,22 @@
+import { material, meshMaterial } from "./materials"
 import {
-  transform,
-  transformWithoutRef,
-  camera,
-  orbitControls,
-  directionalLight,
-  pointLight,
   ambientLight,
+  camera,
+  directionalLight,
+  orbitControls,
+  pointLight,
+  propControls,
   spotLight,
-  propControls
+  transform,
+  transformWithoutRef
 } from "./plugins"
-import { material } from "./materials"
 
 export const DEFAULT_EDITOR_PLUGINS = [
   transform,
   transformWithoutRef,
   camera,
   material,
+  meshMaterial,
   orbitControls,
   directionalLight,
   pointLight,

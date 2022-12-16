@@ -2,7 +2,6 @@ import { MathUtils, TextureLoader } from "three"
 import { ref } from "../../editable/controls/ref"
 import { EditableElement } from "../../editable/EditableElement"
 import { texture } from "./texture"
-import { get } from "object-path"
 
 export interface PropInput {
   path?: string[]
@@ -63,7 +62,16 @@ export function createProp(
   return type.control
     ? type.control({
         value: initialValue,
-        onChange(value: any, _: string, context: any) {
+        onChange(value: any, controlPath: string, context: any) {
+          let el = element
+          let editable = element
+          if (path.length > 1) {
+            for (let i = 0; i < path.length - 1; i++) {
+              el = el?.[path[i]]
+            }
+            editable = getEditableElement(el)
+          }
+
           if (value !== null && context.initial) {
             if (persist) {
             }
@@ -74,6 +82,7 @@ export function createProp(
           }
 
           type.set(el, prop, value)
+          onChange?.(value, prop, controlPath, context)
 
           let serializale = type.serialize
             ? type.serialize(el, prop, value)
@@ -93,7 +102,16 @@ export function createProp(
       })
     : {
         value: initialValue,
-        onChange(value: any, _: string, context: any) {
+        onChange(value: any, controlPath: string, context: any) {
+          let el = element
+          let editable = element
+          if (path.length > 1) {
+            for (let i = 0; i < path.length - 1; i++) {
+              el = el?.[path[i]]
+            }
+            editable = getEditableElement(el)
+          }
+
           if (value !== null && context.initial) {
             type.init?.(el, prop, value)
           }
@@ -103,7 +121,7 @@ export function createProp(
 
           type.set(el, prop, value)
 
-          onChange?.(value, prop, context)
+          onChange?.(value, prop, controlPath, context)
 
           let serializale = type.serialize
             ? type.serialize(el, prop, value)
