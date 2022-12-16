@@ -13,6 +13,16 @@ export type JSXSource = {
 export class EditableElement<
   Ref extends { name?: string } = any
 > extends EventTarget {
+  getObjectByPath<T>(path: string[]): T {
+    let el = this
+    if (path.length > 1) {
+      for (let i = 0; i < path.length; i++) {
+        el = el?.[path[i]]
+      }
+      // editable = getEditableElement(el)
+    }
+    return el
+  }
   forwardedRef: boolean = false
   children: string[] = []
   props: any = {}
@@ -52,6 +62,8 @@ export class EditableElement<
     this.editor.setRef(this, el)
     this.dispatchEvent(new CustomEvent("ref-changed", {}))
   }
+
+  resetControls() {}
 
   get elementName() {
     return this.source.elementName

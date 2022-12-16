@@ -3,6 +3,22 @@ import { ref } from "../../editable/controls/ref"
 import { EditableElement } from "../../editable/EditableElement"
 import { texture } from "./texture"
 
+export interface PropInput {
+  path?: string[]
+  element?: any
+
+  step?: number
+  min?: number
+  max?: number
+  options?: string[] | Record<any, any>
+  lock?: boolean
+  default?: any
+  label?: string
+
+  onChange?: (value: any, prop: string, context: any) => void
+  render?(get: (prop: string) => any): boolean
+}
+
 export function getEditableElement(obj: any): EditableElement {
   return obj?.__r3f?.editable
 }
@@ -25,7 +41,7 @@ export function createProp(
     step?: number
     min?: number
     max?: number
-    options?: string[]
+    options?: string[] | Record<any, any>
     lock?: boolean
     default?: any
     persist?: boolean
@@ -46,7 +62,16 @@ export function createProp(
   return type.control
     ? type.control({
         value: initialValue,
-        onChange(value: any, _: string, context: any) {
+        onChange(value: any, controlPath: string, context: any) {
+          let el = element
+          let editable = element
+          if (path.length > 1) {
+            for (let i = 0; i < path.length - 1; i++) {
+              el = el?.[path[i]]
+            }
+            editable = getEditableElement(el)
+          }
+
           if (value !== null && context.initial) {
             if (persist) {
             }
@@ -57,6 +82,7 @@ export function createProp(
           }
 
           type.set(el, prop, value)
+          onChange?.(value, prop, controlPath, context)
 
           let serializale = type.serialize
             ? type.serialize(el, prop, value)
@@ -76,7 +102,16 @@ export function createProp(
       })
     : {
         value: initialValue,
-        onChange(value: any, _: string, context: any) {
+        onChange(value: any, controlPath: string, context: any) {
+          let el = element
+          let editable = element
+          if (path.length > 1) {
+            for (let i = 0; i < path.length - 1; i++) {
+              el = el?.[path[i]]
+            }
+            editable = getEditableElement(el)
+          }
+
           if (value !== null && context.initial) {
             type.init?.(el, prop, value)
           }
@@ -86,7 +121,7 @@ export function createProp(
 
           type.set(el, prop, value)
 
-          onChange?.(value, prop, context)
+          onChange?.(value, prop, controlPath, context)
 
           let serializale = type.serialize
             ? type.serialize(el, prop, value)
@@ -104,21 +139,6 @@ export function createProp(
         },
         ...settings
       }
-}
-
-export interface PropInput {
-  path?: string[]
-  element?: any
-
-  step?: number
-  min?: number
-  max?: number
-  options?: string[]
-  lock?: boolean
-
-  label?: string
-
-  onChange?: (value: any, prop: string, context: any) => void
 }
 
 const color = {
@@ -149,6 +169,19 @@ const vector3d = {
     return value?.map((v) => Number(v.toFixed(3)))
   }
 }
+
+const vector2d = {
+  get: (obj: any, prop: string): [number, number] => {
+    return obj?.[prop]?.toArray()
+  },
+  set: (obj: any, prop: string, value: [number, number]) => {
+    obj[prop].fromArray(value)
+  },
+  serialize: (obj: any, prop: string, value: [number, number]) => {
+    return value?.map((v) => Number(v.toFixed(3)))
+  }
+}
+
 const euler = {
   get: (obj: any, prop: string) => {
     return [
@@ -198,7 +231,6 @@ const textureT: {
     return obj[prop]?.source?.data?.src
   },
   set(obj: any, prop: string, value: any) {
-    console.log("set", obj, prop, value)
     obj[prop] = new TextureLoader().load(value)
     obj.needsUpdate = true
   },
@@ -210,6 +242,18 @@ const textureT: {
   }
 }
 
+const select = {
+  get(obj: any, prop: string) {
+    return obj?.[prop]
+  },
+  set(obj: any, prop: string, value: any) {
+    obj[prop]
+  },
+  serialize(obj: any, prop: string, value: any) {
+    return value
+  }
+}
+
 export const prop = Object.assign(createProp, {
   color: (props: PropInput) => createProp(color, props),
   colorstring: (props: PropInput) => createProp(colorstring, props),
@@ -217,6 +261,7 @@ export const prop = Object.assign(createProp, {
   texture: (props: PropInput) => createProp(textureT, props),
   bool: (props: PropInput) => createProp(bool, props),
   vector3d: (props: PropInput) => createProp(vector3d, props),
+  vector2d: (props: PropInput) => createProp(vector2d, props),
   euler: (props: PropInput) => createProp(euler, props),
   ref: (props: PropInput) =>
     createProp(
@@ -228,5 +273,6 @@ export const prop = Object.assign(createProp, {
         set(obj: any, prop: string, value: any) {}
       },
       props
-    )
+    ),
+  select: (props: PropInput) => createProp(select, props)
 })
