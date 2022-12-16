@@ -367,12 +367,14 @@ importers:
       '@babel/core': ^7.19.6
       '@babel/generator': ^7.20.4
       '@babel/helper-plugin-utils': ^7.20.2
+      '@babel/template': ^7.18.10
       '@iconify/react': ^4.0.1
       '@react-three/drei': ^9.46.4
       '@stitches/react': ^1.2.8
       '@types/babel__core': ^7.1.20
       '@types/babel__generator': ^7.6.4
       '@types/babel__helper-plugin-utils': ^7.10.0
+      '@types/babel__template': ^7.4.1
       '@types/debug': ^4.1.7
       '@types/formidable': ^2.0.5
       '@types/fs-extra': ^9.0.13
@@ -398,6 +400,7 @@ importers:
       '@babel/core': 7.20.5
       '@babel/generator': 7.20.5
       '@babel/helper-plugin-utils': 7.20.2
+      '@babel/template': 7.18.10
       '@iconify/react': 4.0.1_react@18.2.0
       '@react-three/drei': 9.46.4_biqbaboplfbrettd7655fr4n2y
       '@stitches/react': 1.2.8_react@18.2.0
@@ -419,6 +422,7 @@ importers:
     devDependencies:
       '@types/babel__core': 7.1.20
       '@types/babel__helper-plugin-utils': 7.10.0
+      '@types/babel__template': 7.4.1
       '@types/debug': 4.1.7
       '@types/formidable': 2.0.5
       '@types/fs-extra': 9.0.13
