@@ -1,5 +1,6 @@
 import { KeyboardControls } from "@react-three/drei"
 import {
+  CameraGizmos,
   Editor,
   ScenePanel,
   SelectedElementControls
@@ -49,12 +50,12 @@ root.render(
       {/* Editor UI (can be used to override the default layout/editor parts) */}
       <Editor>
         {/* Scene tree in its own panel */}
-        <ScenePanel collapsed={true} />
+        <ScenePanel />
 
         {/* Controls for selected element in the default leva panel */}
         <SelectedElementControls />
 
-        {/* <CameraGizmos /> */}
+        <CameraGizmos />
       </Editor>
     </Canvas>
   </KeyboardControls>
