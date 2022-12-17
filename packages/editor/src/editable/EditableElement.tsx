@@ -15,7 +15,7 @@ export class EditableElement<
   Ref extends { name?: string } = any
 > extends EventTarget {
   getObjectByPath<T>(path: string[]): T {
-    let el = this
+    let el: any = this
     if (path.length > 1) {
       for (let i = 0; i < path.length; i++) {
         el = el?.[path[i]]
@@ -25,8 +25,8 @@ export class EditableElement<
     return el
   }
   getEditableObjectByPath(path: string[]) {
-    let el = this
-    let editable = this
+    let el: any = this
+    let editable: any = this
     let remainingPath = path
     if (path.length > 1) {
       for (let i = 0; i < path.length - 1; i++) {
@@ -111,7 +111,6 @@ export class EditableElement<
 
   get changed() {
     let data = this.store?.getData()!
-    console.log(data.save)
     if (data && data["save"]) {
       return !data["save"].settings.disabled
     }
