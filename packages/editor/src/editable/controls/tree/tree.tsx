@@ -39,7 +39,7 @@ export const tree = createPlugin<Settings, {}, Settings>({
           <TreeElement
             element={v}
             key={v.id}
-            collapsed={false}
+            collapsed={true}
             onCollapse={() => {}}
             showChildren={true}
             panel={false}

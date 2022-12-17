@@ -15,7 +15,7 @@ import {
   useState
 } from "react"
 import { EditableElement, JSXSource } from "./EditableElement"
-import { EditorContext } from "./Editor"
+import { EditorContext, useEditor } from "./Editor"
 
 type Elements = {
   [K in keyof JSX.IntrinsicElements]: FC<
@@ -109,14 +109,14 @@ function useEditableElement(
   source: JSXSource,
   props: any
 ) {
-  const editor = useContext(EditorContext)
+  const editor = useEditor()
   const parent = useContext(EditableElementContext)
   const id = useId()
   const render = useRerender()
 
   const editableElement = useMemo(() => {
-    return new EditableElement(id, source, componentType)
-  }, [id])
+    return editor.createElement(id, source, componentType)
+  }, [id, editor])
 
   const store = useCreateStore()
 
@@ -127,59 +127,15 @@ function useEditableElement(
   editableElement.currentProps = { ...props }
   editableElement.render = render
   editableElement.store = store
-  editableElement.editor = editor!
 
-  let memo = editableElement
   let parentId = parent?.id!
 
   useEffect(() => {
-    // editor?.addElement(editableElement, parent)
-    // return () => {
-    //   editor?.removeElement(editableElement, parent)
-    // }
-    if (parentId) {
-      editor?.store?.setState((el) => ({
-        elements: {
-          ...el.elements,
-          [id]: Object.assign(memo, el.elements[id]),
-          [parentId]: Object.assign(el.elements[parentId] ?? {}, {
-            children: [...(el.elements[parentId]?.children ?? []), id]
-          })
-        }
-      }))
-
-      return () => {
-        editor?.store?.setState((el) => {
-          let e = {
-            ...el.elements
-          }
-
-          if (e[parentId]) {
-            e[parentId].children = e[parentId]?.children.filter(
-              (c: string) => c !== id
-            )
-          }
-
-          delete e[id]
-          return { elements: e }
-        })
-      }
-    } else {
-      editor?.store?.setState((el) => ({
-        elements: {
-          ...el.elements,
-          [id]: Object.assign(memo, el.elements[id])
-        }
-      }))
-      return () => {
-        editor?.store?.setState((el) => {
-          let e = { ...el }
-          delete e.elements[id]
-          return e
-        })
-      }
+    editor.addElement(editableElement, parentId)
+    return () => {
+      editor.removeElement(editableElement, parentId)
     }
-  }, [parent?.id, memo])
+  }, [parentId, editableElement])
 
   return editableElement
 }

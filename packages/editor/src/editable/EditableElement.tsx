@@ -1,3 +1,4 @@
+import { StoreType } from "leva/dist/declarations/src/types"
 import { getEditableElement } from "../fiber/controls/prop"
 import { Editor } from "./Editor"
 
@@ -13,39 +14,16 @@ export type JSXSource = {
 export class EditableElement<
   Ref extends { name?: string } = any
 > extends EventTarget {
-  getObjectByPath<T>(path: string[]): T {
-    let el: any = this
-    for (let i = 0; i < path.length; i++) {
-      el = el?.[path[i]]
-    }
-    return el
-  }
-  getEditableObjectByPath(path: string[]) {
-    let el: any = this
-    let editable: any = this
-    let remainingPath = path
-    if (path.length > 1) {
-      for (let i = 0; i < path.length - 1; i++) {
-        el = el?.[path[i]]
-        let edit = getEditableElement(el)
-        if (edit) {
-          editable = edit
-          remainingPath = path.slice(i + 1)
-        }
-      }
-    }
-    return [el, editable, remainingPath]
-  }
+  ref?: Ref
+  currentProps: any
+  childIds: string[] = []
+  changes: Record<string, Record<string, any>> = {}
   forwardedRef: boolean = false
-  children: string[] = []
   props: any = {}
   render: () => void = () => {}
-  ref?: Ref
   dirty: any = false
   store: StoreType | null = null
-  changes: Record<string, Record<string, any>> = {}
   editor: Editor = {} as any
-  currentProps: any
   constructor(
     public id: string,
     public source: JSXSource,
@@ -168,5 +146,38 @@ export class EditableElement<
     await this.editor.save(diffs)
     this.changes = {}
     this.changed = false
+  }
+
+  get children() {
+    return this.childIds.map((id) => this.editor.getElementById(id)!)
+  }
+
+  get parent() {
+    return this.editor.getElementById(this.parentId!)
+  }
+
+  getObjectByPath<T>(path: string[]): T {
+    let el: any = this
+    for (let i = 0; i < path.length; i++) {
+      el = el?.[path[i]]
+    }
+    return el
+  }
+
+  getEditableObjectByPath(path: string[]) {
+    let el: any = this
+    let editable: any = this
+    let remainingPath = path
+    if (path.length > 1) {
+      for (let i = 0; i < path.length - 1; i++) {
+        el = el?.[path[i]]
+        let edit = getEditableElement(el)
+        if (edit) {
+          editable = edit
+          remainingPath = path.slice(i + 1)
+        }
+      }
+    }
+    return [el, editable, remainingPath]
   }
 }
