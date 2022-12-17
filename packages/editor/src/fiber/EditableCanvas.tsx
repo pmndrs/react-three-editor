@@ -24,6 +24,9 @@ export const Canvas = forwardRef<
     []
   )
 
+  // @ts-ignore
+  window.editor = store
+
   return (
     <>
       <FiberCanvas

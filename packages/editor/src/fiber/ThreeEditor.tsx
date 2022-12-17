@@ -1,4 +1,4 @@
-import { getDrafter, RayInfo } from "draft-n-draw"
+import { getDrafter } from "draft-n-draw"
 import { useControls, useCreateStore } from "leva"
 import { StoreType } from "leva/dist/declarations/src/types"
 import {
@@ -28,6 +28,7 @@ export class ThreeEditor extends Editor {
       // selectedKey: element.key
     })
   }
+
   setSettings(arg0: string, arg1: any) {
     this.panels["scene"].setValueAtPath("settings." + arg0, arg1, false)
   }
@@ -75,19 +76,32 @@ export class ThreeEditor extends Editor {
     }
   }
 
-  debugRay(
-    info: RayInfo,
+  debug(
+    info: any,
     v: {
       persist?: number | boolean | undefined
     } & Omit<Parameters<ReturnType<typeof getDrafter>["drawRay"]>[1], "persist">
   ) {
+    let editor = this
     if (typeof v?.persist === "number") {
-      this.drafter.drawRay(info, v as any)
+      let applicable = this.plugins.filter((p) => p.debug && p.applicable(info))
+
+      let dispose = applicable.map((p) => p.debug(info, v, editor))
+
       setTimeout(() => {
-        this.drafter.dispose(info)
+        dispose.forEach((d) => d())
       }, v.persist * 1000)
     } else {
-      this.drafter.drawRay(info, v as any)
+      let dispose = this.plugins
+        .filter((p) => p.debug && p.applicable(v))
+        .map((p) => p.debug(info, v, editor))
     }
+  }
+
+  addPlugin(plugin: {
+    applicable: (arg0: any) => boolean
+    debug?: (arg0: any, arg1: any, arg2?: ThreeEditor) => () => void
+  }) {
+    this.plugins.push(plugin)
   }
 }

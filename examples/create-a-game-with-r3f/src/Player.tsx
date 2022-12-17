@@ -2,7 +2,7 @@ import { Sparkles, useKeyboardControls } from "@react-three/drei"
 import { useEditor } from "@react-three/editor"
 import { useFrame } from "@react-three/fiber"
 import { RigidBody, RigidBodyApi, useRapier } from "@react-three/rapier"
-import { useEffect, useRef } from "react"
+import { useEffect, useMemo, useRef } from "react"
 import * as THREE from "three"
 import { memo } from "./memo"
 
@@ -13,6 +13,28 @@ export function Player() {
   const rapierWorld = world.raw()
   const editor = useEditor()
 
+  useMemo(() => {
+    let plugin = {
+      applicable: (e) => e instanceof rapier.Ray,
+      debug: (info: typeof rapier.Ray, v: any, editor) => {
+        let ray = {
+          origin: info.origin,
+          direction: info.dir,
+          distance: 10
+        }
+        editor.drafter.drawRay(ray, v)
+        return () => {
+          editor.drafter.dispose(ray)
+        }
+      }
+    }
+
+    editor.addPlugin(plugin)
+    return () => {
+      editor.plugins = editor.plugins.filter((p) => p !== plugin)
+    }
+  }, [editor, rapier])
+
   useEffect(() => {
     return subscribeKeys(
       (s) => s.jump,
@@ -22,16 +44,9 @@ export function Player() {
           origin.y -= 0.31
           const direction = new THREE.Vector3(0, -1, 0)
           const ray = new rapier.Ray(origin, direction)
-          editor.debugRay(
-            {
-              origin,
-              direction,
-              distance: 10
-            },
-            {
-              persist: 1
-            }
-          )
+          editor.debug(ray, {
+            persist: 1
+          })
           const hit = rapierWorld.castRay(ray, 10, true)
           if ((hit?.toi ?? 0) < 0.15) {
             body.current!.applyImpulse({
