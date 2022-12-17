@@ -281,5 +281,20 @@ export const prop = Object.assign(createProp, {
       },
       props
     ),
-  select: (props: PropInput) => createProp(select, props)
+  select: (props: PropInput) => createProp(select, props),
+  unknown: (props: PropInput) =>
+    createProp(
+      {
+        get(obj: any, prop: string) {
+          return obj?.[prop]
+        },
+        set(obj: any, prop: string, value: any) {
+          obj[prop]
+        },
+        serialize(obj: any, prop: string, value: any) {
+          return value
+        }
+      },
+      props
+    )
 })

@@ -2,9 +2,13 @@ import { OrbitControls, useHelper } from "@react-three/drei"
 import { folder } from "leva"
 import {
   AmbientLight,
+  Camera,
   CameraHelper,
   DirectionalLight,
   DirectionalLightHelper,
+  Light,
+  Material,
+  Mesh,
   Object3D,
   OrthographicCamera,
   PointLight,
@@ -290,12 +294,19 @@ export const transformWithoutRef = {
 
 export const propControls = {
   applicable: (entity: EditableElement) =>
-    entity.type !== "string" && (!entity.forwardedRef || entity.type.controls),
+    entity.type !== "string" &&
+    (!entity.forwardedRef ||
+      entity.type.controls ||
+      (entity.forwardedRef &&
+        !(entity.ref instanceof Mesh) &&
+        !(entity.ref instanceof Light) &&
+        !(entity.ref instanceof Camera) &&
+        !(entity.ref instanceof Material))),
   controls: (entity: EditableElement) => {
-    let controls = {}
+    let controls: Record<string, any> = {}
     if (entity.type.controls) {
       Object.entries(entity.type.controls)
-        .map(([k, { type, value, ...v }]: any) => {
+        .map(([k, { type = "unknown", value, ...v }]: any) => {
           return [
             k,
             prop[type as keyof typeof prop]({
@@ -311,9 +322,20 @@ export const propControls = {
         })
     }
 
+    let IGNORED_PROPS = ["position", "rotation", "scale", "_source", "children"]
+
+    let isControllable = (v: any) => {
+      return (
+        typeof v === "number" ||
+        typeof v === "string" ||
+        typeof v === "boolean" ||
+        Array.isArray(v)
+      )
+    }
+
     Object.entries(entity.currentProps).forEach(([k, v]) => {
-      if (!controls[k]) {
-        controls[k] = prop.number({
+      if (!controls[k] && !IGNORED_PROPS.includes(k) && isControllable(v)) {
+        controls[k] = prop.unknown({
           element: entity,
           path: ["currentProps", k]
         })
