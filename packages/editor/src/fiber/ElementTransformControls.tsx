@@ -1,10 +1,14 @@
 import { TransformControls } from "@react-three/drei"
 import { mergeRefs } from "leva/plugin"
-import { useCallback, useContext, useEffect, useRef } from "react"
+import { useCallback, useContext, useEffect, useRef, useState } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
 import { Event, MathUtils, Object3D, Vector3Tuple } from "three"
 import { TransformControls as TransformControlsImpl } from "three-stdlib"
-import { SetElementRotation, SetElementPosition, SetElementScale } from "../editable/commands"
+import {
+  SetElementPosition,
+  SetElementRotation,
+  SetElementScale
+} from "../editable/commands"
 import { eq } from "../editable/controls/eq"
 import { EditableElement } from "../editable/EditableElement"
 import { EditorContext } from "../editable/Editor"
@@ -103,8 +107,10 @@ export function ElementTransformControls({
         draggingRef.current = !!value
         if (!draggingRef.current) {
           const mode = control.getMode()
-          const { position, rotation, scale } = serializeTransform(target.object)
-          if ( mode === 'translate' ) {
+          const { position, rotation, scale } = serializeTransform(
+            target.object
+          )
+          if (mode === "translate") {
             editor?.commandManager.execute(
               new SetElementPosition(
                 editor,
@@ -113,7 +119,7 @@ export function ElementTransformControls({
                 Object.assign({}, oldTransform.current).position
               )
             )
-          } else if ( mode === 'rotation' ) {
+          } else if (mode === "rotation") {
             editor?.commandManager.execute(
               new SetElementRotation(
                 editor,
@@ -122,7 +128,7 @@ export function ElementTransformControls({
                 Object.assign({}, oldTransform.current).rotation
               )
             )
-          } else if ( mode === 'scale' ) {
+          } else if (mode === "scale") {
             editor?.commandManager.execute(
               new SetElementScale(
                 editor,
@@ -132,7 +138,6 @@ export function ElementTransformControls({
               )
             )
           }
-          
         } else {
           oldTransform.current = serializeTransform(target.object)
         }
@@ -159,9 +164,17 @@ export function ElementTransformControls({
     [updateElementTransforms]
   )
 
+  const [object, setRef] = useState(element.ref)
+
+  useEffect(() => {
+    element.addEventListener("ref-changed", (e) => {
+      setRef(e.detail.ref)
+    })
+  })
+
   return (
     <TransformControls
-      object={element.ref!}
+      object={object}
       key={element.id}
       ref={mergeRefs([
         ref,

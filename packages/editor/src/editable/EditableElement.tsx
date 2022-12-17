@@ -73,7 +73,13 @@ export class EditableElement<
   setRef(el: Ref) {
     this.ref = el
     this.editor.setRef(this, el)
-    this.dispatchEvent(new CustomEvent("ref-changed", {}))
+    this.dispatchEvent(
+      new CustomEvent("ref-changed", {
+        detail: {
+          ref: el
+        }
+      })
+    )
   }
 
   resetControls() {}

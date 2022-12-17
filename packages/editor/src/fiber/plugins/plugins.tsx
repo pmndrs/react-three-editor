@@ -171,10 +171,8 @@ export const orbitControls = {
           },
           set() {},
           init() {
-            console.log("HELLOOO")
             entity.props.makeDefault = true
             entity.render()
-            console.log(entity)
           }
         },
         {
@@ -294,14 +292,13 @@ export const transformWithoutRef = {
 
 export const propControls = {
   applicable: (entity: EditableElement) =>
-    entity.type !== "string" &&
-    (!entity.forwardedRef ||
-      entity.type.controls ||
-      (entity.forwardedRef &&
-        !(entity.ref instanceof Mesh) &&
-        !(entity.ref instanceof Light) &&
-        !(entity.ref instanceof Camera) &&
-        !(entity.ref instanceof Material))),
+    !entity.forwardedRef ||
+    entity.type.controls ||
+    (entity.forwardedRef &&
+      !(entity.ref instanceof Mesh) &&
+      !(entity.ref instanceof Light) &&
+      !(entity.ref instanceof Camera) &&
+      !(entity.ref instanceof Material)),
   controls: (entity: EditableElement) => {
     let controls: Record<string, any> = {}
     if (entity.type.controls) {

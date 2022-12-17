@@ -7,3 +7,7 @@ export { CameraGizmos } from "./EditorGizmos"
 export { SceneControls, ScenePanel } from "./SceneTree"
 export { SelectedElementControls } from "./SelectedElement"
 export { useEditorFrame, useFrame } from "./useFrame"
+
+export function extendControls(t: any, controls: Record<string, {}>) {
+  t.controls = controls
+}

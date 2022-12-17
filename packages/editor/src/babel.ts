@@ -182,8 +182,8 @@ export default declare<State>((api) => {
 
         if (
           t.isJSXIdentifier(node.name) &&
-          node.name.name.match(/^[a-z]/) &&
-          transformElements.includes(node.name.name)
+          node.name.name.match(/^[a-z]/)
+          // transformElements.includes(node.name.name)
           // state.get("editorFiberImport")
         ) {
           console.log(node.name.name)
