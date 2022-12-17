@@ -3,6 +3,7 @@ import { EqualityChecker, StateSelector } from "zustand"
 import { EditableElement } from "./EditableElement"
 
 import create from "zustand"
+import { ThreeEditor } from "../fiber/ThreeEditor"
 import { CommandManager } from "./CommandManager"
 
 export type EditorStoreStateType = {
@@ -28,7 +29,7 @@ type Diff = {
   source: any
 }
 
-export class Editor {
+export class Editor extends EventTarget {
   store: EditorStoreType
 
   commandManager: CommandManager = new CommandManager()
@@ -39,6 +40,7 @@ export class Editor {
       save: (data: any) => Promise<void>
     }
   ) {
+    super()
     this.store = createEditorStore()
   }
 
@@ -56,7 +58,8 @@ export class Editor {
 
   select(element: EditableElement<any>): void {
     this.store.setState({
-      selectedId: element.id
+      selectedId: element.id,
+      selectedKey: element.key
     })
   }
 
@@ -78,9 +81,55 @@ export class Editor {
     })
   }
 
-  addElement(element: EditableElement, parent: EditableElement | null) {}
+  getElementById(id: string): EditableElement {
+    return this.store.getState().elements[id]
+  }
 
-  removeElement(element: EditableElement, parent: EditableElement | null) {}
+  addElement(element: EditableElement, parentId: string | null) {
+    if (parentId) {
+      this?.store?.setState((el) => ({
+        elements: {
+          ...el.elements,
+          [element.id]: Object.assign(element, el.elements[element.id]),
+          [parentId]: Object.assign(el.elements[parentId] ?? {}, {
+            childIds: [...(el.elements[parentId]?.childIds ?? []), element.id]
+          })
+        }
+      }))
+    } else {
+      this?.store?.setState((el) => ({
+        elements: {
+          ...el.elements,
+          [element.id]: Object.assign(element, el.elements[element.id])
+        }
+      }))
+    }
+  }
+
+  removeElement(element: EditableElement, parentId: string | null) {
+    if (parentId) {
+      this?.store?.setState((el) => {
+        let e = {
+          ...el.elements
+        }
+
+        if (e[parentId]) {
+          e[parentId].childIds = e[parentId]?.childIds.filter(
+            (c: string) => c !== element.id
+          )
+        }
+
+        delete e[element.id]
+        return { elements: e }
+      })
+    } else {
+      this?.store?.setState((el) => {
+        let e = { ...el }
+        delete e.elements[element.id]
+        return e
+      })
+    }
+  }
 }
 
 export const EditorContext = createContext<Editor | null>(null)
@@ -96,10 +145,10 @@ export const useEditorStore = <U>(
   return editor.store(selector, equalityChecker)
 }
 
-export const useEditor = (): Editor => {
+export const useEditor = (): ThreeEditor => {
   const editor = useContext(EditorContext)
   if (!editor) {
     throw new Error("useEditor must be used within a EditorProvider")
   }
-  return editor
+  return editor as ThreeEditor
 }

@@ -1,4 +1,4 @@
-import { folder, useControls } from "leva"
+import { folder, levaStore, useControls } from "leva"
 import { Schema, SchemaToValues } from "leva/dist/declarations/src/types"
 import { useEffect } from "react"
 
@@ -14,7 +14,6 @@ function manageProps(folderName: string, props: any) {
           let read = JSON.parse(
             localStorage.getItem(`${editorName}.${folderName}.${key}`) ?? "null"
           )
-          console.log(`${editorName}.${folderName}.${key}`, read)
 
           if (read != null) {
             props[key].value = read
@@ -39,8 +38,8 @@ function manageProps(folderName: string, props: any) {
   })
 }
 
-type SchemaOrFn<S extends Schema = Schema> = S | (() => S)
-type FunctionReturnType<S extends Schema> = [
+export type SchemaOrFn<S extends Schema = Schema> = S | (() => S)
+export type FunctionReturnType<S extends Schema> = [
   SchemaToValues<S>,
   (value: {
     [K in keyof Partial<SchemaToValues<S, true>>]: SchemaToValues<S, true>[K]
@@ -58,36 +57,43 @@ type ReturnType<F extends SchemaOrFn> = F extends SchemaOrFn<infer S>
 export function usePersistedControls<S extends Schema, T extends SchemaOrFn<S>>(
   folderName: string,
   props: T,
-  deps = []
+  deps = [],
+  store = levaStore,
+  hidden = false
 ): ReturnType<() => S> {
-  const [values, set] = useControls(() => {
-    // Object.keys(props).forEach((key) => {
-    //   let read = JSON.parse(
-    //     localStorage.getItem(`${editorName}.${folderName}.${key}`) ?? "null"
-    //   )
-    //   if (read !== null) {
-    //     if (typeof props[key] === "object") {
-    //       props[key].value = read
-    //     } else {
-    //       props[key] = read
-    //     }
-    //   }
-    // })
-    manageProps(folderName, props)
+  const [values, set] = useControls(
+    () => {
+      // Object.keys(props).forEach((key) => {
+      //   let read = JSON.parse(
+      //     localStorage.getItem(`${editorName}.${folderName}.${key}`) ?? "null"
+      //   )
+      //   if (read !== null) {
+      //     if (typeof props[key] === "object") {
+      //       props[key].value = read
+      //     } else {
+      //       props[key] = read
+      //     }
+      //   }
+      // })
+      manageProps(folderName, props)
 
-    console.log(folderName, props)
-
-    return {
-      [folderName]: folder(
-        {
-          ...props
-        },
-        {
-          collapsed: true
-        }
-      )
-    }
-  }, deps)
+      return {
+        [folderName]: folder(
+          {
+            ...props
+          },
+          {
+            collapsed: true,
+            render: () => !hidden
+          }
+        )
+      }
+    },
+    {
+      store: store
+    },
+    deps
+  )
 
   useEffect(() => {
     Object.keys(values).forEach((key) => {

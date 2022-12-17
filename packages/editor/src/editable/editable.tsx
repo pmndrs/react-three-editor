@@ -6,6 +6,7 @@ import {
   FC,
   forwardRef,
   Fragment,
+  ReactNode,
   Ref,
   useCallback,
   useContext,
@@ -15,7 +16,7 @@ import {
   useState
 } from "react"
 import { EditableElement, JSXSource } from "./EditableElement"
-import { EditorContext } from "./Editor"
+import { EditorContext, useEditor } from "./Editor"
 
 type Elements = {
   [K in keyof JSX.IntrinsicElements]: FC<
@@ -31,10 +32,18 @@ export const EditableElementContext = createContext<EditableElement | null>(
 
 const memo = new WeakMap() as unknown as WeakMap<Elements, any> & Elements
 
+export function setEditable(
+  component: any,
+  editable: (props: any) => ReactNode
+) {
+  memo.set(component, editable)
+}
+
 export const Editable = forwardRef(
   ({ component, ...props }: { component: any }, ref) => {
     const mainC = useMemo(() => {
       if (!memo.get(component)) {
+        console.log(component)
         memo.set(component, createEditable(component))
       }
       return memo.get(component)
@@ -53,9 +62,9 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
   let hasRef =
     // @ts-ignore
     typeof Component === "string" ||
-    (Component as any).$$typeof === Symbol.for("forward_ref") ||
-    ((Component as any).$$typeof === Symbol.for("memo") &&
-      Component["type"]?.["$$typeof"] === Symbol.for("forward_ref"))
+    (Component as any).$$typeof === Symbol.for("react.forward_ref") ||
+    ((Component as any).$$typeof === Symbol.for("react.memo") &&
+      Component["type"]?.["$$typeof"] === Symbol.for("react.forward_ref"))
 
   if (hasRef) {
     return forwardRef(function Editable(props: any, forwardRef) {
@@ -109,14 +118,14 @@ function useEditableElement(
   source: JSXSource,
   props: any
 ) {
-  const editor = useContext(EditorContext)
+  const editor = useEditor()
   const parent = useContext(EditableElementContext)
   const id = useId()
   const render = useRerender()
 
   const editableElement = useMemo(() => {
-    return new EditableElement(id, source, componentType)
-  }, [id])
+    return editor.createElement(id, source, componentType)
+  }, [id, editor])
 
   const store = useCreateStore()
 
@@ -127,59 +136,15 @@ function useEditableElement(
   editableElement.currentProps = { ...props }
   editableElement.render = render
   editableElement.store = store
-  editableElement.editor = editor!
 
-  let memo = editableElement
   let parentId = parent?.id!
 
   useEffect(() => {
-    // editor?.addElement(editableElement, parent)
-    // return () => {
-    //   editor?.removeElement(editableElement, parent)
-    // }
-    if (parentId) {
-      editor?.store?.setState((el) => ({
-        elements: {
-          ...el.elements,
-          [id]: Object.assign(memo, el.elements[id]),
-          [parentId]: Object.assign(el.elements[parentId] ?? {}, {
-            children: [...(el.elements[parentId]?.children ?? []), id]
-          })
-        }
-      }))
-
-      return () => {
-        editor?.store?.setState((el) => {
-          let e = {
-            ...el.elements
-          }
-
-          if (e[parentId]) {
-            e[parentId].children = e[parentId]?.children.filter(
-              (c: string) => c !== id
-            )
-          }
-
-          delete e[id]
-          return { elements: e }
-        })
-      }
-    } else {
-      editor?.store?.setState((el) => ({
-        elements: {
-          ...el.elements,
-          [id]: Object.assign(memo, el.elements[id])
-        }
-      }))
-      return () => {
-        editor?.store?.setState((el) => {
-          let e = { ...el }
-          delete e.elements[id]
-          return e
-        })
-      }
+    editor.addElement(editableElement, parentId)
+    return () => {
+      editor.removeElement(editableElement, parentId)
     }
-  }, [parent?.id, memo])
+  }, [parentId, editableElement])
 
   return editableElement
 }

@@ -1,53 +1,9 @@
 import { useThree } from "@react-three/fiber"
-import { folder, LevaPanel, useControls, useCreateStore } from "leva"
-import { useState } from "react"
+import { folder, LevaPanel, useControls } from "leva"
+import { useEffect, useState } from "react"
 import { tree } from "../editable/controls/tree/tree"
-import { useEditorStore } from "../editable/Editor"
-import { In } from "./Tunnels"
-
-export function ScenePanel() {
-  const p = useEditorStore((state) => Object.values(state.elements))
-  const store = useCreateStore()
-  const items: Record<string, any> = {}
-  p.forEach((v) => {
-    if (v.parentId == null) items[v.id] = v
-  })
-
-  useControls(
-    {
-      graph: tree({
-        items
-      })
-    },
-    { store },
-    [items]
-  )
-  const size = useThree((s) => s.size)
-  const [collapsed, setCollapsed] = useState(true)
-  const [position, setPosition] = useState({
-    x: -size.width + 320,
-    y: 0
-  })
-
-  useEffect(() => {
-    setCollapsed(false)
-  }, [])
-  return (
-    <In>
-      <LevaPanel
-        store={store}
-        titleBar={{
-          position,
-          onDragEnd(position) {
-            setPosition(position as { x: number; y: number })
-          },
-          title: "Scene"
-        }}
-        collapsed={{ collapsed, onChange: setCollapsed }}
-      />
-    </In>
-  )
-}
+import { useEditor, useEditorStore } from "../editable/Editor"
+import { In } from "./CanvasTunnel"
 
 export function SceneControls() {
   const p = useEditorStore((state) => Object.values(state.elements))
@@ -62,7 +18,8 @@ export function SceneControls() {
       scene: folder(
         {
           graph: tree({
-            items
+            items,
+            scrollable: true
           })
         },
         {
@@ -72,4 +29,61 @@ export function SceneControls() {
     }
   }, [p])
   return null
+}
+
+export function ScenePanel({ collapsed = false }) {
+  const editor = useEditor()
+  const p = useEditorStore((state) => Object.values(state.elements))
+  const items: Record<string, any> = {}
+  p.forEach((v) => {
+    if (v.parentId == null) items[v.id] = v
+  })
+
+  let panelStore = editor.usePanel("scene")
+
+  useControls(
+    {
+      graph: tree({
+        items,
+        scrollable: false
+      })
+    },
+    { store: panelStore },
+    [items]
+  )
+  const size = useThree((s) => s.size)
+  const [_collapsed, setCollapsed] = useState(true)
+  const [position, setPosition] = useState({
+    x: -size.width + 320,
+    y: 0
+  })
+
+  useEffect(() => {
+    setCollapsed(collapsed)
+  }, [collapsed])
+
+  useEffect(() => {
+    setPosition({ x: -size.width + 320, y: 0 })
+  }, [size])
+
+  return (
+    <In>
+      <LevaPanel
+        store={panelStore}
+        titleBar={{
+          position,
+          onDragEnd(position) {
+            setPosition(position as { x: number; y: number })
+          },
+          title: "Scene"
+        }}
+        theme={{
+          space: {
+            rowGap: "2px"
+          }
+        }}
+        collapsed={{ collapsed: _collapsed, onChange: setCollapsed }}
+      />
+    </In>
+  )
 }

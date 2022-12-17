@@ -15,7 +15,12 @@ export interface PropInput {
   default?: any
   label?: string
 
-  onChange?: (value: any, prop: string, context: any) => void
+  onChange?: (
+    value: any,
+    prop: string,
+    controlPath: string,
+    context: any
+  ) => void
   render?(get: (prop: string) => any): boolean
 }
 
@@ -47,14 +52,7 @@ export function createProp(
     persist?: boolean
   }
 ) {
-  let el = element
-  let editable = element
-  if (path.length > 1) {
-    for (let i = 0; i < path.length - 1; i++) {
-      el = el?.[path[i]]
-    }
-    editable = getEditableElement(el)
-  }
+  const el = element.getObjectByPath(path.slice(0, path.length - 1))
 
   let prop = path[path.length - 1]
 
@@ -63,14 +61,8 @@ export function createProp(
     ? type.control({
         value: initialValue,
         onChange(value: any, controlPath: string, context: any) {
-          let el = element
-          let editable = element
-          if (path.length > 1) {
-            for (let i = 0; i < path.length - 1; i++) {
-              el = el?.[path[i]]
-            }
-            editable = getEditableElement(el)
-          }
+          const [el, editable, remaining] =
+            element.getEditableObjectByPath(path)
 
           if (value !== null && context.initial) {
             if (persist) {
@@ -90,8 +82,13 @@ export function createProp(
 
           if (serializale !== undefined && element instanceof EditableElement) {
             if (editable) {
-              element.addChange(editable, prop, serializale)
-              element.changed = true
+              if (element === editable) {
+                let [_, ...p] = path
+                element.dirtyProp(p.join("-"), serializale)
+              } else {
+                element.addChange(editable, remaining.join("-"), serializale)
+                element.changed = true
+              }
             } else {
               let [_, ...p] = path
               element.dirtyProp(p.join("-"), serializale)
@@ -103,14 +100,8 @@ export function createProp(
     : {
         value: initialValue,
         onChange(value: any, controlPath: string, context: any) {
-          let el = element
-          let editable = element
-          if (path.length > 1) {
-            for (let i = 0; i < path.length - 1; i++) {
-              el = el?.[path[i]]
-            }
-            editable = getEditableElement(el)
-          }
+          const [el, editable, remaining] =
+            element.getEditableObjectByPath(path)
 
           if (value !== null && context.initial) {
             type.init?.(el, prop, value)
@@ -129,8 +120,13 @@ export function createProp(
 
           if (serializale !== undefined) {
             if (editable) {
-              element.addChange(editable, prop, serializale)
-              element.changed = true
+              if (element === editable) {
+                let [_, ...p] = path
+                element.dirtyProp(p.join("-"), serializale)
+              } else {
+                element.addChange(editable, remaining.join("-"), serializale)
+                element.changed = true
+              }
             } else {
               let [_, ...p] = path
               element.dirtyProp(p.join("-"), serializale)
@@ -237,7 +233,18 @@ const textureT: {
   serialize(obj: any, prop: string, value: any) {
     return {
       src: value,
-      loader: "TextureLoader"
+      loader: "TextureLoader",
+      expression: `useLoader(TextureLoader, '${value}')`,
+      imports: [
+        {
+          import: ["useLoader"],
+          importPath: "@react-three/fiber"
+        },
+        {
+          import: ["TextureLoader"],
+          importPath: "three"
+        }
+      ]
     }
   }
 }
@@ -274,5 +281,20 @@ export const prop = Object.assign(createProp, {
       },
       props
     ),
-  select: (props: PropInput) => createProp(select, props)
+  select: (props: PropInput) => createProp(select, props),
+  unknown: (props: PropInput) =>
+    createProp(
+      {
+        get(obj: any, prop: string) {
+          return obj?.[prop]
+        },
+        set(obj: any, prop: string, value: any) {
+          obj[prop]
+        },
+        serialize(obj: any, prop: string, value: any) {
+          return value
+        }
+      },
+      props
+    )
 })

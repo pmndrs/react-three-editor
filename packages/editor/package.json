@@ -13,6 +13,7 @@
     "entrypoints": [
       "index.ts",
       "fiber/index.ts",
+      "rapier.tsx",
       "vite/index.ts"
     ]
   },
@@ -20,6 +21,7 @@
     "dist/**",
     "fiber/**",
     "vite/**",
+    "rapier/**",
     "LICENSE",
     "README.md"
   ],
@@ -45,6 +47,7 @@
     "@babel/core": "^7.19.6",
     "@babel/generator": "^7.20.4",
     "@babel/helper-plugin-utils": "^7.20.2",
+    "@babel/template": "^7.18.10",
     "@iconify/react": "^4.0.1",
     "@react-three/drei": "^9.46.4",
     "@stitches/react": "^1.2.8",
@@ -52,16 +55,18 @@
     "@vinxi/recast": "^0.21.5",
     "@vitejs/plugin-react": "^2.0.1",
     "debug": "^4.3.4",
+    "draft-n-draw": "^0.3.1",
     "formidable": "^2.1.1",
     "fp-ts": "^2.12.3",
     "fs-extra": "^10.1.0",
     "leva": "^0.9.34",
     "prettier": "^2.8.0",
+    "r3f-perf": "^6.5.0",
+    "react-dropzone": "^14.2.3",
     "react-hotkeys-hook": "^4.0.6",
     "three-stdlib": "^2.20.4",
     "tunnel-rat": "^0.1.0",
     "vite-dev-rpc": "^0.1.0",
-    "react-dropzone": "^14.2.3",
     "zustand": "^3.7.2"
   },
   "peerDependencies": {
@@ -71,8 +76,10 @@
     "three": "0.147.0"
   },
   "devDependencies": {
+    "@react-three/rapier": "^0.10.0",
     "@types/babel__core": "^7.1.20",
     "@types/babel__helper-plugin-utils": "^7.10.0",
+    "@types/babel__template": "^7.4.1",
     "@types/debug": "^4.1.7",
     "@types/formidable": "^2.0.5",
     "@types/fs-extra": "^9.0.13",

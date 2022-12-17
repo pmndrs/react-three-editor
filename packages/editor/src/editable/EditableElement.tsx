@@ -1,5 +1,7 @@
 import { StoreType } from "leva/dist/declarations/src/types"
-import { Editor } from "./Editor"
+import { Event, Object3D } from "three"
+import { getEditableElement } from "../fiber/controls/prop"
+import { ThreeEditor } from "../fiber/ThreeEditor"
 
 export type JSXSource = {
   fileName: string
@@ -13,26 +15,17 @@ export type JSXSource = {
 export class EditableElement<
   Ref extends { name?: string } = any
 > extends EventTarget {
-  getObjectByPath<T>(path: string[]): T {
-    let el = this
-    if (path.length > 1) {
-      for (let i = 0; i < path.length; i++) {
-        el = el?.[path[i]]
-      }
-      // editable = getEditableElement(el)
-    }
-    return el
-  }
+  object?: Object3D<Event>
+  ref?: Ref
+  currentProps: any
+  childIds: string[] = []
+  changes: Record<string, Record<string, any>> = {}
   forwardedRef: boolean = false
-  children: string[] = []
   props: any = {}
   render: () => void = () => {}
-  ref?: Ref
   dirty: any = false
   store: StoreType | null = null
-  changes: Record<string, Record<string, any>> = {}
-  editor: Editor = {} as any
-  currentProps: any
+  editor: ThreeEditor = {} as any
   constructor(
     public id: string,
     public source: JSXSource,
@@ -60,7 +53,25 @@ export class EditableElement<
   setRef(el: Ref) {
     this.ref = el
     this.editor.setRef(this, el)
-    this.dispatchEvent(new CustomEvent("ref-changed", {}))
+    this.dispatchEvent(
+      new CustomEvent("ref-changed", {
+        detail: {
+          ref: el
+        }
+      })
+    )
+  }
+
+  setObject3D(item: Object3D<Event>) {
+    this.object = item
+  }
+
+  getObject3D() {
+    return this.object || this.ref
+  }
+
+  isObject3D() {
+    return this.object || this.ref instanceof Object3D
   }
 
   resetControls() {}
@@ -94,7 +105,6 @@ export class EditableElement<
 
   get changed() {
     let data = this.store?.getData()!
-    console.log(data.save)
     if (data && data["save"]) {
       return !data["save"].settings.disabled
     }
@@ -110,13 +120,10 @@ export class EditableElement<
   }
 
   dirtyProp(arg0: string, arg1: number[]) {
-    this.store?.setSettingsAtPath("save", {
-      disabled: false
-    })
-
     this.addChange(this, arg0, arg1)
+    this.changed = true
 
-    if (!this.forwardedRef || this.type !== "string") {
+    if (!this.forwardedRef || this.type !== "string" || arg0 === "args") {
       this.props[arg0] = arg1
       this.render()
     }
@@ -153,5 +160,38 @@ export class EditableElement<
     await this.editor.save(diffs)
     this.changes = {}
     this.changed = false
+  }
+
+  get children() {
+    return this.childIds.map((id) => this.editor.getElementById(id)!)
+  }
+
+  get parent() {
+    return this.editor.getElementById(this.parentId!)
+  }
+
+  getObjectByPath<T>(path: string[]): T {
+    let el: any = this
+    for (let i = 0; i < path.length; i++) {
+      el = el?.[path[i]]
+    }
+    return el
+  }
+
+  getEditableObjectByPath(path: string[]) {
+    let el: any = this
+    let editable: any = this
+    let remainingPath = path
+    if (path.length > 1) {
+      for (let i = 0; i < path.length - 1; i++) {
+        el = el?.[path[i]]
+        let edit = getEditableElement(el)
+        if (edit) {
+          editable = edit
+          remainingPath = path.slice(i + 1)
+        }
+      }
+    }
+    return [el, editable, remainingPath]
   }
 }

@@ -11,11 +11,10 @@ export function TransformHelper({
   props: any
 }) {
   const item = useMemo(() => new Object3D(), [])
+  element.setObject3D(item)
 
   useEffect(() => {
     if (props.position || props.rotation || props.scale) {
-      element.ref = item
-
       applyProps(item as unknown as any, {
         position: props.position,
         rotation: props.rotation,

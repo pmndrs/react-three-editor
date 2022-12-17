@@ -1,3 +1,6 @@
+import { EditableElement } from "../../editable/EditableElement"
+import { prop } from "../controls/prop"
+import { geometry, meshGeometry } from "./geomtries"
 import { material, meshMaterial } from "./materials"
 import {
   ambientLight,
@@ -6,17 +9,40 @@ import {
   orbitControls,
   pointLight,
   propControls,
+  reactComponent,
+  rigidBody,
   spotLight,
   transform,
   transformWithoutRef
 } from "./plugins"
 
+const mesh = {
+  applicable: (object: any) => object.ref?.isMesh,
+  controls: (element: EditableElement) => {
+    return {
+      castShadow: prop.bool({
+        element,
+        path: ["ref", "castShadow"]
+      }),
+      receiveShadow: prop.bool({
+        element,
+        path: ["ref", "receiveShadow"]
+      })
+    }
+  }
+}
+
 export const DEFAULT_EDITOR_PLUGINS = [
   transform,
+  reactComponent,
+  rigidBody,
   transformWithoutRef,
   camera,
+  mesh,
   material,
+  geometry,
   meshMaterial,
+  meshGeometry,
   orbitControls,
   directionalLight,
   pointLight,

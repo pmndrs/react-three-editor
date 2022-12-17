@@ -17,14 +17,9 @@ export function useElementControls(
     () => {
       return {
         ...entity.controls,
-        save: button(
-          async () => {
-            entity.save()
-          },
-          {
-            disabled: true
-          }
-        )
+        save: button(() => {
+          entity.save()
+        })
       }
     },
     {

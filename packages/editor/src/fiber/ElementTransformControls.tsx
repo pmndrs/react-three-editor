@@ -1,9 +1,14 @@
 import { TransformControls } from "@react-three/drei"
 import { mergeRefs } from "leva/plugin"
-import { useCallback, useContext, useEffect, useRef } from "react"
+import { useCallback, useContext, useEffect, useRef, useState } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
 import { Event, MathUtils, Object3D, Vector3Tuple } from "three"
 import { TransformControls as TransformControlsImpl } from "three-stdlib"
+import {
+  SetElementPosition,
+  SetElementRotation,
+  SetElementScale
+} from "../editable/commands"
 import { eq } from "../editable/controls/eq"
 import { EditableElement } from "../editable/EditableElement"
 import { EditorContext } from "../editable/Editor"
@@ -100,18 +105,42 @@ export function ElementTransformControls({
       const control = ref.current
       const draggingChanged = ({ value, target }: any) => {
         draggingRef.current = !!value
-        // if (!draggingRef.current) {
-        //   editor?.commandManager.execute(
-        //     new SetTransformControls(
-        //       editor,
-        //       element,
-        //       serializeTransform(target.object),
-        //       Object.assign({}, oldTransform.current)
-        //     )
-        //   )
-        // } else {
-        //   oldTransform.current = serializeTransform(target.object)
-        // }
+        if (!draggingRef.current) {
+          const mode = control.getMode()
+          const { position, rotation, scale } = serializeTransform(
+            target.object
+          )
+          if (mode === "translate") {
+            editor?.commandManager.execute(
+              new SetElementPosition(
+                editor,
+                element,
+                position,
+                Object.assign({}, oldTransform.current).position
+              )
+            )
+          } else if (mode === "rotation") {
+            editor?.commandManager.execute(
+              new SetElementRotation(
+                editor,
+                element,
+                rotation,
+                Object.assign({}, oldTransform.current).rotation
+              )
+            )
+          } else if (mode === "scale") {
+            editor?.commandManager.execute(
+              new SetElementScale(
+                editor,
+                element,
+                scale,
+                Object.assign({}, oldTransform.current).scale
+              )
+            )
+          }
+        } else {
+          oldTransform.current = serializeTransform(target.object)
+        }
       }
       control.addEventListener("dragging-changed", draggingChanged)
       return () => {
@@ -124,7 +153,7 @@ export function ElementTransformControls({
     (event?: Event) => {
       if (
         event?.type === "change" &&
-        element.ref &&
+        element.isObject3D() &&
         event.target?.object &&
         draggingRef.current
       ) {
@@ -135,9 +164,17 @@ export function ElementTransformControls({
     [updateElementTransforms]
   )
 
+  const [object, setRef] = useState(element.getObject3D())
+
+  // useEffect(() => {
+  //   element.addEventListener("ref-changed", (e) => {
+  //     setRef(e.detail.ref)
+  //   })
+  // }, [element])
+
   return (
     <TransformControls
-      object={element.ref!}
+      object={object}
       key={element.id}
       ref={mergeRefs([
         ref,

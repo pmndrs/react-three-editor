@@ -1,5 +1,6 @@
+import { Icon } from "@iconify/react"
 import { LevaPanel } from "leva"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { EditableElement } from "../../EditableElement"
 import { StyledIcon } from "../folder/StyledFolder"
 import { ElementIcon } from "./ElementIcon"
@@ -20,9 +21,17 @@ export function TreeElement({
   panel?: boolean
   collapsible?: boolean
 }) {
-  const selected = element.editor.store((s) => s.selectedId === element?.id)
+  const selected = element.editor.store(
+    (s) => s.selectedId === element?.id || s.selectedKey === element?.key
+  )
 
-  const [_collapsed, setCollapsed] = useState(collapsed)
+  const [_collapsed, setCollapsed] = useState(!selected && collapsed)
+
+  useEffect(() => {
+    if (selected && _collapsed) {
+      setCollapsed(false)
+    }
+  }, [selected, _collapsed])
 
   const [visible, setVisible] = useState(
     element.ref?.visible || (true as boolean)
@@ -33,6 +42,7 @@ export function TreeElement({
   const dirty = element.store.useStore(
     (s) => Object.keys(element.changes).length > 0
   )
+
   return (
     <TreeItem
       collapsed={_collapsed}
@@ -75,6 +85,13 @@ export function TreeElement({
               (element.visible = !element.visible)
             )}
           />
+          <div style={{ marginLeft: 4 }} />
+          {dirty ? (
+            <Icon
+              icon="material-symbols:save"
+              onClick={(e) => element.save()}
+            />
+          ) : null}
         </>
       }
     >
@@ -85,16 +102,9 @@ export function TreeElement({
             marginTop: "2px"
           }}
         >
-          {element.children
-            .filter((c) => c !== element.id && state[c])
-            .map((c) => (
-              <TreeElement
-                element={state[c]}
-                key={c}
-                collapsed={true}
-                showChildren
-              />
-            ))}
+          {element.children.map((c) => (
+            <TreeElement element={c} key={c.id} collapsed={true} showChildren />
+          ))}
         </div>
       )}
       {panel && (
