@@ -192,6 +192,10 @@ const meshStandardMaterialControls = (
       element,
       path: [...path, "fog"]
     }),
+    wireframe: prop.bool({
+      element,
+      path: [...path, "wireframe"]
+    }),
     ...createTextureFolder(element, "map", path),
     ...createTextureFolder(element, "alpha", path),
     ...createTextureFolder(element, "ao", path),

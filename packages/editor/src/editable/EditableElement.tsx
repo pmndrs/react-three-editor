@@ -123,7 +123,7 @@ export class EditableElement<
     this.addChange(this, arg0, arg1)
     this.changed = true
 
-    if (!this.forwardedRef || this.type !== "string") {
+    if (!this.forwardedRef || this.type !== "string" || arg0 === "args") {
       this.props[arg0] = arg1
       this.render()
     }

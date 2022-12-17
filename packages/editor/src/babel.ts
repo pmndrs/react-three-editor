@@ -176,7 +176,7 @@ export default declare<State>((api) => {
                   attr.name.name === "name")
             ) ||
             (t.isJSXIdentifier(node.name) &&
-              ["OrbitControls"].includes(node.name.name))
+              ["OrbitControls", "Physics"].includes(node.name.name))
           )
         }
 

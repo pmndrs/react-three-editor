@@ -2,9 +2,11 @@ import { KeyboardControls } from "@react-three/drei"
 import {
   CameraGizmos,
   Editor,
+  PerformanceControls,
   ScenePanel,
   SelectedElementControls
 } from "@react-three/editor"
+import "@react-three/editor/rapier"
 import { Canvas } from "@react-three/fiber"
 import ReactDOM from "react-dom/client"
 import Experience from "./Experience.js"
@@ -52,6 +54,7 @@ root.render(
         {/* Scene tree in its own panel */}
         <ScenePanel />
 
+        <PerformanceControls />
         {/* Controls for selected element in the default leva panel */}
         <SelectedElementControls />
 

@@ -13,6 +13,7 @@
     "entrypoints": [
       "index.ts",
       "fiber/index.ts",
+      "rapier.tsx",
       "vite/index.ts"
     ]
   },
@@ -20,6 +21,7 @@
     "dist/**",
     "fiber/**",
     "vite/**",
+    "rapier/**",
     "LICENSE",
     "README.md"
   ],
@@ -59,6 +61,7 @@
     "fs-extra": "^10.1.0",
     "leva": "^0.9.34",
     "prettier": "^2.8.0",
+    "r3f-perf": "^6.5.0",
     "react-dropzone": "^14.2.3",
     "react-hotkeys-hook": "^4.0.6",
     "three-stdlib": "^2.20.4",
@@ -73,6 +76,7 @@
     "three": "0.147.0"
   },
   "devDependencies": {
+    "@react-three/rapier": "^0.10.0",
     "@types/babel__core": "^7.1.20",
     "@types/babel__helper-plugin-utils": "^7.10.0",
     "@types/babel__template": "^7.4.1",

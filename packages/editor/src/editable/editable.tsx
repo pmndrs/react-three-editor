@@ -6,6 +6,7 @@ import {
   FC,
   forwardRef,
   Fragment,
+  ReactNode,
   Ref,
   useCallback,
   useContext,
@@ -31,10 +32,18 @@ export const EditableElementContext = createContext<EditableElement | null>(
 
 const memo = new WeakMap() as unknown as WeakMap<Elements, any> & Elements
 
+export function setEditable(
+  component: any,
+  editable: (props: any) => ReactNode
+) {
+  memo.set(component, editable)
+}
+
 export const Editable = forwardRef(
   ({ component, ...props }: { component: any }, ref) => {
     const mainC = useMemo(() => {
       if (!memo.get(component)) {
+        console.log(component)
         memo.set(component, createEditable(component))
       }
       return memo.get(component)

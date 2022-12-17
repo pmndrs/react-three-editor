@@ -3,7 +3,6 @@ import { extendControls } from "@react-three/editor"
 import { useFrame, Vector3 } from "@react-three/fiber"
 import {
   CuboidCollider,
-  Debug,
   Physics,
   RigidBody,
   RigidBodyApi
@@ -22,7 +21,7 @@ extendControls(RigidBody, {
   angularDamping: { value: 0.1, min: 0, max: 1, step: 0.01, type: "number" }
 })
 
-const boxGeometry = <memo.boxGeometry name="box" />
+const boxGeometry = <memo.boxGeometry name="box" args={[1.0000000000000004]} />
 
 function BlockStart({ position = [0, 0, 0] as Vector3 }) {
   return (
@@ -55,8 +54,8 @@ function BlockSpinner({ position = [0, 0, 0] }: { position: Vector3 }) {
 
   return (
     <group position={position}>
-      <mesh position={[0, -0.1, 0]} scale={[4, 0.2, 4]} receiveShadow>
-        <memo.boxGeometry name="box" />
+      <mesh position={[0, -0.1, 14.893]} scale={[4, 0.2, 4]} receiveShadow>
+        <boxGeometry name="box" args={[3.6, 5.6000000000000005, 1.7000000000000002]} />
         <memo.meshStandardMaterial name="floor2Material" color="greenyellow" />
       </mesh>
 
@@ -81,7 +80,7 @@ function BlockSpinner({ position = [0, 0, 0] }: { position: Vector3 }) {
         </mesh>
       </RigidBody>
     </group>
-  )
+  );
 }
 
 function BlockAxe({ position = [0, 0, 0] }: { position: Vector3 }) {
@@ -234,7 +233,6 @@ export default function Experience() {
     <>
       <OrbitControls makeDefault />
       <Physics>
-        <Debug />
         <Level />
         <Lights />
         <Player />
