@@ -1,3 +1,4 @@
+import { Icon } from "@iconify/react"
 import { LevaPanel } from "leva"
 import { useEffect, useState } from "react"
 import { EditableElement } from "../../EditableElement"
@@ -20,7 +21,9 @@ export function TreeElement({
   panel?: boolean
   collapsible?: boolean
 }) {
-  const selected = element.editor.store((s) => s.selectedId === element?.id)
+  const selected = element.editor.store(
+    (s) => s.selectedId === element?.id || s.selectedKey === element?.key
+  )
 
   const [_collapsed, setCollapsed] = useState(!selected && collapsed)
 
@@ -82,6 +85,13 @@ export function TreeElement({
               (element.visible = !element.visible)
             )}
           />
+          <div style={{ marginLeft: 4 }} />
+          {dirty ? (
+            <Icon
+              icon="material-symbols:save"
+              onClick={(e) => element.save()}
+            />
+          ) : null}
         </>
       }
     >

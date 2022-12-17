@@ -1,6 +1,6 @@
+import { Icon } from "@iconify/react"
 import { ComponentProps } from "react"
 import { EditableElement } from "../../EditableElement"
-import { Icon } from "@iconify/react"
 
 export function ElementIcon({
   element,
@@ -9,11 +9,7 @@ export function ElementIcon({
   return (
     <Icon
       icon={element.icon}
-      onClick={(e) =>
-        element.editor.store.setState({
-          selectedId: element.id
-        })
-      }
+      onClick={(e) => element.editor.select(element)}
       {...props}
     />
   )

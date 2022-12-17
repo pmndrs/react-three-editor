@@ -153,7 +153,7 @@ export function ElementTransformControls({
     (event?: Event) => {
       if (
         event?.type === "change" &&
-        element.ref &&
+        element.isObject3D() &&
         event.target?.object &&
         draggingRef.current
       ) {
@@ -164,13 +164,13 @@ export function ElementTransformControls({
     [updateElementTransforms]
   )
 
-  const [object, setRef] = useState(element.ref)
+  const [object, setRef] = useState(element.getObject3D())
 
-  useEffect(() => {
-    element.addEventListener("ref-changed", (e) => {
-      setRef(e.detail.ref)
-    })
-  })
+  // useEffect(() => {
+  //   element.addEventListener("ref-changed", (e) => {
+  //     setRef(e.detail.ref)
+  //   })
+  // }, [element])
 
   return (
     <TransformControls

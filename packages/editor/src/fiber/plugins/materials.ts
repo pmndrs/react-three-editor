@@ -22,7 +22,8 @@ const commonControls = (element: EditableElement, path: string[]) => {
       element,
       path: [...path, "transparent"],
       onChange: (value) => {
-        element.ref.needsUpdate = true
+        const object = element.getObjectByPath<Material>(path)
+        object.needsUpdate = true
       }
     }),
     opacity: prop.bool({

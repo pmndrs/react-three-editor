@@ -1,6 +1,7 @@
 import { StoreType } from "leva/dist/declarations/src/types"
+import { Event, Object3D } from "three"
 import { getEditableElement } from "../fiber/controls/prop"
-import { Editor } from "./Editor"
+import { ThreeEditor } from "../fiber/ThreeEditor"
 
 export type JSXSource = {
   fileName: string
@@ -14,6 +15,7 @@ export type JSXSource = {
 export class EditableElement<
   Ref extends { name?: string } = any
 > extends EventTarget {
+  object?: Object3D<Event>
   ref?: Ref
   currentProps: any
   childIds: string[] = []
@@ -23,7 +25,7 @@ export class EditableElement<
   render: () => void = () => {}
   dirty: any = false
   store: StoreType | null = null
-  editor: Editor = {} as any
+  editor: ThreeEditor = {} as any
   constructor(
     public id: string,
     public source: JSXSource,
@@ -58,6 +60,18 @@ export class EditableElement<
         }
       })
     )
+  }
+
+  setObject3D(item: Object3D<Event>) {
+    this.object = item
+  }
+
+  getObject3D() {
+    return this.object || this.ref
+  }
+
+  isObject3D() {
+    return this.object || this.ref instanceof Object3D
   }
 
   resetControls() {}

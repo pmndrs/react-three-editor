@@ -58,7 +58,8 @@ export class Editor extends EventTarget {
 
   select(element: EditableElement<any>): void {
     this.store.setState({
-      selectedId: element.id
+      selectedId: element.id,
+      selectedKey: element.key
     })
   }
 

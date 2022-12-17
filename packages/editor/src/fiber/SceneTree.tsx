@@ -1,8 +1,8 @@
 import { useThree } from "@react-three/fiber"
-import { folder, LevaPanel, useControls, useCreateStore } from "leva"
+import { folder, LevaPanel, useControls } from "leva"
 import { useEffect, useState } from "react"
 import { tree } from "../editable/controls/tree/tree"
-import { useEditorStore } from "../editable/Editor"
+import { useEditor, useEditorStore } from "../editable/Editor"
 import { In } from "./CanvasTunnel"
 
 export function SceneControls() {
@@ -32,12 +32,14 @@ export function SceneControls() {
 }
 
 export function ScenePanel({ collapsed = false }) {
+  const editor = useEditor()
   const p = useEditorStore((state) => Object.values(state.elements))
-  const store = useCreateStore()
   const items: Record<string, any> = {}
   p.forEach((v) => {
     if (v.parentId == null) items[v.id] = v
   })
+
+  let panelStore = editor.usePanel("scene")
 
   useControls(
     {
@@ -46,7 +48,7 @@ export function ScenePanel({ collapsed = false }) {
         scrollable: false
       })
     },
-    { store },
+    { store: panelStore },
     [items]
   )
   const size = useThree((s) => s.size)
@@ -63,16 +65,22 @@ export function ScenePanel({ collapsed = false }) {
   useEffect(() => {
     setPosition({ x: -size.width + 320, y: 0 })
   }, [size])
+
   return (
     <In>
       <LevaPanel
-        store={store}
+        store={panelStore}
         titleBar={{
           position,
           onDragEnd(position) {
             setPosition(position as { x: number; y: number })
           },
           title: "Scene"
+        }}
+        theme={{
+          space: {
+            rowGap: "2px"
+          }
         }}
         collapsed={{ collapsed: _collapsed, onChange: setCollapsed }}
       />

@@ -1,21 +1,22 @@
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei"
 import { useThree } from "@react-three/fiber"
 import { levaStore } from "leva"
-import { useContext, useEffect, useRef } from "react"
+import { useEffect, useRef } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
 import { Camera, Event } from "three"
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib"
-import { usePersistedControls } from "../editable/controls/usePersistedControls"
 import { editable } from "../editable/editable"
-import { EditorContext, useEditorStore } from "../editable/Editor"
+import { useEditor, useEditorStore } from "../editable/Editor"
+import { ThreeEditor } from "./ThreeEditor"
 
 // @ts-ignore
 window.leva = levaStore
 export function EditorCamera() {
   const ref = useRef<Camera>(null!)
   const ref2 = useRef<OrbitControlsImpl>(null!)
+  const editor = useEditor()
 
-  const [props, setCamera] = usePersistedControls("editor.camera", {
+  const [props, setCamera] = editor.useSettings("camera", {
     enabled: false,
     position: {
       value: [-6.836465353768794, 3.1169378502902387, -2.747260436170274],
@@ -35,33 +36,7 @@ export function EditorCamera() {
     [props.enabled]
   )
 
-  const selectedElement = useEditorStore((s) => s.selectedId)
-  const editor = useContext(EditorContext)
-  const [p, set] = usePersistedControls("editor.scene", {
-    selected: {
-      onChange(e, path, context) {
-        if (context.initial) {
-          console.log(e)
-          editor?.selectId(e === "" ? null : e)
-        }
-      },
-      transient: false,
-      value: selectedElement ?? ""
-    }
-  })
-
-  useEffect(() => {
-    console.log(
-      "selectedElement",
-      selectedElement,
-      selectedElement && editor?.store.getState().elements[selectedElement]
-    )
-    levaStore.setValueAtPath(
-      "editor.scene.selected",
-      selectedElement ?? "",
-      false
-    )
-  }, [selectedElement, set])
+  useSelectedState(editor)
 
   const camera = useThree((c) => c.camera)
 
@@ -76,10 +51,9 @@ export function EditorCamera() {
   useEffect(() => {
     function update(e: Event) {
       if (props.enabled) {
-        levaStore.setValueAtPath(
-          "editor.camera.position",
-          e.target.object.position.toArray(),
-          false
+        editor.setSettings(
+          "camera.position",
+          e.target.object.position.toArray()
         )
       }
     }
@@ -88,9 +62,6 @@ export function EditorCamera() {
     return () => {
       controls?.removeEventListener("change", update)
     }
-
-    // levaStore.useStore.subscribe((s) => s.data["editor.camera.position"], {
-    // })
   }, [controls, props.enabled])
 
   return (
@@ -107,4 +78,44 @@ export function EditorCamera() {
       {/* <PerspectiveCamera makeDefault /> */}
     </>
   )
+}
+
+function useSelectedState(editor: ThreeEditor) {
+  const selectedId = useEditorStore((s) => s.selectedId)
+  const selectedKey = useEditorStore((s) => s.selectedKey)
+  const [p, set] = editor.useSettings(
+    "scene",
+    {
+      selectedId: {
+        onChange(e, path, context) {
+          if (context.initial) {
+            editor?.selectId(e === "" ? null : e)
+          }
+        },
+        transient: false,
+        value: selectedId ?? ""
+      },
+      selectedKey: {
+        onChange(e, path, context) {
+          if (context.initial) {
+            editor?.selectKey(e === "" ? null : e)
+          }
+        },
+        transient: false,
+        value: selectedKey ?? ""
+      }
+    },
+    true
+  )
+
+  useEffect(() => {
+    console.log(
+      "selectedElement",
+      selectedId && editor?.store.getState().elements[selectedId],
+      selectedKey
+    )
+
+    editor.setSettings("scene.selectedId", selectedId ?? "")
+    editor.setSettings("scene.selectedKey", selectedKey ?? "")
+  }, [selectedId, selectedKey, set])
 }

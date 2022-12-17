@@ -12,9 +12,9 @@ export function SelectedElementControls() {
   return selectedElement ? (
     <Fragment key={selectedElement.id}>
       <ElementControls element={selectedElement} store={levaStore} />
-      {selectedElement.ref instanceof THREE.Object3D && (
+      {selectedElement.isObject3D() ? (
         <ElementTransformControls element={selectedElement} />
-      )}
+      ) : null}
     </Fragment>
   ) : null
 }

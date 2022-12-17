@@ -8,6 +8,8 @@ import {
   orbitControls,
   pointLight,
   propControls,
+  reactComponent,
+  rigidBody,
   spotLight,
   transform,
   transformWithoutRef
@@ -31,6 +33,8 @@ const mesh = {
 
 export const DEFAULT_EDITOR_PLUGINS = [
   transform,
+  reactComponent,
+  rigidBody,
   transformWithoutRef,
   camera,
   mesh,

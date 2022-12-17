@@ -15,7 +15,6 @@ import {
   SpotLight,
   SpotLightHelper
 } from "three"
-import { usePersistedControls } from "../../editable/controls/usePersistedControls"
 import { EditableElement } from "../../editable/EditableElement"
 import { useEditorStore } from "../../editable/Editor"
 import { prop } from "../controls/prop"
@@ -111,7 +110,7 @@ export const camera = {
     }
   },
   helper: ({ element }: { element: EditableElement }) => {
-    const [{ camera }] = usePersistedControls("editor.helpers", {
+    const [{ camera }] = element.editor.useSettings("helpers", {
       camera: { value: true }
     })
     const isSelected = useEditorStore(
@@ -202,7 +201,7 @@ export const directionalLight = {
     }
   },
   helper: ({ element }: { element: EditableElement }) => {
-    const [{ directionalLight }] = usePersistedControls("editor.helpers", {
+    const [{ directionalLight }] = element.editor.useSettings("helpers", {
       directionalLight: { value: true }
     })
     useHelper(directionalLight ? element : undefined, DirectionalLightHelper)
@@ -268,7 +267,7 @@ export const spotLight = {
     }
   },
   helper: ({ element }: { element: EditableElement }) => {
-    const [{ spotLight }] = usePersistedControls("editor.helpers", {
+    const [{ spotLight }] = element.editor.useSettings("helpers", {
       spotLight: { value: true }
     })
     useHelper(spotLight ? element : undefined, SpotLightHelper, "hotpink")
@@ -277,8 +276,42 @@ export const spotLight = {
 }
 
 export const transformWithoutRef = {
-  applicable: (entity: EditableElement) => !entity.forwardedRef,
-  icon: (entity: EditableElement) => "mdi:react",
+  applicable: (entity: EditableElement) =>
+    (!entity.forwardedRef &&
+      (entity.currentProps.position ||
+        entity.currentProps.rotation ||
+        entity.currentProps.scale)) ||
+    // RigidBody from rapier
+    entity.ref?.raw,
+  controls: (entity: EditableElement) => {
+    return {
+      transform: folder(
+        {
+          position: prop.vector3d({
+            element: entity,
+            path: ["object", "position"],
+            lock: true,
+            step: 0.1
+          }),
+          rotation: prop.euler({
+            lock: true,
+            step: 1,
+            path: ["object", "rotation"],
+            element: entity
+          }),
+          scale: prop.vector3d({
+            element: entity,
+            path: ["object", "scale"],
+            lock: true,
+            step: 0.1
+          })
+        },
+        {
+          collapsed: false
+        }
+      )
+    }
+  },
   helper: ({ element }: { element: EditableElement }) => {
     return (
       <TransformHelper
@@ -288,6 +321,16 @@ export const transformWithoutRef = {
       />
     )
   }
+}
+
+export const reactComponent = {
+  applicable: (entity: EditableElement) => !entity.forwardedRef,
+  icon: (entity: EditableElement) => "mdi:react"
+}
+
+export const rigidBody = {
+  applicable: (entity: EditableElement) => entity.ref?.raw,
+  icon: (entity: EditableElement) => "tabler:3d-cube-sphere"
 }
 
 export const propControls = {
@@ -319,7 +362,7 @@ export const propControls = {
         })
     }
 
-    let IGNORED_PROPS = ["position", "rotation", "scale", "_source", "children"]
+    let IGNORED_PROPS = ["_source", "children"]
 
     let isControllable = (v: any) => {
       return (
