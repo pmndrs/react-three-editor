@@ -3,6 +3,7 @@ import { EqualityChecker, StateSelector } from "zustand"
 import { EditableElement } from "./EditableElement"
 
 import create from "zustand"
+import { ThreeEditor } from "../fiber/ThreeEditor"
 import { CommandManager } from "./CommandManager"
 
 export type EditorStoreStateType = {
@@ -96,10 +97,10 @@ export const useEditorStore = <U>(
   return editor.store(selector, equalityChecker)
 }
 
-export const useEditor = (): Editor => {
+export const useEditor = (): ThreeEditor => {
   const editor = useContext(EditorContext)
   if (!editor) {
     throw new Error("useEditor must be used within a EditorProvider")
   }
-  return editor
+  return editor as ThreeEditor
 }

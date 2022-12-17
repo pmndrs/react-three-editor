@@ -1,4 +1,5 @@
 import { Canvas as FiberCanvas } from "@react-three/fiber"
+import { DrafterProvider } from "draft-n-draw"
 import { useControls } from "leva"
 import { ComponentProps, forwardRef, useMemo } from "react"
 import { EditorContext } from "../editable/Editor"
@@ -11,7 +12,6 @@ import { SceneControls } from "./SceneTree"
 import { SelectedElementControls } from "./SelectedElement"
 import { ThreeEditor } from "./ThreeEditor"
 import { createMultiTunnel } from "./Tunnels"
-
 export const editorTunnel = createMultiTunnel()
 
 export const Editor = editorTunnel.In
@@ -36,19 +36,21 @@ export const Canvas = forwardRef<
         }}
         {...props}
       >
-        <EditorContext.Provider value={store}>
-          <EditorCamera />
-          {children}
-          <editorTunnel.Outs
-            fallback={
-              <>
-                <SceneControls />
-                <SelectedElementControls />
-                <CameraGizmos />
-              </>
-            }
-          />
-        </EditorContext.Provider>
+        <DrafterProvider>
+          <EditorContext.Provider value={store}>
+            <EditorCamera />
+            {children}
+            <editorTunnel.Outs
+              fallback={
+                <>
+                  <SceneControls />
+                  <SelectedElementControls />
+                  <CameraGizmos />
+                </>
+              }
+            />
+          </EditorContext.Provider>
+        </DrafterProvider>
       </FiberCanvas>
       <Outs />
     </>

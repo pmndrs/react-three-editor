@@ -27,7 +27,7 @@ export function EditorCamera() {
   })
 
   useHotkeys(
-    "space",
+    "meta+e",
     () =>
       setCamera({
         enabled: !props.enabled

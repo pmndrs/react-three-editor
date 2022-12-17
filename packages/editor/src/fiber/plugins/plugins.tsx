@@ -290,11 +290,12 @@ export const transformWithoutRef = {
 
 export const propControls = {
   applicable: (entity: EditableElement) =>
-    entity.type !== "string" && entity.type.controls,
+    entity.type !== "string" && (!entity.forwardedRef || entity.type.controls),
   controls: (entity: EditableElement) => {
-    return Object.fromEntries(
-      Object.entries(entity.type.controls).map(
-        ([k, { type, value, ...v }]: any) => {
+    let controls = {}
+    if (entity.type.controls) {
+      Object.entries(entity.type.controls)
+        .map(([k, { type, value, ...v }]: any) => {
           return [
             k,
             prop[type as keyof typeof prop]({
@@ -304,8 +305,20 @@ export const propControls = {
               default: value
             })
           ]
-        }
-      )
-    )
+        })
+        .forEach(([k, v]) => {
+          controls[k] = v
+        })
+    }
+
+    Object.entries(entity.currentProps).forEach(([k, v]) => {
+      if (!controls[k]) {
+        controls[k] = prop.number({
+          element: entity,
+          path: ["currentProps", k]
+        })
+      }
+    })
+    return controls
   }
 }

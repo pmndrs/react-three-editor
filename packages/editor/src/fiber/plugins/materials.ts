@@ -181,7 +181,10 @@ const meshStandardMaterialControls = (
     }),
     flatShading: prop.bool({
       element,
-      path: [...path, "flatShading"]
+      path: [...path, "flatShading"],
+      onChange: (value) => {
+        element.getObjectByPath<MeshStandardMaterial>(path).needsUpdate = true
+      }
     }),
     ...commonControls(element, path),
     fog: prop.bool({
