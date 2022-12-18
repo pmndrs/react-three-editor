@@ -1,8 +1,11 @@
+import { useHelper } from "@react-three/drei"
 import { StoreType } from "leva/dist/declarations/src/types"
 import { useEffect, useState } from "react"
 import { Event, Object3D } from "three"
+import { helpers } from "../fiber/controls/helpers"
 import { getEditableElement } from "../fiber/controls/prop"
 import { ThreeEditor } from "../fiber/ThreeEditor"
+import { useEditorStore } from "./Editor"
 
 export type JSXSource = {
   fileName: string
@@ -16,6 +19,24 @@ export type JSXSource = {
 export class EditableElement<
   Ref extends { name?: string } = any
 > extends EventTarget {
+  useHelper(arg0: string, helper: any, ...args: any[]) {
+    const [props] = this.editor.useSettings("helpers", {
+      [arg0]: helpers({
+        label: arg0
+      })
+    })
+    const isSelected = useEditorStore((state) => state.selectedId === this.id)
+
+    let ref =
+      props[arg0] === "all"
+        ? this
+        : props[arg0] === "selected" && isSelected
+        ? this
+        : undefined
+
+    // @ts-ignore
+    useHelper(ref as any, helper, ...(args ?? []))
+  }
   useCollapsed(): [any, any] {
     let storedCollapsedState =
       this.editor.expanded.size > 0
@@ -166,9 +187,15 @@ export class EditableElement<
   }
 
   set changed(value) {
-    this.store?.setSettingsAtPath("save", {
-      disabled: !value
-    })
+    let data = this.store?.getData()!
+    if (data && data["save"]) {
+      this.store?.setSettingsAtPath("save", {
+        disabled: !value
+      })
+    } else {
+      this.store?.useStore.setState((s) => ({ ...s }))
+    }
+
     this.dirty = value
   }
 

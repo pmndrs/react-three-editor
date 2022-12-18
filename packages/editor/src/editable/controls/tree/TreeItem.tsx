@@ -1,5 +1,4 @@
-import { useRef } from "react"
-import { ReactNode } from "react"
+import { ReactNode, useRef } from "react"
 import { Chevron } from "../folder/Chevron"
 import {
   StyledContent,
@@ -51,7 +50,6 @@ export function TreeItem({
         selected={selected}
         hideChevron={false}
         visible={visible}
-        remeasure={remeasure}
       />
     )
   }
@@ -65,8 +63,7 @@ function CollapsibleTreeItem({
   setCollapsed,
   selected,
   hideChevron,
-  visible,
-  remeasure
+  visible
 }: {
   title: ReactNode
   children: ReactNode
@@ -75,7 +72,6 @@ function CollapsibleTreeItem({
   selected: boolean
   hideChevron: boolean
   visible: boolean
-  remeasure: boolean
   dirty: boolean
 }) {
   // const context = useInputContext<{ value: { element: EditableElement } }>()

@@ -166,11 +166,11 @@ export function ElementTransformControls({
 
   const [object, setRef] = useState(element.getObject3D())
 
-  // useEffect(() => {
-  //   element.addEventListener("ref-changed", (e) => {
-  //     setRef(e.detail.ref)
-  //   })
-  // }, [element])
+  useEffect(() => {
+    element.addEventListener("ref-changed", (e) => {
+      // setRef(e.detail.ref)
+    })
+  }, [element])
 
   return (
     <TransformControls

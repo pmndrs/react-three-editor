@@ -82,10 +82,17 @@ const EditorCanvas = forwardRef<
                 <Panel
                   id="default"
                   title="properties"
+                  collapsed={false}
                   pos="right"
                   width={280}
                 />
-                <Panel id="scene" title="scene" pos="left" width={280} />
+                <Panel
+                  id="scene"
+                  title="scene"
+                  pos="left"
+                  width={280}
+                  collapsed={false}
+                />
                 <SceneControls store="scene" />
                 <SelectedElementControls store="default" />
                 <PerformanceControls store="scene" />

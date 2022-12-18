@@ -1,6 +1,7 @@
 import { getDrafter } from "draft-n-draw"
 import { levaStore, useControls } from "leva"
 import { StoreType } from "leva/dist/declarations/src/types"
+import { useState } from "react"
 import {
   SchemaOrFn,
   usePersistedControls
@@ -9,13 +10,16 @@ import { EditableElement, JSXSource } from "../editable/EditableElement"
 import { Editor } from "../editable/Editor"
 import { usePanel } from "./controls/Panel"
 
+const createLevaStore = () => {
+  return new (Object.getPrototypeOf(levaStore).constructor)()
+}
+
 // @ts-ignore
 levaStore.store = undefined
 
 type Panel = StoreType & { store: StoreType }
 
 export class ThreeEditor extends Editor {
-
   isSelected(arg0: EditableElement) {
     return this.store.getState().selectedId === arg0.id
   }
@@ -27,7 +31,7 @@ export class ThreeEditor extends Editor {
     if (typeof name === "string") {
       if (this.panels[name]) return this.panels[name]
 
-      this.panels[name] = new (Object.getPrototypeOf(levaStore).constructor)()
+      this.panels[name] = createLevaStore()
       // @ts-ignore
       this.panels[name].store = this.panels[name]
       return this.panels[name]
@@ -35,6 +39,8 @@ export class ThreeEditor extends Editor {
       return name as Panel
     }
   }
+
+  settings = createLevaStore()
 
   get settingsPanel(): StoreType | string {
     return this.store.getState().settingsPanel
@@ -73,22 +79,22 @@ export class ThreeEditor extends Editor {
     arg1: T,
     hidden?: boolean
   ) {
-    const settingsPanel = this.store((s) => s.settingsPanel)
-    const panel = usePanel(settingsPanel)
+    const settingsPanel = usePanel(this.store((s) => s.settingsPanel))
+    const [collapsed, setCollpased] = useState(true)
     useControls(
       "settings",
       {},
-      { collapsed: true, order: 1001 },
+      { order: 1001 },
       {
-        store: panel.store
+        store: settingsPanel.store
       }
     )
 
     let props = usePersistedControls(
-      "settings" + (name ? `.${name}` : ""),
+      `settings` + (name ? `.${name}` : ""),
       arg1,
       [],
-      panel.store,
+      settingsPanel.store,
       hidden
     )
 

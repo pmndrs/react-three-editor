@@ -1,74 +1,44 @@
-import { Icon } from "@iconify/react"
 import * as Popover from "@radix-ui/react-popover"
 import { Command } from "cmdk"
-import React, { Fragment } from "react"
+import React, { Fragment, useEffect } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
 import create from "zustand"
 import { useEditor } from "../../../editable/Editor"
 import { ThreeEditor } from "../../ThreeEditor"
 import { createMultiTunnel } from "../tunnels"
+import { Commands } from "./Commands"
 import "./style.css"
 
-const commandStore = create((get, set) => ({
-  open: false,
-  commands: [
-    {
-      icon: () => <Icon icon="ph:cube" />,
-      description: "Go to Editor Mode",
-      name: "Go to Editor Mode",
-      execute: (editor: ThreeEditor) => {
-        editor
-          .getPanel(editor.settingsPanel)
-          .setValueAtPath("settings.camera.enabled", true, true)
+type Command = {
+  icon: () => JSX.Element
+  description: string
+  name: string
+  execute: (editor: ThreeEditor) => void
+  render: (editor: ThreeEditor) => any
+  shortcut: () => JSX.Element
+}
 
-        commandStore.setState({ open: false })
-      },
-      render: (editor: ThreeEditor) => {
-        let enabled = editor
-          .getPanel(editor.settingsPanel)
-          .get("settings.camera.enabled")
-        if (enabled === undefined) {
-          return true
-        } else {
-          return !enabled
-        }
-      },
-      shortcut: () => (
-        <>
-          <kbd>⌘</kbd>
-          <kbd>E</kbd>
-        </>
-      )
-    },
-    {
-      icon: () => <Icon icon="ph:cube" />,
-      description: "Go to Play Mode",
-      name: "Go to Play Mode",
-      execute: (editor: ThreeEditor) => {
-        editor
-          .getPanel(editor.settingsPanel)
-          .setValueAtPath("settings.camera.enabled", false, true)
+export function useCommand(command: Command) {
+  useEffect(() => {
+    commandStore.setState((s) => {
+      return {
+        commands: [...s.commands, command]
+      }
+    })
 
-        commandStore.setState({ open: false })
-      },
-      render: (editor: ThreeEditor) => {
-        let enabled = editor
-          .getPanel(editor.settingsPanel)
-          .get("settings.camera.enabled")
-        if (enabled === undefined) {
-          return true
-        } else {
-          return enabled
+    return () => {
+      commandStore.setState((s) => {
+        return {
+          commands: s.commands.filter((c) => c !== command)
         }
-      },
-      shortcut: () => (
-        <>
-          <kbd>⌘</kbd>
-          <kbd>E</kbd>
-        </>
-      )
+      })
     }
-  ]
+  }, [command])
+}
+
+export const commandStore = create((get, set) => ({
+  open: false,
+  commands: []
 }))
 
 export const commandBarTunnel = createMultiTunnel()
@@ -90,6 +60,7 @@ export const CommandBar = () => {
       className="commandbar dark"
     >
       <commandBarTunnel.Outs />
+      <Commands />
     </Command.Dialog>
   )
 }
