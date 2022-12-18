@@ -61,6 +61,8 @@ export const App = () => (
 )
 ```
 
+![Screenshot 2022-12-17 at 6 22 09 AM](https://user-images.githubusercontent.com/11255148/208272078-d50d1514-469a-4ff1-8f9c-2e0c8e8ae4db.png)
+
 ![Screenshot 2022-12-10 at 9 11 07 PM](https://user-images.githubusercontent.com/11255148/206888078-d062c942-07f8-4ce4-9bd6-023115e83146.png)
 
 By default, the editor will add some recongnized native elements, and React components that have transform-related props, eg. `position`, `rotation`, `scale` or a `name` prop. This way we can avoid the noise of having to show the whole React component tree (You have the devtools for that..).
