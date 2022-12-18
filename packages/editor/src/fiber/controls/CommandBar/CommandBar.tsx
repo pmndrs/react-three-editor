@@ -1,7 +1,7 @@
 import { Icon } from "@iconify/react"
 import * as Popover from "@radix-ui/react-popover"
 import { Command } from "cmdk"
-import React, { Fragment } from "react"
+import React, { Fragment, PropsWithChildren, ReactNode } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
 import create from "zustand"
 import { useEditor } from "../../../editable/Editor"
@@ -74,19 +74,17 @@ const commandStore = create((get, set) => ({
 export const commandBarTunnel = createMultiTunnel()
 
 export const CommandBar = () => {
-  function setOpen() {
+  function toggleOpen() {
     commandStore.setState({ open: !commandStore.getState().open })
   }
-
   const open = commandStore((state) => state.open)
 
-  // Toggle the menu when ⌘K is pressed
-  useHotkeys("meta+k", () => setOpen((open) => !open))
+  useHotkeys("meta+space", () => toggleOpen())
 
   return (
     <Command.Dialog
       open={open}
-      onOpenChange={setOpen}
+      onOpenChange={toggleOpen}
       className="commandbar dark"
     >
       <commandBarTunnel.Outs />
@@ -101,9 +99,11 @@ export function CommandBarControls() {
   return <EditorCommand editor={editor} key={open ? 0 : 1} />
 }
 
-export function EditorCommand({ editor }) {
-  const theme = "dark"
-  const [value, setValue] = React.useState("linear")
+export type EditorCommandProps = {
+  editor: ThreeEditor
+}
+
+export function EditorCommand({ editor }: EditorCommandProps) {
   const inputRef = React.useRef<HTMLInputElement | null>(null)
   const listRef = React.useRef(null)
 
@@ -124,13 +124,6 @@ export function EditorCommand({ editor }) {
       <hr cmdk-raycast-loader="" />
       <Command.List ref={listRef}>
         <Command.Empty>No results found.</Command.Empty>
-        {/* <Command.Group heading="Suggestions">
-          <Item value="Linear">Linear</Item>
-          <Item value="Figma"></Item>
-          <Item value="Slack">Slack</Item>
-          <Item value="YouTube">YouTube</Item>
-          <Item value="Raycast">Raycast</Item>
-        </Command.Group> */}
         <Command.Group heading="Commands">
           {commands.map((command) => (
             <Fragment key={command.name}>
@@ -149,25 +142,16 @@ export function EditorCommand({ editor }) {
           ))}
         </Command.Group>
       </Command.List>
-
-      {/* <div cmdk-raycast-footer="">
-        {theme === "dark" ? <RaycastDarkIcon /> : <RaycastLightIcon />}
-
-        <button cmdk-raycast-open-trigger="">
-          Open Application
-          <kbd>↵</kbd>
-        </button>
-
-        <hr />
-
-        {/* <SubCommand
-          listRef={listRef}
-          selectedValue={value}
-          inputRef={inputRef}
-        /> */}
     </commandBarTunnel.In>
   )
 }
+
+export type ItemProps = PropsWithChildren<{
+  value: string
+  isCommand?: boolean
+  shortcut?: ReactNode
+  onSelect?(): void
+}>
 
 function Item({
   children,
@@ -175,11 +159,7 @@ function Item({
   isCommand = false,
   onSelect,
   shortcut
-}: {
-  children: React.ReactNode
-  value: string
-  isCommand?: boolean
-}) {
+}: ItemProps) {
   return (
     <Command.Item value={value} onSelect={onSelect}>
       {children}
