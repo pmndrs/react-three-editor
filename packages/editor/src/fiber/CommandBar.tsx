@@ -10,7 +10,11 @@ export const CommandBar = () => {
   useHotkeys("meta+k", () => setOpen((open) => !open))
 
   return (
-    <Command.Dialog open={open} onOpenChange={setOpen} className="commandbar">
+    <Command.Dialog
+      open={open}
+      onOpenChange={setOpen}
+      className="commandbar dark"
+    >
       <EditorCommand />
     </Command.Dialog>
   )
@@ -60,7 +64,7 @@ export function EditorCommand() {
         </Command.Group>
       </Command.List>
 
-      <div cmdk-raycast-footer="">
+      {/* <div cmdk-raycast-footer="">
         {theme === "dark" ? <RaycastDarkIcon /> : <RaycastLightIcon />}
 
         <button cmdk-raycast-open-trigger="">
@@ -70,12 +74,11 @@ export function EditorCommand() {
 
         <hr />
 
-        <SubCommand
+        {/* <SubCommand
           listRef={listRef}
           selectedValue={value}
           inputRef={inputRef}
-        />
-      </div>
+        /> */}
     </>
   )
 }
