@@ -103,7 +103,12 @@ export function TreeElement({
           }}
         >
           {element.children.map((c) => (
-            <TreeElement element={c} key={c.id} collapsed={true} showChildren />
+            <TreeElement
+              element={c}
+              key={c.id}
+              collapsed={c.isPrimitive()}
+              showChildren
+            />
           ))}
         </div>
       )}

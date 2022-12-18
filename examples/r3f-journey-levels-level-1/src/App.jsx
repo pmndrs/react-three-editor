@@ -1,11 +1,10 @@
 import { Canvas } from "@react-three/fiber"
-import { PresentationControls } from "@react-three/drei"
-import Level from "./components/Level"
-import Sudo from "./components/Sudo"
-import Camera from "./components/Camera"
 import Cactus from "./components/Cactus"
+import Camera from "./components/Camera"
 import Icon from "./components/Icon"
+import Level from "./components/Level"
 import Pyramid from "./components/Pyramid"
+import Sudo from "./components/Sudo"
 
 export default function App() {
   return (
@@ -15,8 +14,8 @@ export default function App() {
         <sphereGeometry />
         <meshStandardMaterial />
       </mesh>
-      <ambientLight />
       <directionalLight />
+      <ambientLight />
       <group
         global
         makeDefault
@@ -35,5 +34,5 @@ export default function App() {
         </group>
       </group>
     </Canvas>
-  );
+  )
 }

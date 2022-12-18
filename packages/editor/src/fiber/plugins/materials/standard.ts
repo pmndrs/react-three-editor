@@ -10,7 +10,6 @@ export const meshStandardMaterial = (
   path: string[] = ["ref"]
 ): Schema => {
   return {
-    ...commonControls(element, path),
     color: prop.color({
       element,
       path: [...path, "color"]
@@ -30,6 +29,7 @@ export const meshStandardMaterial = (
       element,
       path: [...path, "wireframe"]
     }),
+    ...commonControls(element, path),
     ...createTextureFolder(element, "map", path),
     ...createTextureFolder(element, "alpha", path),
     ...createTextureFolder(element, "ao", path),

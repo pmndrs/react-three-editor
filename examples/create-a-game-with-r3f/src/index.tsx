@@ -2,7 +2,6 @@ import { KeyboardControls } from "@react-three/drei"
 import "@react-three/editor/rapier"
 import { Canvas } from "@react-three/fiber"
 import ReactDOM from "react-dom/client"
-import { EditorControls } from "./EditorControls.js"
 import Experience from "./Experience.js"
 import "./style.css"
 const root = ReactDOM.createRoot(document.querySelector("#root"))
@@ -42,7 +41,7 @@ root.render(
       }}
     >
       <Experience />
-      <EditorControls />
+      {/* <EditorControls /> */}
     </Canvas>
   </KeyboardControls>
 )

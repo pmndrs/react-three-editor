@@ -12,10 +12,10 @@ export function SceneControls({
   order?: number
 }) {
   const panel = usePanel(store)
-  const p = useEditorStore((state) => Object.values(state.elements))
+  const [p] = useEditorStore((state) => [state.elements.root])
   const items: Record<string, any> = {}
-  p.forEach((v) => {
-    if (v.parentId == null) items[v.id] = v
+  p.children.forEach((v) => {
+    items[v.id] = v
   })
 
   useControls(

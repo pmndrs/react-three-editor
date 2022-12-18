@@ -2,10 +2,14 @@ import { Canvas as FiberCanvas } from "@react-three/fiber"
 import "cmdk/dist/"
 import { DrafterProvider } from "draft-n-draw"
 import { ComponentProps, forwardRef, useMemo } from "react"
+import { EditableElementContext } from "../editable/editable"
 import { EditorContext } from "../editable/Editor"
 import { client } from "../vite/client"
 import { CameraGizmos } from "./controls/CameraGizmos"
-import { CommandBar } from "./controls/CommandBar/CommandBar"
+import {
+  CommandBar,
+  CommandBarControls
+} from "./controls/CommandBar/CommandBar"
 import { EditorCamera } from "./controls/EditorCamera"
 import { Panel } from "./controls/Panel"
 import { PerformanceControls } from "./controls/PerformanceControls"
@@ -47,7 +51,9 @@ export const Canvas = forwardRef<
         <DrafterProvider>
           <EditorContext.Provider value={store}>
             <EditorCamera />
-            {children}
+            <EditableElementContext.Provider value={store.root}>
+              {children}
+            </EditableElementContext.Provider>
             <editorTunnel.Outs
               fallback={
                 <>
@@ -55,6 +61,7 @@ export const Canvas = forwardRef<
                   <SceneControls store="scene" />
                   <SelectedElementControls store="default" />
                   <PerformanceControls store="scene" />
+                  <CommandBarControls />
                   <CameraGizmos />
                 </>
               }

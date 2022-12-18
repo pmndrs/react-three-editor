@@ -15,6 +15,12 @@ export type JSXSource = {
 export class EditableElement<
   Ref extends { name?: string } = any
 > extends EventTarget {
+  isPrimitive(): boolean {
+    return (
+      this.elementName.charAt(0) === this.elementName.charAt(0).toLowerCase() &&
+      !(this.elementName === "group")
+    )
+  }
   object?: Object3D<Event>
   ref?: Ref
   currentProps: any
@@ -33,6 +39,14 @@ export class EditableElement<
     public parentId?: string | null
   ) {
     super()
+  }
+
+  index: string | undefined
+
+  get treeId(): string {
+    return this.parent?.index !== undefined
+      ? this.parent.treeId + "-" + this.index
+      : this.index!
   }
 
   get current() {
@@ -164,6 +178,18 @@ export class EditableElement<
     await this.editor.save(diffs)
     this.changes = {}
     this.changed = false
+
+    this.openInEditor()
+  }
+
+  async openInEditor() {
+    fetch(
+      `/__open-in-editor?file=${encodeURIComponent(
+        `${this.source.fileName}:${this.source.lineNumber}:${
+          this.source.columnNumber + 1
+        }`
+      )}`
+    )
   }
 
   get children() {

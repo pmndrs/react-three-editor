@@ -178,8 +178,11 @@ export default declare<State>((api) => {
             (t.isJSXIdentifier(node.name) &&
               ["OrbitControls", "Physics"].includes(node.name.name)) ||
             (t.isJSXIdentifier(node.name) &&
-              node.name.name.endsWith("Material")) ||
-            node.name.name.endsWith("Geometry")
+              (node.name.name.endsWith("Material") ||
+                node.name.name.endsWith("Geometry"))) ||
+            (t.isJSXMemberExpression(node.name) &&
+              (node.name.property.name.endsWith("Material") ||
+                node.name.property.name.endsWith("Geometry")))
           )
         }
 

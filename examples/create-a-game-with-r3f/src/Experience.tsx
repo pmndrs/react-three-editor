@@ -222,10 +222,10 @@ function Level() {
       <BlockSpinner position={[0, 0, -8]} />
       <BlockSpinner position={[0, 0, -12]} />
       <BlockAxe position={[0, 0, -16]} />
-      <BlockEnd position={[0, 0, -20]} />
+      <BlockEnd position={[7, 0, -20]} />
       <Bounds length={6} name={"bounds"} />
     </>
-  )
+  );
 }
 
 export default function Experience() {
