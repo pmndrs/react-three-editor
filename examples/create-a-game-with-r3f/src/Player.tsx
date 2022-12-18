@@ -138,11 +138,10 @@ export function Player() {
       </mesh>
       <Sparkles
         count={88}
-        name="sparkles"
         castShadow
-        position={[0.936, 0.486, 0.167]}
+        position={[1.838, 0.942, 0.239]}
         scale={[2.1, 1, 1]}
       />
     </RigidBody>
-  )
+  );
 }
