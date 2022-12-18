@@ -14,8 +14,7 @@ export function EditorPanel() {
   return (
     <Editor>
       <Panel title="scene" />
-      <Panel title="properties" pos="right" />
-      <SceneControls store={state} />
+      <SceneControls store="scene" />
       <SelectedElementControls store="default" />
       <PerformanceControls store="scene" />
       <CameraGizmos />

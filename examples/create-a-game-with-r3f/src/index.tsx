@@ -2,7 +2,6 @@ import { KeyboardControls } from "@react-three/drei"
 import "@react-three/editor/rapier"
 import { Canvas } from "@react-three/fiber"
 import ReactDOM from "react-dom/client"
-import { EditorPanel } from "./EditorPanel"
 import Experience from "./Experience.js"
 import "./style.css"
 const root = ReactDOM.createRoot(document.querySelector("#root"))
@@ -42,9 +41,6 @@ root.render(
       }}
     >
       <Experience />
-
-      {/* Editor UI (can be used to override the default layout/editor parts) */}
-      <EditorPanel />
     </Canvas>
   </KeyboardControls>
 )

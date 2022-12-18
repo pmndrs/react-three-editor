@@ -8,12 +8,13 @@ import { createMultiTunnel } from "./Tunnels"
 export const editorTunnel = createMultiTunnel()
 
 import { DrafterProvider } from "draft-n-draw"
-import { levaStore } from "leva"
 import { EditorContext } from "../editable/Editor"
 import { Outs } from "./CanvasTunnel"
 import { CommandBar } from "./CommandBar"
 import { EditorCamera } from "./EditorCamera"
 import { CameraGizmos } from "./EditorGizmos"
+import { Panel } from "./Panel"
+import { PerformanceControls } from "./PerfControls"
 import { SceneControls } from "./SceneTree"
 import { SelectedElementControls } from "./SelectedElement"
 import "./style.css"
@@ -49,8 +50,10 @@ export const Canvas = forwardRef<
             <editorTunnel.Outs
               fallback={
                 <>
-                  <SceneControls store={levaStore} />
-                  <SelectedElementControls />
+                  <Panel title="scene" />
+                  <SceneControls store="scene" />
+                  <SelectedElementControls store="default" />
+                  <PerformanceControls store="scene" />
                   <CameraGizmos />
                 </>
               }
