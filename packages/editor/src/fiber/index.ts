@@ -1,5 +1,5 @@
 export { createPortal, extend, useLoader, useThree } from "@react-three/fiber"
-export { levaStore as defaultPanel } from "leva"
+export { button, buttonGroup, folder, levaStore as defaultPanel } from "leva"
 export { useControls } from "../editable/controls/useControls"
 export { editable, Editable, setEditable } from "../editable/editable"
 export { EditorContext, useEditor } from "../editable/Editor"

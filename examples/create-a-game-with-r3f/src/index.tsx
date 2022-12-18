@@ -1,15 +1,8 @@
 import { KeyboardControls } from "@react-three/drei"
-import {
-  CameraGizmos,
-  Editor,
-  Panel,
-  PerformanceControls,
-  SceneControls,
-  SelectedElementControls
-} from "@react-three/editor"
 import "@react-three/editor/rapier"
 import { Canvas } from "@react-three/fiber"
 import ReactDOM from "react-dom/client"
+import { EditorPanel } from "./EditorPanel"
 import Experience from "./Experience.js"
 import "./style.css"
 const root = ReactDOM.createRoot(document.querySelector("#root"))
@@ -51,14 +44,7 @@ root.render(
       <Experience />
 
       {/* Editor UI (can be used to override the default layout/editor parts) */}
-      <Editor>
-        <Panel title="scene" />
-        <Panel title="properties" pos="right" />
-        <SceneControls store="scene" />
-        <SelectedElementControls store="properties" />
-        <PerformanceControls store="scene" />
-        <CameraGizmos />
-      </Editor>
+      <EditorPanel />
     </Canvas>
   </KeyboardControls>
 )
