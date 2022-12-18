@@ -34,43 +34,62 @@ export const Canvas = forwardRef<
     []
   )
 
-  // store.settingsPanel = levaStore
-
   // @ts-ignore
   window.editor = store
 
   return (
-    <>
-      <FiberCanvas
-        ref={ref}
-        onPointerMissed={(e) => {
-          store.clearSelection()
-        }}
-        {...props}
-      >
-        <DrafterProvider>
-          <EditorContext.Provider value={store}>
-            <EditorCamera />
-            <EditableElementContext.Provider value={store.root}>
-              {children}
-            </EditableElementContext.Provider>
-            <editorTunnel.Outs
-              fallback={
-                <>
-                  <Panel title="scene" />
-                  <SceneControls store="scene" />
-                  <SelectedElementControls store="default" />
-                  <PerformanceControls store="scene" />
-                  <CommandBarControls />
-                  <CameraGizmos />
-                </>
-              }
-            />
-          </EditorContext.Provider>
-        </DrafterProvider>
-      </FiberCanvas>
+    <EditorContext.Provider value={store}>
+      <EditorCanvas ref={ref} store={store} {...props}>
+        {children}
+      </EditorCanvas>
       <Outs />
       <CommandBar />
-    </>
+    </EditorContext.Provider>
+  )
+})
+
+const EditorCanvas = forwardRef<
+  HTMLCanvasElement,
+  {
+    store: ThreeEditor
+    children: any
+  }
+>(function EditorCanvas({ store, children, ...props }, ref) {
+  const [settings] = store.useSettings("scene", {
+    shadows: {
+      value: true
+    }
+  })
+
+  return (
+    <FiberCanvas
+      {...settings}
+      ref={ref}
+      onPointerMissed={(e) => {
+        store.clearSelection()
+      }}
+      {...props}
+    >
+      <DrafterProvider>
+        <EditorContext.Provider value={store}>
+          <EditorCamera />
+          <EditableElementContext.Provider value={store.root}>
+            {children}
+          </EditableElementContext.Provider>
+          <editorTunnel.Outs
+            fallback={
+              <>
+                <Panel title="scene" />
+                <SceneControls store="scene" />
+                <SelectedElementControls store="default" />
+                <PerformanceControls store="scene" />
+                <CommandBarControls />
+                <CameraGizmos />
+              </>
+            }
+          />
+        </EditorContext.Provider>
+      </DrafterProvider>
+    </FiberCanvas>
   )
 })

@@ -14,7 +14,7 @@ export default function App() {
         <sphereGeometry />
         <meshStandardMaterial />
       </mesh>
-      <directionalLight />
+      <directionalLight castShadow={true} />
       <ambientLight />
       <group
         global
@@ -34,5 +34,5 @@ export default function App() {
         </group>
       </group>
     </Canvas>
-  )
+  );
 }

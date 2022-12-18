@@ -139,6 +139,16 @@ export class EditableElement<
     }
   }
 
+  get visible() {
+    return this.ref?.visible ?? true
+  }
+
+  set visible(v: boolean) {
+    if (this.ref) {
+      this.ref.visible = v
+    }
+  }
+
   addChange(element: EditableElement, prop: string, value: any) {
     if (!this.changes[element.id]) {
       this.changes[element.id] = { _source: element.source }

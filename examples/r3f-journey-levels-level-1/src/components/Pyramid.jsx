@@ -16,8 +16,8 @@ export default function Pyramid() {
     return () => void clearTimeout(timeout)
   }, [])
   return (
-    <a.mesh geometry={nodes.Pyramid.geometry} position={[-0.8, 1.33, 0.25]} {...spring}>
+    <a.mesh geometry={nodes.Pyramid.geometry} position={[-0.8, 1.33, 0.25]} {...spring} castShadow={true}>
       <meshMatcapMaterial matcap={matcap} />
     </a.mesh>
-  )
+  );
 }
