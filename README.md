@@ -1,7 +1,8 @@
 # react-three-editor
 
-🔌 A one of a kind scene editor that writes changes back into your code
+🔌 A one of a kind scene editor that writes changes back into your code, and you don't need to change your code at all for it to to work!
 
+![Screenshot 2022-12-17 at 6 22 09 AM](https://user-images.githubusercontent.com/11255148/208272078-d50d1514-469a-4ff1-8f9c-2e0c8e8ae4db.png)
 
 https://twitter.com/nkSaraf98/status/1597140836654804994
 
@@ -60,8 +61,6 @@ export const App = () => (
   </Canvas>
 )
 ```
-
-![Screenshot 2022-12-17 at 6 22 09 AM](https://user-images.githubusercontent.com/11255148/208272078-d50d1514-469a-4ff1-8f9c-2e0c8e8ae4db.png)
 
 ![Screenshot 2022-12-10 at 9 11 07 PM](https://user-images.githubusercontent.com/11255148/206888078-d062c942-07f8-4ce4-9bd6-023115e83146.png)
 
