@@ -1,19 +1,22 @@
 import { Canvas as FiberCanvas } from "@react-three/fiber"
-import { DrafterProvider } from "draft-n-draw"
-import { levaStore } from "leva"
+import "cmdk/dist/"
 import { ComponentProps, forwardRef, useMemo } from "react"
-import { EditorContext } from "../editable/Editor"
 import { client } from "../vite/client"
-import { Outs } from "./CanvasTunnel"
-import { EditorCamera } from "./EditorCamera"
-import { CameraGizmos } from "./EditorGizmos"
 import { DEFAULT_EDITOR_PLUGINS } from "./plugins"
-import { SceneControls } from "./SceneTree"
-import { SelectedElementControls } from "./SelectedElement"
 import { ThreeEditor } from "./ThreeEditor"
 import { createMultiTunnel } from "./Tunnels"
 export const editorTunnel = createMultiTunnel()
 
+import { DrafterProvider } from "draft-n-draw"
+import { levaStore } from "leva"
+import { EditorContext } from "../editable/Editor"
+import { Outs } from "./CanvasTunnel"
+import { CommandBar } from "./CommandBar"
+import { EditorCamera } from "./EditorCamera"
+import { CameraGizmos } from "./EditorGizmos"
+import { SceneControls } from "./SceneTree"
+import { SelectedElementControls } from "./SelectedElement"
+import "./style.css"
 export const Editor = editorTunnel.In
 
 export const Canvas = forwardRef<
@@ -52,10 +55,13 @@ export const Canvas = forwardRef<
                 </>
               }
             />
+            {/* <In>
+            </In> */}
           </EditorContext.Provider>
         </DrafterProvider>
       </FiberCanvas>
       <Outs />
+      <CommandBar />
     </>
   )
 })

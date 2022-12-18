@@ -56,7 +56,9 @@ export function createProp(
 
   let prop = path[path.length - 1]
 
-  let initialValue = type.get(el, prop) ?? settings.default
+  let initialValue = el
+    ? type.get(el, prop) ?? settings.default
+    : settings.default
   return type.control
     ? type.control({
         value: initialValue,
