@@ -79,7 +79,13 @@ const EditorCanvas = forwardRef<
           <editorTunnel.Outs
             fallback={
               <>
-                <Panel title="scene" />
+                <Panel
+                  id="default"
+                  title="properties"
+                  pos="right"
+                  width={280}
+                />
+                <Panel id="scene" title="scene" pos="left" width={280} />
                 <SceneControls store="scene" />
                 <SelectedElementControls store="default" />
                 <PerformanceControls store="scene" />

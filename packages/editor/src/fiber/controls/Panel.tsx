@@ -1,5 +1,5 @@
 import { useThree } from "@react-three/fiber"
-import { LevaPanel } from "leva"
+import { Leva, LevaPanel } from "leva"
 import { useEffect, useState } from "react"
 import { useEditor } from "../../editable/Editor"
 import { In } from "../Canvas"
@@ -12,13 +12,15 @@ export function usePanel(defaultName: StoreType | string) {
 }
 
 export function Panel({
+  id,
   title,
   width = 280,
   collapsed = false,
   pos = "left",
   ...props
 }) {
-  const panel = useEditor().getPanel(title.toLowerCase())
+  const panel = usePanel(id)
+  console.log(panel, title)
   const size = useThree((s) => s.size)
   const [_collapsed, setCollapsed] = useState(true)
   const [position, setPosition] = useState({
@@ -36,25 +38,48 @@ export function Panel({
 
   return (
     <In>
-      <LevaPanel
-        store={panel}
-        titleBar={{
-          position,
-          onDragEnd(position) {
-            setPosition(position as { x: number; y: number })
-          },
-          title: "Scene"
-        }}
-        theme={{
-          space: {
-            rowGap: "2px"
-          },
-          sizes: {
-            rootWidth: `${width}px`
-          }
-        }}
-        collapsed={{ collapsed: _collapsed, onChange: setCollapsed }}
-      />
+      {panel.store ? (
+        <LevaPanel
+          store={panel.store}
+          titleBar={{
+            position,
+            onDragEnd(position) {
+              console.log("hello")
+              setPosition(position as { x: number; y: number })
+            },
+            title: title
+          }}
+          theme={{
+            space: {
+              rowGap: "2px"
+            },
+            sizes: {
+              rootWidth: `${width}px`
+            }
+          }}
+          collapsed={{ collapsed: _collapsed, onChange: setCollapsed }}
+        />
+      ) : (
+        <Leva
+          titleBar={{
+            position,
+            onDragEnd(position) {
+              console.log("hello")
+              setPosition(position as { x: number; y: number })
+            },
+            title: title
+          }}
+          theme={{
+            space: {
+              rowGap: "2px"
+            },
+            sizes: {
+              rootWidth: `${width}px`
+            }
+          }}
+          collapsed={{ collapsed: _collapsed, onChange: setCollapsed }}
+        />
+      )}
     </In>
   )
 }
