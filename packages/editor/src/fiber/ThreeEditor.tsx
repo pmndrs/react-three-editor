@@ -15,6 +15,10 @@ levaStore.store = undefined
 type Panel = StoreType & { store: StoreType }
 
 export class ThreeEditor extends Editor {
+
+  isSelected(arg0: EditableElement) {
+    return this.store.getState().selectedId === arg0.id
+  }
   panels: Record<string, Panel> = {
     default: levaStore as Panel
   }

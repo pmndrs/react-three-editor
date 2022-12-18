@@ -1,4 +1,5 @@
 import { createPlugin, styled, useInputContext } from "leva/plugin"
+import { EditableElement } from "../../EditableElement"
 import { TreeElement } from "./TreeElement"
 
 const StyledWrapper = styled("div", {
@@ -23,7 +24,7 @@ const StyledWrapper = styled("div", {
 })
 
 type Settings = {
-  items: object
+  items: { [key: string]: EditableElement }
   scrollable: boolean
 }
 
@@ -39,7 +40,7 @@ export const tree = createPlugin<Settings, {}, Settings>({
           <TreeElement
             element={v}
             key={v.id}
-            collapsed={true}
+            collapsed={v.isPrimitive()}
             onCollapse={() => {}}
             showChildren={true}
             panel={false}

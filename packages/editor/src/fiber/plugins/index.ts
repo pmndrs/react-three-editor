@@ -1,4 +1,7 @@
+import { useHelper } from "@react-three/drei"
+import { BoxHelper } from "three"
 import { EditableElement } from "../../editable/EditableElement"
+import { useEditorStore } from "../../editable/Editor"
 import { prop } from "../controls/prop"
 import { geometry, meshGeometry } from "./geomtries"
 import { material } from "./materials"
@@ -29,6 +32,16 @@ const mesh = {
         path: ["ref", "receiveShadow"]
       })
     }
+  },
+  helper: ({ element }: { element: EditableElement }) => {
+    const [{ camera }] = element.editor.useSettings("helpers", {
+      mesh: { value: true }
+    })
+    const isSelected = useEditorStore(
+      (state) => state.selectedId === element.id
+    )
+    useHelper(camera || isSelected ? element : undefined, BoxHelper)
+    return null
   }
 }
 

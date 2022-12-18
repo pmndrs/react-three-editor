@@ -127,9 +127,8 @@ export function Player() {
       mass={0.1}
     >
       <mesh castShadow>
-        <icosahedronGeometry name="player" args={[0.55, 3]} />
+        <icosahedronGeometry args={[0.55, 3]} />
         <memo.meshStandardMaterial
-          name="player"
           flatShading={true}
           color="mediumpurple"
           transparent={true}
@@ -138,10 +137,10 @@ export function Player() {
       </mesh>
       <Sparkles
         count={88}
-        castShadow
+        castShadow={true}
         position={[1.838, 0.942, 0.239]}
         scale={[2.1, 1, 1]}
       />
     </RigidBody>
-  );
+  )
 }

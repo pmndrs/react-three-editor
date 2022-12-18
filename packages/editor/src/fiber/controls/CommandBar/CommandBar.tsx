@@ -1,11 +1,84 @@
+import { Icon } from "@iconify/react"
 import * as Popover from "@radix-ui/react-popover"
 import { Command } from "cmdk"
-import React, { useState } from "react"
+import React, { Fragment } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
+import create from "zustand"
+import { useEditor } from "../../../editable/Editor"
+import { ThreeEditor } from "../../ThreeEditor"
+import { createMultiTunnel } from "../tunnels"
 import "./style.css"
 
+const commandStore = create((get, set) => ({
+  open: false,
+  commands: [
+    {
+      icon: () => <Icon icon="ph:cube" />,
+      description: "Go to Editor Mode",
+      name: "Go to Editor Mode",
+      execute: (editor: ThreeEditor) => {
+        editor
+          .getPanel(editor.settingsPanel)
+          .setValueAtPath("settings.camera.enabled", true, true)
+
+        commandStore.setState({ open: false })
+      },
+      render: (editor: ThreeEditor) => {
+        let enabled = editor
+          .getPanel(editor.settingsPanel)
+          .get("settings.camera.enabled")
+        if (enabled === undefined) {
+          return true
+        } else {
+          return !enabled
+        }
+      },
+      shortcut: () => (
+        <>
+          <kbd>⌘</kbd>
+          <kbd>E</kbd>
+        </>
+      )
+    },
+    {
+      icon: () => <Icon icon="ph:cube" />,
+      description: "Go to Play Mode",
+      name: "Go to Play Mode",
+      execute: (editor: ThreeEditor) => {
+        editor
+          .getPanel(editor.settingsPanel)
+          .setValueAtPath("settings.camera.enabled", false, true)
+
+        commandStore.setState({ open: false })
+      },
+      render: (editor: ThreeEditor) => {
+        let enabled = editor
+          .getPanel(editor.settingsPanel)
+          .get("settings.camera.enabled")
+        if (enabled === undefined) {
+          return true
+        } else {
+          return enabled
+        }
+      },
+      shortcut: () => (
+        <>
+          <kbd>⌘</kbd>
+          <kbd>E</kbd>
+        </>
+      )
+    }
+  ]
+}))
+
+export const commandBarTunnel = createMultiTunnel()
+
 export const CommandBar = () => {
-  const [open, setOpen] = useState(false)
+  function setOpen() {
+    commandStore.setState({ open: !commandStore.getState().open })
+  }
+
+  const open = commandStore((state) => state.open)
 
   // Toggle the menu when ⌘K is pressed
   useHotkeys("meta+k", () => setOpen((open) => !open))
@@ -16,12 +89,19 @@ export const CommandBar = () => {
       onOpenChange={setOpen}
       className="commandbar dark"
     >
-      <EditorCommand />
+      <commandBarTunnel.Outs />
     </Command.Dialog>
   )
 }
 
-export function EditorCommand() {
+export function CommandBarControls() {
+  const open = commandStore((state) => state.open)
+  const editor = useEditor()
+
+  return <EditorCommand editor={editor} key={open ? 0 : 1} />
+}
+
+export function EditorCommand({ editor }) {
   const theme = "dark"
   const [value, setValue] = React.useState("linear")
   const inputRef = React.useRef<HTMLInputElement | null>(null)
@@ -31,8 +111,10 @@ export function EditorCommand() {
     inputRef?.current?.focus()
   }, [])
 
+  const commands = commandStore((state) => state.commands)
+
   return (
-    <>
+    <commandBarTunnel.In>
       <div cmdk-raycast-top-shine="" />
       <Command.Input
         ref={inputRef}
@@ -42,26 +124,29 @@ export function EditorCommand() {
       <hr cmdk-raycast-loader="" />
       <Command.List ref={listRef}>
         <Command.Empty>No results found.</Command.Empty>
-        <Command.Group heading="Suggestions">
+        {/* <Command.Group heading="Suggestions">
           <Item value="Linear">Linear</Item>
           <Item value="Figma"></Item>
           <Item value="Slack">Slack</Item>
           <Item value="YouTube">YouTube</Item>
           <Item value="Raycast">Raycast</Item>
-        </Command.Group>
+        </Command.Group> */}
         <Command.Group heading="Commands">
-          <Item isCommand value="Clipboard History">
-            <ClipboardIcon />
-            Clipboard History
-          </Item>
-          <Item isCommand value="Import Extension">
-            <HammerIcon />
-            Import Extension
-          </Item>
-          <Item isCommand value="Manage Extensions">
-            <HammerIcon />
-            Manage Extensions
-          </Item>
+          {commands.map((command) => (
+            <Fragment key={command.name}>
+              {command.render(editor) ? (
+                <Item
+                  isCommand
+                  shortcut={command.shortcut()}
+                  value={command.name}
+                  onSelect={() => command.execute(editor)}
+                >
+                  {command.icon()}
+                  {command.description}
+                </Item>
+              ) : null}
+            </Fragment>
+          ))}
         </Command.Group>
       </Command.List>
 
@@ -80,23 +165,27 @@ export function EditorCommand() {
           selectedValue={value}
           inputRef={inputRef}
         /> */}
-    </>
+    </commandBarTunnel.In>
   )
 }
 
 function Item({
   children,
   value,
-  isCommand = false
+  isCommand = false,
+  onSelect,
+  shortcut
 }: {
   children: React.ReactNode
   value: string
   isCommand?: boolean
 }) {
   return (
-    <Command.Item value={value} onSelect={() => {}}>
+    <Command.Item value={value} onSelect={onSelect}>
       {children}
-      <span cmdk-raycast-meta="">{isCommand ? "Command" : "Application"}</span>
+      <div cmdk-raycast-meta="" style={{ display: "flex" }}>
+        {shortcut}
+      </div>
     </Command.Item>
   )
 }

@@ -197,6 +197,10 @@ export const directionalLight = {
         element: entity,
         step: 0.1,
         path: ["ref", "intensity"]
+      }),
+      castShadow: prop.bool({
+        element: entity,
+        path: ["ref", "castShadow"]
       })
     }
   },

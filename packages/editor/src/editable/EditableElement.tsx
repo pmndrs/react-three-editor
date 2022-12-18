@@ -1,4 +1,5 @@
 import { StoreType } from "leva/dist/declarations/src/types"
+import { useEffect, useState } from "react"
 import { Event, Object3D } from "three"
 import { getEditableElement } from "../fiber/controls/prop"
 import { ThreeEditor } from "../fiber/ThreeEditor"
@@ -15,6 +16,40 @@ export type JSXSource = {
 export class EditableElement<
   Ref extends { name?: string } = any
 > extends EventTarget {
+  useCollapsed(): [any, any] {
+    let storedCollapsedState =
+      this.editor.expanded.size > 0
+        ? this.editor.expanded.has(this.treeId)
+          ? false
+          : true
+        : !this.editor.isSelected(this) && this.isPrimitive()
+    const [collapsed, setCollapsed] = useState(storedCollapsedState)
+
+    useEffect(() => {
+      if (collapsed) {
+        this.editor.expanded.delete(this.treeId)
+        localStorage.setItem(
+          "collapased",
+          JSON.stringify(Array.from(this.editor.expanded))
+        )
+      } else {
+        this.editor.expanded.add(this.treeId)
+        localStorage.setItem(
+          "collapased",
+          JSON.stringify(Array.from(this.editor.expanded))
+        )
+      }
+    }, [collapsed])
+
+    return [collapsed, setCollapsed]
+  }
+
+  isPrimitive(): boolean {
+    return (
+      this.elementName.charAt(0) === this.elementName.charAt(0).toLowerCase() &&
+      !(this.elementName === "group")
+    )
+  }
   object?: Object3D<Event>
   ref?: Ref
   currentProps: any
@@ -33,6 +68,14 @@ export class EditableElement<
     public parentId?: string | null
   ) {
     super()
+  }
+
+  index: string | undefined
+
+  get treeId(): string {
+    return this.parent?.index !== undefined
+      ? this.parent.treeId + "-" + this.index
+      : this.index!
   }
 
   get current() {
@@ -93,6 +136,16 @@ export class EditableElement<
   set name(v: string) {
     if (this.ref) {
       this.ref.name = v
+    }
+  }
+
+  get visible() {
+    return this.ref?.visible ?? true
+  }
+
+  set visible(v: boolean) {
+    if (this.ref) {
+      this.ref.visible = v
     }
   }
 
@@ -164,6 +217,18 @@ export class EditableElement<
     await this.editor.save(diffs)
     this.changes = {}
     this.changed = false
+
+    this.openInEditor()
+  }
+
+  async openInEditor() {
+    fetch(
+      `/__open-in-editor?file=${encodeURIComponent(
+        `${this.source.fileName}:${this.source.lineNumber}:${
+          this.source.columnNumber + 1
+        }`
+      )}`
+    )
   }
 
   get children() {

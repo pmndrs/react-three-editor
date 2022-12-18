@@ -16,7 +16,7 @@ export const memo: {
         return obj[prop]
       }
 
-      obj[prop] = ({ name, args, ...props }: any, ref) => {
+      obj[prop] = function ({ name, args, ...props }: any, ref) {
         let cachedKey = `${prop}:${name}`
         if (!cache[cachedKey]) {
           let className = prop.charAt(0).toUpperCase() + prop.slice(1)
@@ -30,9 +30,8 @@ export const memo: {
         })
       }
 
-      obj[prop].displayName = prop
-
       obj[prop] = forwardRef(obj[prop])
+      obj[prop].displayName = prop
 
       return obj[prop]
     }

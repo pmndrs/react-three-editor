@@ -18,7 +18,9 @@ const createEditorStore = () => {
   return create<EditorStoreStateType>(() => ({
     selectedId: null,
     selectedKey: null,
-    elements: {},
+    elements: {
+      root: new EditableElement("root", {}, "editor", null)
+    },
     settingsPanel: "scene"
   }))
 }
@@ -36,6 +38,7 @@ export class Editor extends EventTarget {
   store: EditorStoreType
 
   commandManager: CommandManager = new CommandManager()
+  expanded: Set<string>
 
   constructor(
     public plugins: any[],
@@ -45,6 +48,10 @@ export class Editor extends EventTarget {
   ) {
     super()
     this.store = createEditorStore()
+    this.root.editor = this
+    this.expanded = localStorage.getItem("collapased")
+      ? new Set(JSON.parse(localStorage.getItem("collapased")!))
+      : new Set()
   }
 
   setRef(element: any, ref: any) {}
@@ -57,6 +64,10 @@ export class Editor extends EventTarget {
     for (let diff of diffs) {
       await this.saveDiff(diff)
     }
+  }
+
+  get root() {
+    return this.store.getState().elements.root
   }
 
   select(element: EditableElement<any>): void {
@@ -90,15 +101,21 @@ export class Editor extends EventTarget {
 
   addElement(element: EditableElement, parentId: string | null) {
     if (parentId) {
-      this?.store?.setState((el) => ({
-        elements: {
-          ...el.elements,
-          [element.id]: Object.assign(element, el.elements[element.id]),
-          [parentId]: Object.assign(el.elements[parentId] ?? {}, {
-            childIds: [...(el.elements[parentId]?.childIds ?? []), element.id]
-          })
+      this?.store?.setState((el) => {
+        let parent = Object.assign(el.elements[parentId] ?? {}, {
+          childIds: [...(el.elements[parentId]?.childIds ?? []), element.id]
+        })
+
+        let newLement = Object.assign(element, el.elements[element.id])
+        newLement.index = `${parent.childIds.length - 1}`
+        return {
+          elements: {
+            ...el.elements,
+            [newLement.id]: newLement,
+            [parentId]: parent
+          }
         }
-      }))
+      })
     } else {
       this?.store?.setState((el) => ({
         elements: {

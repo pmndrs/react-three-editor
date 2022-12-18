@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react"
 import { LevaPanel } from "leva"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { EditableElement } from "../../EditableElement"
 import { StyledIcon } from "../folder/StyledFolder"
 import { ElementIcon } from "./ElementIcon"
@@ -25,19 +25,11 @@ export function TreeElement({
     (s) => s.selectedId === element?.id || s.selectedKey === element?.key
   )
 
-  const [_collapsed, setCollapsed] = useState(!selected && collapsed)
-
-  useEffect(() => {
-    if (selected && _collapsed) {
-      setCollapsed(false)
-    }
-  }, [selected, _collapsed])
+  const [_collapsed, setCollapsed] = element.useCollapsed()
 
   const [visible, setVisible] = useState(
     element.ref?.visible || (true as boolean)
   )
-
-  const state = element.editor.store((state) => state.elements)
 
   const dirty = element.store.useStore(
     (s) => Object.keys(element.changes).length > 0
@@ -68,7 +60,15 @@ export function TreeElement({
           <ElementIcon element={element} />
           <div
             style={{ marginLeft: "4px" }}
-            onClick={(e) => element.editor.select(element)}
+            onClick={(e) => {
+              let selected = element.editor.isSelected(element)
+              if (selected) {
+                setCollapsed((c) => !c)
+              } else {
+                element.editor.select(element)
+                setCollapsed(false)
+              }
+            }}
           >
             {element.displayName}
             {dirty ? "*" : ""}
@@ -103,7 +103,12 @@ export function TreeElement({
           }}
         >
           {element.children.map((c) => (
-            <TreeElement element={c} key={c.id} collapsed={true} showChildren />
+            <TreeElement
+              element={c}
+              key={c.id}
+              collapsed={c.isPrimitive()}
+              showChildren
+            />
           ))}
         </div>
       )}

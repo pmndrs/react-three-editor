@@ -8,7 +8,6 @@ export const meshBasicMaterial = (
   path: string[] = ["ref"]
 ): Schema => {
   return {
-    ...commonControls(element, path),
     color: prop.color({
       element,
       path: [...path, "color"]
@@ -24,6 +23,7 @@ export const meshBasicMaterial = (
     refractionRatio: prop.number({
       element,
       path: [...path, "refractionRatio"]
-    })
+    }),
+    ...commonControls(element, path)
   }
 }

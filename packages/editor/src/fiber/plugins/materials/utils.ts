@@ -1,13 +1,12 @@
 import { folder } from "leva"
-import { EditableElement } from "../../../editable/EditableElement"
-import { prop } from "../../controls/prop"
 import {
-  RepeatWrapping,
   ClampToEdgeWrapping,
   MirroredRepeatWrapping,
+  RepeatWrapping,
   Texture
 } from "three"
-import { sentenceCase } from "change-case"
+import { EditableElement } from "../../../editable/EditableElement"
+import { prop } from "../../controls/prop"
 
 export const createTextureFolder = (
   element: EditableElement,
@@ -16,7 +15,7 @@ export const createTextureFolder = (
   otherControls: any = {}
 ) => {
   const texturePropName = `${prefix !== "map" ? prefix + "Map" : "map"}`
-  const folderPrefix = sentenceCase(prefix)
+  const folderPrefix = prefix
 
   return {
     [`${folderPrefix}`]: folder(
