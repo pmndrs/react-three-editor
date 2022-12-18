@@ -1,5 +1,6 @@
 import { Canvas as FiberCanvas } from "@react-three/fiber"
 import { DrafterProvider } from "draft-n-draw"
+import { levaStore } from "leva"
 import { ComponentProps, forwardRef, useMemo } from "react"
 import { EditorContext } from "../editable/Editor"
 import { client } from "../vite/client"
@@ -24,6 +25,8 @@ export const Canvas = forwardRef<
     []
   )
 
+  // store.settingsPanel = levaStore
+
   // @ts-ignore
   window.editor = store
 
@@ -43,7 +46,7 @@ export const Canvas = forwardRef<
             <editorTunnel.Outs
               fallback={
                 <>
-                  <SceneControls />
+                  <SceneControls store={levaStore} />
                   <SelectedElementControls />
                   <CameraGizmos />
                 </>
