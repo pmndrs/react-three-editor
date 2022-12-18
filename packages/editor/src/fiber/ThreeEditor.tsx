@@ -1,5 +1,5 @@
 import { getDrafter } from "draft-n-draw"
-import { useControls, useCreateStore } from "leva"
+import { levaStore, useControls } from "leva"
 import { StoreType } from "leva/dist/declarations/src/types"
 import {
   SchemaOrFn,
@@ -7,15 +7,39 @@ import {
 } from "../editable/controls/usePersistedControls"
 import { EditableElement, JSXSource } from "../editable/EditableElement"
 import { Editor } from "../editable/Editor"
+import { usePanel } from "./usePanel"
+
+// @ts-ignore
+levaStore.store = undefined
+
+type Panel = StoreType & { store: StoreType }
 
 export class ThreeEditor extends Editor {
-  panels: Record<string, StoreType> = {}
-  usePanel(name: string) {
-    if (this.panels[name]) return this.panels[name]
-    const store = useCreateStore()
+  panels: Record<string, Panel> = {
+    default: levaStore as Panel
+  }
 
-    this.panels[name] = store
-    return store
+  getPanel(name: string | StoreType): Panel {
+    if (typeof name === "string") {
+      if (this.panels[name]) return this.panels[name]
+
+      this.panels[name] = new (Object.getPrototypeOf(levaStore).constructor)()
+      // @ts-ignore
+      this.panels[name].store = this.panels[name]
+      return this.panels[name]
+    } else {
+      return name as Panel
+    }
+  }
+
+  get settingsPanel(): StoreType | string {
+    return this.store.getState().settingsPanel
+  }
+
+  set settingsPanel(arg0: StoreType | string) {
+    this.store.setState({
+      settingsPanel: arg0
+    })
   }
 
   selectKey(arg0: any) {
@@ -30,7 +54,14 @@ export class ThreeEditor extends Editor {
   }
 
   setSettings(arg0: string, arg1: any) {
-    this.panels["scene"].setValueAtPath("settings." + arg0, arg1, false)
+    let panel = this.getPanel(this.settingsPanel)
+    if (panel.getData()["settings." + arg0]) {
+      this.getPanel(this.settingsPanel).setValueAtPath(
+        "settings." + arg0,
+        arg1,
+        false
+      )
+    }
   }
 
   useSettings<T extends SchemaOrFn>(
@@ -38,12 +69,14 @@ export class ThreeEditor extends Editor {
     arg1: T,
     hidden?: boolean
   ) {
+    const settingsPanel = this.store((s) => s.settingsPanel)
+    const panel = usePanel(settingsPanel)
     useControls(
       "settings",
       {},
       { collapsed: true, order: 1001 },
       {
-        store: this.usePanel("scene")
+        store: panel.store
       }
     )
 
@@ -51,7 +84,7 @@ export class ThreeEditor extends Editor {
       "settings" + (name ? `.${name}` : ""),
       arg1,
       [],
-      this.usePanel("scene"),
+      panel.store,
       hidden
     )
 

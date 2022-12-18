@@ -43,7 +43,6 @@ export const Editable = forwardRef(
   ({ component, ...props }: { component: any }, ref) => {
     const mainC = useMemo(() => {
       if (!memo.get(component)) {
-        console.log(component)
         memo.set(component, createEditable(component))
       }
       return memo.get(component)

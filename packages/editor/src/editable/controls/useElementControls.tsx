@@ -5,7 +5,7 @@ import { element } from "./tree/element"
 
 export function useElementControls(
   entity: EditableElement,
-  { store, ...options }: { store: typeof levaStore; order: number }
+  { store, order, ...options }: { store: typeof levaStore; order?: number }
 ) {
   const [run, setRun] = useState(0)
   let entityStore = entity.store!
@@ -35,10 +35,10 @@ export function useElementControls(
         panel: true,
         collapsed: false,
         children: false,
-        order: -1
+        order: order
       })
     },
-    options,
+    { ...options, store },
     [entity]
   )
 
@@ -47,11 +47,13 @@ export function useElementControls(
 
 export function ElementControls({
   element,
-  store
+  store,
+  order
 }: {
   element: EditableElement
   store: typeof levaStore
+  order?: number
 }) {
-  useElementControls(element, { store, order: -1 })
+  useElementControls(element, { store, order: order })
   return null
 }

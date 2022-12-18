@@ -2,8 +2,9 @@ import { KeyboardControls } from "@react-three/drei"
 import {
   CameraGizmos,
   Editor,
+  Panel,
   PerformanceControls,
-  ScenePanel,
+  SceneControls,
   SelectedElementControls
 } from "@react-three/editor"
 import "@react-three/editor/rapier"
@@ -51,13 +52,11 @@ root.render(
 
       {/* Editor UI (can be used to override the default layout/editor parts) */}
       <Editor>
-        {/* Scene tree in its own panel */}
-        <ScenePanel />
-
-        <PerformanceControls />
-        {/* Controls for selected element in the default leva panel */}
-        <SelectedElementControls />
-
+        <Panel title="scene" />
+        <Panel title="properties" pos="right" />
+        <SceneControls store="scene" />
+        <SelectedElementControls store="properties" />
+        <PerformanceControls store="scene" />
         <CameraGizmos />
       </Editor>
     </Canvas>

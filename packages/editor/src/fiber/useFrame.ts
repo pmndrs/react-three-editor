@@ -2,11 +2,12 @@ import { RenderCallback, useFrame as useFiberFrame } from "@react-three/fiber"
 import { folder, useControls } from "leva"
 import { useEditor } from "../editable/Editor"
 import { Toggle } from "./Toggle"
+import { usePanel } from "./usePanel"
 
 export function useEditorFrame(name: string, fn: RenderCallback, ...args: any) {
   const editor = useEditor()
-
-  const panelStore = editor.usePanel("scene")
+  const settingsPanel = editor.store((s) => s.settingsPanel)
+  const panelStore = usePanel(settingsPanel)
   let controls = useControls(
     {
       "frame updates": folder(
@@ -25,8 +26,9 @@ export function useEditorFrame(name: string, fn: RenderCallback, ...args: any) {
       )
     },
     {
-      store: panelStore
-    }
+      store: panelStore.store
+    },
+    [panelStore.store]
   )
   return useFiberFrame((...args) => {
     if (controls.all && controls[name]) {

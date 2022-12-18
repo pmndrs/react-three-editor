@@ -1,5 +1,9 @@
-import { folder, levaStore, useControls } from "leva"
-import { Schema, SchemaToValues } from "leva/dist/declarations/src/types"
+import { folder, useControls } from "leva"
+import {
+  Schema,
+  SchemaToValues,
+  StoreType
+} from "leva/dist/declarations/src/types"
 import { useEffect } from "react"
 
 let editorName = "r3f-editor"
@@ -58,7 +62,7 @@ export function usePersistedControls<S extends Schema, T extends SchemaOrFn<S>>(
   folderName: string,
   props: T,
   deps = [],
-  store = levaStore,
+  store = undefined as StoreType | undefined,
   hidden = false
 ): ReturnType<() => S> {
   const [values, set] = useControls(
@@ -92,7 +96,7 @@ export function usePersistedControls<S extends Schema, T extends SchemaOrFn<S>>(
     {
       store: store
     },
-    deps
+    [...deps]
   )
 
   useEffect(() => {

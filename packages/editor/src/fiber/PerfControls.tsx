@@ -2,9 +2,17 @@ import { folder, useControls } from "leva"
 import { StoreType } from "leva/dist/declarations/src/types"
 import { Perf, usePerf } from "r3f-perf"
 import { useEffect } from "react"
-import { useEditor } from "../editable/Editor"
+import { usePanel } from "./usePanel"
 
-export function PerfControls({ store }: { store: StoreType }) {
+export function PerfControls({
+  store = "scene",
+  order
+}: {
+  store?: StoreType | string
+  order?: number
+}) {
+  const panel = usePanel(store)
+
   useControls(
     {
       performance: folder(
@@ -26,12 +34,12 @@ export function PerfControls({ store }: { store: StoreType }) {
         },
         {
           collapsed: true,
-          order: 1002
+          order: order
         }
       )
     },
     {
-      store: store
+      store: panel.store
     },
     []
   )
@@ -39,21 +47,32 @@ export function PerfControls({ store }: { store: StoreType }) {
   return null
 }
 
-export function PerformanceControls() {
+export function PerformanceControls({
+  store = "scene",
+  order
+}: {
+  store?: StoreType | string
+  order?: number
+}) {
   return (
     <>
       <Perf headless />
-      <PerfControls store={useEditor().usePanel("scene")} />
-      <PerformanceMonitor store={useEditor().usePanel("scene")} />
+      <PerfControls store={store} order={order} />
+      <PerformanceMonitor store={store} />
     </>
   )
 }
 
-function PerformanceMonitor({ store }: { store: StoreType }) {
+function PerformanceMonitor({
+  store = "scene"
+}: {
+  store?: StoreType | string
+}) {
   const perf = usePerf()
+  const panel = usePanel(store)
 
   useEffect(() => {
-    let data = store.getData()
+    let data = panel.getData()
     data["performance.fps"].value = perf.log?.fps ?? 60
     data["performance.gpu"].value = perf.log?.gpu ?? 0
     data["performance.render.frame"].value = perf.gl?.render?.frame ?? 0
@@ -65,8 +84,8 @@ function PerformanceMonitor({ store }: { store: StoreType }) {
     data["performance.memory.geometries"].value =
       perf.gl?.memory?.geometries ?? 0
     data["performance.memory.textures"].value = perf.gl?.memory?.textures ?? 0
-    store.useStore.setState({ data })
-  }, [perf])
+    panel.useStore.setState({ data })
+  }, [perf, panel])
 
   return null
 }

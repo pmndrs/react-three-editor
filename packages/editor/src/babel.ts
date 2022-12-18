@@ -186,8 +186,6 @@ export default declare<State>((api) => {
           // transformElements.includes(node.name.name)
           // state.get("editorFiberImport")
         ) {
-          console.log(node.name.name)
-
           node.name = t.jsxMemberExpression(
             t.jsxIdentifier("editable"),
             t.jsxIdentifier(node.name.name)

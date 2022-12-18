@@ -2,6 +2,7 @@ import { createContext, useContext } from "react"
 import { EqualityChecker, StateSelector } from "zustand"
 import { EditableElement } from "./EditableElement"
 
+import { StoreType } from "leva/dist/declarations/src/types"
 import create from "zustand"
 import { ThreeEditor } from "../fiber/ThreeEditor"
 import { CommandManager } from "./CommandManager"
@@ -10,13 +11,15 @@ export type EditorStoreStateType = {
   selectedId: null | string
   selectedKey: null | string
   elements: Record<string, EditableElement>
+  settingsPanel: string | StoreType
 }
 
 const createEditorStore = () => {
   return create<EditorStoreStateType>(() => ({
     selectedId: null,
     selectedKey: null,
-    elements: {}
+    elements: {},
+    settingsPanel: "scene"
   }))
 }
 
