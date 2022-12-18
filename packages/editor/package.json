@@ -55,6 +55,7 @@
     "@types/babel__generator": "^7.6.4",
     "@vinxi/recast": "^0.21.5",
     "@vitejs/plugin-react": "^2.0.1",
+    "change-case": "^4.1.2",
     "cmdk": "^0.1.21",
     "debug": "^4.3.4",
     "draft-n-draw": "^0.3.1",

@@ -1,7 +1,7 @@
 import { EditableElement } from "../../editable/EditableElement"
 import { prop } from "../controls/prop"
 import { geometry, meshGeometry } from "./geomtries"
-import { material, meshMaterial } from "./materials"
+import { material } from "./materials"
 import {
   ambientLight,
   camera,
@@ -41,7 +41,6 @@ export const DEFAULT_EDITOR_PLUGINS = [
   mesh,
   material,
   geometry,
-  meshMaterial,
   meshGeometry,
   orbitControls,
   directionalLight,
