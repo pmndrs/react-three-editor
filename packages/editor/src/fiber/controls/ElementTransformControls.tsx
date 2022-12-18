@@ -8,10 +8,10 @@ import {
   SetElementPosition,
   SetElementRotation,
   SetElementScale
-} from "../editable/commands"
-import { eq } from "../editable/controls/eq"
-import { EditableElement } from "../editable/EditableElement"
-import { EditorContext } from "../editable/Editor"
+} from "../../editable/commands"
+import { eq } from "../../editable/controls/eq"
+import { EditableElement } from "../../editable/EditableElement"
+import { EditorContext } from "../../editable/Editor"
 
 const serializeTransform = (
   object?: Object3D
@@ -66,7 +66,7 @@ export function ElementTransformControls({
         // transformControls are correctly set. We need to set the leva controls, mark it dirty,
         // and set the props if needed
         element.store?.setValueAtPath("transform.position", position, false)
-        element.dirtyProp(
+        element.changeProp(
           "position",
           position?.map((v: number) => Number(v.toFixed(3)))
         )
@@ -79,7 +79,7 @@ export function ElementTransformControls({
         // and set the props if needed
         let radians = rotation.map((v) => MathUtils.degToRad(v))
         element.store?.setValueAtPath("transform.rotation", rotation, false)
-        element.dirtyProp(
+        element.changeProp(
           "rotation",
           radians?.map((v) => Number(v.toFixed(3)))
         )
@@ -91,7 +91,7 @@ export function ElementTransformControls({
         // transformControls are correctly set. We need to set the leva controls, mark it dirty,
         // and set the props if needed
         element.store?.setValueAtPath("transform.scale", scale, false)
-        element.dirtyProp(
+        element.changeProp(
           "scale",
           scale?.map((v: number) => Number(v.toFixed(3)))
         )

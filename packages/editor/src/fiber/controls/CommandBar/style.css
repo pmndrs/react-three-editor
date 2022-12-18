@@ -15,9 +15,10 @@
 
 [cmdk-dialog] {
   width: 640px;
-  margin: auto;
   top: 100px;
-  position: relative;
+  left: 50vw;
+  transform: translateX(-50%);
+  position: absolute;
 }
 
 html,

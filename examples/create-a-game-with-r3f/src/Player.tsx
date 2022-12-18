@@ -22,7 +22,7 @@ addPlugin({
         step: 0.1,
         onChange: (val, path, context) => {
           if (!context.initial && context.fromPanel) {
-            el.dirtyProp("args", [
+            el.changeProp("args", [
               val,
               el.props.args?.[1] ?? el.currentProps.args[1]
             ])
@@ -36,7 +36,7 @@ addPlugin({
         step: 1,
         onChange: (val, path, context) => {
           if (!context.initial && context.fromPanel) {
-            el.dirtyProp("args", [
+            el.changeProp("args", [
               el.props.args?.[0] ?? el.currentProps.args[0],
               val
             ])
@@ -46,58 +46,6 @@ addPlugin({
     }
   }
 })
-
-// addPlugin({
-//   applicable: (e) => e.ref instanceof BoxGeometry,
-//   controls: (el) => {
-//     return {
-//       args: {
-//         value: true,
-//         render: () => false
-//       },
-//       width: {
-//         value: el.currentProps.args?.[0] ?? 1,
-//         min: 0,
-//         max: 10,
-//         step: 0.1,
-//         onChange: (val, path, context) => {
-//           if (!context.initial && context.fromPanel) {
-//             el.dirtyProp("args", [val])
-//           }
-//         }
-//       },
-//       height: {
-//         value: el.currentProps.args?.[1] ?? 1,
-//         min: 0,
-//         max: 10,
-//         step: 0.1,
-//         onChange: (val, path, context) => {
-//           if (!context.initial && context.fromPanel) {
-//             el.dirtyProp("args", [
-//               el.props.args?.[0] ?? el.currentProps.args[0],
-//               val
-//             ])
-//           }
-//         }
-//       },
-//       depth: {
-//         value: el.currentProps.args?.[2] ?? 1,
-//         min: 0,
-//         max: 10,
-//         step: 0.1,
-//         onChange: (val, path, context) => {
-//           if (!context.initial && context.fromPanel) {
-//             el.dirtyProp("args", [
-//               el.props.args?.[0] ?? el.currentProps.args[0] ?? 1,
-//               el.props.args?.[1] ?? el.currentProps.args[1] ?? 1,
-//               val
-//             ])
-//           }
-//         }
-//       }
-//     }
-//   }
-// })
 
 export function Player() {
   const [subscribeKeys, getKeys] = useKeyboardControls()
@@ -188,7 +136,12 @@ export function Player() {
           opacity={0.7}
         />
       </mesh>
-      <Sparkles count={88} name="sparkles" castShadow position={[0.936, 0.486, 0.167]} scale={[2.1, 1, 1]} />
+      <Sparkles
+        count={88}
+        castShadow
+        position={[1.838, 0.942, 0.239]}
+        scale={[2.1, 1, 1]}
+      />
     </RigidBody>
   );
 }

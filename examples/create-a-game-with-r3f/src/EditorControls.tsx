@@ -6,11 +6,8 @@ import {
   SceneControls,
   SelectedElementControls
 } from "@react-three/editor"
-import { useState } from "react"
 
-export function EditorPanel() {
-  const [state, setState] = useState("scene")
-
+export function EditorControls() {
   return (
     <Editor>
       <Panel title="scene" />

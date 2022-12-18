@@ -5,9 +5,9 @@ import { useEffect, useRef } from "react"
 import { useHotkeys, useHotkeysContext } from "react-hotkeys-hook"
 import { Camera, Event } from "three"
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib"
-import { editable } from "../editable/editable"
-import { useEditor, useEditorStore } from "../editable/Editor"
-import { ThreeEditor } from "./ThreeEditor"
+import { editable } from "../../editable/editable"
+import { useEditor, useEditorStore } from "../../editable/Editor"
+import { ThreeEditor } from "../ThreeEditor"
 
 // @ts-ignore
 window.leva = levaStore

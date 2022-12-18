@@ -2,7 +2,7 @@ import { folder, useControls } from "leva"
 import { StoreType } from "leva/dist/declarations/src/types"
 import { Perf, usePerf } from "r3f-perf"
 import { useEffect } from "react"
-import { usePanel } from "./usePanel"
+import { usePanel } from "./Panel"
 
 export function PerfControls({
   store = "scene",
@@ -72,7 +72,7 @@ function PerformanceMonitor({
   const panel = usePanel(store)
 
   useEffect(() => {
-    let data = panel.getData()
+    let data = panel.getData() as any
     data["performance.fps"].value = perf.log?.fps ?? 60
     data["performance.gpu"].value = perf.log?.gpu ?? 0
     data["performance.render.frame"].value = perf.gl?.render?.frame ?? 0

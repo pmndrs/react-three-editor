@@ -1,12 +1,8 @@
 import { useControls } from "leva"
 import { StoreType } from "leva/dist/declarations/src/types"
-import { tree } from "../editable/controls/tree/tree"
-import { useEditorStore } from "../editable/Editor"
-import { usePanel } from "./usePanel"
-
-export function ScenePanel() {
-  return <></>
-}
+import { tree } from "../../editable/controls/tree/tree"
+import { useEditorStore } from "../../editable/Editor"
+import { usePanel } from "./Panel"
 
 export function SceneControls({
   store = "scene",

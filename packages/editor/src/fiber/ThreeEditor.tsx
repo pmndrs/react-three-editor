@@ -7,7 +7,7 @@ import {
 } from "../editable/controls/usePersistedControls"
 import { EditableElement, JSXSource } from "../editable/EditableElement"
 import { Editor } from "../editable/Editor"
-import { usePanel } from "./usePanel"
+import { usePanel } from "./controls/Panel"
 
 // @ts-ignore
 levaStore.store = undefined

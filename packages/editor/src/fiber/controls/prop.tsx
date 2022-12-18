@@ -35,6 +35,7 @@ export function createProp(
     control?: any
     init?: (obj: any, prop: string, value: any) => void
     serialize?: (obj: any, prop: string, value: any) => any
+    override?: (obj: any, prop: string, value: any) => any
   },
   {
     element = {} as any,
@@ -86,14 +87,31 @@ export function createProp(
             if (editable) {
               if (element === editable) {
                 let [_, ...p] = path
-                element.dirtyProp(p.join("-"), serializale)
+                element.addChange(element, p.join("-"), serializale)
+                element.changed = true
+                let propOveride = type.override
+                  ? type.override(el, prop, serializale)
+                  : serializale
+
+                if (propOveride !== undefined) {
+                  element.setProp(p.join("-"), propOveride)
+                }
               } else {
                 element.addChange(editable, remaining.join("-"), serializale)
                 element.changed = true
               }
             } else {
               let [_, ...p] = path
-              element.dirtyProp(p.join("-"), serializale)
+              element.addChange(element, p.join("-"), serializale)
+              element.changed = true
+
+              let propOveride = type.override
+                ? type.override(el, prop, serializale)
+                : serializale
+
+              if (propOveride !== undefined) {
+                element.setProp(p.join("-"), propOveride)
+              }
             }
           }
         },
@@ -124,14 +142,32 @@ export function createProp(
             if (editable) {
               if (element === editable) {
                 let [_, ...p] = path
-                element.dirtyProp(p.join("-"), serializale)
+                element.addChange(element, p.join("-"), serializale)
+                element.changed = true
+
+                let propOveride = type.override
+                  ? type.override(el, prop, serializale)
+                  : serializale
+
+                if (propOveride !== undefined) {
+                  element.setProp(p.join("-"), propOveride)
+                }
               } else {
                 element.addChange(editable, remaining.join("-"), serializale)
                 element.changed = true
               }
             } else {
               let [_, ...p] = path
-              element.dirtyProp(p.join("-"), serializale)
+              element.addChange(element, p.join("-"), serializale)
+              element.changed = true
+
+              let propOveride = type.override
+                ? type.override(el, prop, serializale)
+                : serializale
+
+              if (propOveride !== undefined) {
+                element.setProp(p.join("-"), propOveride)
+              }
             }
           }
         },
@@ -248,6 +284,9 @@ const textureT: {
         }
       ]
     }
+  },
+  override(obj: any, prop: string, value: any) {
+    return undefined
   }
 }
 
