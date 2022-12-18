@@ -1,15 +1,21 @@
 import { Canvas as FiberCanvas } from "@react-three/fiber"
-import { Command } from "cmdk"
 import "cmdk/dist/"
-import { ComponentProps, forwardRef, useMemo, useState } from "react"
-import { useHotkeys } from "react-hotkeys-hook"
+import { ComponentProps, forwardRef, useMemo } from "react"
 import { client } from "../vite/client"
 import { DEFAULT_EDITOR_PLUGINS } from "./plugins"
 import { ThreeEditor } from "./ThreeEditor"
 import { createMultiTunnel } from "./Tunnels"
 export const editorTunnel = createMultiTunnel()
 
-import { RaycastCMDK } from "./CommandBar"
+import { DrafterProvider } from "draft-n-draw"
+import { levaStore } from "leva"
+import { EditorContext } from "../editable/Editor"
+import { Outs } from "./CanvasTunnel"
+import { CommandBar } from "./CommandBar"
+import { EditorCamera } from "./EditorCamera"
+import { CameraGizmos } from "./EditorGizmos"
+import { SceneControls } from "./SceneTree"
+import { SelectedElementControls } from "./SelectedElement"
 import "./style.css"
 export const Editor = editorTunnel.In
 
@@ -29,7 +35,7 @@ export const Canvas = forwardRef<
 
   return (
     <>
-      {/* <FiberCanvas
+      <FiberCanvas
         ref={ref}
         onPointerMissed={(e) => {
           store.clearSelection()
@@ -49,29 +55,13 @@ export const Canvas = forwardRef<
                 </>
               }
             />
+            {/* <In>
+            </In> */}
           </EditorContext.Provider>
         </DrafterProvider>
-      </FiberCanvas> */}
-      <CommandMenu />
-      {/* <Outs /> */}
+      </FiberCanvas>
+      <Outs />
+      <CommandBar />
     </>
   )
 })
-
-const CommandMenu = () => {
-  const [open, setOpen] = useState(false)
-
-  // Toggle the menu when ⌘K is pressed
-  useHotkeys("meta+k", () => setOpen((open) => !open))
-
-  return (
-    <Command.Dialog
-      open={open}
-      onOpenChange={setOpen}
-      label="Global Command Menu"
-      className="commandbar"
-    >
-      <RaycastCMDK />
-    </Command.Dialog>
-  )
-}

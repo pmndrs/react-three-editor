@@ -1,8 +1,22 @@
 import * as Popover from "@radix-ui/react-popover"
 import { Command } from "cmdk"
-import React from "react"
+import React, { useState } from "react"
+import { useHotkeys } from "react-hotkeys-hook"
 
-export function RaycastCMDK() {
+export const CommandBar = () => {
+  const [open, setOpen] = useState(false)
+
+  // Toggle the menu when ⌘K is pressed
+  useHotkeys("meta+k", () => setOpen((open) => !open))
+
+  return (
+    <Command.Dialog open={open} onOpenChange={setOpen} className="commandbar">
+      <EditorCommand />
+    </Command.Dialog>
+  )
+}
+
+export function EditorCommand() {
   const theme = "dark"
   const [value, setValue] = React.useState("linear")
   const inputRef = React.useRef<HTMLInputElement | null>(null)

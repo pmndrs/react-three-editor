@@ -216,8 +216,8 @@ a {
   font-family: var(--font-sans);
   border: none;
   width: 100%;
-  font-size: 15px;
-  padding: 8px 16px;
+  font-size: 13px;
+  padding: 0px 16px;
   outline: none;
   background: var(--bg);
   color: var(--gray12);
@@ -262,12 +262,13 @@ a {
   animation-timing-function: ease;
   animation-name: loading;
 }
+
 .commandbar [cmdk-item] {
   content-visibility: auto;
   cursor: pointer;
-  height: 40px;
+  height: 24px;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 12px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -490,13 +491,16 @@ a {
   background: var(--gray2);
   border-radius: 8px;
 }
+
 .commandbar-submenu [cmdk-list] {
   padding: 8px;
   overflow: auto;
   overscroll-behavior: contain;
+  height: auto;
   transition: 100ms ease;
   transition-property: height;
 }
+
 .commandbar-submenu [cmdk-item] {
   height: 40px;
   cursor: pointer;
@@ -558,11 +562,11 @@ a {
   margin-left: 4px;
 }
 .commandbar-submenu [cmdk-input] {
-  padding: 12px;
+  padding: 4px;
   font-family: var(--font-sans);
   border: 0;
   border-top: 1px solid var(--gray6);
-  font-size: 13px;
+  font-size: 12px;
   background: transparent;
   margin-top: auto;
   width: 100%;
