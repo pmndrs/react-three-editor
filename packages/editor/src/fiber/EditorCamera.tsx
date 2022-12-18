@@ -2,7 +2,7 @@ import { OrbitControls, PerspectiveCamera } from "@react-three/drei"
 import { useThree } from "@react-three/fiber"
 import { levaStore } from "leva"
 import { useEffect, useRef } from "react"
-import { useHotkeys } from "react-hotkeys-hook"
+import { useHotkeys, useHotkeysContext } from "react-hotkeys-hook"
 import { Camera, Event } from "three"
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib"
 import { editable } from "../editable/editable"
@@ -15,6 +15,7 @@ export function EditorCamera() {
   const ref = useRef<Camera>(null!)
   const ref2 = useRef<OrbitControlsImpl>(null!)
   const editor = useEditor()
+  const hotkeysContext = useHotkeysContext()
 
   const [props, setCamera] = editor.useSettings("camera", {
     enabled: false,
@@ -29,11 +30,15 @@ export function EditorCamera() {
 
   useHotkeys(
     "meta+e",
-    () =>
+    (e, a) => {
       setCamera({
         enabled: !props.enabled
-      }),
-    [props.enabled]
+      })
+    },
+    [props.enabled],
+    {
+      preventDefault: true
+    }
   )
 
   useSelectedState(editor)
@@ -68,7 +73,7 @@ export function EditorCamera() {
     <>
       {props.enabled && <PerspectiveCamera {...props} makeDefault />}
       {props.enabled && (!controls || ref2.current === controls) && (
-        <OrbitControls ref={ref2} onChange={console.log} makeDefault />
+        <OrbitControls ref={ref2} makeDefault />
       )}
       <editable.primitive
         name="Camera"
