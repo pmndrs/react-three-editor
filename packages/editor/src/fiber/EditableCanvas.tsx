@@ -58,8 +58,6 @@ export const Canvas = forwardRef<
                 </>
               }
             />
-            {/* <In>
-            </In> */}
           </EditorContext.Provider>
         </DrafterProvider>
       </FiberCanvas>
