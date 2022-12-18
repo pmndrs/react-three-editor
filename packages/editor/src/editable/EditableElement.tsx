@@ -1,4 +1,5 @@
 import { StoreType } from "leva/dist/declarations/src/types"
+import { useEffect, useState } from "react"
 import { Event, Object3D } from "three"
 import { getEditableElement } from "../fiber/controls/prop"
 import { ThreeEditor } from "../fiber/ThreeEditor"
@@ -15,6 +16,34 @@ export type JSXSource = {
 export class EditableElement<
   Ref extends { name?: string } = any
 > extends EventTarget {
+  useCollapsed(): [any, any] {
+    let storedCollapsedState =
+      this.editor.expanded.size > 0
+        ? this.editor.expanded.has(this.treeId)
+          ? false
+          : true
+        : !this.editor.isSelected(this) && this.isPrimitive()
+    const [collapsed, setCollapsed] = useState(storedCollapsedState)
+
+    useEffect(() => {
+      if (collapsed) {
+        this.editor.expanded.delete(this.treeId)
+        localStorage.setItem(
+          "collapased",
+          JSON.stringify(Array.from(this.editor.expanded))
+        )
+      } else {
+        this.editor.expanded.add(this.treeId)
+        localStorage.setItem(
+          "collapased",
+          JSON.stringify(Array.from(this.editor.expanded))
+        )
+      }
+    }, [collapsed])
+
+    return [collapsed, setCollapsed]
+  }
+
   isPrimitive(): boolean {
     return (
       this.elementName.charAt(0) === this.elementName.charAt(0).toLowerCase() &&

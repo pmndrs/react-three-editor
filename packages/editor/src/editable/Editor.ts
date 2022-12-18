@@ -38,6 +38,7 @@ export class Editor extends EventTarget {
   store: EditorStoreType
 
   commandManager: CommandManager = new CommandManager()
+  expanded: Set<string>
 
   constructor(
     public plugins: any[],
@@ -48,6 +49,9 @@ export class Editor extends EventTarget {
     super()
     this.store = createEditorStore()
     this.root.editor = this
+    this.expanded = localStorage.getItem("collapased")
+      ? new Set(JSON.parse(localStorage.getItem("collapased")!))
+      : new Set()
   }
 
   setRef(element: any, ref: any) {}
@@ -103,7 +107,7 @@ export class Editor extends EventTarget {
         })
 
         let newLement = Object.assign(element, el.elements[element.id])
-        newLement.index = parent.childIds.length - 1
+        newLement.index = `${parent.childIds.length - 1}`
         return {
           elements: {
             ...el.elements,
