@@ -1,6 +1,6 @@
 import { useThree } from "@react-three/fiber"
 import { Leva, LevaPanel } from "leva"
-import { useEffect, useState } from "react"
+import { ComponentProps, useEffect, useState } from "react"
 import { useEditor } from "../../editable/Editor"
 import { In } from "../Canvas"
 
@@ -18,7 +18,13 @@ export function Panel({
   collapsed = false,
   pos = "left",
   ...props
-}) {
+}: {
+  id: string
+  title: string
+  width: number
+  collapsed: boolean
+  pos: "left" | "right"
+} & Omit<ComponentProps<typeof LevaPanel>, "store">) {
   const panel = usePanel(id)
   console.log(panel, title)
   const size = useThree((s) => s.size)
@@ -44,7 +50,6 @@ export function Panel({
           titleBar={{
             position,
             onDragEnd(position) {
-              console.log("hello")
               setPosition(position as { x: number; y: number })
             },
             title: title
@@ -58,13 +63,13 @@ export function Panel({
             }
           }}
           collapsed={{ collapsed: _collapsed, onChange: setCollapsed }}
+          {...props}
         />
       ) : (
         <Leva
           titleBar={{
             position,
             onDragEnd(position) {
-              console.log("hello")
               setPosition(position as { x: number; y: number })
             },
             title: title
