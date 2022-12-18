@@ -176,7 +176,10 @@ export default declare<State>((api) => {
                   attr.name.name === "name")
             ) ||
             (t.isJSXIdentifier(node.name) &&
-              ["OrbitControls", "Physics"].includes(node.name.name))
+              ["OrbitControls", "Physics"].includes(node.name.name)) ||
+            (t.isJSXIdentifier(node.name) &&
+              node.name.name.endsWith("Material")) ||
+            node.name.name.endsWith("Geometry")
           )
         }
 

@@ -1,12 +1,19 @@
 import { useThree } from "@react-three/fiber"
 import { LevaPanel } from "leva"
 import { useEffect, useState } from "react"
-import { useEditor } from "../editable/Editor"
-import { In } from "./CanvasTunnel"
+import { useEditor } from "../../editable/Editor"
+import { In } from "../Canvas"
+
+import { StoreType } from "leva/dist/declarations/src/types"
+
+export function usePanel(defaultName: StoreType | string) {
+  const editor = useEditor()
+  return editor.getPanel(defaultName)
+}
 
 export function Panel({
   title,
-  width = 320,
+  width = 280,
   collapsed = false,
   pos = "left",
   ...props

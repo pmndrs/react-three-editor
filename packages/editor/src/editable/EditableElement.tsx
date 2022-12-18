@@ -87,7 +87,7 @@ export class EditableElement<
   get displayName() {
     return this.ref?.name?.length && this.ref.name !== this.key
       ? this.ref.name
-      : `${this.elementName}`
+      : `${this.source.componentName}.${this.elementName}`
   }
 
   set name(v: string) {
@@ -119,10 +119,13 @@ export class EditableElement<
     this.dirty = value
   }
 
-  dirtyProp(arg0: string, arg1: number[]) {
+  changeProp(arg0: string, arg1: number[]) {
     this.addChange(this, arg0, arg1)
     this.changed = true
+    this.setProp(arg0, arg1)
+  }
 
+  setProp(arg0: string, arg1: any) {
     if (!this.forwardedRef || this.type !== "string" || arg0 === "args") {
       this.props[arg0] = arg1
       this.render()
@@ -151,6 +154,7 @@ export class EditableElement<
 
     return "ph:cube"
   }
+
   async save() {
     let diffs = Object.values(this.changes).map(({ _source, ...value }) => ({
       value,

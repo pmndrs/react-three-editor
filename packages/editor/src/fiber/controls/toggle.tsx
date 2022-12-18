@@ -4,7 +4,7 @@ export const StyledInputRow = styled(Components.Row, {
   gridTemplateColumns: "auto 1fr"
 })
 
-export const Toggle = createPlugin({
+export const toggle = createPlugin({
   component: () => {
     const { value, onUpdate, disabled, id, label } = useInputContext<{
       value: boolean

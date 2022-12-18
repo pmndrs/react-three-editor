@@ -1,23 +1,24 @@
 import { Canvas as FiberCanvas } from "@react-three/fiber"
 import "cmdk/dist/"
+import { DrafterProvider } from "draft-n-draw"
 import { ComponentProps, forwardRef, useMemo } from "react"
+import { EditorContext } from "../editable/Editor"
 import { client } from "../vite/client"
+import { CameraGizmos } from "./controls/CameraGizmos"
+import { CommandBar } from "./controls/CommandBar/CommandBar"
+import { EditorCamera } from "./controls/EditorCamera"
+import { Panel } from "./controls/Panel"
+import { PerformanceControls } from "./controls/PerformanceControls"
+import { SceneControls } from "./controls/SceneControls"
+import { SelectedElementControls } from "./controls/SelectedElementControls"
+import { createMultiTunnel } from "./controls/tunnels"
 import { DEFAULT_EDITOR_PLUGINS } from "./plugins"
 import { ThreeEditor } from "./ThreeEditor"
-import { createMultiTunnel } from "./Tunnels"
+
 export const editorTunnel = createMultiTunnel()
 
-import { DrafterProvider } from "draft-n-draw"
-import { EditorContext } from "../editable/Editor"
-import { Outs } from "./CanvasTunnel"
-import { CommandBar } from "./CommandBar"
-import { EditorCamera } from "./EditorCamera"
-import { CameraGizmos } from "./EditorGizmos"
-import { Panel } from "./Panel"
-import { PerformanceControls } from "./PerfControls"
-import { SceneControls } from "./SceneTree"
-import { SelectedElementControls } from "./SelectedElement"
-import "./style.css"
+export const { In, Outs } = createMultiTunnel()
+
 export const Editor = editorTunnel.In
 
 export const Canvas = forwardRef<

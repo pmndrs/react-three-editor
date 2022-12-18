@@ -2,6 +2,7 @@ import * as Popover from "@radix-ui/react-popover"
 import { Command } from "cmdk"
 import React, { useState } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
+import "./style.css"
 
 export const CommandBar = () => {
   const [open, setOpen] = useState(false)

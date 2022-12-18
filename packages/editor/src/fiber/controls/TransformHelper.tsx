@@ -1,7 +1,7 @@
 import { applyProps } from "@react-three/fiber"
 import { useEffect, useMemo } from "react"
 import { Object3D } from "three"
-import { EditableElement } from "../editable/EditableElement"
+import { EditableElement } from "../../editable/EditableElement"
 
 export function TransformHelper({
   editableElement: element,

@@ -1,8 +1,8 @@
 import { RenderCallback, useFrame as useFiberFrame } from "@react-three/fiber"
 import { folder, useControls } from "leva"
 import { useEditor } from "../editable/Editor"
-import { Toggle } from "./Toggle"
-import { usePanel } from "./usePanel"
+import { usePanel } from "./controls/Panel"
+import { toggle } from "./controls/toggle"
 
 export function useEditorFrame(name: string, fn: RenderCallback, ...args: any) {
   const editor = useEditor()
@@ -12,10 +12,10 @@ export function useEditorFrame(name: string, fn: RenderCallback, ...args: any) {
     {
       "frame updates": folder(
         {
-          all: Toggle({
+          all: toggle({
             value: true
           }),
-          [name]: Toggle({
+          [name]: toggle({
             value: true
           })
         },

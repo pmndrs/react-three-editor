@@ -1,9 +1,9 @@
 import { StoreType } from "leva/dist/declarations/src/types"
 import { Fragment } from "react"
-import { ElementControls } from "../editable/controls/useElementControls"
-import { useEditorStore } from "../editable/Editor"
+import { ElementControls } from "../../editable/controls/useElementControls"
+import { useEditorStore } from "../../editable/Editor"
 import { ElementTransformControls } from "./ElementTransformControls"
-import { usePanel } from "./usePanel"
+import { usePanel } from "./Panel"
 
 export function SelectedElementControls({
   store = "scene",

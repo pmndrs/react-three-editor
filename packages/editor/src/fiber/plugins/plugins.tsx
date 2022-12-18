@@ -18,7 +18,7 @@ import {
 import { EditableElement } from "../../editable/EditableElement"
 import { useEditorStore } from "../../editable/Editor"
 import { prop } from "../controls/prop"
-import { TransformHelper } from "../TransformHelper"
+import { TransformHelper } from "../controls/TransformHelper"
 
 export const transform = {
   applicable: (entity: EditableElement) => entity.ref instanceof Object3D,
