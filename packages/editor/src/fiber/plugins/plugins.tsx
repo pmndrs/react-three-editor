@@ -1,4 +1,4 @@
-import { OrbitControls, useHelper } from "@react-three/drei"
+import { OrbitControls } from "@react-three/drei"
 import { folder } from "leva"
 import {
   AmbientLight,
@@ -16,7 +16,6 @@ import {
   SpotLightHelper
 } from "three"
 import { EditableElement } from "../../editable/EditableElement"
-import { useEditorStore } from "../../editable/Editor"
 import { prop } from "../controls/prop"
 import { TransformHelper } from "../controls/TransformHelper"
 
@@ -110,13 +109,7 @@ export const camera = {
     }
   },
   helper: ({ element }: { element: EditableElement }) => {
-    const [{ camera }] = element.editor.useSettings("helpers", {
-      camera: { value: true }
-    })
-    const isSelected = useEditorStore(
-      (state) => state.selectedId === element.id
-    )
-    useHelper(camera || isSelected ? element : undefined, CameraHelper)
+    element.useHelper("camera", CameraHelper)
     return null
   }
 }
@@ -205,10 +198,7 @@ export const directionalLight = {
     }
   },
   helper: ({ element }: { element: EditableElement }) => {
-    const [{ directionalLight }] = element.editor.useSettings("helpers", {
-      directionalLight: { value: true }
-    })
-    useHelper(directionalLight ? element : undefined, DirectionalLightHelper)
+    element.useHelper("directionalLight", DirectionalLightHelper)
     return null
   }
 }
@@ -271,10 +261,7 @@ export const spotLight = {
     }
   },
   helper: ({ element }: { element: EditableElement }) => {
-    const [{ spotLight }] = element.editor.useSettings("helpers", {
-      spotLight: { value: true }
-    })
-    useHelper(spotLight ? element : undefined, SpotLightHelper, "hotpink")
+    element.useHelper("spotLight", SpotLightHelper)
     return null
   }
 }
