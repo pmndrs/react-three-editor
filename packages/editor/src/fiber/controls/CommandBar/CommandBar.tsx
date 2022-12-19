@@ -63,7 +63,7 @@ export const CommandBar = () => {
     <>
       <Command.Dialog
         open={open}
-        onOpenChange={setOpen}
+        onOpenChange={toggleOpen}
         className="commandbar dark"
       >
         <commandBarTunnel.Outs />
