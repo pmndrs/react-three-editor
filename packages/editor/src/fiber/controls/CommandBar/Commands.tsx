@@ -1,6 +1,7 @@
 import { Icon } from "@iconify/react"
 import { useMemo } from "react"
 import { Group, Mesh } from "three"
+import { EditableElement } from "../../../editable/EditableElement"
 import { ThreeEditor } from "../../ThreeEditor"
 import { commandStore, useCommand } from "./CommandBar"
 
@@ -98,55 +99,64 @@ export function Commands() {
     useMemo(
       () => ({
         icon: () => <Icon icon="ph:cube" />,
-        description: () => "Focus",
+        description: (editor) => (
+          <>Focus on {editor.selectedElement()?.displayName}</>
+        ),
         name: "Focus",
+        shortcut: ["meta", "f"],
         execute: async (editor: ThreeEditor) => {
           let el = editor.root
-          let selected = editor.selectedElement().treeId
-          // let traverse = (item, show) => {
-          //   if (selected === item.treeId) {
-          //     console.log("visible", item.treeId)
+          let selectedElement = editor.selectedElement()
+          let selected = selectedElement?.treeId
 
-          //     // console.log("saving", item.key)
-          //     // item.save()
-          //   }  else if () {
-
-          //   }
-          //   else {
-          //     item.visible = false
-          //     for (var child of item.children) {
-          //       traverse(child, false)
-          //     }
-          //   }
-          // }
-
-          for (var child of el.children) {
-            if (!selected.startsWith(child.treeId)) {
-              if (child.ref instanceof Mesh || child.ref instanceof Group) {
-                child.visible = false
-              } else {
-                for (var c of child.children) {
-                  if (c.ref instanceof Mesh || c.ref instanceof Group) {
-                    c.visible = false
-                  }
-                }
-              }
+          function show(c: EditableElement) {
+            if (c.ref instanceof Mesh || c.ref instanceof Group) {
+              c.visible = true
             } else {
-              for (var c of child.children) {
-                if (!selected.startsWith(c.treeId)) {
-                  if (c.ref instanceof Mesh || c.ref instanceof Group) {
-                    c.visible = false
-                  } else {
-                    for (var d of c.children) {
-                      if (d.ref instanceof Mesh || d.ref instanceof Group) {
-                        d.visible = false
-                      }
-                    }
-                  }
-                }
+              for (var d of c.children) {
+                show(d)
               }
             }
           }
+
+          function hide(c: EditableElement) {
+            if (c.ref instanceof Mesh || c.ref instanceof Group) {
+              c.visible = false
+            } else {
+              for (var d of c.children) {
+                hide(d)
+              }
+            }
+          }
+
+          function focus(c: EditableElement, selected: string) {
+            if (!selected.startsWith(c.treeId)) {
+              hide(c)
+            } else if (selected === c.treeId) {
+            } else {
+              for (var d of c.children) {
+                focus(d, selected)
+              }
+            }
+          }
+
+          if (selected) {
+            show(el)
+            for (var child of el.children) {
+              focus(child, selected)
+            }
+          }
+
+          editor.bounds.refresh(selectedElement?.ref).fit()
+
+          // let position = selectedElement?.ref?.position
+          // editor.setSettings("camera.position", [
+          //   position.x + 2,
+          //   position.y + 2,
+          //   position.z + 2
+          // ])
+
+          // editor.camera?.lookAt(position)
 
           commandStore.setState({ open: false })
         },

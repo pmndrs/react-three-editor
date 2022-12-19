@@ -18,7 +18,7 @@ import { createMultiTunnel } from "../tunnels"
 
 type Command = {
   icon: (editor: ThreeEditor) => JSX.Element
-  description: (editor: ThreeEditor) => string
+  description: (editor: ThreeEditor) => string | JSX.Element
   name: string
   execute: (editor: ThreeEditor) => void
   render: (editor: ThreeEditor) => any
@@ -84,7 +84,8 @@ export function KeyboardCommands() {
   return (
     <>
       {commands.map((command) => {
-        if (!command.shortcut || !command.render(editor)) return null
+        if (!command.shortcut) return null
+        console.log(command.shortcut)
 
         return (
           <KeyboardShortcut
@@ -121,7 +122,11 @@ export function KeyboardShortcut({
                   marginLeft: i > 0 ? "4px" : "0px"
                 }}
               >
-                {key === "meta" ? "⌘" : key.toUpperCase()}
+                {key === "meta"
+                  ? "⌘"
+                  : key === "shift"
+                  ? "⇧"
+                  : key.toUpperCase()}
               </kbd>
             ))}
           </div>
@@ -234,7 +239,9 @@ function Item({
       {children}
       <div cmdk-raycast-meta="" cmdk-raycast-submenu-shortcuts="">
         {shortcut?.map((key, i) => (
-          <kbd key={`${i}`}>{key === "meta" ? "⌘" : key.toUpperCase()}</kbd>
+          <kbd key={`${i}`}>
+            {key === "meta" ? "⌘" : key === "shift" ? "⇧" : key.toUpperCase()}
+          </kbd>
         ))}
       </div>
     </Command.Item>

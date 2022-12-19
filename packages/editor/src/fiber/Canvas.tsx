@@ -1,10 +1,11 @@
+import { Bounds, useBounds } from "@react-three/drei"
 import { Canvas as FiberCanvas } from "@react-three/fiber"
 import "cmdk/dist/"
 import { DrafterProvider } from "draft-n-draw"
 import { ComponentProps, forwardRef, useMemo, useState } from "react"
 import { Toaster } from "react-hot-toast"
 import { EditableElementContext } from "../editable/editable"
-import { EditorContext } from "../editable/Editor"
+import { EditorContext, useEditor } from "../editable/Editor"
 import { client } from "../vite/client"
 import { CameraGizmos } from "./controls/CameraGizmos"
 import {
@@ -84,9 +85,12 @@ const EditorCanvas = forwardRef<
       <DrafterProvider>
         <EditorContext.Provider value={store}>
           <EditorCamera />
-          <EditableElementContext.Provider key={key} value={store.root}>
-            {children}
-          </EditableElementContext.Provider>
+          <Bounds margin={2} >
+            <AssignBounds />
+            <EditableElementContext.Provider key={key} value={store.root}>
+              {children}
+            </EditableElementContext.Provider>
+          </Bounds>
           <editorTunnel.Outs
             fallback={
               <>
@@ -117,3 +121,12 @@ const EditorCanvas = forwardRef<
     </FiberCanvas>
   )
 })
+
+function AssignBounds() {
+  const editor = useEditor()
+  const bounds = useBounds()
+
+  editor.bounds = bounds
+
+  return null
+}

@@ -3,7 +3,7 @@ import { useThree } from "@react-three/fiber"
 import { levaStore } from "leva"
 import { useEffect, useRef } from "react"
 import { useHotkeysContext } from "react-hotkeys-hook"
-import { Camera, Event } from "three"
+import { Camera, Event, MathUtils } from "three"
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib"
 import { editable } from "../../editable/editable"
 import { useEditor, useEditorStore } from "../../editable/Editor"
@@ -20,10 +20,15 @@ export function EditorCamera() {
   const [props, setCamera] = editor.useSettings("camera", {
     enabled: false,
     position: {
-      value: [-6.836465353768794, 3.1169378502902387, -2.747260436170274],
+      value: [10, 10, 10],
+      step: 0.1
+    },
+    rotation: {
+      value: [0, 0, 0],
       step: 0.1
     },
     fov: { value: 75, min: 1, max: 180 },
+    zoom: { value: 1, min: 0, max: 10 },
     near: { value: 0.1, min: 0.1, max: 100 },
     far: { value: 1000, min: 0.1, max: 10000 }
   })
@@ -60,6 +65,19 @@ export function EditorCamera() {
           "camera.position",
           e.target.object.position.toArray()
         )
+
+        editor.setSettings(
+          "camera.rotation",
+          e.target.object.rotation
+            .toArray()
+            .slice(0, 3)
+            .map((a) => MathUtils.radToDeg(a))
+        )
+
+        editor.setSettings("camera.fov", e.target.object.fov)
+        editor.setSettings("camera.near", e.target.object.near)
+        editor.setSettings("camera.far", e.target.object.far)
+        editor.setSettings("camera.zoom", e.target.object.zoom)
       }
     }
     controls?.addEventListener("change", update)
@@ -71,7 +89,16 @@ export function EditorCamera() {
 
   return (
     <>
-      {props.enabled && <PerspectiveCamera {...props} makeDefault />}
+      {props.enabled && (
+        <PerspectiveCamera
+          ref={(el) => {
+            editor.camera = el
+          }}
+          {...props}
+          rotation={props.rotation.map((a) => MathUtils.degToRad(a))}
+          makeDefault
+        />
+      )}
       {props.enabled && (!controls || ref2.current === controls) && (
         <OrbitControls ref={ref2} makeDefault />
       )}
