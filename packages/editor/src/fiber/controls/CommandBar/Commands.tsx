@@ -3,7 +3,8 @@ import { useMemo } from "react"
 import { Group, Mesh } from "three"
 import { EditableElement } from "../../../editable/EditableElement"
 import { ThreeEditor } from "../../ThreeEditor"
-import { commandStore, useCommand } from "./CommandBar"
+import { commandStore } from "./store"
+import { useCommand } from "./useCommand"
 
 export function Commands() {
   useCommand(
