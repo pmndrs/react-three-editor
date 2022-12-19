@@ -1,6 +1,5 @@
 import { Bounds, useBounds } from "@react-three/drei"
 import { Canvas as FiberCanvas } from "@react-three/fiber"
-import "cmdk/dist/"
 import { DrafterProvider } from "draft-n-draw"
 import { ComponentProps, forwardRef, useMemo, useState } from "react"
 import { Toaster } from "react-hot-toast"
