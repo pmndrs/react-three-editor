@@ -1,6 +1,5 @@
 import { Icon } from "@iconify/react"
 import { LevaPanel } from "leva"
-import { useState } from "react"
 import { EditableElement } from "../../EditableElement"
 import { StyledIcon } from "../folder/StyledFolder"
 import { ElementIcon } from "./ElementIcon"
@@ -27,9 +26,11 @@ export function TreeElement({
 
   const [_collapsed, setCollapsed] = element.useCollapsed()
 
-  const [visible, setVisible] = useState(
-    element.ref?.visible || (true as boolean)
-  )
+  const [visible, setVisible] = element.useVisible()
+
+  // const [visible, setVisible] = useState(
+  //   element.ref?.visible || (true as boolean)
+  // )
 
   const dirty = element.store.useStore(
     (s) => Object.keys(element.changes).length > 0

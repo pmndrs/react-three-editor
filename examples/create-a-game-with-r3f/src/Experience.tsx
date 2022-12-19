@@ -54,14 +54,15 @@ function BlockSpinner({ position = [0, 0, 0] }: { position: Vector3 }) {
 
   return (
     <group position={position}>
-      <mesh position={[0, -0.1, 14.893]} scale={[4, 0.2, 4]} receiveShadow>
-        <boxGeometry name="box" args={[3.6, 5.6000000000000005, 1.7000000000000002]} />
+      <mesh position={[0, -0.1, 0]} scale={[4, 0.2, 4]} receiveShadow>
+        <boxGeometry name="box" />
         <memo.meshStandardMaterial name="floor2Material" color="greenyellow" />
       </mesh>
 
       <RigidBody
         ref={obstacle}
         type="kinematicPosition"
+        rotation={[0, 0, 0]}
         position={[0, 0.3, 0]}
         restitution={0.7}
         mass={39}
@@ -80,7 +81,7 @@ function BlockSpinner({ position = [0, 0, 0] }: { position: Vector3 }) {
         </mesh>
       </RigidBody>
     </group>
-  );
+  )
 }
 
 function BlockAxe({ position = [0, 0, 0] }: { position: Vector3 }) {
@@ -107,7 +108,12 @@ function BlockAxe({ position = [0, 0, 0] }: { position: Vector3 }) {
           color={"rgb(147, 63, 63)"}
         />
       </mesh>
-      <RigidBody ref={obstacle} type="kinematicPosition">
+      <RigidBody
+        ref={obstacle}
+        type="kinematicPosition"
+        position={[0, 0, 0]}
+        rotation={[0, 0, 0]}
+      >
         <mesh scale={[1.5, 1.5, 0.3]} receiveShadow castShadow={true}>
           <memo.boxGeometry name="box" />
           <memo.meshStandardMaterial
@@ -141,7 +147,12 @@ function BlockLimbo({ position = [0, 0, 0] }: { position: Vector3 }) {
         <memo.boxGeometry name="box" />
         <memo.meshStandardMaterial name="floor2Material" color="greenyellow" />
       </mesh>
-      <RigidBody ref={obstacle} type="kinematicPosition">
+      <RigidBody
+        ref={obstacle}
+        type="kinematicPosition"
+        position={[0, 0, 0]}
+        rotation={[0, 0, 0]}
+      >
         <mesh scale={[3.5, 0.3, 0.3]} receiveShadow castShadow={true}>
           <memo.boxGeometry name="box" />
           <memo.meshStandardMaterial
@@ -161,11 +172,11 @@ function BlockEnd({ position }: { position: Vector3 }) {
         <memo.boxGeometry name="box" />
         <memo.meshStandardMaterial name="floor1Material" color="limegreen" />
       </mesh>
-      <RigidBody type="fixed" colliders="hull" position={[0, 2.076, 0]}>
+      <RigidBody type="fixed" colliders="hull" position={[0, 1, 0]}>
         <primitive
           object={useGLTF("/hamburger.glb").scene}
           scale={0.2}
-          position={[0, -1.897, 0]}
+          position={[0, -0.4, 0]}
         />
       </RigidBody>
     </group>
@@ -222,10 +233,10 @@ function Level() {
       <BlockSpinner position={[0, 0, -8]} />
       <BlockSpinner position={[0, 0, -12]} />
       <BlockAxe position={[0, 0, -16]} />
-      <BlockEnd position={[7, 0, -20]} />
+      <BlockEnd position={[0, 0, -20]} />
       <Bounds length={6} name={"bounds"} />
     </>
-  );
+  )
 }
 
 export default function Experience() {

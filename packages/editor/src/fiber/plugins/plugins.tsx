@@ -1,4 +1,4 @@
-import { OrbitControls, useHelper } from "@react-three/drei"
+import { OrbitControls } from "@react-three/drei"
 import { folder } from "leva"
 import {
   AmbientLight,
@@ -16,7 +16,6 @@ import {
   SpotLightHelper
 } from "three"
 import { EditableElement } from "../../editable/EditableElement"
-import { useEditorStore } from "../../editable/Editor"
 import { prop } from "../controls/prop"
 import { TransformHelper } from "../controls/TransformHelper"
 
@@ -30,11 +29,9 @@ export const transform = {
           position: prop.vector3d({
             element: entity,
             path: ["ref", "position"],
-            lock: true,
             step: 0.1
           }),
           rotation: prop.euler({
-            lock: true,
             step: 1,
             path: ["ref", "rotation"],
             element: entity
@@ -110,13 +107,7 @@ export const camera = {
     }
   },
   helper: ({ element }: { element: EditableElement }) => {
-    const [{ camera }] = element.editor.useSettings("helpers", {
-      camera: { value: true }
-    })
-    const isSelected = useEditorStore(
-      (state) => state.selectedId === element.id
-    )
-    useHelper(camera || isSelected ? element : undefined, CameraHelper)
+    element.useHelper("camera", CameraHelper)
     return null
   }
 }
@@ -205,10 +196,7 @@ export const directionalLight = {
     }
   },
   helper: ({ element }: { element: EditableElement }) => {
-    const [{ directionalLight }] = element.editor.useSettings("helpers", {
-      directionalLight: { value: true }
-    })
-    useHelper(directionalLight ? element : undefined, DirectionalLightHelper)
+    element.useHelper("directionalLight", DirectionalLightHelper)
     return null
   }
 }
@@ -271,10 +259,7 @@ export const spotLight = {
     }
   },
   helper: ({ element }: { element: EditableElement }) => {
-    const [{ spotLight }] = element.editor.useSettings("helpers", {
-      spotLight: { value: true }
-    })
-    useHelper(spotLight ? element : undefined, SpotLightHelper, "hotpink")
+    element.useHelper("spotLight", SpotLightHelper)
     return null
   }
 }
@@ -294,11 +279,9 @@ export const transformWithoutRef = {
           position: prop.vector3d({
             element: entity,
             path: ["object", "position"],
-            lock: true,
             step: 0.1
           }),
           rotation: prop.euler({
-            lock: true,
             step: 1,
             path: ["object", "rotation"],
             element: entity
@@ -379,9 +362,19 @@ export const propControls = {
 
     Object.entries(entity.currentProps).forEach(([k, v]) => {
       if (!controls[k] && !IGNORED_PROPS.includes(k) && isControllable(v)) {
+        let val = entity.currentProps[k]
+
+        let props = {}
+        if (typeof val === "number") {
+          props.step = val / 100.0
+          if (val % 1 === 0) {
+            props.step = 1
+          }
+        }
         controls[k] = prop.unknown({
           element: entity,
-          path: ["currentProps", k]
+          path: ["currentProps", k],
+          ...props
         })
       }
     })

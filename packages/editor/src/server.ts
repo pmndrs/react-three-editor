@@ -16,14 +16,12 @@ export default function editor(): Plugin {
         try {
           transform(data)
         } catch (e) {
-          console.log(e)
           throw e
         }
       }
     })
 
     server.middlewares.use("/__editor/save", async (req, res) => {
-      console.log(req.url)
       const { default: formidable, errors } = await import("formidable")
       formidable({
         multiples: true,
@@ -43,7 +41,7 @@ export default function editor(): Plugin {
         if (fs.existsSync(p)) {
           fs.removeSync(p)
         }
-        console.log(fs.moveSync(files["file"].filepath, p))
+        fs.moveSync(files["file"].filepath, p)
         res.writeHead(200, { "Content-Type": "application/json" })
         res.end(
           JSON.stringify(
@@ -60,10 +58,21 @@ export default function editor(): Plugin {
     name: "vite-plugin-vinxi",
     enforce: "pre",
     handleHotUpdate(ctx) {
-      console.log(ctx.file)
       if (justEdited[ctx.file]) {
         return []
       }
+    },
+    transformIndexHtml: async (id, prop) => {
+      return [
+        {
+          tag: "link",
+          attrs: {
+            type: "text/css",
+            rel: "stylesheet",
+            href: "node_modules/@react-three/editor/assets/style.css"
+          }
+        }
+      ]
     },
     configResolved(_config) {
       config = _config
@@ -266,7 +275,6 @@ function transform(data: any) {
     wrapColumn: 1000
   }).code
 
-  console.log(babelCode, code)
   setTimeout(() => {
     delete justEdited[`${data.source.fileName}`]
   }, 1000)

@@ -2,7 +2,7 @@ import { OrbitControls, PerspectiveCamera } from "@react-three/drei"
 import { useThree } from "@react-three/fiber"
 import { levaStore } from "leva"
 import { useEffect, useRef } from "react"
-import { useHotkeys, useHotkeysContext } from "react-hotkeys-hook"
+import { useHotkeysContext } from "react-hotkeys-hook"
 import { Camera, Event } from "three"
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib"
 import { editable } from "../../editable/editable"
@@ -28,18 +28,18 @@ export function EditorCamera() {
     far: { value: 1000, min: 0.1, max: 10000 }
   })
 
-  useHotkeys(
-    "meta+e",
-    (e, a) => {
-      setCamera({
-        enabled: !props.enabled
-      })
-    },
-    [props.enabled],
-    {
-      preventDefault: true
-    }
-  )
+  // useHotkeys(
+  //   "meta+e",
+  //   (e, a) => {
+  //     setCamera({
+  //       enabled: !props.enabled
+  //     })
+  //   },
+  //   [props.enabled],
+  //   {
+  //     preventDefault: true
+  //   }
+  // )
 
   useSelectedState(editor)
 

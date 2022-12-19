@@ -1,7 +1,10 @@
 import { getDrafter } from "draft-n-draw"
 import { levaStore, useControls } from "leva"
-import { StoreType } from "leva/dist/declarations/src/types"
+import { Schema, StoreType } from "leva/dist/declarations/src/types"
+import { useState } from "react"
+import create from "zustand"
 import {
+  RReturnType,
   SchemaOrFn,
   usePersistedControls
 } from "../editable/controls/usePersistedControls"
@@ -9,32 +12,66 @@ import { EditableElement, JSXSource } from "../editable/EditableElement"
 import { Editor } from "../editable/Editor"
 import { usePanel } from "./controls/Panel"
 
+const createLevaStore = () => {
+  return new (Object.getPrototypeOf(levaStore).constructor)()
+}
+
 // @ts-ignore
 levaStore.store = undefined
 
 type Panel = StoreType & { store: StoreType }
 
-export class ThreeEditor extends Editor {
+class PanelManager {}
 
+export class ThreeEditor extends Editor {
+  isEditorMode() {
+    let enabled = this.getPanel(this.settingsPanel).get(
+      "settings.camera.enabled"
+    )
+
+    if (enabled === undefined) {
+      return false
+    } else {
+      return enabled
+    }
+  }
+  remount: () => void = () => {}
   isSelected(arg0: EditableElement) {
     return this.store.getState().selectedId === arg0.id
   }
-  panels: Record<string, Panel> = {
-    default: levaStore as Panel
+
+  panelStore = create((get, set) => ({
+    panels: {
+      default: {
+        panel: levaStore as Panel
+      }
+    } as Record<string, { panel: Panel }>
+  }))
+
+  get panels() {
+    return this.panelStore.getState().panels
   }
 
   getPanel(name: string | StoreType): Panel {
+    let panels = this.panels
     if (typeof name === "string") {
-      if (this.panels[name]) return this.panels[name]
+      if (panels[name]) return panels[name].panel
 
-      this.panels[name] = new (Object.getPrototypeOf(levaStore).constructor)()
+      panels[name] = { panel: createLevaStore() }
+
       // @ts-ignore
-      this.panels[name].store = this.panels[name]
-      return this.panels[name]
+      panels[name].panel.store = panels[name].panel
+
+      this.panelStore.setState(() => ({
+        panels
+      }))
+      return panels[name].panel
     } else {
       return name as Panel
     }
   }
+
+  settings = createLevaStore()
 
   get settingsPanel(): StoreType | string {
     return this.store.getState().settingsPanel
@@ -68,31 +105,31 @@ export class ThreeEditor extends Editor {
     }
   }
 
-  useSettings<T extends SchemaOrFn>(
+  useSettings<S extends Schema, T extends SchemaOrFn<S>>(
     name: string | undefined,
     arg1: T,
     hidden?: boolean
-  ) {
-    const settingsPanel = this.store((s) => s.settingsPanel)
-    const panel = usePanel(settingsPanel)
+  ): RReturnType<() => S> {
+    const settingsPanel = usePanel(this.store((s) => s.settingsPanel))
+    const [collapsed, setCollpased] = useState(true)
     useControls(
       "settings",
       {},
-      { collapsed: true, order: 1001 },
+      { order: 1001 },
       {
-        store: panel.store
+        store: settingsPanel.store
       }
     )
 
     let props = usePersistedControls(
-      "settings" + (name ? `.${name}` : ""),
+      `settings` + (name ? `.${name}` : ""),
       arg1,
       [],
-      panel.store,
+      settingsPanel.store,
       hidden
     )
 
-    return props
+    return props as any
   }
 
   createElement(
@@ -120,6 +157,7 @@ export class ThreeEditor extends Editor {
     } & Omit<Parameters<ReturnType<typeof getDrafter>["drawRay"]>[1], "persist">
   ) {
     let editor = this
+    if (!this.isEditorMode()) return
     if (typeof v?.persist === "number") {
       let applicable = this.plugins.filter((p) => p.debug && p.applicable(info))
 
@@ -140,5 +178,11 @@ export class ThreeEditor extends Editor {
     debug?: (arg0: any, arg1: any, arg2?: ThreeEditor) => () => void
   }) {
     this.plugins.push(plugin)
+  }
+
+  selectedElement() {
+    return this.store.getState().elements[
+      this.store.getState().selectedId ?? ""
+    ]
   }
 }

@@ -29,7 +29,7 @@ export default function Sudo() {
         position={[0.68, 0.33, -0.67]}
         rotation={[Math.PI / 2, 0, 0.29]}
       />
-      <a.mesh geometry={nodes.SudoHead.geometry} material={nodes.SudoHead.material} position={[0.68, 0.33, -0.67]} {...spring} castShadow={true} />
+      <a.mesh geometry={nodes.SudoHead.geometry} material={nodes.SudoHead.material} position={[0.68, 0.33, -0.67]} {...spring} castShadow={true} scale={[2.1, 2.1, 2.1]} />
     </>
   );
 }

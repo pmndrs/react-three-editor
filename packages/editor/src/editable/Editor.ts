@@ -49,6 +49,7 @@ export class Editor extends EventTarget {
     super()
     this.store = createEditorStore()
     this.root.editor = this
+    this.root.index = ""
     this.expanded = localStorage.getItem("collapased")
       ? new Set(JSON.parse(localStorage.getItem("collapased")!))
       : new Set()

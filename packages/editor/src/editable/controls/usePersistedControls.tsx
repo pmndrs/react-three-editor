@@ -4,7 +4,7 @@ import {
   SchemaToValues,
   StoreType
 } from "leva/dist/declarations/src/types"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 let editorName = "r3f-editor"
 
@@ -20,10 +20,15 @@ function manageProps(folderName: string, props: any) {
           )
 
           if (read != null) {
-            props[key].value = read
+            if (props[key].__customInput) {
+              props[key].__customInput.data = read
+            } else {
+              props[key].value = read
+            }
           }
         } catch (e) {
           console.log(e)
+          localStorage.removeItem(`${editorName}.${folderName}.${key}`)
         }
       }
     } else {
@@ -33,7 +38,11 @@ function manageProps(folderName: string, props: any) {
         )
 
         if (read != null) {
-          props[key] = read
+          if (props[key]?.__customInput) {
+            props[key].__customInput.data = read
+          } else {
+            props[key] = read
+          }
         }
       } catch (e) {
         console.log(e)
@@ -52,7 +61,7 @@ export type FunctionReturnType<S extends Schema> = [
     path: T
   ) => SchemaToValues<S, true>[T]
 ]
-type ReturnType<F extends SchemaOrFn> = F extends SchemaOrFn<infer S>
+export type RReturnType<F extends SchemaOrFn> = F extends SchemaOrFn<infer S>
   ? F extends Function
     ? FunctionReturnType<S>
     : SchemaToValues<S>
@@ -64,7 +73,8 @@ export function usePersistedControls<S extends Schema, T extends SchemaOrFn<S>>(
   deps = [],
   store = undefined as StoreType | undefined,
   hidden = false
-): ReturnType<() => S> {
+): RReturnType<() => S> {
+  const [collapsed, setCollpased] = useState(true)
   const [values, set] = useControls(
     () => {
       // Object.keys(props).forEach((key) => {
@@ -87,7 +97,7 @@ export function usePersistedControls<S extends Schema, T extends SchemaOrFn<S>>(
             ...props
           },
           {
-            collapsed: true,
+            collapsed: collapsed,
             render: () => !hidden
           }
         )
@@ -96,7 +106,7 @@ export function usePersistedControls<S extends Schema, T extends SchemaOrFn<S>>(
     {
       store: store
     },
-    [...deps]
+    [...deps, collapsed]
   )
 
   useEffect(() => {

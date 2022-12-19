@@ -7,17 +7,21 @@ export const boxGeometryControls = (
   path: string[]
 ) => {
   return {
+    args: {
+      value: 0,
+      render: () => false
+    },
     width: prop.number({
       element,
       path: ["currentProps", "args", "0"]
     }),
     height: prop.number({
       element,
-      path: ["currentProps", "args", "0"]
+      path: ["currentProps", "args", "1"]
     }),
     depth: prop.number({
       element,
-      path: ["currentProps", "args", "0"]
+      path: ["currentProps", "args", "2"]
     })
   }
 }

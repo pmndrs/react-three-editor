@@ -26,5 +26,5 @@ export default function Level() {
     >
       <meshStandardMaterial map={nodes.Level.material.map} />
     </mesh>
-  )
+  );
 }

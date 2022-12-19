@@ -6,7 +6,7 @@
     "url": "https://github.com/nksaraf"
   },
   "description": "",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "main": "dist/react-three-editor.cjs.js",
   "module": "dist/react-three-editor.esm.js",
   "preconstruct": {
@@ -33,7 +33,12 @@
   "babel": {
     "presets": [
       "@babel/preset-env",
-      "@babel/preset-react",
+      [
+        "@babel/preset-react",
+        {
+          "runtime": "automatic"
+        }
+      ],
       [
         "@babel/preset-typescript",
         {
@@ -66,6 +71,7 @@
     "prettier": "^2.8.0",
     "r3f-perf": "^6.5.0",
     "react-dropzone": "^14.2.3",
+    "react-hot-toast": "^2.4.0",
     "react-hotkeys-hook": "^4.0.6",
     "three-stdlib": "^2.20.4",
     "tunnel-rat": "^0.1.0",
@@ -74,6 +80,7 @@
   },
   "peerDependencies": {
     "@react-three/fiber": "8.9.1",
+    "@react-three/rapier": "*",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0",
     "three": "0.147.0"

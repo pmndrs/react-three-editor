@@ -1,74 +1,51 @@
-import { Icon } from "@iconify/react"
 import * as Popover from "@radix-ui/react-popover"
 import { Command } from "cmdk"
-import React, { Fragment, PropsWithChildren, ReactNode } from "react"
+import { styled } from "leva/plugin"
+import {
+  Fragment,
+  ReactNode,
+  RefObject,
+  useEffect,
+  useRef,
+  useState
+} from "react"
+import toast from "react-hot-toast"
 import { useHotkeys } from "react-hotkeys-hook"
 import create from "zustand"
 import { useEditor } from "../../../editable/Editor"
 import { ThreeEditor } from "../../ThreeEditor"
 import { createMultiTunnel } from "../tunnels"
-import "./style.css"
 
-const commandStore = create((get, set) => ({
-  open: false,
-  commands: [
-    {
-      icon: () => <Icon icon="ph:cube" />,
-      description: "Go to Editor Mode",
-      name: "Go to Editor Mode",
-      execute: (editor: ThreeEditor) => {
-        editor
-          .getPanel(editor.settingsPanel)
-          .setValueAtPath("settings.camera.enabled", true, true)
+type Command = {
+  icon: (editor: ThreeEditor) => JSX.Element
+  description: (editor: ThreeEditor) => string
+  name: string
+  execute: (editor: ThreeEditor) => void
+  render: (editor: ThreeEditor) => any
+  shortcut?: string[]
+}
 
-        commandStore.setState({ open: false })
-      },
-      render: (editor: ThreeEditor) => {
-        let enabled = editor
-          .getPanel(editor.settingsPanel)
-          .get("settings.camera.enabled")
-        if (enabled === undefined) {
-          return true
-        } else {
-          return !enabled
+export function useCommand(command: Command) {
+  useEffect(() => {
+    commandStore.setState((s) => {
+      return {
+        commands: [...s.commands, command]
+      }
+    })
+
+    return () => {
+      commandStore.setState((s) => {
+        return {
+          commands: s.commands.filter((c) => c !== command)
         }
-      },
-      shortcut: () => (
-        <>
-          <kbd>⌘</kbd>
-          <kbd>E</kbd>
-        </>
-      )
-    },
-    {
-      icon: () => <Icon icon="ph:cube" />,
-      description: "Go to Play Mode",
-      name: "Go to Play Mode",
-      execute: (editor: ThreeEditor) => {
-        editor
-          .getPanel(editor.settingsPanel)
-          .setValueAtPath("settings.camera.enabled", false, true)
-
-        commandStore.setState({ open: false })
-      },
-      render: (editor: ThreeEditor) => {
-        let enabled = editor
-          .getPanel(editor.settingsPanel)
-          .get("settings.camera.enabled")
-        if (enabled === undefined) {
-          return true
-        } else {
-          return enabled
-        }
-      },
-      shortcut: () => (
-        <>
-          <kbd>⌘</kbd>
-          <kbd>E</kbd>
-        </>
-      )
+      })
     }
-  ]
+  }, [command])
+}
+
+export const commandStore = create((get, set) => ({
+  open: false,
+  commands: [] as Command[]
 }))
 
 export const commandBarTunnel = createMultiTunnel()
@@ -79,35 +56,105 @@ export const CommandBar = () => {
   }
   const open = commandStore((state) => state.open)
 
-  useHotkeys("meta+space", () => toggleOpen())
+  // Toggle the menu when ⌘K is pressed
+  useHotkeys("meta+k", () => toggleOpen())
 
   return (
-    <Command.Dialog
-      open={open}
-      onOpenChange={toggleOpen}
-      className="commandbar dark"
-    >
-      <commandBarTunnel.Outs />
-    </Command.Dialog>
+    <>
+      <Command.Dialog
+        open={open}
+        onOpenChange={setOpen}
+        className="commandbar dark"
+      >
+        <commandBarTunnel.Outs />
+      </Command.Dialog>
+    </>
   )
+}
+
+export function KeyboardCommands() {
+  const commands = commandStore((state) => state.commands)
+  const editor = useEditor()
+
+  const [{ shortcuts: debug }] = editor.useSettings("debug", {
+    shortcuts: false
+  })
+
+  return (
+    <>
+      {commands.map((command) => {
+        if (!command.shortcut || !command.render(editor)) return null
+
+        return (
+          <KeyboardShortcut
+            key={command.name}
+            debug={debug as boolean}
+            shortcut={command.shortcut}
+            execute={() => command.execute(editor)}
+          />
+        )
+      })}
+    </>
+  )
+}
+
+export function KeyboardShortcut({
+  shortcut,
+  execute,
+  debug
+}: {
+  shortcut: string[]
+  execute: () => void
+  debug: boolean
+}) {
+  useHotkeys(
+    shortcut.join("+"),
+    () => {
+      if (debug)
+        toast.custom(
+          <div className="kbd-shortcut">
+            {shortcut?.map((key, i) => (
+              <kbd
+                key={`${i}`}
+                style={{
+                  marginLeft: i > 0 ? "4px" : "0px"
+                }}
+              >
+                {key === "meta" ? "⌘" : key.toUpperCase()}
+              </kbd>
+            ))}
+          </div>
+        )
+      execute()
+    },
+    [shortcut.join("+"), execute, debug],
+    {
+      preventDefault: true
+    }
+  )
+
+  return null
 }
 
 export function CommandBarControls() {
   const open = commandStore((state) => state.open)
   const editor = useEditor()
 
-  return <EditorCommand editor={editor} key={open ? 0 : 1} />
+  return (
+    <>
+      <EditorCommand editor={editor} key={open ? 0 : 1} />
+      <KeyboardCommands />
+    </>
+  )
 }
 
-export type EditorCommandProps = {
-  editor: ThreeEditor
-}
+export function EditorCommand({ editor }: { editor: ThreeEditor }) {
+  const theme = "dark"
+  const [value, setValue] = useState("linear")
+  const inputRef = useRef<HTMLInputElement | null>(null)
+  const listRef = useRef(null)
 
-export function EditorCommand({ editor }: EditorCommandProps) {
-  const inputRef = React.useRef<HTMLInputElement | null>(null)
-  const listRef = React.useRef(null)
-
-  React.useEffect(() => {
+  useEffect(() => {
     inputRef?.current?.focus()
   }, [])
 
@@ -129,13 +176,12 @@ export function EditorCommand({ editor }: EditorCommandProps) {
             <Fragment key={command.name}>
               {command.render(editor) ? (
                 <Item
-                  isCommand
-                  shortcut={command.shortcut()}
+                  shortcut={command.shortcut}
                   value={command.name}
                   onSelect={() => command.execute(editor)}
                 >
-                  {command.icon()}
-                  {command.description}
+                  {command.icon(editor)}
+                  {command.description(editor)}
                 </Item>
               ) : null}
             </Fragment>
@@ -146,25 +192,26 @@ export function EditorCommand({ editor }: EditorCommandProps) {
   )
 }
 
-export type ItemProps = PropsWithChildren<{
-  value: string
-  isCommand?: boolean
-  shortcut?: ReactNode
-  onSelect?(): void
-}>
+const StyledKbd = styled("div", {})
 
 function Item({
   children,
   value,
-  isCommand = false,
   onSelect,
   shortcut
-}: ItemProps) {
+}: {
+  children: ReactNode
+  value: string
+  onSelect: () => void
+  shortcut?: string[]
+}) {
   return (
     <Command.Item value={value} onSelect={onSelect}>
       {children}
-      <div cmdk-raycast-meta="" style={{ display: "flex" }}>
-        {shortcut}
+      <div cmdk-raycast-meta="" cmdk-raycast-submenu-shortcuts="">
+        {shortcut?.map((key, i) => (
+          <kbd key={`${i}`}>{key === "meta" ? "⌘" : key.toUpperCase()}</kbd>
+        ))}
       </div>
     </Command.Item>
   )
@@ -175,13 +222,13 @@ function SubCommand({
   listRef,
   selectedValue
 }: {
-  inputRef: React.RefObject<HTMLInputElement>
-  listRef: React.RefObject<HTMLElement>
+  inputRef: RefObject<HTMLInputElement>
+  listRef: RefObject<HTMLElement>
   selectedValue: string
 }) {
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = useState(false)
 
-  React.useEffect(() => {
+  useEffect(() => {
     function listener(e: KeyboardEvent) {
       if (e.key === "k" && e.metaKey) {
         e.preventDefault()
@@ -196,7 +243,7 @@ function SubCommand({
     }
   }, [])
 
-  React.useEffect(() => {
+  useEffect(() => {
     const el = listRef.current
 
     if (!el) return
@@ -262,7 +309,7 @@ function SubItem({
   children,
   shortcut
 }: {
-  children: React.ReactNode
+  children: ReactNode
   shortcut: string
 }) {
   return (
