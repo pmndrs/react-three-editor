@@ -2,7 +2,6 @@ export {
   applyProps,
   createPortal,
   extend,
-  Stages,
   useLoader,
   useThree
 } from "@react-three/fiber"
@@ -20,7 +19,8 @@ export {
   useEditorFrame,
   useEditorUpdate,
   useFrame,
-  useUpdate
+  useUpdate,
+  Stages
 } from "./useFrame"
 
 export function extendControls(t: any, controls: Record<string, {}>) {

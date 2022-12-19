@@ -123,7 +123,7 @@ export function Player() {
       colliders="ball"
       restitution={0.2}
       friction={1}
-      position={[-0.593, 1.357, -0.088]}
+      position={[-0.593, 1.357, -2.747]}
       mass={0.1}
     >
       <mesh castShadow>

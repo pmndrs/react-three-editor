@@ -4,6 +4,8 @@ import { useEditor } from "../editable/Editor"
 import { usePanel } from "./controls/Panel"
 import { toggle } from "./controls/toggle"
 
+export let Stages = fiber.Stages || {}
+
 export function useEditorFrame(
   name: string,
   fn: fiber.RenderCallback,
