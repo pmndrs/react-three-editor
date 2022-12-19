@@ -81,6 +81,16 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
       editableElement.forwardedRef = true
       const [mounted, setMounted] = useState(false)
 
+      const onPointerUp = useCallback(
+        (e: any) => {
+          props.onPointerDown?.(e)
+          let id = editableElement.id
+          e.stopPropagation()
+          editableElement.editor.selectId(id)
+        },
+        [editableElement]
+      )
+
       return (
         <EditableElementContext.Provider value={editableElement}>
           <Component
@@ -88,6 +98,7 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
             {...rest}
             {...editableElement.props}
             ref={mergeRefs([ref, forwardRef, (r) => setMounted(true)])}
+            onPointerUp={onPointerUp}
           >
             {children}
           </Component>
