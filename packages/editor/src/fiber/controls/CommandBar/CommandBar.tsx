@@ -16,7 +16,7 @@ import { useEditor } from "../../../editable/Editor"
 import { ThreeEditor } from "../../ThreeEditor"
 import { createMultiTunnel } from "../tunnels"
 
-type Command = {
+export type Command = {
   icon: (editor: ThreeEditor) => JSX.Element
   description: (editor: ThreeEditor) => string
   name: string
@@ -65,6 +65,7 @@ export const CommandBar = () => {
         open={open}
         onOpenChange={toggleOpen}
         className="commandbar dark"
+        tabIndex={-1}
       >
         <commandBarTunnel.Outs />
       </Command.Dialog>
