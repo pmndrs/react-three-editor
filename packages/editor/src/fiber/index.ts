@@ -2,7 +2,6 @@ export {
   applyProps,
   createPortal,
   extend,
-  Stages,
   useLoader,
   useThree
 } from "@react-three/fiber"
