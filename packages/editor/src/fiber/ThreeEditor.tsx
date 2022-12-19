@@ -1,3 +1,4 @@
+import { useBounds } from "@react-three/drei"
 import { getDrafter } from "draft-n-draw"
 import { levaStore, useControls } from "leva"
 import { Schema, StoreType } from "leva/dist/declarations/src/types"
@@ -24,6 +25,8 @@ type Panel = StoreType & { store: StoreType }
 class PanelManager {}
 
 export class ThreeEditor extends Editor {
+  camera: unknown
+  bounds!: ReturnType<typeof useBounds>
   isEditorMode() {
     let enabled = this.getPanel(this.settingsPanel).get(
       "settings.camera.enabled"
@@ -100,7 +103,7 @@ export class ThreeEditor extends Editor {
       this.getPanel(this.settingsPanel).setValueAtPath(
         "settings." + arg0,
         arg1,
-        false
+        true
       )
     }
   }

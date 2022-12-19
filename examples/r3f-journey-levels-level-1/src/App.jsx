@@ -98,9 +98,9 @@ export default function App() {
         fixed
         lineWidth={2}
       />
-      <mesh ref={ref} position={[0.75, 0.5, 1]} castShadow receiveShadow>
+      <mesh ref={ref} position={[-0.083, 0.541, -0.126]} castShadow receiveShadow>
         <boxGeometry args={[0.5, 1, 0.5]} />
-        <meshStandardMaterial />
+        <meshStandardMaterial color={"rgb(144, 86, 86)"} />
       </mesh>
 
       <PivotControls
