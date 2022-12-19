@@ -17,6 +17,7 @@ export { PerformanceControls } from "./controls/PerformanceControls"
 export { SceneControls } from "./controls/SceneControls"
 export { SelectedElementControls } from "./controls/SelectedElementControls"
 export {
+  Stages,
   useEditorFrame,
   useEditorUpdate,
   useFrame,
