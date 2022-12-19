@@ -3,11 +3,15 @@ import { useMemo } from "react"
 import { Group, Mesh } from "three"
 import { EditableElement } from "../../../editable/EditableElement"
 import { ThreeEditor } from "../../ThreeEditor"
-import { commandStore } from "./store"
+import { useCommandStore } from "./store"
 import { useCommand } from "./useCommand"
 
 export function Commands() {
-  useCommand(
+  return null
+}
+
+/*
+useCommand(
     useMemo(
       () => ({
         icon: () => <Icon icon="ph:cube" />,
@@ -56,7 +60,7 @@ export function Commands() {
                 return { data }
               })
           }
-          commandStore.setState({ open: false })
+          useCommandStore.setState({ open: false })
         },
         render: (editor: ThreeEditor) => {
           return true
@@ -86,7 +90,7 @@ export function Commands() {
           }
           await traverse(el)
 
-          commandStore.setState({ open: false })
+          useCommandStore.setState({ open: false })
         },
         render: (editor: ThreeEditor) => {
           return true
@@ -159,7 +163,7 @@ export function Commands() {
 
           // editor.camera?.lookAt(position)
 
-          commandStore.setState({ open: false })
+          useCommandStore.setState({ open: false })
         },
         render: (editor: ThreeEditor) => {
           return editor.selectedElement()
@@ -177,7 +181,7 @@ export function Commands() {
         name: "Save selected element",
         execute: async (editor: ThreeEditor) => {
           editor.selectedElement()?.save()
-          commandStore.setState({ open: false })
+          useCommandStore.setState({ open: false })
         },
         render: (editor: ThreeEditor) => {
           return true
@@ -197,7 +201,7 @@ export function Commands() {
         execute: async (editor: ThreeEditor) => {
           localStorage.clear()
 
-          commandStore.setState({ open: false })
+          useCommandStore.setState({ open: false })
         },
         render: (editor: ThreeEditor) => {
           return true
@@ -206,6 +210,4 @@ export function Commands() {
       []
     )
   )
-
-  return null
-}
+*/

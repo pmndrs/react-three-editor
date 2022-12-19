@@ -1,13 +1,13 @@
+import { Icon } from "@iconify/react"
 import { Command } from "cmdk"
-import { Fragment, useEffect, useRef, useState } from "react"
+import { FC, useCallback, useEffect, useRef } from "react"
+import { useEditor } from "../../../editable/Editor"
 import { ThreeEditor } from "../../ThreeEditor"
-import { commandStore } from "./store"
+import { useCommandStore } from "./store"
 import { commandBarTunnel } from "./tunnel"
-import { Item } from "./CommandbarItem"
+import { CommandGroup, ExecutableCommand } from "./types"
 
 export function EditorCommand({ editor }: { editor: ThreeEditor }) {
-  const theme = "dark"
-  const [value, setValue] = useState("linear")
   const inputRef = useRef<HTMLInputElement | null>(null)
   const listRef = useRef(null)
 
@@ -15,7 +15,7 @@ export function EditorCommand({ editor }: { editor: ThreeEditor }) {
     inputRef?.current?.focus()
   }, [])
 
-  const commands = commandStore((state) => state.commands)
+  const commands = useCommandStore((state) => state.commands)
 
   return (
     <commandBarTunnel.In>
@@ -28,7 +28,95 @@ export function EditorCommand({ editor }: { editor: ThreeEditor }) {
       <hr cmdk-raycast-loader="" />
       <Command.List ref={listRef}>
         <Command.Empty>No results found.</Command.Empty>
-        <Command.Group heading="Commands">
+        {commands.map((command) => {
+          if (command.render && !command.render(editor)) return null
+          if (Array.isArray((command as CommandGroup).children)) {
+            return (
+              <CommandGroupItem
+                key={command.name}
+                command={command as CommandGroup}
+              />
+            )
+          } else {
+            return (
+              <CommandItem
+                key={command.name}
+                command={command as ExecutableCommand}
+              />
+            )
+          }
+        })}
+      </Command.List>
+    </commandBarTunnel.In>
+  )
+}
+
+export type CommandGroupItemProps = {
+  command: CommandGroup
+}
+export const CommandGroupItem: FC<CommandGroupItemProps> = ({ command }) => {
+  const { icon, description, render } = command
+  const _editor = useEditor()
+  const toggleOpen = useCommandStore(({ toggleOpen }) => toggleOpen)
+
+  const onSelect = useCallback(() => {
+    toggleOpen(false)
+  }, [])
+
+  if (render && !render(_editor)) return null
+
+  return (
+    <Command.Item value={command.name} onSelect={onSelect}>
+      {typeof icon === "function" ? (
+        icon(_editor)
+      ) : typeof icon == "string" ? (
+        <Icon icon={icon} />
+      ) : null}
+      {typeof description === "function"
+        ? description(_editor)
+        : description || command.name}
+    </Command.Item>
+  )
+}
+
+export type CommandProps = {
+  command: ExecutableCommand
+}
+export const CommandItem: FC<CommandProps> = ({ command }) => {
+  const { icon, description, render, shortcut } = command
+  const _editor = useEditor()
+  const toggleOpen = useCommandStore(({ toggleOpen }) => toggleOpen)
+
+  const onSelect = useCallback(() => {
+    toggleOpen(false)
+    ;(command as ExecutableCommand).execute(_editor)
+  }, [])
+
+  if (render && !render(_editor)) return null
+
+  return (
+    <Command.Item value={command.name} onSelect={onSelect}>
+      {typeof icon === "function" ? (
+        icon(_editor)
+      ) : typeof icon == "string" ? (
+        <Icon icon={icon} />
+      ) : null}
+      {typeof description === "function"
+        ? description(_editor)
+        : description || command.name}
+      <div cmdk-raycast-meta="" cmdk-raycast-submenu-shortcuts="">
+        {shortcut?.map((key, i) => (
+          <kbd key={`${i}`}>
+            {key === "meta" ? "⌘" : key === "shift" ? "⇧" : key.toUpperCase()}
+          </kbd>
+        ))}
+      </div>
+    </Command.Item>
+  )
+}
+
+/*
+<Command.Group heading="Commands">
           {commands.map((command) => (
             <Fragment key={command.name}>
               {command.render(editor) ? (
@@ -44,7 +132,4 @@ export function EditorCommand({ editor }: { editor: ThreeEditor }) {
             </Fragment>
           ))}
         </Command.Group>
-      </Command.List>
-    </commandBarTunnel.In>
-  )
-}
+*/

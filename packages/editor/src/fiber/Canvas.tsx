@@ -62,7 +62,8 @@ const EditorCanvas = forwardRef<
   const [settings] = store.useSettings("scene", {
     shadows: {
       value: true
-    }
+    },
+    mode: "editor"
   })
 
   const [key, setKey] = useState(0)
@@ -84,7 +85,7 @@ const EditorCanvas = forwardRef<
       <DrafterProvider>
         <EditorContext.Provider value={store}>
           <EditorCamera />
-          <Bounds margin={2} >
+          <Bounds margin={2}>
             <AssignBounds />
             <EditableElementContext.Provider key={key} value={store.root}>
               {children}

@@ -3,14 +3,12 @@ import { useHotkeys } from "react-hotkeys-hook"
 import { useEditor } from "../../../editable/Editor"
 import { EditorCommand } from "./EditorCommand"
 import { KeyboardCommands } from "./KeyboardCommand"
-import { commandStore } from "./store"
+import { useCommandStore } from "./store"
 import { commandBarTunnel } from "./tunnel"
 
 export const CommandBar = () => {
-  function toggleOpen() {
-    commandStore.setState({ open: !commandStore.getState().open })
-  }
-  const open = commandStore((state) => state.open)
+  const toggleOpen = useCommandStore(({ toggleOpen }) => toggleOpen)
+  const open = useCommandStore((state) => state.open)
 
   // Toggle the menu when ⌘K is pressed
   useHotkeys("meta+k", () => toggleOpen(), { preventDefault: true })
@@ -20,7 +18,7 @@ export const CommandBar = () => {
       <Command.Dialog
         open={open}
         onOpenChange={toggleOpen}
-        className="commandbar dark"
+        className="commandbar dark vercel"
         tabIndex={-1}
       >
         <commandBarTunnel.Outs />
@@ -30,7 +28,7 @@ export const CommandBar = () => {
 }
 
 export function CommandBarControls() {
-  const open = commandStore((state) => state.open)
+  const open = useCommandStore((state) => state.open)
   const editor = useEditor()
 
   return (

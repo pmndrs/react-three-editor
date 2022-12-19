@@ -1,17 +1,17 @@
 import { useEffect } from "react"
 import { CommandType } from "./types"
-import { commandStore } from "./store"
+import { useCommandStore } from "./store"
 
 export function useCommand(command: CommandType) {
   useEffect(() => {
-    commandStore.setState((s) => {
+    useCommandStore.setState((s) => {
       return {
         commands: [...s.commands, command]
       }
     })
 
     return () => {
-      commandStore.setState((s) => {
+      useCommandStore.setState((s) => {
         return {
           commands: s.commands.filter((c) => c !== command)
         }

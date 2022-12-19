@@ -1,10 +1,19 @@
 import { ThreeEditor } from "../../ThreeEditor"
 
-export type CommandType = {
-  icon: (editor: ThreeEditor) => JSX.Element
-  description: (editor: ThreeEditor) => string | JSX.Element
+export type CommonProperties = {
   name: string
-  execute: (editor: ThreeEditor) => void
-  render: (editor: ThreeEditor) => any
-  shortcut?: string[]
+  icon?: string | ((editor: ThreeEditor) => JSX.Element)
+  description?: string | ((editor: ThreeEditor) => string | JSX.Element)
+  render?: (editor: ThreeEditor) => any
 }
+
+export type CommandGroup = CommonProperties & {
+  children: CommandType[]
+}
+
+export type ExecutableCommand = CommonProperties & {
+  shortcut?: string[]
+  execute: (editor: ThreeEditor) => void
+}
+
+export type CommandType = ExecutableCommand | CommandGroup
