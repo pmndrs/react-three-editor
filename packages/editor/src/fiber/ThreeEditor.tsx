@@ -2,11 +2,12 @@ import { getDrafter } from "draft-n-draw"
 import { levaStore, useControls } from "leva"
 import { StoreType } from "leva/dist/declarations/src/types"
 import { useState } from "react"
+import create from "zustand"
 import {
   SchemaOrFn,
   usePersistedControls
 } from "../editable/controls/usePersistedControls"
-import { EditableElement, JSXSource } from "../editable/EditableElement"
+import { EditableElement } from "../editable/EditableElement"
 import { Editor } from "../editable/Editor"
 import { usePanel } from "./controls/Panel"
 
@@ -19,25 +20,52 @@ levaStore.store = undefined
 
 type Panel = StoreType & { store: StoreType }
 
+class PanelManager {}
+
 export class ThreeEditor extends Editor {
   isSelected(arg0: EditableElement) {
     return this.store.getState().selectedId === arg0.id
   }
-  panels: Record<string, Panel> = {
-    default: levaStore as Panel
+
+  panelStore = create((get, set) => ({
+    panels: {
+      default: {
+        panel: levaStore as Panel
+      }
+    } as Record<string, { panel: Panel }>
+  }))
+
+  get panels() {
+    return this.panelStore.getState().panels
   }
 
   getPanel(name: string | StoreType): Panel {
+    let panels = this.panels
     if (typeof name === "string") {
-      if (this.panels[name]) return this.panels[name]
+      if (panels[name]) return panels[name].panel
 
-      this.panels[name] = createLevaStore()
+      panels[name] = { panel: createLevaStore() }
+
       // @ts-ignore
-      this.panels[name].store = this.panels[name]
-      return this.panels[name]
+      panels[name].panel.store = panels[name].panel
+
+      this.panelStore.setState(() => ({
+        panels
+      }))
+      return panels[name].panel
     } else {
       return name as Panel
     }
+  }
+
+  hidePanel(name: string) {
+    let panels = this.panels
+    if (panels[name]) {
+      panels[name].hide = true
+    }
+    this.panelStore.setState(() => ({
+      panels
+    }))
   }
 
   settings = createLevaStore()
@@ -146,5 +174,11 @@ export class ThreeEditor extends Editor {
     debug?: (arg0: any, arg1: any, arg2?: ThreeEditor) => () => void
   }) {
     this.plugins.push(plugin)
+  }
+
+  selectedElement() {
+    return this.store.getState().elements[
+      this.store.getState().selectedId ?? ""
+    ]
   }
 }

@@ -72,7 +72,12 @@ export function createProp(
             }
             type.init?.(el, prop, value)
           }
-          if (value === null || !context.fromPanel || context.initial) {
+          if (
+            value === null ||
+            !context.fromPanel ||
+            context.initial ||
+            context.disabled
+          ) {
             return
           }
 
@@ -126,10 +131,16 @@ export function createProp(
           if (value !== null && context.initial) {
             type.init?.(el, prop, value)
           }
-          if (value === null || !context.fromPanel || context.initial) {
+          if (
+            value === null ||
+            !context.fromPanel ||
+            context.initial ||
+            context.disabled
+          ) {
             return
           }
 
+          // Sets the value on the object described by the path
           type.set(el, prop, value)
 
           onChange?.(value, prop, controlPath, context)
@@ -138,26 +149,31 @@ export function createProp(
             ? type.serialize(el, prop, value)
             : value
 
-          if (serializale !== undefined) {
-            if (editable) {
-              if (element === editable) {
-                let [_, ...p] = path
-                element.addChange(element, p.join("-"), serializale)
-                element.changed = true
-
-                let propOveride = type.override
-                  ? type.override(el, prop, serializale)
-                  : serializale
-
-                if (propOveride !== undefined) {
-                  element.setProp(p.join("-"), propOveride)
-                }
-              } else {
-                element.addChange(editable, remaining.join("-"), serializale)
-                element.changed = true
-              }
-            } else {
+          // prop thats not serializable is not editable
+          // since we cant do anything with the edited prop
+          if (serializale !== undefined && editable) {
+            // if the root element is the closest editable element
+            if (element === editable) {
               let [_, ...p] = path
+
+              // handle the `args` prop by updating the args array
+              if (p[0] === "args") {
+                let prevArgs = element.currentProps.args ?? []
+                let prevPropArgs = element.props.args ?? []
+
+                let args = (prevArgs ?? prevPropArgs).map(
+                  (a: any, i: number) => {
+                    if (i === Number(p[1])) {
+                      return serializale
+                    }
+                    return a
+                  }
+                )
+                element.setProp("args", args)
+                return
+              }
+
+              // record a change in the log to be persisted
               element.addChange(element, p.join("-"), serializale)
               element.changed = true
 
@@ -165,9 +181,18 @@ export function createProp(
                 ? type.override(el, prop, serializale)
                 : serializale
 
+              // if the prop is serializable, and overridable, we can set the prop
+              // on the component and rerender it
               if (propOveride !== undefined) {
                 element.setProp(p.join("-"), propOveride)
               }
+            } else {
+              // if a child editable element is the closest editable element and modified,
+              // record the change in the log, and we mark ourselves as dirty
+              // (maybe we should mark the child as dirty too)
+              // the property has been set by us above
+              element.addChange(editable, remaining.join("-"), serializale)
+              element.changed = true
             }
           }
         },

@@ -13,8 +13,22 @@ export function Commands() {
         execute: (editor: ThreeEditor) => {
           editor
             .getPanel(editor.settingsPanel)
-            .setValueAtPath("settings.camera.enabled", true, true)
+            .useStore.setState(({ data }) => {
+              data["settings.camera.enabled"].value = true
 
+              if (data["settings.physics.paused"]) {
+                data["settings.physics.paused"].value = true
+                data["settings.physics.debug"].value = true
+              }
+
+              let panelNames = Object.keys(editor.panels)
+              for (let i = 0; i < panelNames.length; i++) {
+                data["settings.panel." + panelNames[i] + ".hidden"].value =
+                  false
+              }
+
+              return { data }
+            })
           commandStore.setState({ open: false })
         },
         render: (editor: ThreeEditor) => {
@@ -27,12 +41,51 @@ export function Commands() {
             return !enabled
           }
         },
-        shortcut: () => (
-          <>
-            <kbd>⌘</kbd>
-            <kbd>E</kbd>
-          </>
-        )
+        shortcut: ["meta", "e"]
+      }),
+      []
+    )
+  )
+
+  useCommand(
+    useMemo(
+      () => ({
+        icon: () => <Icon icon="ph:cube" />,
+        description: "Go to Play Mode",
+        name: "Go to Play Mode",
+        execute: (editor: ThreeEditor) => {
+          editor
+            .getPanel(editor.settingsPanel)
+            .useStore.setState(({ data }) => {
+              data["settings.camera.enabled"].value = false
+
+              if (data["settings.physics.paused"]) {
+                data["settings.physics.paused"].value = false
+                data["settings.physics.debug"].value = false
+              }
+
+              let panelNames = Object.keys(editor.panels)
+              for (let i = 0; i < panelNames.length; i++) {
+                data["settings.panel." + panelNames[i] + ".hidden"].value = true
+              }
+
+              return { data }
+            })
+
+          commandStore.setState({ open: false })
+        },
+        render: (editor: ThreeEditor) => {
+          let enabled = editor
+            .getPanel(editor.settingsPanel)
+            .get("settings.camera.enabled")
+
+          if (enabled === undefined) {
+            return true
+          } else {
+            return enabled
+          }
+        },
+        shortcut: ["meta", "e"]
       }),
       []
     )
@@ -52,7 +105,6 @@ export function Commands() {
               await item.save()
             }
             for (var child of item.children) {
-              console.log(child)
               await traverse(child)
             }
           }
@@ -62,13 +114,26 @@ export function Commands() {
         },
         render: (editor: ThreeEditor) => {
           return true
+        }
+      }),
+      []
+    )
+  )
+
+  useCommand(
+    useMemo(
+      () => ({
+        icon: () => <Icon icon="ph:cube" />,
+        description: "Save selected element",
+        name: "Save selected element",
+        execute: async (editor: ThreeEditor) => {
+          editor.selectedElement()?.save()
+          commandStore.setState({ open: false })
         },
-        shortcut: () => (
-          <>
-            <kbd>⌘</kbd>
-            <kbd>E</kbd>
-          </>
-        )
+        render: (editor: ThreeEditor) => {
+          return true
+        },
+        shortcut: ["meta", "s"]
       }),
       []
     )
@@ -87,47 +152,7 @@ export function Commands() {
         },
         render: (editor: ThreeEditor) => {
           return true
-        },
-        shortcut: () => (
-          <>
-            <kbd>⌘</kbd>
-            <kbd>E</kbd>
-          </>
-        )
-      }),
-      []
-    )
-  )
-
-  useCommand(
-    useMemo(
-      () => ({
-        icon: () => <Icon icon="ph:cube" />,
-        description: "Go to Play Mode",
-        name: "Go to Play Mode",
-        execute: (editor: ThreeEditor) => {
-          editor
-            .getPanel(editor.settingsPanel)
-            .setValueAtPath("settings.camera.enabled", false, true)
-
-          commandStore.setState({ open: false })
-        },
-        render: (editor: ThreeEditor) => {
-          let enabled = editor
-            .getPanel(editor.settingsPanel)
-            .get("settings.camera.enabled")
-          if (enabled === undefined) {
-            return true
-          } else {
-            return enabled
-          }
-        },
-        shortcut: () => (
-          <>
-            <kbd>⌘</kbd>
-            <kbd>E</kbd>
-          </>
-        )
+        }
       }),
       []
     )

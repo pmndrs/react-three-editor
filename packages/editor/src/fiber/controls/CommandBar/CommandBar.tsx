@@ -1,13 +1,20 @@
 import * as Popover from "@radix-ui/react-popover"
 import { Command } from "cmdk"
-import React, { Fragment, useEffect } from "react"
+import { styled } from "leva/plugin"
+import {
+  Fragment,
+  ReactNode,
+  RefObject,
+  useEffect,
+  useRef,
+  useState
+} from "react"
 import { useHotkeys } from "react-hotkeys-hook"
 import create from "zustand"
 import { useEditor } from "../../../editable/Editor"
 import { ThreeEditor } from "../../ThreeEditor"
 import { createMultiTunnel } from "../tunnels"
 import { Commands } from "./Commands"
-import "./style.css"
 
 type Command = {
   icon: () => JSX.Element
@@ -15,7 +22,7 @@ type Command = {
   name: string
   execute: (editor: ThreeEditor) => void
   render: (editor: ThreeEditor) => any
-  shortcut: () => JSX.Element
+  shortcut?: string[]
 }
 
 export function useCommand(command: Command) {
@@ -38,7 +45,7 @@ export function useCommand(command: Command) {
 
 export const commandStore = create((get, set) => ({
   open: false,
-  commands: []
+  commands: [] as Command[]
 }))
 
 export const commandBarTunnel = createMultiTunnel()
@@ -72,13 +79,13 @@ export function CommandBarControls() {
   return <EditorCommand editor={editor} key={open ? 0 : 1} />
 }
 
-export function EditorCommand({ editor }) {
+export function EditorCommand({ editor }: { editor: ThreeEditor }) {
   const theme = "dark"
-  const [value, setValue] = React.useState("linear")
-  const inputRef = React.useRef<HTMLInputElement | null>(null)
-  const listRef = React.useRef(null)
+  const [value, setValue] = useState("linear")
+  const inputRef = useRef<HTMLInputElement | null>(null)
+  const listRef = useRef(null)
 
-  React.useEffect(() => {
+  useEffect(() => {
     inputRef?.current?.focus()
   }, [])
 
@@ -107,8 +114,7 @@ export function EditorCommand({ editor }) {
             <Fragment key={command.name}>
               {command.render(editor) ? (
                 <Item
-                  isCommand
-                  shortcut={command.shortcut()}
+                  shortcut={command.shortcut}
                   value={command.name}
                   onSelect={() => command.execute(editor)}
                 >
@@ -140,22 +146,26 @@ export function EditorCommand({ editor }) {
   )
 }
 
+const StyledKbd = styled("div", {})
+
 function Item({
   children,
   value,
-  isCommand = false,
   onSelect,
   shortcut
 }: {
-  children: React.ReactNode
+  children: ReactNode
   value: string
-  isCommand?: boolean
+  onSelect: () => void
+  shortcut?: string[]
 }) {
   return (
     <Command.Item value={value} onSelect={onSelect}>
       {children}
-      <div cmdk-raycast-meta="" style={{ display: "flex" }}>
-        {shortcut}
+      <div cmdk-raycast-meta="" cmdk-raycast-submenu-shortcuts="">
+        {shortcut?.map((key, i) => (
+          <kbd key={`${i}`}>{key === "meta" ? "⌘" : key.toUpperCase()}</kbd>
+        ))}
       </div>
     </Command.Item>
   )
@@ -166,13 +176,13 @@ function SubCommand({
   listRef,
   selectedValue
 }: {
-  inputRef: React.RefObject<HTMLInputElement>
-  listRef: React.RefObject<HTMLElement>
+  inputRef: RefObject<HTMLInputElement>
+  listRef: RefObject<HTMLElement>
   selectedValue: string
 }) {
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = useState(false)
 
-  React.useEffect(() => {
+  useEffect(() => {
     function listener(e: KeyboardEvent) {
       if (e.key === "k" && e.metaKey) {
         e.preventDefault()
@@ -187,7 +197,7 @@ function SubCommand({
     }
   }, [])
 
-  React.useEffect(() => {
+  useEffect(() => {
     const el = listRef.current
 
     if (!el) return
@@ -253,7 +263,7 @@ function SubItem({
   children,
   shortcut
 }: {
-  children: React.ReactNode
+  children: ReactNode
   shortcut: string
 }) {
   return (

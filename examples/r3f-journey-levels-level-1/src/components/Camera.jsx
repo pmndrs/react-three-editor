@@ -15,7 +15,7 @@ export default function Camera() {
     return () => clearTimeout(timeout)
   }, [])
   return (
-    <a.group position={[-0.183, 1.054, -0.03]} rotation={[1.5707963267948966, 0, 0.2355235784660854]} {...spring}>
+    <a.group position={[-0.083, 1.054, -0.03]} rotation={[1.5707963267948966, 0, 0.2355235784660854]} {...spring}>
       <mesh geometry={nodes.Camera.geometry} material={nodes.Camera.material} position={[-0.427, 0.232, 0.32]} />
       <mesh geometry={nodes.Camera_1.geometry} material={materials.Lens} position={[-0.293, 0.352, 0.09]} />
     </a.group>

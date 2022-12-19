@@ -29,11 +29,9 @@ export const transform = {
           position: prop.vector3d({
             element: entity,
             path: ["ref", "position"],
-            lock: true,
             step: 0.1
           }),
           rotation: prop.euler({
-            lock: true,
             step: 1,
             path: ["ref", "rotation"],
             element: entity

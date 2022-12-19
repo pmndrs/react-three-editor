@@ -26,6 +26,15 @@ export function Panel({
   pos: "left" | "right"
 } & Omit<ComponentProps<typeof LevaPanel>, "store">) {
   const panel = usePanel(id)
+  const editor = useEditor()
+  editor.useSettings("panel", {})
+
+  const [{ hidden: different }] = editor.useSettings("panel." + id, {
+    hidden: {
+      value: false
+    }
+  })
+
   const size = useThree((s) => s.size)
   const [_collapsed, setCollapsed] = useState(true)
   const [position, setPosition] = useState({
@@ -33,7 +42,7 @@ export function Panel({
     y: 0
   })
 
-  useEffect(() => {
+  const hidden = useEffect(() => {
     setCollapsed(collapsed)
   }, [collapsed])
 
@@ -53,6 +62,7 @@ export function Panel({
             },
             title: title
           }}
+          hidden={Boolean(different)}
           theme={{
             space: {
               rowGap: "2px"
@@ -73,6 +83,7 @@ export function Panel({
             },
             title: title
           }}
+          hidden={Boolean(different)}
           theme={{
             space: {
               rowGap: "2px"

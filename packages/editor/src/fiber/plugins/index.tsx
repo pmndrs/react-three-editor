@@ -17,10 +17,10 @@ import {
 } from "./plugins"
 
 export const DEFAULT_EDITOR_PLUGINS = [
-  propControls,
   transform,
   reactComponent,
   transformWithoutRef,
+  propControls,
   rigidBody,
   camera,
   mesh,
@@ -32,7 +32,7 @@ export const DEFAULT_EDITOR_PLUGINS = [
   directionalLight,
   pointLight,
   ambientLight,
-  spotLight,
+  spotLight
 ]
 
 export function addPlugin(plugin: any) {

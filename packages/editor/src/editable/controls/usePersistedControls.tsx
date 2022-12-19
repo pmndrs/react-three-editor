@@ -118,9 +118,5 @@ export function usePersistedControls<S extends Schema, T extends SchemaOrFn<S>>(
     })
   }, [folderName, values])
 
-  useEffect(() => {
-    console.log(store)
-  }, [folderName, store])
-
   return [values, set] as any
 }
