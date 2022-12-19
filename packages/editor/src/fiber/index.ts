@@ -1,4 +1,11 @@
-export { createPortal, extend, useLoader, useThree } from "@react-three/fiber"
+export {
+  applyProps,
+  createPortal,
+  extend,
+  Stages,
+  useLoader,
+  useThree
+} from "@react-three/fiber"
 export { button, buttonGroup, folder, levaStore as defaultPanel } from "leva"
 export { useControls } from "../editable/controls/useControls"
 export { editable, Editable, setEditable } from "../editable/editable"
@@ -9,7 +16,12 @@ export { Panel, usePanel } from "./controls/Panel"
 export { PerformanceControls } from "./controls/PerformanceControls"
 export { SceneControls } from "./controls/SceneControls"
 export { SelectedElementControls } from "./controls/SelectedElementControls"
-export { useEditorFrame, useFrame } from "./useFrame"
+export {
+  useEditorFrame,
+  useEditorUpdate,
+  useFrame,
+  useUpdate
+} from "./useFrame"
 
 export function extendControls(t: any, controls: Record<string, {}>) {
   t.controls = controls

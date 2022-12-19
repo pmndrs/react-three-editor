@@ -73,22 +73,10 @@ export function usePersistedControls<S extends Schema, T extends SchemaOrFn<S>>(
   deps = [],
   store = undefined as StoreType | undefined,
   hidden = false
-): RReturnType<() => S> {
+): [SchemaToValues<S>] {
   const [collapsed, setCollpased] = useState(true)
   const [values, set] = useControls(
     () => {
-      // Object.keys(props).forEach((key) => {
-      //   let read = JSON.parse(
-      //     localStorage.getItem(`${editorName}.${folderName}.${key}`) ?? "null"
-      //   )
-      //   if (read !== null) {
-      //     if (typeof props[key] === "object") {
-      //       props[key].value = read
-      //     } else {
-      //       props[key] = read
-      //     }
-      //   }
-      // })
       manageProps(folderName, props)
 
       return {

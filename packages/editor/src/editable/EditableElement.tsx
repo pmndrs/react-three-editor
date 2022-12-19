@@ -97,9 +97,16 @@ export class EditableElement<
   }
 
   get displayName() {
+    let componentName = this.source.componentName
+    let elementName = this.elementName
+    let remainingSlot = 30 - this.elementName.length
     return this.ref?.name?.length && this.ref.name !== this.key
       ? this.ref.name
-      : `${this.source.componentName}.${this.elementName}`
+      : `${
+          componentName.length > remainingSlot
+            ? componentName.slice(0, remainingSlot) + "…"
+            : componentName
+        }.${elementName}`
   }
 
   set name(v: string) {
@@ -255,7 +262,7 @@ export class EditableElement<
     this.changes = {}
     this.changed = false
 
-    this.openInEditor()
+    // this.openInEditor()
   }
 
   async openInEditor() {
