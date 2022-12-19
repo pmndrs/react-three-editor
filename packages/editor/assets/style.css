@@ -1,11 +1,12 @@
 @font-face {
-  font-family: 'Inter';
+  font-family: "Inter";
   font-style: normal;
   font-weight: 100 900;
   font-display: optional;
-  src: url(./inter-var-latin.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC,
-    U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  src: url(./inter-var-latin.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+    U+FEFF, U+FFFD;
 }
 
 ::selection {
@@ -22,8 +23,8 @@
 }
 
 :root {
-  --font-sans: 'Inter', --apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans,
-    Droid Sans, Helvetica Neue, sans-serif;
+  --font-sans: "Inter", --apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+    Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   --app-bg: var(--gray1);
   --cmdk-shadow: 0 16px 70px rgb(0 0 0 / 20%);
 
@@ -132,8 +133,16 @@
   border: 0;
 }
 .dark .commandbar[cmdk-root]:after {
-  content: '';
-  background: linear-gradient(to right, var(--gray6) 20%, var(--gray6) 40%, var(--gray10) 50%, var(--gray10) 55%, var(--gray6) 70%, var(--gray6) 100%);
+  content: "";
+  background: linear-gradient(
+    to right,
+    var(--gray6) 20%,
+    var(--gray6) 40%,
+    var(--gray10) 50%,
+    var(--gray10) 55%,
+    var(--gray6) 70%,
+    var(--gray6) 100%
+  );
   z-index: -1;
   position: absolute;
   border-radius: 12px;
@@ -145,7 +154,7 @@
   background-size: 200% auto;
 }
 .dark .commandbar[cmdk-root]:before {
-  content: '';
+  content: "";
   z-index: -1;
   position: absolute;
   border-radius: 12px;
@@ -202,7 +211,13 @@
   color: var(--gray9);
 }
 .dark .commandbar [cmdk-raycast-top-shine] {
-  background: linear-gradient(90deg, rgba(56, 189, 248, 0), var(--gray5) 20%, var(--gray9) 67.19%, rgba(236, 72, 153, 0));
+  background: linear-gradient(
+    90deg,
+    rgba(56, 189, 248, 0),
+    var(--gray5) 20%,
+    var(--gray9) 67.19%,
+    rgba(236, 72, 153, 0)
+  );
   height: 1px;
   position: absolute;
   top: -1px;
@@ -226,11 +241,16 @@
   margin-bottom: 12px;
 }
 .commandbar [cmdk-raycast-loader]:after {
-  content: '';
+  content: "";
   width: 50%;
   height: 1px;
   position: absolute;
-  background: linear-gradient(90deg, transparent 0%, var(--loader-color) 50%, transparent 100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--loader-color) 50%,
+    transparent 100%
+  );
   top: -1px;
   opacity: 0;
   animation-duration: 1.5s;
@@ -256,11 +276,11 @@
   transition: all 150ms ease;
   transition-property: none;
 }
-.commandbar [cmdk-item][aria-selected='true'] {
+.commandbar [cmdk-item][aria-selected="true"] {
   background: var(--leva-colors-elevation3);
   color: var(--gray12);
 }
-.commandbar [cmdk-item][aria-disabled='true'] {
+.commandbar [cmdk-item][aria-disabled="true"] {
   color: var(--gray8);
   cursor: not-allowed;
 }
@@ -289,7 +309,10 @@
   gap: 2px;
 }
 
-.commandbar [cmdk-item][aria-selected='true'] [cmdk-raycast-submenu-shortcuts] kbd {
+.commandbar
+  [cmdk-item][aria-selected="true"]
+  [cmdk-raycast-submenu-shortcuts]
+  kbd {
   background: var(--leva-colors-elevation2);
 }
 
@@ -325,7 +348,8 @@
   transition-property: height;
   padding-bottom: 40px;
 }
-.commandbar [cmdk-raycast-open-trigger], .commandbar [cmdk-raycast-subcommand-trigger] {
+.commandbar [cmdk-raycast-open-trigger],
+.commandbar [cmdk-raycast-subcommand-trigger] {
   color: var(--gray11);
   padding: 0px 4px 0px 8px;
   border-radius: 6px;
@@ -334,7 +358,8 @@
   height: 28px;
   letter-spacing: -0.25px;
 }
-.commandbar [cmdk-raycast-clipboard-icon], .commandbar [cmdk-raycast-hammer-icon] {
+.commandbar [cmdk-raycast-clipboard-icon],
+.commandbar [cmdk-raycast-hammer-icon] {
   width: 20px;
   height: 20px;
   border-radius: 6px;
@@ -343,7 +368,8 @@
   justify-content: center;
   color: #ffffff;
 }
-.commandbar [cmdk-raycast-clipboard-icon] svg, .commandbar [cmdk-raycast-hammer-icon] svg {
+.commandbar [cmdk-raycast-clipboard-icon] svg,
+.commandbar [cmdk-raycast-hammer-icon] svg {
   width: 14px;
   height: 14px;
 }
@@ -375,10 +401,12 @@
   border: 0;
   width: 1px;
 }
-.commandbar [cmdk-raycast-subcommand-trigger][aria-expanded='true'], .commandbar [cmdk-raycast-subcommand-trigger]:hover {
+.commandbar [cmdk-raycast-subcommand-trigger][aria-expanded="true"],
+.commandbar [cmdk-raycast-subcommand-trigger]:hover {
   background: var(--gray4);
 }
-.commandbar [cmdk-raycast-subcommand-trigger][aria-expanded='true'] kbd, .commandbar [cmdk-raycast-subcommand-trigger]:hover kbd {
+.commandbar [cmdk-raycast-subcommand-trigger][aria-expanded="true"] kbd,
+.commandbar [cmdk-raycast-subcommand-trigger]:hover kbd {
   background: var(--gray7);
 }
 .commandbar [cmdk-separator] {
@@ -440,7 +468,7 @@
   transform-origin: center center;
   animation: dialogIn var(--transition-fast) forwards;
 }
-.commandbar [cmdk-dialog][data-state='closed'] [cmdk] {
+.commandbar [cmdk-dialog][data-state="closed"] [cmdk] {
   animation: dialogOut var(--transition-fast) forwards;
 }
 .commandbar [cmdk-empty] {
@@ -521,12 +549,12 @@
   transition: all 150ms ease;
   transition-property: none;
 }
-.commandbar-submenu [cmdk-item][aria-selected='true'] {
+.commandbar-submenu [cmdk-item][aria-selected="true"] {
   background: var(--gray5);
   color: var(--gray12);
 }
 
-.commandbar-submenu [cmdk-item][aria-disabled='true'] {
+.commandbar-submenu [cmdk-item][aria-disabled="true"] {
   color: var(--gray8);
   cursor: not-allowed;
 }
@@ -540,7 +568,10 @@
   gap: 2px;
 }
 
-.commandbar-submenu [cmdk-item][aria-selected='true'] [cmdk-raycast-submenu-shortcuts] kbd {
+.commandbar-submenu
+  [cmdk-item][aria-selected="true"]
+  [cmdk-raycast-submenu-shortcuts]
+  kbd {
   background: var(--gray7);
 }
 
@@ -557,7 +588,10 @@
   align-items: center;
   justify-content: center;
 }
-.commandbar-submenu [cmdk-item] [cmdk-raycast-submenu-shortcuts] kbd:first-of-type {
+.commandbar-submenu
+  [cmdk-item]
+  [cmdk-raycast-submenu-shortcuts]
+  kbd:first-of-type {
   margin-left: 8px;
 }
 .commandbar-submenu [cmdk-group-heading] {
@@ -581,10 +615,10 @@
   outline: 0;
   border-radius: 0;
 }
-.commandbar-submenu[data-state='open'] {
+.commandbar-submenu[data-state="open"] {
   animation-name: slideIn;
 }
-.commandbar-submenu[data-state='closed'] {
+.commandbar-submenu[data-state="closed"] {
   animation-name: slideOut;
 }
 .commandbar-submenu [cmdk-empty] {
@@ -621,4 +655,19 @@
   .commandbar [cmdk-input] {
     font-size: 16px;
   }
+}
+
+.commandbar [cmdk-vercel-badge] {
+  height: 20px;
+  background: var(--grayA3);
+  display: inline-flex;
+  align-items: center;
+  padding: 0 8px;
+  font-size: 12px;
+  color: var(--grayA11);
+  border-radius: 4px;
+  margin: 4px 0 4px 4px;
+  user-select: none;
+  text-transform: capitalize;
+  font-weight: 500;
 }

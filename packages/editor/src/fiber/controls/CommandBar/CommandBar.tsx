@@ -13,49 +13,14 @@ import toast from "react-hot-toast"
 import { useHotkeys } from "react-hotkeys-hook"
 import create from "zustand"
 import { useEditor } from "../../../editable/Editor"
-import { ThreeEditor } from "../../ThreeEditor"
-import { createMultiTunnel } from "../tunnels"
-
-type Command = {
-  icon: (editor: ThreeEditor) => JSX.Element
-  description: (editor: ThreeEditor) => string | JSX.Element
-  name: string
-  execute: (editor: ThreeEditor) => void
-  render: (editor: ThreeEditor) => any
-  shortcut?: string[]
-}
-
-export function useCommand(command: Command) {
-  useEffect(() => {
-    commandStore.setState((s) => {
-      return {
-        commands: [...s.commands, command]
-      }
-    })
-
-    return () => {
-      commandStore.setState((s) => {
-        return {
-          commands: s.commands.filter((c) => c !== command)
-        }
-      })
-    }
-  }, [command])
-}
-
-export const commandStore = create((get, set) => ({
-  open: false,
-  commands: [] as Command[]
-}))
-
-export const commandBarTunnel = createMultiTunnel()
+import { EditorCommand } from "./EditorCommand"
+import { KeyboardCommands } from "./KeyboardCommand"
+import { useCommandStore } from "./store"
+import { commandBarTunnel } from "./tunnel"
 
 export const CommandBar = () => {
-  function setOpen() {
-    commandStore.setState({ open: !commandStore.getState().open })
-  }
-
-  const open = commandStore((state) => state.open)
+  const toggleOpen = useCommandStore(({ toggleOpen }) => toggleOpen)
+  const open = useCommandStore((state) => state.open)
 
   // Toggle the menu when ⌘K is pressed
   useHotkeys("meta+k", () => setOpen())
@@ -64,8 +29,9 @@ export const CommandBar = () => {
     <>
       <Command.Dialog
         open={open}
-        onOpenChange={setOpen}
-        className="commandbar dark"
+        onOpenChange={toggleOpen}
+        className="commandbar dark vercel"
+        tabIndex={-1}
       >
         <commandBarTunnel.Outs />
       </Command.Dialog>
@@ -143,7 +109,7 @@ export function KeyboardShortcut({
 }
 
 export function CommandBarControls() {
-  const open = commandStore((state) => state.open)
+  const open = useCommandStore((state) => state.open)
   const editor = useEditor()
 
   return (

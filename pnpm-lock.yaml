@@ -470,6 +470,7 @@ importers:
       '@types/debug': ^4.1.7
       '@types/formidable': ^2.0.5
       '@types/fs-extra': ^9.0.13
+      '@types/object-path': ^0.11.1
       '@vinxi/recast': ^0.21.5
       '@vitejs/plugin-react': ^2.0.1
       change-case: ^4.1.2
@@ -481,6 +482,7 @@ importers:
       fp-ts: ^2.12.3
       fs-extra: ^10.1.0
       leva: ^0.9.34
+      object-path: ^0.11.8
       prettier: ^2.8.0
       r3f-perf: ^6.5.0
       react: ^18.2.0
@@ -513,6 +515,7 @@ importers:
       fp-ts: 2.13.1
       fs-extra: 10.1.0
       leva: 0.9.34_biqbaboplfbrettd7655fr4n2y
+      object-path: 0.11.8
       prettier: 2.8.0
       r3f-perf: 6.6.0_xtpvfhsrdad6nughsgptsnwwii
       react-dropzone: 14.2.3_react@18.2.0
@@ -530,6 +533,7 @@ importers:
       '@types/debug': 4.1.7
       '@types/formidable': 2.0.5
       '@types/fs-extra': 9.0.13
+      '@types/object-path': 0.11.1
       esbuild: 0.15.18
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -5381,6 +5385,10 @@ packages:
   /@types/normalize-package-data/2.4.1:
     resolution: {integrity: sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==}
     dev: false
+
+  /@types/object-path/0.11.1:
+    resolution: {integrity: sha512-219LSCO9HPcoXcRTC6DbCs0FRhZgBnEMzf16RRqkT40WbkKx3mOeQuz3e2XqbfhOz/AHfbru0kzB1n1RCAsIIg==}
+    dev: true
 
   /@types/offscreencanvas/2019.7.0:
     resolution: {integrity: sha512-PGcyveRIpL1XIqK8eBsmRBt76eFgtzuPiSTyKHZxnGemp2yzGzWpjYKAfK3wIMiU7eH+851yEpiuP8JZerTmWg==}
@@ -16425,6 +16433,11 @@ packages:
   /object-keys/1.1.1:
     resolution: {integrity: sha512-NuAESUOUMrlIXOfHKzD6bpPu3tYt3xvjNdRIQ+FeT0lNb4K8WR70CaDxhuNguS2XG+GjkyMwOzsN5ZktImfhLA==}
     engines: {node: '>= 0.4'}
+    dev: false
+
+  /object-path/0.11.8:
+    resolution: {integrity: sha512-YJjNZrlXJFM42wTBn6zgOJVar9KFJvzx6sTWDte8sWZF//cnjl0BxHNpfZx+ZffXX63A9q0b1zsFiBX4g4X5KA==}
+    engines: {node: '>= 10.12.0'}
     dev: false
 
   /object-visit/1.0.1:
