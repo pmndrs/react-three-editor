@@ -1,0 +1,38 @@
+{
+  "name": "r3f-character-controller",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@draft-n-draw/react": "^0.1.1",
+    "@gsimone/smoothdamp": "^0.1.0",
+    "@hmans/controlfreak": "^0.2.0",
+    "@react-three/drei": "^9.13.0",
+    "@react-three/editor": "^0.0.12",
+    "@react-three/fiber": "^9.0.0-alpha.2",
+    "@xstate/react": "^3.0.0",
+    "gl-swept-sphere-triangle": "^1.3.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "three": "^0.147.0",
+    "three-mesh-bvh": "^0.5.17",
+    "three-stdlib": "^2.14.3",
+    "xstate": "^4.32.1",
+    "zustand": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "@types/three": "^0.146.0",
+    "@vitejs/plugin-react": "^2.0.1",
+    "eslint": "^8.21.0",
+    "eslint-config-react-app": "^7.0.1",
+    "typescript": "^4.9.3",
+    "vite": "^3.0.7",
+    "vite-tsconfig-paths": "^3.5.0"
+  }
+}
