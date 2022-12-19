@@ -83,7 +83,7 @@ export default function App() {
         fixed
         lineWidth={2}
       >
-        <mesh castShadow receiveShadow position={[-1, 0.5, 1]}>
+        <mesh castShadow={true} receiveShadow position={[-1.238, 0.893, 1.949]}>
           <boxGeometry args={[1, 1, 1]} />
           <meshStandardMaterial color={"rgb(246, 148, 255)"} metalness={0.4} />
         </mesh>
@@ -129,7 +129,7 @@ export default function App() {
 
       <OrbitControls makeDefault />
     </Canvas>
-  )
+  );
 }
 
 function Cup(props) {

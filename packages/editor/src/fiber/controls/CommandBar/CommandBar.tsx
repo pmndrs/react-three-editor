@@ -58,7 +58,7 @@ export const CommandBar = () => {
   const open = commandStore((state) => state.open)
 
   // Toggle the menu when ⌘K is pressed
-  useHotkeys("meta+k", () => setOpen((open) => !open))
+  useHotkeys("meta+k", () => setOpen())
 
   return (
     <>
@@ -89,7 +89,7 @@ export function KeyboardCommands() {
         return (
           <KeyboardShortcut
             key={command.name}
-            debug={debug}
+            debug={debug as boolean}
             shortcut={command.shortcut}
             execute={() => command.execute(editor)}
           />
@@ -99,7 +99,15 @@ export function KeyboardCommands() {
   )
 }
 
-export function KeyboardShortcut({ shortcut, execute, debug }) {
+export function KeyboardShortcut({
+  shortcut,
+  execute,
+  debug
+}: {
+  shortcut: string[]
+  execute: () => void
+  debug: boolean
+}) {
   useHotkeys(
     shortcut.join("+"),
     () => {

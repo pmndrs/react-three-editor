@@ -1,13 +1,14 @@
 import { getDrafter } from "draft-n-draw"
 import { levaStore, useControls } from "leva"
-import { StoreType } from "leva/dist/declarations/src/types"
+import { Schema, StoreType } from "leva/dist/declarations/src/types"
 import { useState } from "react"
 import create from "zustand"
 import {
+  RReturnType,
   SchemaOrFn,
   usePersistedControls
 } from "../editable/controls/usePersistedControls"
-import { EditableElement } from "../editable/EditableElement"
+import { EditableElement, JSXSource } from "../editable/EditableElement"
 import { Editor } from "../editable/Editor"
 import { usePanel } from "./controls/Panel"
 
@@ -70,16 +71,6 @@ export class ThreeEditor extends Editor {
     }
   }
 
-  hidePanel(name: string) {
-    let panels = this.panels
-    if (panels[name]) {
-      panels[name].hide = true
-    }
-    this.panelStore.setState(() => ({
-      panels
-    }))
-  }
-
   settings = createLevaStore()
 
   get settingsPanel(): StoreType | string {
@@ -114,11 +105,11 @@ export class ThreeEditor extends Editor {
     }
   }
 
-  useSettings<T extends SchemaOrFn>(
+  useSettings<S extends Schema, T extends SchemaOrFn<S>>(
     name: string | undefined,
     arg1: T,
     hidden?: boolean
-  ) {
+  ): RReturnType<() => S> {
     const settingsPanel = usePanel(this.store((s) => s.settingsPanel))
     const [collapsed, setCollpased] = useState(true)
     useControls(
@@ -138,7 +129,7 @@ export class ThreeEditor extends Editor {
       hidden
     )
 
-    return props
+    return props as any
   }
 
   createElement(
@@ -166,6 +157,7 @@ export class ThreeEditor extends Editor {
     } & Omit<Parameters<ReturnType<typeof getDrafter>["drawRay"]>[1], "persist">
   ) {
     let editor = this
+    if (!this.isEditorMode()) return
     if (typeof v?.persist === "number") {
       let applicable = this.plugins.filter((p) => p.debug && p.applicable(info))
 

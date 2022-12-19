@@ -61,7 +61,7 @@ export type FunctionReturnType<S extends Schema> = [
     path: T
   ) => SchemaToValues<S, true>[T]
 ]
-type ReturnType<F extends SchemaOrFn> = F extends SchemaOrFn<infer S>
+export type RReturnType<F extends SchemaOrFn> = F extends SchemaOrFn<infer S>
   ? F extends Function
     ? FunctionReturnType<S>
     : SchemaToValues<S>
@@ -73,7 +73,7 @@ export function usePersistedControls<S extends Schema, T extends SchemaOrFn<S>>(
   deps = [],
   store = undefined as StoreType | undefined,
   hidden = false
-): ReturnType<() => S> {
+): RReturnType<() => S> {
   const [collapsed, setCollpased] = useState(true)
   const [values, set] = useControls(
     () => {
