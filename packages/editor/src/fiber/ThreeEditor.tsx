@@ -23,6 +23,18 @@ type Panel = StoreType & { store: StoreType }
 class PanelManager {}
 
 export class ThreeEditor extends Editor {
+  isEditorMode() {
+    let enabled = this.getPanel(this.settingsPanel).get(
+      "settings.camera.enabled"
+    )
+
+    if (enabled === undefined) {
+      return false
+    } else {
+      return enabled
+    }
+  }
+  remount: () => void = () => {}
   isSelected(arg0: EditableElement) {
     return this.store.getState().selectedId === arg0.id
   }

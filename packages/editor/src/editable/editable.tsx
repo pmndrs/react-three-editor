@@ -69,7 +69,11 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
     return forwardRef(function Editable(props: any, forwardRef) {
       const { children, ...rest } = props
       let source = props._source
-      const editableElement = useEditableElement(Component, source, props)
+      const [editableElement, key] = useEditableElement(
+        Component,
+        source,
+        props
+      )
 
       let ref = useEditableRef(editableElement)
       editableElement.forwardedRef = true
@@ -78,6 +82,7 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
       return (
         <EditableElementContext.Provider value={editableElement}>
           <Component
+            key={key}
             {...rest}
             {...editableElement.props}
             ref={mergeRefs([ref, forwardRef, (r) => setMounted(true)])}
@@ -92,12 +97,16 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
     return function Editable(props: any) {
       const { children, ...rest } = props
       let source = props._source
-      const editableElement = useEditableElement(Component, source, props)
+      const [editableElement, key] = useEditableElement(
+        Component,
+        source,
+        props
+      )
       editableElement.forwardedRef = false
 
       return (
         <EditableElementContext.Provider value={editableElement}>
-          <Component {...rest} {...(editableElement.props ?? {})}>
+          <Component key={key} {...rest} {...(editableElement.props ?? {})}>
             {children}
           </Component>
           <Helpers />
@@ -121,6 +130,7 @@ function useEditableElement(
   const parent = useContext(EditableElementContext)
   const id = useId()
   const render = useRerender()
+  const [key, setKey] = useState(0)
 
   const editableElement = useMemo(() => {
     return editor.createElement(id, source, componentType)
@@ -134,6 +144,7 @@ function useEditableElement(
   editableElement.source = source
   editableElement.currentProps = { ...props }
   editableElement.render = render
+  editableElement.remount = () => setKey((i) => i + 1)
   editableElement.store = store
 
   let parentId = parent?.id!
@@ -145,7 +156,7 @@ function useEditableElement(
     }
   }, [parentId, editableElement])
 
-  return editableElement
+  return [editableElement, key]
 }
 
 function useEditableRef(editableElement: EditableElement) {

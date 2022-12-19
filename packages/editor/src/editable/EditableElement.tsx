@@ -19,58 +19,6 @@ export type JSXSource = {
 export class EditableElement<
   Ref extends { name?: string } = any
 > extends EventTarget {
-  useHelper(arg0: string, helper: any, ...args: any[]) {
-    const [props] = this.editor.useSettings("helpers", {
-      [arg0]: helpers({
-        label: arg0
-      })
-    })
-    const isSelected = useEditorStore((state) => state.selectedId === this.id)
-
-    let ref =
-      props[arg0] === "all"
-        ? this
-        : props[arg0] === "selected" && isSelected
-        ? this
-        : undefined
-
-    // @ts-ignore
-    useHelper(ref as any, helper, ...(args ?? []))
-  }
-  useCollapsed(): [any, any] {
-    let storedCollapsedState =
-      this.editor.expanded.size > 0
-        ? this.editor.expanded.has(this.treeId)
-          ? false
-          : true
-        : !this.editor.isSelected(this) && this.isPrimitive()
-    const [collapsed, setCollapsed] = useState(storedCollapsedState)
-
-    useEffect(() => {
-      if (collapsed) {
-        this.editor.expanded.delete(this.treeId)
-        localStorage.setItem(
-          "collapased",
-          JSON.stringify(Array.from(this.editor.expanded))
-        )
-      } else {
-        this.editor.expanded.add(this.treeId)
-        localStorage.setItem(
-          "collapased",
-          JSON.stringify(Array.from(this.editor.expanded))
-        )
-      }
-    }, [collapsed])
-
-    return [collapsed, setCollapsed]
-  }
-
-  isPrimitive(): boolean {
-    return (
-      this.elementName.charAt(0) === this.elementName.charAt(0).toLowerCase() &&
-      !(this.elementName === "group")
-    )
-  }
   object?: Object3D<Event>
   ref?: Ref
   currentProps: any
@@ -168,6 +116,68 @@ export class EditableElement<
     if (this.ref) {
       this.ref.visible = v
     }
+  }
+
+  remount: () => void = () => {}
+  useVisible(): [any, any] {
+    const [visible, setVisible] = useState(true)
+    return [visible, setVisible]
+  }
+  useHelper(arg0: string, helper: any, ...args: any[]) {
+    const [props] = this.editor.useSettings("helpers", {
+      [arg0]: helpers({
+        label: arg0
+      })
+    })
+    const isEditorMode = this.editor
+      .getPanel(this.editor.settingsPanel)
+      .useStore((s) => this.editor.isEditorMode())
+    const isSelected = useEditorStore((state) => state.selectedId === this.id)
+
+    let ref = isEditorMode
+      ? props[arg0] === "all"
+        ? this
+        : props[arg0] === "selected" && isSelected
+        ? this
+        : undefined
+      : undefined
+
+    // @ts-ignore
+    useHelper(ref as any, helper, ...(args ?? []))
+  }
+  useCollapsed(): [any, any] {
+    let storedCollapsedState =
+      this.editor.expanded.size > 0
+        ? this.editor.expanded.has(this.treeId)
+          ? false
+          : true
+        : !this.editor.isSelected(this) && this.isPrimitive()
+    const [collapsed, setCollapsed] = useState(storedCollapsedState)
+
+    useEffect(() => {
+      if (collapsed) {
+        this.editor.expanded.delete(this.treeId)
+        localStorage.setItem(
+          "collapased",
+          JSON.stringify(Array.from(this.editor.expanded))
+        )
+      } else {
+        this.editor.expanded.add(this.treeId)
+        localStorage.setItem(
+          "collapased",
+          JSON.stringify(Array.from(this.editor.expanded))
+        )
+      }
+    }, [collapsed])
+
+    return [collapsed, setCollapsed]
+  }
+
+  isPrimitive(): boolean {
+    return (
+      this.elementName.charAt(0) === this.elementName.charAt(0).toLowerCase() &&
+      !(this.elementName === "group")
+    )
   }
 
   addChange(element: EditableElement, prop: string, value: any) {

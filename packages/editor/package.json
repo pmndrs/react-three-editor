@@ -33,9 +33,12 @@
   "babel": {
     "presets": [
       "@babel/preset-env",
-      ["@babel/preset-react", {
-        "runtime": "automatic"
-      }],
+      [
+        "@babel/preset-react",
+        {
+          "runtime": "automatic"
+        }
+      ],
       [
         "@babel/preset-typescript",
         {
@@ -68,6 +71,7 @@
     "prettier": "^2.8.0",
     "r3f-perf": "^6.5.0",
     "react-dropzone": "^14.2.3",
+    "react-hot-toast": "^2.4.0",
     "react-hotkeys-hook": "^4.0.6",
     "three-stdlib": "^2.20.4",
     "tunnel-rat": "^0.1.0",
@@ -76,10 +80,10 @@
   },
   "peerDependencies": {
     "@react-three/fiber": "8.9.1",
+    "@react-three/rapier": "*",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0",
-    "three": "0.147.0",
-    "@react-three/rapier": "*"
+    "three": "0.147.0"
   },
   "devDependencies": {
     "@react-three/rapier": "^0.10.0",

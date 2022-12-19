@@ -168,7 +168,7 @@ export function ElementTransformControls({
 
   useEffect(() => {
     element.addEventListener("ref-changed", (e) => {
-      // setRef(e.detail.ref)
+      setRef(e.detail.ref)
     })
   }, [element])
 

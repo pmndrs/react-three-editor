@@ -9,16 +9,16 @@ import {
   useRef,
   useState
 } from "react"
+import toast from "react-hot-toast"
 import { useHotkeys } from "react-hotkeys-hook"
 import create from "zustand"
 import { useEditor } from "../../../editable/Editor"
 import { ThreeEditor } from "../../ThreeEditor"
 import { createMultiTunnel } from "../tunnels"
-import { Commands } from "./Commands"
 
 type Command = {
-  icon: () => JSX.Element
-  description: string
+  icon: (editor: ThreeEditor) => JSX.Element
+  description: (editor: ThreeEditor) => string
   name: string
   execute: (editor: ThreeEditor) => void
   render: (editor: ThreeEditor) => any
@@ -61,22 +61,84 @@ export const CommandBar = () => {
   useHotkeys("meta+k", () => setOpen((open) => !open))
 
   return (
-    <Command.Dialog
-      open={open}
-      onOpenChange={setOpen}
-      className="commandbar dark"
-    >
-      <commandBarTunnel.Outs />
-      <Commands />
-    </Command.Dialog>
+    <>
+      <Command.Dialog
+        open={open}
+        onOpenChange={setOpen}
+        className="commandbar dark"
+      >
+        <commandBarTunnel.Outs />
+      </Command.Dialog>
+    </>
   )
+}
+
+export function KeyboardCommands() {
+  const commands = commandStore((state) => state.commands)
+  const editor = useEditor()
+
+  const [{ shortcuts: debug }] = editor.useSettings("debug", {
+    shortcuts: false
+  })
+
+  return (
+    <>
+      {commands.map((command) => {
+        if (!command.shortcut || !command.render(editor)) return null
+
+        return (
+          <KeyboardShortcut
+            key={command.name}
+            debug={debug}
+            shortcut={command.shortcut}
+            execute={() => command.execute(editor)}
+          />
+        )
+      })}
+    </>
+  )
+}
+
+export function KeyboardShortcut({ shortcut, execute, debug }) {
+  useHotkeys(
+    shortcut.join("+"),
+    () => {
+      if (debug)
+        toast.custom(
+          <div className="kbd-shortcut">
+            {shortcut?.map((key, i) => (
+              <kbd
+                key={`${i}`}
+                style={{
+                  marginLeft: i > 0 ? "4px" : "0px"
+                }}
+              >
+                {key === "meta" ? "⌘" : key.toUpperCase()}
+              </kbd>
+            ))}
+          </div>
+        )
+      execute()
+    },
+    [shortcut.join("+"), execute, debug],
+    {
+      preventDefault: true
+    }
+  )
+
+  return null
 }
 
 export function CommandBarControls() {
   const open = commandStore((state) => state.open)
   const editor = useEditor()
 
-  return <EditorCommand editor={editor} key={open ? 0 : 1} />
+  return (
+    <>
+      <EditorCommand editor={editor} key={open ? 0 : 1} />
+      <KeyboardCommands />
+    </>
+  )
 }
 
 export function EditorCommand({ editor }: { editor: ThreeEditor }) {
@@ -118,8 +180,8 @@ export function EditorCommand({ editor }: { editor: ThreeEditor }) {
                   value={command.name}
                   onSelect={() => command.execute(editor)}
                 >
-                  {command.icon()}
-                  {command.description}
+                  {command.icon(editor)}
+                  {command.description(editor)}
                 </Item>
               ) : null}
             </Fragment>

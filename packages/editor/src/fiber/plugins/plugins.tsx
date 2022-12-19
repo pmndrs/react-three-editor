@@ -279,11 +279,9 @@ export const transformWithoutRef = {
           position: prop.vector3d({
             element: entity,
             path: ["object", "position"],
-            lock: true,
             step: 0.1
           }),
           rotation: prop.euler({
-            lock: true,
             step: 1,
             path: ["object", "rotation"],
             element: entity
@@ -364,9 +362,19 @@ export const propControls = {
 
     Object.entries(entity.currentProps).forEach(([k, v]) => {
       if (!controls[k] && !IGNORED_PROPS.includes(k) && isControllable(v)) {
+        let val = entity.currentProps[k]
+
+        let props = {}
+        if (typeof val === "number") {
+          props.step = val / 100.0
+          if (val % 1 === 0) {
+            props.step = 1
+          }
+        }
         controls[k] = prop.unknown({
           element: entity,
-          path: ["currentProps", k]
+          path: ["currentProps", k],
+          ...props
         })
       }
     })

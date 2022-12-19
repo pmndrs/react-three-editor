@@ -168,6 +168,23 @@
   align-items: center;
   justify-content: center;
 }
+
+.kbd-shortcut {
+  display: flex;
+}
+
+.kbd-shortcut kbd {
+  font-family: var(--font-sans);
+  background: var(--leva-colors-elevation2);
+  color: var(--leva-colors-folderTextColor);
+  height: 20px;
+  width: 20px;
+  border-radius: 4px;
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .commandbar[cmdk-root] kbd:first-of-type {
   margin-left: 8px;
 }

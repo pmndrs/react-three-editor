@@ -62,6 +62,7 @@ function BlockSpinner({ position = [0, 0, 0] }: { position: Vector3 }) {
       <RigidBody
         ref={obstacle}
         type="kinematicPosition"
+        rotation={[0, 0, 0]}
         position={[0, 0.3, 0]}
         restitution={0.7}
         mass={39}
@@ -107,7 +108,12 @@ function BlockAxe({ position = [0, 0, 0] }: { position: Vector3 }) {
           color={"rgb(147, 63, 63)"}
         />
       </mesh>
-      <RigidBody ref={obstacle} type="kinematicPosition">
+      <RigidBody
+        ref={obstacle}
+        type="kinematicPosition"
+        position={[0, 0, 0]}
+        rotation={[0, 0, 0]}
+      >
         <mesh scale={[1.5, 1.5, 0.3]} receiveShadow castShadow={true}>
           <memo.boxGeometry name="box" />
           <memo.meshStandardMaterial
@@ -141,7 +147,12 @@ function BlockLimbo({ position = [0, 0, 0] }: { position: Vector3 }) {
         <memo.boxGeometry name="box" />
         <memo.meshStandardMaterial name="floor2Material" color="greenyellow" />
       </mesh>
-      <RigidBody ref={obstacle} type="kinematicPosition">
+      <RigidBody
+        ref={obstacle}
+        type="kinematicPosition"
+        position={[0, 0, 0]}
+        rotation={[0, 0, 0]}
+      >
         <mesh scale={[3.5, 0.3, 0.3]} receiveShadow castShadow={true}>
           <memo.boxGeometry name="box" />
           <memo.meshStandardMaterial

@@ -1,5 +1,6 @@
 import { Icon } from "@iconify/react"
 import { useMemo } from "react"
+import { Group, Mesh } from "three"
 import { ThreeEditor } from "../../ThreeEditor"
 import { commandStore, useCommand } from "./CommandBar"
 
@@ -8,38 +9,55 @@ export function Commands() {
     useMemo(
       () => ({
         icon: () => <Icon icon="ph:cube" />,
-        description: "Go to Editor Mode",
-        name: "Go to Editor Mode",
+        description: (e) =>
+          `Go to ${e.isEditorMode() ? "Play" : "Editor"} Mode`,
+        name: "Toggle mode",
         execute: (editor: ThreeEditor) => {
-          editor
-            .getPanel(editor.settingsPanel)
-            .useStore.setState(({ data }) => {
-              data["settings.camera.enabled"].value = true
+          if (!editor.isEditorMode()) {
+            editor
+              .getPanel(editor.settingsPanel)
+              .useStore.setState(({ data }) => {
+                data["settings.camera.enabled"].value = true
 
-              if (data["settings.physics.paused"]) {
-                data["settings.physics.paused"].value = true
-                data["settings.physics.debug"].value = true
-              }
+                if (data["settings.physics.paused"]) {
+                  data["settings.physics.paused"].value = true
+                  data["settings.physics.debug"].value = true
+                }
 
-              let panelNames = Object.keys(editor.panels)
-              for (let i = 0; i < panelNames.length; i++) {
-                data["settings.panel." + panelNames[i] + ".hidden"].value =
-                  false
-              }
+                let panelNames = Object.keys(editor.panels)
+                for (let i = 0; i < panelNames.length; i++) {
+                  data["settings.panels." + panelNames[i] + ".hidden"].value =
+                    false
+                }
 
-              return { data }
-            })
+                return { data }
+              })
+
+            editor.remount()
+          } else {
+            editor
+              .getPanel(editor.settingsPanel)
+              .useStore.setState(({ data }) => {
+                data["settings.camera.enabled"].value = false
+
+                if (data["settings.physics.paused"]) {
+                  data["settings.physics.paused"].value = false
+                  data["settings.physics.debug"].value = false
+                }
+
+                let panelNames = Object.keys(editor.panels)
+                for (let i = 0; i < panelNames.length; i++) {
+                  data["settings.panels." + panelNames[i] + ".hidden"].value =
+                    true
+                }
+
+                return { data }
+              })
+          }
           commandStore.setState({ open: false })
         },
         render: (editor: ThreeEditor) => {
-          let enabled = editor
-            .getPanel(editor.settingsPanel)
-            .get("settings.camera.enabled")
-          if (enabled === undefined) {
-            return true
-          } else {
-            return !enabled
-          }
+          return true
         },
         shortcut: ["meta", "e"]
       }),
@@ -51,51 +69,7 @@ export function Commands() {
     useMemo(
       () => ({
         icon: () => <Icon icon="ph:cube" />,
-        description: "Go to Play Mode",
-        name: "Go to Play Mode",
-        execute: (editor: ThreeEditor) => {
-          editor
-            .getPanel(editor.settingsPanel)
-            .useStore.setState(({ data }) => {
-              data["settings.camera.enabled"].value = false
-
-              if (data["settings.physics.paused"]) {
-                data["settings.physics.paused"].value = false
-                data["settings.physics.debug"].value = false
-              }
-
-              let panelNames = Object.keys(editor.panels)
-              for (let i = 0; i < panelNames.length; i++) {
-                data["settings.panel." + panelNames[i] + ".hidden"].value = true
-              }
-
-              return { data }
-            })
-
-          commandStore.setState({ open: false })
-        },
-        render: (editor: ThreeEditor) => {
-          let enabled = editor
-            .getPanel(editor.settingsPanel)
-            .get("settings.camera.enabled")
-
-          if (enabled === undefined) {
-            return true
-          } else {
-            return enabled
-          }
-        },
-        shortcut: ["meta", "e"]
-      }),
-      []
-    )
-  )
-
-  useCommand(
-    useMemo(
-      () => ({
-        icon: () => <Icon icon="ph:cube" />,
-        description: "Save all",
+        description: () => "Save all",
         name: "Save all",
         execute: async (editor: ThreeEditor) => {
           let el = editor.root
@@ -124,7 +98,71 @@ export function Commands() {
     useMemo(
       () => ({
         icon: () => <Icon icon="ph:cube" />,
-        description: "Save selected element",
+        description: () => "Focus",
+        name: "Focus",
+        execute: async (editor: ThreeEditor) => {
+          let el = editor.root
+          let selected = editor.selectedElement().treeId
+          // let traverse = (item, show) => {
+          //   if (selected === item.treeId) {
+          //     console.log("visible", item.treeId)
+
+          //     // console.log("saving", item.key)
+          //     // item.save()
+          //   }  else if () {
+
+          //   }
+          //   else {
+          //     item.visible = false
+          //     for (var child of item.children) {
+          //       traverse(child, false)
+          //     }
+          //   }
+          // }
+
+          for (var child of el.children) {
+            if (!selected.startsWith(child.treeId)) {
+              if (child.ref instanceof Mesh || child.ref instanceof Group) {
+                child.visible = false
+              } else {
+                for (var c of child.children) {
+                  if (c.ref instanceof Mesh || c.ref instanceof Group) {
+                    c.visible = false
+                  }
+                }
+              }
+            } else {
+              for (var c of child.children) {
+                if (!selected.startsWith(c.treeId)) {
+                  if (c.ref instanceof Mesh || c.ref instanceof Group) {
+                    c.visible = false
+                  } else {
+                    for (var d of c.children) {
+                      if (d.ref instanceof Mesh || d.ref instanceof Group) {
+                        d.visible = false
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          commandStore.setState({ open: false })
+        },
+        render: (editor: ThreeEditor) => {
+          return editor.selectedElement()
+        }
+      }),
+      []
+    )
+  )
+
+  useCommand(
+    useMemo(
+      () => ({
+        icon: () => <Icon icon="ph:cube" />,
+        description: () => "Save selected item",
         name: "Save selected element",
         execute: async (editor: ThreeEditor) => {
           editor.selectedElement()?.save()
@@ -143,7 +181,7 @@ export function Commands() {
     useMemo(
       () => ({
         icon: () => <Icon icon="ph:cube" />,
-        description: "Clear local storage state",
+        description: () => "Clear local storage state",
         name: "Clear local storage state",
         execute: async (editor: ThreeEditor) => {
           localStorage.clear()

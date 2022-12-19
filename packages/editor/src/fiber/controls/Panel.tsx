@@ -29,7 +29,7 @@ export function Panel({
   const editor = useEditor()
   editor.useSettings("panel", {})
 
-  const [{ hidden: different }] = editor.useSettings("panel." + id, {
+  const [{ hidden: different }] = editor.useSettings("panels." + id, {
     hidden: {
       value: false
     }

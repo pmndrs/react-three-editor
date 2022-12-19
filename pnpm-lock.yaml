@@ -486,6 +486,7 @@ importers:
       react: ^18.2.0
       react-dom: ^18.2.0
       react-dropzone: ^14.2.3
+      react-hot-toast: ^2.4.0
       react-hotkeys-hook: ^4.0.6
       three-stdlib: ^2.20.4
       tunnel-rat: ^0.1.0
@@ -515,6 +516,7 @@ importers:
       prettier: 2.8.0
       r3f-perf: 6.6.0_xtpvfhsrdad6nughsgptsnwwii
       react-dropzone: 14.2.3_react@18.2.0
+      react-hot-toast: 2.4.0_biqbaboplfbrettd7655fr4n2y
       react-hotkeys-hook: 4.0.6_biqbaboplfbrettd7655fr4n2y
       three-stdlib: 2.20.4
       tunnel-rat: 0.1.0_react@18.2.0
@@ -12153,6 +12155,12 @@ packages:
       resolve: 1.22.1
     dev: true
 
+  /goober/2.1.11:
+    resolution: {integrity: sha512-5SS2lmxbhqH0u9ABEWq7WPU69a4i2pYcHeCxqaNq6Cw3mnrF0ghWNM4tEGid4dKy8XNIAUbuThuozDHHKJVh3A==}
+    peerDependencies:
+      csstype: ^3.0.10
+    dev: false
+
   /gopd/1.0.1:
     resolution: {integrity: sha512-d65bNlIadxvpb/A2abVdlqKqV563juRnZ1Wtk6s1sIR8uNsXR70xqIzVqxVf1eTqDunwT2MkczEeaezCKTZhwA==}
     dependencies:
@@ -19019,6 +19027,20 @@ packages:
 
   /react-error-overlay/6.0.11:
     resolution: {integrity: sha512-/6UZ2qgEyH2aqzYZgQPxEnz33NJ2gNsnHA2o5+o4wW9bLM/JYQitNP9xPhsXwC08hMMovfGe/8retsdDsczPRg==}
+    dev: false
+
+  /react-hot-toast/2.4.0_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-qnnVbXropKuwUpriVVosgo8QrB+IaPJCpL8oBI6Ov84uvHZ5QQcTp2qg6ku2wNfgJl6rlQXJIQU5q+5lmPOutA==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>=16'
+      react-dom: '>=16'
+    dependencies:
+      goober: 2.1.11
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    transitivePeerDependencies:
+      - csstype
     dev: false
 
   /react-hotkeys-hook/4.0.6_biqbaboplfbrettd7655fr4n2y:
