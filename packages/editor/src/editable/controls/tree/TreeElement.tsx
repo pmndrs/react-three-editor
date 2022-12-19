@@ -60,7 +60,12 @@ export function TreeElement({
         <>
           <ElementIcon element={element} />
           <div
-            style={{ marginLeft: "4px" }}
+            style={{
+              marginLeft: "4px",
+              textOverflow: "ellipsis",
+              overflow: "hidden",
+              flex: 1
+            }}
             onClick={(e) => {
               let selected = element.editor.isSelected(element)
               if (selected) {

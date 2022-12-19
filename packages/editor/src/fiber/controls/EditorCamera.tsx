@@ -1,13 +1,21 @@
-import { OrbitControls, PerspectiveCamera } from "@react-three/drei"
+import { OrbitControls } from "@react-three/drei"
 import { useThree } from "@react-three/fiber"
 import { levaStore } from "leva"
-import { useEffect, useRef } from "react"
+import { forwardRef, useEffect, useRef } from "react"
 import { useHotkeysContext } from "react-hotkeys-hook"
 import { Camera, Event, MathUtils } from "three"
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib"
-import { editable } from "../../editable/editable"
+import { setEditable } from "../../editable/editable"
 import { useEditor, useEditorStore } from "../../editable/Editor"
 import { ThreeEditor } from "../ThreeEditor"
+
+setEditable(
+  OrbitControls,
+  forwardRef((props, ref) => {
+    const isEditorMode = useEditor().useSetting("camera.enabled", false)
+    return isEditorMode ? null : <OrbitControls {...props} ref={ref} />
+  })
+)
 
 // @ts-ignore
 window.leva = levaStore
@@ -87,9 +95,22 @@ export function EditorCamera() {
     }
   }, [controls, props.enabled])
 
+  useEffect(() => {
+    if (props.enabled && controls) {
+      camera.position.fromArray(editor.getSettings("camera.position"))
+      camera.rotation.fromArray(
+        editor.getSettings("camera.rotation").map((a) => MathUtils.degToRad(a))
+      )
+      // camera.fov = props.fov
+      // camera.near = props.near
+      // camera.far = props.far
+      // camera.zoom = props.zoom
+    }
+  }, [camera, controls])
+
   return (
     <>
-      {props.enabled && (
+      {/* {props.enabled && (
         <PerspectiveCamera
           ref={(el) => {
             editor.camera = el
@@ -98,15 +119,15 @@ export function EditorCamera() {
           rotation={props.rotation.map((a) => MathUtils.degToRad(a))}
           makeDefault
         />
-      )}
+      )} */}
       {props.enabled && (!controls || ref2.current === controls) && (
         <OrbitControls ref={ref2} makeDefault />
       )}
-      <editable.primitive
+      {/* <editable.primitive
         name="Camera"
         object={ref.current || camera}
         _source={{}}
-      />
+      /> */}
       {/* <PerspectiveCamera makeDefault /> */}
     </>
   )

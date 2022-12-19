@@ -1,6 +1,6 @@
 import { TransformControls } from "@react-three/drei"
 import { mergeRefs } from "leva/plugin"
-import { useCallback, useContext, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
 import { Event, MathUtils, Object3D, Vector3Tuple } from "three"
 import { TransformControls as TransformControlsImpl } from "three-stdlib"
@@ -11,7 +11,7 @@ import {
 } from "../../editable/commands"
 import { eq } from "../../editable/controls/eq"
 import { EditableElement } from "../../editable/EditableElement"
-import { EditorContext } from "../../editable/Editor"
+import { useEditor } from "../../editable/Editor"
 
 const serializeTransform = (
   object?: Object3D
@@ -33,7 +33,7 @@ export function ElementTransformControls({
 }: ElementTransformControlsProps) {
   const ref = useRef<TransformControlsImpl>(null!)
   const draggingRef = useRef<boolean>(false)
-  const editor = useContext(EditorContext)
+  const editor = useEditor()
   const oldTransform = useRef<{
     position: Vector3Tuple
     rotation: Vector3Tuple
@@ -50,7 +50,6 @@ export function ElementTransformControls({
   useHotkeys("-", () =>
     ref.current.setSize(Math.max((ref.current as any).size - 0.1, 0.1))
   )
-  useHotkeys("s", () => element.changed && element.save())
   useHotkeys("=", () => ref.current.setSize((ref.current as any).size + 0.1))
   useHotkeys("meta+z", () => editor?.commandManager.undo())
   useHotkeys("meta+y", () => editor?.commandManager.redo())
@@ -164,15 +163,19 @@ export function ElementTransformControls({
     [updateElementTransforms]
   )
 
-  const [object, setRef] = useState(element.getObject3D())
+  const [object, setRef] = useState(() => element.getObject3D())
 
   useEffect(() => {
-    element.addEventListener("ref-changed", (e) => {
-      setRef(e.detail.ref)
+    element.addEventListener("ref-changed", (e: CustomEvent<{ ref: any }>) => {
+      if (e.detail.ref instanceof Object3D) {
+        setRef(e.detail.ref)
+      }
     })
   }, [element])
 
-  return (
+  const mode = editor.useMode("editor")
+
+  return mode ? (
     <TransformControls
       object={object}
       key={element.id}
@@ -184,5 +187,5 @@ export function ElementTransformControls({
       ])}
       onChange={onChange}
     />
-  )
+  ) : null
 }

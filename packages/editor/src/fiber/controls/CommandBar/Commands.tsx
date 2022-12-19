@@ -19,6 +19,7 @@ export function Commands() {
               .getPanel(editor.settingsPanel)
               .useStore.setState(({ data }) => {
                 data["settings.camera.enabled"].value = true
+                data["settings.scene.mode"].value = "editor"
 
                 if (data["settings.physics.paused"]) {
                   data["settings.physics.paused"].value = true
@@ -40,6 +41,8 @@ export function Commands() {
               .getPanel(editor.settingsPanel)
               .useStore.setState(({ data }) => {
                 data["settings.camera.enabled"].value = false
+
+                data["settings.scene.mode"].value = "play"
 
                 if (data["settings.physics.paused"]) {
                   data["settings.physics.paused"].value = false
@@ -84,6 +87,64 @@ export function Commands() {
             }
           }
           await traverse(el)
+
+          commandStore.setState({ open: false })
+        },
+        render: (editor: ThreeEditor) => {
+          return true
+        }
+      }),
+      []
+    )
+  )
+
+  useCommand(
+    useMemo(
+      () => ({
+        icon: () => <Icon icon="ph:cube" />,
+        description: () => "Show Panels",
+        name: "Show Panels",
+        execute: async (editor: ThreeEditor) => {
+          editor
+            .getPanel(editor.settingsPanel)
+            .useStore.setState(({ data }) => {
+              let panelNames = Object.keys(editor.panels)
+              for (let i = 0; i < panelNames.length; i++) {
+                data["settings.panels." + panelNames[i] + ".hidden"].value =
+                  false
+              }
+
+              return { data }
+            })
+
+          commandStore.setState({ open: false })
+        },
+        render: (editor: ThreeEditor) => {
+          return true
+        }
+      }),
+      []
+    )
+  )
+
+  useCommand(
+    useMemo(
+      () => ({
+        icon: () => <Icon icon="ph:cube" />,
+        description: () => "Hide Panels",
+        name: "Hide Panels",
+        execute: async (editor: ThreeEditor) => {
+          editor
+            .getPanel(editor.settingsPanel)
+            .useStore.setState(({ data }) => {
+              let panelNames = Object.keys(editor.panels)
+              for (let i = 0; i < panelNames.length; i++) {
+                data["settings.panels." + panelNames[i] + ".hidden"].value =
+                  true
+              }
+
+              return { data }
+            })
 
           commandStore.setState({ open: false })
         },

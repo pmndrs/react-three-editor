@@ -1,16 +1,19 @@
 import { useBounds } from "@react-three/drei"
-import { getDrafter } from "draft-n-draw"
+// import { getDrafter } from "draft-n-draw"
 import { levaStore, useControls } from "leva"
-import { Schema, StoreType } from "leva/dist/declarations/src/types"
+import {
+  Schema,
+  SchemaToValues,
+  StoreType
+} from "leva/dist/declarations/src/types"
 import { useState } from "react"
 import create from "zustand"
 import {
-  RReturnType,
   SchemaOrFn,
   usePersistedControls
 } from "../editable/controls/usePersistedControls"
 import { EditableElement, JSXSource } from "../editable/EditableElement"
-import { Editor } from "../editable/Editor"
+import { Editor, useEditor } from "../editable/Editor"
 import { usePanel } from "./controls/Panel"
 
 const createLevaStore = () => {
@@ -25,6 +28,10 @@ type Panel = StoreType & { store: StoreType }
 class PanelManager {}
 
 export class ThreeEditor extends Editor {
+  getSettings(arg0: string): number[] | ArrayLike<number> {
+    let panel = this.getPanel(this.settingsPanel)
+    return (panel.getData()["settings." + arg0] as any).value as any
+  }
   camera: unknown
   bounds!: ReturnType<typeof useBounds>
   isEditorMode() {
@@ -37,6 +44,16 @@ export class ThreeEditor extends Editor {
     } else {
       return enabled
     }
+  }
+
+  useMode<K extends string | undefined>(
+    name?: K
+  ): K extends undefined ? string : boolean {
+    return this.getPanel(this.settingsPanel).useStore((s) =>
+      name
+        ? s.data["settings.scene.mode"]?.value === name
+        : s.data["settings.scene.mode"]?.value
+    ) as any
   }
   remount: () => void = () => {}
   isSelected(arg0: EditableElement) {
@@ -53,6 +70,13 @@ export class ThreeEditor extends Editor {
 
   get panels() {
     return this.panelStore.getState().panels
+  }
+
+  useSetting(key: string, def) {
+    const editor = useEditor()
+    return editor
+      .getPanel(editor.settingsPanel)
+      .useStore((s) => s.data[`settings.` + key]?.value ?? def)
   }
 
   getPanel(name: string | StoreType): Panel {
@@ -112,7 +136,7 @@ export class ThreeEditor extends Editor {
     name: string | undefined,
     arg1: T,
     hidden?: boolean
-  ): RReturnType<() => S> {
+  ): [SchemaToValues<T>] {
     const settingsPanel = usePanel(this.store((s) => s.settingsPanel))
     const [collapsed, setCollpased] = useState(true)
     useControls(
@@ -145,7 +169,7 @@ export class ThreeEditor extends Editor {
     return element
   }
 
-  drafter = getDrafter()
+  // drafter = getDrafter()
 
   setRef(element: any, ref: any) {
     if (ref.__r3f) {
@@ -153,28 +177,28 @@ export class ThreeEditor extends Editor {
     }
   }
 
-  debug(
-    info: any,
-    v: {
-      persist?: number | boolean | undefined
-    } & Omit<Parameters<ReturnType<typeof getDrafter>["drawRay"]>[1], "persist">
-  ) {
-    let editor = this
-    if (!this.isEditorMode()) return
-    if (typeof v?.persist === "number") {
-      let applicable = this.plugins.filter((p) => p.debug && p.applicable(info))
+  // debug(
+  //   info: any,
+  //   v: {
+  //     persist?: number | boolean | undefined
+  //   } & Omit<Parameters<ReturnType<typeof getDrafter>["drawRay"]>[1], "persist">
+  // ) {
+  //   let editor = this
+  //   if (!this.isEditorMode()) return
+  //   if (typeof v?.persist === "number") {
+  //     let applicable = this.plugins.filter((p) => p.debug && p.applicable(info))
 
-      let dispose = applicable.map((p) => p.debug(info, v, editor))
+  //     let dispose = applicable.map((p) => p.debug(info, v, editor))
 
-      setTimeout(() => {
-        dispose.forEach((d) => d())
-      }, v.persist * 1000)
-    } else {
-      let dispose = this.plugins
-        .filter((p) => p.debug && p.applicable(v))
-        .map((p) => p.debug(info, v, editor))
-    }
-  }
+  //     setTimeout(() => {
+  //       dispose.forEach((d) => d())
+  //     }, v.persist * 1000)
+  //   } else {
+  //     let dispose = this.plugins
+  //       .filter((p) => p.debug && p.applicable(v))
+  //       .map((p) => p.debug(info, v, editor))
+  //   }
+  // }
 
   addPlugin(plugin: {
     applicable: (arg0: any) => boolean
