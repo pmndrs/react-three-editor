@@ -83,9 +83,7 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
         (e: any) => {
           props.onPointerDown?.(e)
           let id = editableElement.id
-          if (e.ctrlKey && e.object?.__r3f?.editable?.id) {
-            id = e.object?.__r3f?.editable?.id
-          }
+          e.stopPropagation()
           editableElement.editor.selectId(id)
         },
         [editableElement]
