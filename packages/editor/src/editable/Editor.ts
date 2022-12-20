@@ -75,6 +75,14 @@ export class Editor extends EventTarget {
     })
   }
 
+  async deleteElement(params: any) {
+    this.clearSelection()
+    await this.client.save({
+      ...params,
+      action_type: "deleteElement"
+    })
+  }
+
   get root() {
     return this.store.getState().elements.root
   }

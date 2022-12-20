@@ -1,7 +1,7 @@
 import { NodePath, PluginItem, types } from "@babel/core"
 import template from "@babel/template"
 
-export const updateAttribute = (data: any) => (): PluginItem => {
+export const attributeMutations = (data: any) => (): PluginItem => {
   const valueExpression = (value: any) => {
     if (typeof value.expression === "string") {
       const templ = template(value.expression)
