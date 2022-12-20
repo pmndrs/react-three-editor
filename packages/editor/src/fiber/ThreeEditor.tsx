@@ -206,10 +206,4 @@ export class ThreeEditor extends Editor {
   }) {
     this.plugins.push(plugin)
   }
-
-  selectedElement() {
-    return this.store.getState().elements[
-      this.store.getState().selectedId ?? ""
-    ]
-  }
 }

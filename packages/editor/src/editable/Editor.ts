@@ -19,7 +19,7 @@ const createEditorStore = () => {
     selectedId: null,
     selectedKey: null,
     elements: {
-      root: new EditableElement("root", {}, "editor", null)
+      root: new EditableElement("root", {} as any, "editor", null)
     },
     settingsPanel: "scene"
   }))
@@ -48,7 +48,7 @@ export class Editor extends EventTarget {
   ) {
     super()
     this.store = createEditorStore()
-    this.root.editor = this
+    this.root.editor = this as any
     this.root.index = ""
     this.expanded = localStorage.getItem("collapased")
       ? new Set(JSON.parse(localStorage.getItem("collapased")!))
@@ -67,8 +67,28 @@ export class Editor extends EventTarget {
     }
   }
 
+  async insertElement(params: any) {
+    await this.client.save({
+      ...params,
+      action_type: "insertElement"
+    })
+  }
+
   get root() {
     return this.store.getState().elements.root
+  }
+
+  get selection() {
+    return {
+      selectedId: this.store.getState().selectedId,
+      selectedKey: this.store.getState().selectedKey
+    }
+  }
+
+  get selectedElement() {
+    if (this.store.getState().selectedId) {
+      return this.getElementById(this.store.getState().selectedId!)
+    }
   }
 
   select(element: EditableElement<any>): void {
