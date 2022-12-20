@@ -18,8 +18,7 @@ export const configureServer =
           }
           const fileName = data.source.fileName
           const source = readFileSync(fileName).toString()
-
-          if (!["insertElement"].includes(data.action_type)) {
+          if (!["insertElement", "deleteElement"].includes(data.action_type)) {
             filesToSkipOnHmr.set(fileName, true)
           }
 

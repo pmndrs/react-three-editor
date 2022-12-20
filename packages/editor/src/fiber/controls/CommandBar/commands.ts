@@ -173,23 +173,59 @@ export const commands: CommandType[] = [
   },
   {
     icon: "ph:cube",
-    name: "Add element",
+    name: "Insert element",
     children: [
       {
-        name: "PointerControls",
+        name: "Group",
         execute(editor) {
           const selectedElement = editor.selectedElement
           if (selectedElement) {
             editor.insertElement({
               source: selectedElement.source,
               value: {
-                componentType: "PointerControls",
-                imports: [
-                  {
-                    import: "PivotControls",
-                    importPath: "@react-three/drei"
-                  }
-                ]
+                componentType: "group"
+              }
+            })
+          }
+        }
+      },
+      {
+        name: "Mesh",
+        execute(editor) {
+          const selectedElement = editor.selectedElement
+          if (selectedElement) {
+            editor.insertElement({
+              source: selectedElement.source,
+              value: {
+                componentType: "mesh"
+              }
+            })
+          }
+        }
+      },
+      {
+        name: "Sphere Geometry",
+        execute(editor) {
+          const selectedElement = editor.selectedElement
+          if (selectedElement) {
+            editor.insertElement({
+              source: selectedElement.source,
+              value: {
+                componentType: "sphereGeometry"
+              }
+            })
+          }
+        }
+      },
+      {
+        name: "Mesh standard material",
+        execute(editor) {
+          const selectedElement = editor.selectedElement
+          if (selectedElement) {
+            editor.insertElement({
+              source: selectedElement.source,
+              value: {
+                componentType: "meshStandardMaterial"
               }
             })
           }
@@ -198,30 +234,17 @@ export const commands: CommandType[] = [
     ]
   },
   {
-    icon: "ph:cube",
-    name: "Wrap selection in element",
-    children: [
-      {
-        name: "PivotControls",
-        execute(editor) {
-          const selectedElement = editor.selectedElement
-          if (selectedElement) {
-            editor.insertElement({
-              source: selectedElement.source,
-              value: {
-                selectionAsChild: true,
-                componentType: "PivotControls",
-                imports: [
-                  {
-                    import: "PivotControls",
-                    importPath: "@react-three/drei"
-                  }
-                ]
-              }
-            })
-          }
-        }
+    name: "Remove Element",
+    render(editor) {
+      return !!editor.selectedElement
+    },
+    execute(editor) {
+      const selectedElement = editor.selectedElement
+      if (selectedElement) {
+        editor.deleteElement({
+          source: selectedElement.source
+        })
       }
-    ]
+    }
   }
 ]
