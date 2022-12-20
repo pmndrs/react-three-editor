@@ -10,7 +10,6 @@ import {
   CommandBar,
   CommandBarControls
 } from "./controls/CommandBar/CommandBar"
-import { Commands } from "./controls/CommandBar/Commands"
 import { EditorCamera } from "./controls/EditorCamera"
 import { Panel } from "./controls/Panel"
 import { PerformanceControls } from "./controls/PerformanceControls"
@@ -40,7 +39,6 @@ export const Canvas = forwardRef<
 
   return (
     <EditorContext.Provider value={store}>
-      <Commands />
       <EditorCanvas ref={ref} store={store} {...props}>
         {children}
       </EditorCanvas>
@@ -76,7 +74,7 @@ const EditorCanvas = forwardRef<
     <FiberCanvas
       {...settings}
       ref={ref}
-      onPointerMissed={(e) => {
+      onPointerMissed={(e: any) => {
         store.clearSelection()
       }}
       {...props}

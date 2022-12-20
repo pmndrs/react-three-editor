@@ -3,7 +3,7 @@ import { Command } from "cmdk"
 import { FC, useCallback, useEffect, useRef } from "react"
 import { useEditor } from "../../../editable/Editor"
 import { ThreeEditor } from "../../ThreeEditor"
-import { useCommandStore } from "./store"
+import { selectActiveCommands, useCommandStore } from "./store"
 import { commandBarTunnel } from "./tunnel"
 import { CommandGroup, ExecutableCommand } from "./types"
 
@@ -15,7 +15,9 @@ export function EditorCommand({ editor }: { editor: ThreeEditor }) {
     inputRef?.current?.focus()
   }, [])
 
-  const commands = useCommandStore((state) => state.commands)
+  const commands = useCommandStore(selectActiveCommands)
+  const filter = useCommandStore((state) => state.filter)
+  const setFilter = useCommandStore((state) => state.setFilter)
 
   return (
     <commandBarTunnel.In>
@@ -24,6 +26,8 @@ export function EditorCommand({ editor }: { editor: ThreeEditor }) {
         ref={inputRef}
         autoFocus
         placeholder="Search for apps and commands..."
+        value={filter}
+        onValueChange={setFilter}
       />
       <hr cmdk-raycast-loader="" />
       <Command.List ref={listRef}>
@@ -53,14 +57,19 @@ export function EditorCommand({ editor }: { editor: ThreeEditor }) {
 
 export type CommandGroupItemProps = {
   command: CommandGroup
+  onSelect?(command: CommandGroup): void
 }
-export const CommandGroupItem: FC<CommandGroupItemProps> = ({ command }) => {
+export const CommandGroupItem: FC<CommandGroupItemProps> = ({
+  command,
+  onSelect: _onSelect
+}) => {
   const { icon, description, render } = command
+  const openGroup = useCommandStore(({ openGroup }) => openGroup)
   const _editor = useEditor()
-  const toggleOpen = useCommandStore(({ toggleOpen }) => toggleOpen)
 
   const onSelect = useCallback(() => {
-    toggleOpen(false)
+    openGroup(command.name)
+    _onSelect?.(command)
   }, [])
 
   if (render && !render(_editor)) return null
@@ -81,14 +90,19 @@ export const CommandGroupItem: FC<CommandGroupItemProps> = ({ command }) => {
 
 export type CommandProps = {
   command: ExecutableCommand
+  onSelect?(command: ExecutableCommand): void
 }
-export const CommandItem: FC<CommandProps> = ({ command }) => {
+export const CommandItem: FC<CommandProps> = ({
+  command,
+  onSelect: _onSelect
+}) => {
   const { icon, description, render, shortcut } = command
   const _editor = useEditor()
   const toggleOpen = useCommandStore(({ toggleOpen }) => toggleOpen)
 
   const onSelect = useCallback(() => {
     toggleOpen(false)
+    _onSelect?.(command)
     ;(command as ExecutableCommand).execute(_editor)
   }, [])
 
