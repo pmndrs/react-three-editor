@@ -174,7 +174,7 @@ function BlockEnd({ position }: { position: Vector3 }) {
       </mesh>
       <RigidBody type="fixed" colliders="hull" position={[0, 1, 0]}>
         <primitive
-          object={useGLTF("/hamburger.glb").scene}
+          object={useGLTF("/models/Stag.gltf").scene}
           scale={0.2}
           position={[0, -0.4, 0]}
         />
@@ -222,7 +222,7 @@ function Bounds({ length = 1 }) {
         />
       </RigidBody>
     </>
-  );
+  )
 }
 
 function Level() {
@@ -233,7 +233,7 @@ function Level() {
       <BlockSpinner position={[0, 0, -8]} />
       <BlockSpinner position={[0, 0, -12]} />
       <BlockAxe position={[0, 0, -16]} />
-      <BlockEnd position={[0, 0, -20]} />
+      <BlockEnd position={[0.0, 0, -20]} />
       <Bounds length={6} name={"bounds"} />
     </>
   )

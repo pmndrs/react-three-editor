@@ -5,13 +5,12 @@ import {
   DropZone,
   ImageContainer,
   ImageLargePreview,
-  ImagePreview,
   Instructions,
   Remove
 } from "../../editable/controls/image"
 import { usePopin } from "../../editable/controls/usePopin"
 
-export const texture = createPlugin({
+export const gltf = createPlugin({
   sanitize(value: any) {
     if (value instanceof File) {
       return URL.createObjectURL(value)
@@ -28,7 +27,7 @@ export const texture = createPlugin({
         if (acceptedFiles.length) {
           let data = new FormData()
           data.append("file", acceptedFiles[0])
-          data.append("type", "texture")
+          data.append("type", "model")
           let response = await fetch(
             `/__editor/save/${acceptedFiles[0].name}`,
             {
@@ -53,7 +52,6 @@ export const texture = createPlugin({
 
     const { getRootProps, getInputProps, isDragAccept } = useDropzone({
       maxFiles: 1,
-      accept: { "image/*": [] },
       onDrop,
       disabled
     })
@@ -62,13 +60,14 @@ export const texture = createPlugin({
       <Components.Row input>
         <Components.Label>{label}</Components.Label>
         <ImageContainer>
-          <ImagePreview
+          <div></div>
+          {/* <ImagePreview
             ref={popinRef}
             hasImage={!!value}
             onPointerDown={() => !!value && show()}
             onPointerUp={hide}
             style={{ backgroundImage: value ? `url(${value})` : "none" }}
-          />
+          /> */}
           {shown && !!value && (
             <Components.Portal>
               <Components.Overlay

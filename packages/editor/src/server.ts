@@ -37,7 +37,7 @@ export default function editor(): Plugin {
           return
         }
 
-        let p = "public/textures/" + decodeURIComponent(req.url.slice(1))
+        let p = `public/${fields.type}s/` + decodeURIComponent(req.url.slice(1))
         if (fs.existsSync(p)) {
           fs.removeSync(p)
         }
@@ -45,7 +45,7 @@ export default function editor(): Plugin {
         res.writeHead(200, { "Content-Type": "application/json" })
         res.end(
           JSON.stringify(
-            "/textures/" + decodeURIComponent(req.url.slice(1)),
+            `/${fields.type}s/` + decodeURIComponent(req.url.slice(1)),
             null,
             2
           )
