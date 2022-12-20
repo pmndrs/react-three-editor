@@ -41,13 +41,13 @@ export function setEditable(
 
 export const Editable = forwardRef(
   ({ component, ...props }: { component: any }, ref) => {
+    const isEditor = useContext(EditorContext)
     const mainC = useMemo(() => {
-      if (!memo.get(component)) {
+      if (!memo.get(component) && isEditor) {
         memo.set(component, createEditable(component))
       }
       return memo.get(component)
-    }, [component])
-    const isEditor = useContext(EditorContext)
+    }, [component, isEditor])
     if (isEditor) {
       return createElement(mainC, { ...props, ref })
     }
@@ -69,6 +69,8 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
     return forwardRef(function Editable(props: any, forwardRef) {
       const { children, ...rest } = props
       let source = props._source
+      const isEditor = useContext(EditorContext)
+      if (!isEditor) return <Component {...props} ref={forwardRef} />
       const [editableElement, key] = useEditableElement(
         Component,
         source,
@@ -95,6 +97,8 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
     })
   } else {
     return function Editable(props: any) {
+      const isEditor = useContext(EditorContext)
+      if (!isEditor) return <Component {...props} ref={forwardRef} />
       const { children, ...rest } = props
       let source = props._source
       const [editableElement, key] = useEditableElement(
