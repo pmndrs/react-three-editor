@@ -1,6 +1,8 @@
 import { MathUtils, TextureLoader } from "three"
+import { GLTFLoader } from "three-stdlib"
 import { ref } from "../../editable/controls/ref"
 import { EditableElement } from "../../editable/EditableElement"
+import { gltf } from "./gltf"
 import { texture } from "./texture"
 
 export interface PropInput {
@@ -81,7 +83,57 @@ export function createProp(
             return
           }
 
-          type.set(el, prop, value)
+          let val = type.set(el, prop, value)
+
+          if (val.then) {
+            val.then((setValue) => {
+              console.log(setValue)
+              onChange?.(value, prop, controlPath, context)
+
+              let serializale = type.serialize
+                ? type.serialize(el, prop, value)
+                : value
+
+              if (
+                serializale !== undefined &&
+                element instanceof EditableElement
+              ) {
+                if (editable) {
+                  if (element === editable) {
+                    let [_, ...p] = path
+                    element.addChange(element, p.join("-"), serializale)
+                    element.changed = true
+                    let propOveride = setValue
+
+                    if (propOveride !== undefined) {
+                      element.setProp(p.join("-"), propOveride)
+                    }
+                  } else {
+                    element.addChange(
+                      editable,
+                      remaining.join("-"),
+                      serializale
+                    )
+                    element.changed = true
+                  }
+                } else {
+                  let [_, ...p] = path
+                  element.addChange(element, p.join("-"), serializale)
+                  element.changed = true
+
+                  let propOveride = type.override
+                    ? type.override(el, prop, serializale)
+                    : serializale
+
+                  if (propOveride !== undefined) {
+                    element.setProp(p.join("-"), propOveride)
+                  }
+                }
+              }
+            })
+            return
+          }
+
           onChange?.(value, prop, controlPath, context)
 
           let serializale = type.serialize
@@ -315,6 +367,40 @@ const textureT: {
   }
 }
 
+const gltfT: {
+  get: (obj: any, prop: string) => any
+  set: (obj: any, prop: string, value: any) => void
+  control?: any
+  init?: ((obj: any, prop: string, value: any) => void) | undefined
+  serialize(obj: any, prop: string, value: any): any
+} = {
+  control: gltf,
+  get(obj: any, prop: string) {
+    return obj[prop]?.uuid
+  },
+  async set(obj: any, prop: string, value: any) {
+    return new Promise((res) =>
+      new GLTFLoader().load(value, (data) => {
+        obj[prop] = data.scene
+        res(data.scene)
+      })
+    )
+  },
+  serialize(obj: any, prop: string, value: any) {
+    return {
+      src: value,
+      loader: "TextureLoader",
+      expression: `useGLTF('${value}').scene`,
+      imports: [
+        {
+          import: ["useGltf"],
+          importPath: "@react-three/fiber"
+        }
+      ]
+    }
+  }
+}
+
 const select = {
   get(obj: any, prop: string) {
     return obj?.[prop]
@@ -332,6 +418,7 @@ export const prop = Object.assign(createProp, {
   colorstring: (props: PropInput) => createProp(colorstring, props),
   number: (props: PropInput) => createProp(number, props),
   texture: (props: PropInput) => createProp(textureT, props),
+  gltf: (props: PropInput) => createProp(gltfT, props),
   bool: (props: PropInput) => createProp(bool, props),
   vector3d: (props: PropInput) => createProp(vector3d, props),
   vector2d: (props: PropInput) => createProp(vector2d, props),

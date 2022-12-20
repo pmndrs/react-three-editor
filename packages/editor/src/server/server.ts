@@ -20,6 +20,38 @@ export default function editor(): Plugin {
         }
       }
     })
+
+    server.middlewares.use("/__editor/save", async (req, res) => {
+      const { default: formidable, errors } = await import("formidable")
+      formidable({
+        multiples: true,
+        keepExtensions: true,
+        filename: req.url.slice(1)
+      }).parse(req, (err, fields, files) => {
+        if (err) {
+          // example to check for a very specific error
+          if (err.code === errors.maxFieldsExceeded) {
+          }
+          res.writeHead(err.httpCode || 400, { "Content-Type": "text/plain" })
+          res.end(String(err))
+          return
+        }
+
+        let p = `public/${fields.type}s/` + decodeURIComponent(req.url.slice(1))
+        if (fs.existsSync(p)) {
+          fs.removeSync(p)
+        }
+        fs.moveSync(files["file"].filepath, p)
+        res.writeHead(200, { "Content-Type": "application/json" })
+        res.end(
+          JSON.stringify(
+            `/${fields.type}s/` + decodeURIComponent(req.url.slice(1)),
+            null,
+            2
+          )
+        )
+      })
+    })
   }
 
   return {

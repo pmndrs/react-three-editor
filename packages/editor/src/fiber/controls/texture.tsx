@@ -28,6 +28,7 @@ export const texture = createPlugin({
         if (acceptedFiles.length) {
           let data = new FormData()
           data.append("file", acceptedFiles[0])
+          data.append("type", "texture")
           let response = await fetch(
             `/__editor/save/${acceptedFiles[0].name}`,
             {

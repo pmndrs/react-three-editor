@@ -55,7 +55,9 @@ export class EditableElement<
     if (this.source.moduleName === this.source.componentName) {
       return `${this.source.componentName}:${this.elementName}:${this.source.lineNumber}:${this.source.columnNumber}`
     }
-    return `${this.source.moduleName}:${this.source.componentName}:${this.elementName}:${this.source.lineNumber}:${this.source.columnNumber}`
+    return `${this.source.moduleName}:${this.source.componentName ?? "_"}:${
+      this.elementName
+    }:${this.source.lineNumber}:${this.source.columnNumber}`
   }
 
   get name() {
@@ -102,11 +104,13 @@ export class EditableElement<
     let remainingSlot = 30 - this.elementName.length
     return this.ref?.name?.length && this.ref.name !== this.key
       ? this.ref.name
-      : `${
+      : componentName
+      ? `${
           componentName.length > remainingSlot
             ? componentName.slice(0, remainingSlot) + "…"
             : componentName
         }.${elementName}`
+      : elementName
   }
 
   set name(v: string) {
@@ -277,7 +281,9 @@ export class EditableElement<
   }
 
   get children() {
-    return this.childIds.map((id) => this.editor.getElementById(id)!)
+    return this.childIds
+      .map((id) => this.editor.getElementById(id)!)
+      .filter(Boolean)
   }
 
   get parent() {

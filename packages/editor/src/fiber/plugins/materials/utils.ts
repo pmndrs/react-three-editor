@@ -52,7 +52,7 @@ export const createTextureFolder = (
           },
           render: (get) => {
             let o = element.getObjectByPath<Texture>([...path, texturePropName])
-            return o && o.source?.data?.src
+            return !!(o && o.source)
           }
         }),
         [`${folderPrefix}MapWrapT`]: prop.select({
@@ -67,7 +67,7 @@ export const createTextureFolder = (
           label: "wrapT",
           render: (get) => {
             let o = element.getObjectByPath<Texture>([...path, texturePropName])
-            return o && o.source?.data?.src
+            return !!(o && o.source)
           },
           onChange(v) {
             let o = element.getObjectByPath<Texture>([...path, texturePropName])
@@ -82,7 +82,7 @@ export const createTextureFolder = (
           step: 0.1,
           render: (get) => {
             let o = element.getObjectByPath<Texture>([...path, texturePropName])
-            return o && o.source?.data?.src
+            return !!(o && o.source)
           }
         })
       },

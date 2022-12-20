@@ -41,7 +41,6 @@ root.render(
       }}
     >
       <Experience />
-      {/* <EditorControls /> */}
     </Canvas>
   </KeyboardControls>
 )

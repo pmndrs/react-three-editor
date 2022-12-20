@@ -12,8 +12,10 @@ import { ThreeEditor } from "../ThreeEditor"
 setEditable(
   OrbitControls,
   forwardRef((props, ref) => {
-    const isEditorMode = useEditor().useSetting("camera.enabled", false)
-    return isEditorMode ? null : <OrbitControls {...props} ref={ref} />
+    const isEditorMode = useEditor().useMode("editor")
+    return isEditorMode ? null : (
+      <OrbitControls {...props} makeDefault ref={ref} />
+    )
   })
 )
 

@@ -1,3 +1,4 @@
+import { prop } from "../controls/prop"
 import { geometry, meshGeometry } from "./geomtries"
 import { group } from "./group"
 import { material } from "./materials"
@@ -32,7 +33,22 @@ export const DEFAULT_EDITOR_PLUGINS = [
   directionalLight,
   pointLight,
   ambientLight,
-  spotLight
+  spotLight,
+  {
+    applicable: (el) => el.type === "primitive",
+    controls: (el) => {
+      return {
+        object: prop.ref({
+          element: el,
+          path: ["ref"]
+        }),
+        gltf: prop.gltf({
+          element: el,
+          path: ["currentProps", "object"]
+        })
+      }
+    }
+  }
 ]
 
 export function addPlugin(plugin: any) {

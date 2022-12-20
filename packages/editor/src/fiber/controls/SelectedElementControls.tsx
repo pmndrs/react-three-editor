@@ -2,7 +2,7 @@ import { StoreType } from "leva/dist/declarations/src/types"
 import { Fragment } from "react"
 import { ElementControls } from "../../editable/controls/useElementControls"
 import { EditableElement } from "../../editable/EditableElement"
-import { useEditorStore } from "../../editable/Editor"
+import { useEditor, useEditorStore } from "../../editable/Editor"
 import { useElementObserver } from "../useWatchElement"
 import { ElementTransformControls } from "./ElementTransformControls"
 import { usePanel } from "./Panel"
@@ -19,6 +19,8 @@ export function SelectedElementControls({
     state.selectedId ? state.elements[state.selectedId] : null
   )
 
+  const mode = useEditor().useMode("editor")
+
   return selectedElement ? (
     <Fragment key={selectedElement.id}>
       <ElementControls
@@ -27,7 +29,7 @@ export function SelectedElementControls({
         order={order}
       />
       <ElementWatcher element={selectedElement} />
-      {selectedElement.isObject3D() ? (
+      {selectedElement.isObject3D() && mode ? (
         <ElementTransformControls element={selectedElement} />
       ) : null}
     </Fragment>
