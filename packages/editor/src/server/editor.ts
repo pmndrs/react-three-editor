@@ -1,14 +1,13 @@
 import type { Plugin, ResolvedConfig, ViteDevServer } from "vite"
 import { configureServer } from "./configureServer"
 
-let justEdited: Record<string, boolean> = {}
-
 export const editor = (): Plugin => {
+  const filesToSkipOnHmr: Map<string, boolean> = new Map()
   return {
     name: "vite-plugin-vinxi",
     enforce: "pre",
     handleHotUpdate(ctx) {
-      if (justEdited[ctx.file]) {
+      if (filesToSkipOnHmr.has(ctx.file)) {
         return []
       }
     },
@@ -24,6 +23,6 @@ export const editor = (): Plugin => {
         }
       ]
     },
-    configureServer
+    configureServer: configureServer(filesToSkipOnHmr)
   }
 }
