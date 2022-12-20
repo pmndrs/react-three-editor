@@ -7,7 +7,7 @@ export const insertElement = (data: any) => (): PluginItem => {
         const { action_type, source, value } = data
         if (action_type === "insertElement") {
           const { lineNumber, elementName } = source
-          const { selectionAsChild, componentType } = value
+          const { selectionAsChild, componentType } = value || {}
           const openingElementName =
             types.isJSXIdentifier(path.node.openingElement.name) &&
             path.node.openingElement.name.name
@@ -37,6 +37,7 @@ export const insertElement = (data: any) => (): PluginItem => {
                 }
               }
             } else {
+              path.node.children.push(newJSXElement)
             }
           }
         }
