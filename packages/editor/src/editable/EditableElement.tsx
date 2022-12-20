@@ -254,6 +254,7 @@ export class EditableElement<
 
   async save() {
     let diffs = Object.values(this.changes).map(({ _source, ...value }) => ({
+      action_type: "updateAttribute",
       value,
       source: _source
     }))
