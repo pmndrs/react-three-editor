@@ -102,6 +102,10 @@ export default declare<State>((api) => {
                 t.importSpecifier(
                   t.identifier("useEditorFrame"),
                   t.identifier("useEditorFrame")
+                ),
+                t.importSpecifier(
+                  t.identifier("useEditorUpdate"),
+                  t.identifier("useEditorUpdate")
                 )
               ],
               t.stringLiteral("@react-three/editor/fiber")
@@ -287,6 +291,33 @@ export default declare<State>((api) => {
               )
             )
             node.callee.name = "useEditorFrame"
+          }
+        } else if (
+          t.isIdentifier(node.callee) &&
+          node.callee.name === "useUpdate"
+        ) {
+          const parentComponent = path.findParent(
+            (path) =>
+              (path.isFunctionDeclaration() &&
+                path.get("id").isIdentifier() &&
+                path.get("id").node.name.match(/^[A-Z]/)) ||
+              (path.isVariableDeclarator() &&
+                path.get("id").isIdentifier() &&
+                path.get("id").node.name.match(/^[A-Z]/))
+          )
+
+          if (parentComponent) {
+            const componentName = parentComponent.get("id").node.name
+            parentComponent.state = parentComponent.state?.["count"]
+              ? { count: parentComponent.state?.["count"] + 1 }
+              : { count: 0 }
+
+            node.arguments.unshift(
+              t.stringLiteral(
+                componentName + ":" + parentComponent.state["count"]
+              )
+            )
+            node.callee.name = "useEditorUpdate"
           }
         }
       }

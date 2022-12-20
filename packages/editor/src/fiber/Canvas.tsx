@@ -1,6 +1,5 @@
 import { Bounds, useBounds } from "@react-three/drei"
 import { Canvas as FiberCanvas } from "@react-three/fiber"
-import { DrafterProvider } from "draft-n-draw"
 import { ComponentProps, forwardRef, useMemo, useState } from "react"
 import { Toaster } from "react-hot-toast"
 import { EditableElementContext } from "../editable/editable"
@@ -82,42 +81,40 @@ const EditorCanvas = forwardRef<
       }}
       {...props}
     >
-      <DrafterProvider>
-        <EditorContext.Provider value={store}>
-          <EditorCamera />
-          <Bounds margin={2}>
-            <AssignBounds />
-            <EditableElementContext.Provider key={key} value={store.root}>
-              {children}
-            </EditableElementContext.Provider>
-          </Bounds>
-          <editorTunnel.Outs
-            fallback={
-              <>
-                <Panel
-                  id="default"
-                  title="properties"
-                  collapsed={false}
-                  pos="right"
-                  width={280}
-                />
-                <Panel
-                  id="scene"
-                  title="scene"
-                  pos="left"
-                  width={280}
-                  collapsed={false}
-                />
-                <SceneControls store="scene" />
-                <SelectedElementControls store="default" />
-                <PerformanceControls store="scene" />
-                <CommandBarControls />
-                <CameraGizmos />
-              </>
-            }
-          />
-        </EditorContext.Provider>
-      </DrafterProvider>
+      <EditorContext.Provider value={store}>
+        <EditorCamera />
+        <Bounds margin={2}>
+          <AssignBounds />
+          <EditableElementContext.Provider key={key} value={store.root}>
+            {children}
+          </EditableElementContext.Provider>
+        </Bounds>
+        <editorTunnel.Outs
+          fallback={
+            <>
+              <Panel
+                id="default"
+                title="properties"
+                collapsed={false}
+                pos="right"
+                width={320}
+              />
+              <Panel
+                id="scene"
+                title="scene"
+                pos="left"
+                width={320}
+                collapsed={false}
+              />
+              <SceneControls store="scene" />
+              <SelectedElementControls store="default" />
+              <PerformanceControls store="scene" />
+              <CommandBarControls />
+              <CameraGizmos />
+            </>
+          }
+        />
+      </EditorContext.Provider>
     </FiberCanvas>
   )
 })
