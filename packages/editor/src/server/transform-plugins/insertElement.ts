@@ -9,7 +9,7 @@ export const insertElement = (data: any) => (): PluginItem => {
         if (action_type === "insertElement") {
           filesToSkipOnHmr.set(data.source.fileName, false)
           const { lineNumber, elementName } = source
-          const { selectionAsChild, componentType } = value
+          const { selectionAsChild, componentType } = value || {}
           const openingElementName =
             types.isJSXIdentifier(path.node.openingElement.name) &&
             path.node.openingElement.name.name
@@ -39,7 +39,7 @@ export const insertElement = (data: any) => (): PluginItem => {
                 }
               }
             } else {
-              path.replaceWith(newJSXElement)
+              path.node.children.push(newJSXElement)
             }
           }
         }
