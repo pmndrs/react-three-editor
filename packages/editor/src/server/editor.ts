@@ -6,11 +6,12 @@ export const editor = (): Plugin => {
   return {
     name: "vite-plugin-vinxi",
     enforce: "pre",
-    handleHotUpdate(ctx) {
-      if (filesToSkipOnHmr.has(ctx.file)) {
-        return []
-      }
-    },
+    // handleHotUpdate(ctx) {
+    //   if (filesToSkipOnHmr.has(ctx.file)) {
+    //     return []
+    //   }
+    //   return ctx.modules
+    // },
     transformIndexHtml: async (id, prop) => {
       return [
         {

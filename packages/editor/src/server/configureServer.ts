@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync } from "fs"
 import { ViteDevServer } from "vite"
 import { createRPCServer } from "vite-dev-rpc"
 import { configureMiddlewares } from "./middleware"
-import { parse, print } from "@vinxi/recast"
+import { parse, print, prettyPrint } from "@vinxi/recast"
 import { transformFromAstAsync, types } from "@babel/core"
 import { plugins } from "./transform-plugins"
 import { writeFile } from "fs-extra"
@@ -31,7 +31,7 @@ export const configureServer =
             ast: true,
             plugins: plugins(data)
           })
-          const code = print(sourceAst, {
+          const code = prettyPrint(sourceAst, {
             wrapColumn: 1000
           }).code
           await writeFile(fileName, code)

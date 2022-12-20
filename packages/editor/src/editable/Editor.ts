@@ -83,6 +83,14 @@ export class Editor extends EventTarget {
     })
   }
 
+  async duplicateElement(params: any) {
+    this.clearSelection()
+    await this.client.save({
+      ...params,
+      action_type: "duplicateElement"
+    })
+  }
+
   get root() {
     return this.store.getState().elements.root
   }

@@ -173,6 +173,18 @@ export const commands: CommandType[] = [
   },
   {
     icon: "ph:cube",
+    name: "Duplicate element",
+    execute(editor) {
+      const selectedElement = editor.selectedElement
+      if (selectedElement) {
+        editor.duplicateElement({
+          source: selectedElement.source
+        })
+      }
+    }
+  },
+  {
+    icon: "ph:cube",
     name: "Insert element",
     children: [
       {
