@@ -28,6 +28,7 @@ const createEditorStore = () => {
 export type EditorStoreType = ReturnType<typeof createEditorStore>
 
 type Diff = {
+  action_type: string
   value: {
     [x: string]: any
   }
