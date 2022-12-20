@@ -1,12 +1,6 @@
+import { Canvas, useFrame } from "@react-three/editor/fiber"
+import React, { useRef, useState } from "react"
 import * as THREE from "three"
-import React, { useContext, useRef, useState } from "react"
-import {
-  Canvas,
-  useFrame,
-  editable,
-  EditorPanel,
-  Editable
-} from "@react-three/editor/fiber"
 function Box1(props: any) {
   const mesh = useRef<THREE.Mesh>(null!)
   const [hovered, setHover] = useState(false)
@@ -80,7 +74,6 @@ export default function App() {
       >
         <ambientLight />
         <Switcher />
-        <EditorPanel />
       </Canvas>
     </>
   )
