@@ -18,7 +18,9 @@ export const configureServer =
           }
           const fileName = data.source.fileName
           const source = readFileSync(fileName).toString()
-          filesToSkipOnHmr.set(fileName, true)
+          if (!["insertElement"].includes(data.action_type)) {
+            filesToSkipOnHmr.set(fileName, true)
+          }
           const sourceAst = parse(source, {
             parser: vinxiBabelParser,
             jsx: true
