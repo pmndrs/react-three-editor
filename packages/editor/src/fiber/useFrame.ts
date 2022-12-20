@@ -51,7 +51,7 @@ export function useEditorUpdate(
   const editor = useEditor()
   const settingsPanel = editor.store((s) => s.settingsPanel)
   const panelStore = usePanel(settingsPanel)
-  const isEditorMode = panelStore.useStore((store) => editor.isEditorMode())
+  const isEditorMode = editor.useMode("editor")
   let controls = useControls(
     {
       "frame updates": folder(
@@ -83,13 +83,18 @@ export function useEditorUpdate(
 
 export function useFrame(fn: fiber.RenderCallback, ...args: any) {
   const loopName = fn.name
-  let controls = useControls({
-    update: folder({
-      [loopName?.length ? loopName : "useFrame"]: {
-        value: true
-      }
-    })
-  })
+  let controls = useControls(
+    {
+      "frame updates": folder({
+        [loopName?.length ? loopName : "useFrame"]: {
+          value: true
+        }
+      })
+    },
+    {
+      store: usePanel("scene").store
+    }
+  )
   return fiber.useFrame((...args) => {
     if (controls.useFrame) {
       fn(...args)
@@ -99,15 +104,20 @@ export function useFrame(fn: fiber.RenderCallback, ...args: any) {
 
 export function useUpdate(fn: fiber.RenderCallback, ...args: any) {
   const loopName = fn.name
-  let controls = useControls({
-    update: folder({
-      [loopName?.length ? loopName : "useUpdate"]: {
-        value: true
-      }
-    })
-  })
+  let controls = useControls(
+    {
+      "frame updates": folder({
+        [loopName?.length ? loopName : "useUpdate"]: toggle({
+          value: true
+        })
+      })
+    },
+    {
+      store: usePanel("scene").store
+    }
+  )
   return fiber.useUpdate((...args) => {
-    if (controls.useFrame) {
+    if (controls.useUpdate) {
       fn(...args)
     }
   }, ...args)

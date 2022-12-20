@@ -186,9 +186,9 @@ function BlockEnd({ position }: { position: Vector3 }) {
 function Bounds({ length = 1 }) {
   return (
     <>
-      <RigidBody type="fixed">
+      <RigidBody type="fixed" position={[0, 2.48, 0]}>
         <mesh
-          position={[2.15, 0.75, -(length * 2) + 2]}
+          position={[3.717, 0.75, -10]}
           scale={[0.3, 1.5, 4 * length]}
           receiveShadow
         >
@@ -222,7 +222,7 @@ function Bounds({ length = 1 }) {
         />
       </RigidBody>
     </>
-  )
+  );
 }
 
 function Level() {
