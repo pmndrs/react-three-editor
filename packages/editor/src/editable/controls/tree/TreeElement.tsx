@@ -20,9 +20,7 @@ export function TreeElement({
   panel?: boolean
   collapsible?: boolean
 }) {
-  const selected = element.editor.store(
-    (s) => s.selectedId === element?.id || s.selectedKey === element?.key
-  )
+  const selected = element.editor.store((s) => s.selectedId === element?.id)
 
   const [_collapsed, setCollapsed] = element.useCollapsed()
 
