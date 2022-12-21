@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react"
 import { Bounds, useBounds } from "@react-three/drei"
-import { Canvas as FiberCanvas } from "@react-three/fiber"
+import { Canvas as FiberCanvas, useThree } from "@react-three/fiber"
 import { Components } from "leva/plugin"
 import { ComponentProps, forwardRef, useMemo, useState } from "react"
 import { Toaster } from "react-hot-toast"
@@ -115,14 +115,16 @@ const EditorCanvas = forwardRef<
     setKey((k) => k + 1)
   }
 
+  console.log(settings.shadows)
+
   return (
     <FiberCanvas
-      {...settings}
       ref={ref}
       onPointerMissed={(e: any) => {
         store.clearSelection()
       }}
       {...props}
+      {...settings}
     >
       <EditorContext.Provider value={store}>
         <EditorCamera />
@@ -132,31 +134,7 @@ const EditorCanvas = forwardRef<
             {children}
           </EditableElementContext.Provider>
         </Bounds>
-        <editorTunnel.Outs
-          fallback={
-            <>
-              <Panel
-                id="default"
-                title="properties"
-                collapsed={false}
-                pos="right"
-                width={320}
-              />
-              <Panel
-                id="scene"
-                title="scene"
-                pos="left"
-                width={320}
-                collapsed={false}
-              />
-              <SceneControls store="scene" />
-              <SelectedElementControls store="default" />
-              <PerformanceControls store="scene" />
-              <CommandBarControls />
-              <CameraGizmos />
-            </>
-          }
-        />
+        <editorTunnel.Outs fallback={<EditorControls />} />
       </EditorContext.Provider>
     </FiberCanvas>
   )
@@ -169,4 +147,31 @@ function AssignBounds() {
   editor.bounds = bounds
 
   return null
+}
+
+function EditorControls() {
+  const size = useThree((s) => s.size)
+  return (
+    <>
+      <Panel
+        id="default"
+        title="properties"
+        width={size.width < 1080 ? 280 : 320}
+        collapsed={false}
+        pos="right"
+      />
+      <Panel
+        id="scene"
+        title="scene"
+        pos="left"
+        width={size.width < 780 ? 240 : 320}
+        collapsed={false}
+      />
+      <SceneControls store="scene" />
+      <SelectedElementControls store="default" />
+      <PerformanceControls store="scene" />
+      <CommandBarControls />
+      <CameraGizmos />
+    </>
+  )
 }

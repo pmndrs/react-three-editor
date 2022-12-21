@@ -140,6 +140,7 @@ function useSelectedState(editor: ThreeEditor) {
     "scene",
     {
       selectedId: {
+        render: () => false,
         onChange(e, path, context) {
           if (context.initial) {
             editor?.selectId(e === "" ? null : e)
@@ -149,6 +150,7 @@ function useSelectedState(editor: ThreeEditor) {
         value: selectedId ?? ""
       },
       selectedKey: {
+        render: () => false,
         onChange(e, path, context) {
           if (context.initial) {
             editor?.selectKey(e === "" ? null : e)

@@ -3,7 +3,7 @@ export default function Lights()
     return <>
         <directionalLight
             castShadow
-            position={[0.491, 3.82, -2.037]}
+            position={[-1.389, 2.637, 0.886]}
             intensity={ 1.5 }
             shadow-mapSize={ [ 1024, 1024 ] }
             shadow-camera-near={ 1 }

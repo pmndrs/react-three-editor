@@ -78,6 +78,10 @@ export class EditableElement<
   update(source: JSXSource, props: any) {
     this.source = source
     this.currentProps = { ...props }
+
+    if (props.name && this.store?.get("name")) {
+      this.store?.setValueAtPath("name", props.name, true)
+    }
   }
 
   useRenderKey(forwardRef?: any) {

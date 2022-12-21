@@ -1,4 +1,4 @@
-import { OrbitControls, PivotControls } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei"
 import { extendControls } from "@react-three/editor"
 import { Physics, RigidBody } from "@react-three/rapier"
 import { BlockAxe } from "./components/BlockAxe"
@@ -27,7 +27,7 @@ function Level() {
       <BlockSpinner position={[0, 0, -12]} />
       <BlockAxe position={[0, 0, -16]} />
       <BlockEnd position={[0.0, 0, -20]} />
-      <Bounds length={6} name={"bounds"} />
+      <Bounds length={6} name={"yo!"} />
     </>
   );
 }
