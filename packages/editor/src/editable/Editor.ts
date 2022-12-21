@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useId, useMemo } from "react"
 import { EqualityChecker, StateSelector } from "zustand"
-import { EditableElement } from "./EditableElement"
+import { EditableElement, JSXSource } from "./EditableElement"
 
 import { levaStore, useControls } from "leva"
 import {

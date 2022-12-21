@@ -29,7 +29,7 @@ function Level() {
       <BlockEnd position={[0.0, 0, -20]} />
       <Bounds length={6} name={"yo!"} />
     </>
-  );
+  )
 }
 
 export default function Experience() {

@@ -79,8 +79,8 @@ export class EditableElement<
     this.source = source
     this.currentProps = { ...props }
 
-    if (props.name && this.store?.get("name")) {
-      this.store?.setValueAtPath("name", props.name, true)
+    if (this.store?.get("name")) {
+      this.store?.setValueAtPath("name", this.displayName, true)
     }
   }
 
