@@ -135,12 +135,7 @@ export function Player() {
           opacity={0.7}
         />
       </mesh>
-      <Sparkles
-        count={32}
-        castShadow={true}
-        position={[3.02, 2.372, -2.279]}
-        scale={[2.1, 1, 1]}
-      />
+
     </RigidBody>
   );
 }
