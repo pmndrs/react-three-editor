@@ -1,13 +1,13 @@
-import type { Plugin, ResolvedConfig, ViteDevServer } from "vite"
+import type { Plugin } from "vite"
 import { configureServer } from "./configureServer"
+import { filesToSkipOnHmr } from "./filesToSkipOnHmr"
 
 export const editor = (): Plugin => {
-  const filesToSkipOnHmr: Map<string, boolean> = new Map()
   return {
     name: "vite-plugin-vinxi",
     enforce: "pre",
     handleHotUpdate(ctx) {
-      if (filesToSkipOnHmr.has(ctx.file)) {
+      if (filesToSkipOnHmr.has(ctx.file) && filesToSkipOnHmr.get(ctx.file)) {
         return []
       }
     },

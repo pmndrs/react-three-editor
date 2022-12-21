@@ -1,4 +1,4 @@
-import { OrbitControls } from "@react-three/drei"
+import { OrbitControls, PivotControls } from "@react-three/drei";
 import { extendControls } from "@react-three/editor"
 import { Physics, RigidBody } from "@react-three/rapier"
 import { BlockAxe } from "./components/BlockAxe"

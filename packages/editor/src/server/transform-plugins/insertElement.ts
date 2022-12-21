@@ -1,4 +1,5 @@
 import { NodePath, PluginItem, types } from "@babel/core"
+import { filesToSkipOnHmr } from "../filesToSkipOnHmr"
 
 export const insertElement = (data: any) => (): PluginItem => {
   return {
@@ -6,6 +7,7 @@ export const insertElement = (data: any) => (): PluginItem => {
       JSXElement: (path: NodePath<types.JSXElement>) => {
         const { action_type, source, value } = data
         if (action_type === "insertElement") {
+          filesToSkipOnHmr.set(data.source.fileName, false)
           const { lineNumber, elementName } = source
           const { selectionAsChild, componentType } = value
           const openingElementName =
@@ -37,6 +39,7 @@ export const insertElement = (data: any) => (): PluginItem => {
                 }
               }
             } else {
+              path.replaceWith(newJSXElement)
             }
           }
         }

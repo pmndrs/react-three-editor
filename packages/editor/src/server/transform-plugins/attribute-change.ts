@@ -1,5 +1,6 @@
 import { NodePath, PluginItem, types } from "@babel/core"
 import template from "@babel/template"
+import { filesToSkipOnHmr } from "../filesToSkipOnHmr"
 
 export const updateAttribute = (data: any) => (): PluginItem => {
   const valueExpression = (value: any) => {
@@ -35,6 +36,7 @@ export const updateAttribute = (data: any) => (): PluginItem => {
       element.attributes.push(
         types.jsxAttribute(types.jsxIdentifier(path), expressionContainer)
       )
+      filesToSkipOnHmr.set(data.source.fileName, false)
     }
   }
 

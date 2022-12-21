@@ -1,6 +1,6 @@
-import { CommandType } from "./types"
 import { Group, Mesh } from "three"
 import { EditableElement } from "../../../editable/EditableElement"
+import { CommandType } from "./types"
 
 export const commands: CommandType[] = [
   {
@@ -182,13 +182,15 @@ export const commands: CommandType[] = [
           if (selectedElement) {
             editor.insertElement({
               source: selectedElement.source,
-              componentType: "PointerControls",
-              imports: [
-                {
-                  imports: ["PivotControls"],
-                  importPath: "@react-three/drei"
-                }
-              ]
+              value: {
+                componentType: "PointerControls",
+                imports: [
+                  {
+                    import: "PivotControls",
+                    importPath: "@react-three/drei"
+                  }
+                ]
+              }
             })
           }
         }
@@ -211,7 +213,7 @@ export const commands: CommandType[] = [
                 componentType: "PivotControls",
                 imports: [
                   {
-                    imports: ["PivotControls"],
+                    import: "PivotControls",
                     importPath: "@react-three/drei"
                   }
                 ]
