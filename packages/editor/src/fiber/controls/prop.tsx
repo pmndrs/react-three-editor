@@ -330,6 +330,18 @@ const number = {
   }
 }
 
+const string = {
+  get: (obj: any, prop: string) => {
+    return obj[prop]
+  },
+  set: (obj: any, prop: string, value: any) => {
+    obj[prop] = value
+  },
+  serialize: (obj: any, prop: string, value: any) => {
+    return String(value)
+  }
+}
+
 const textureT: {
   get: (obj: any, prop: string) => any
   set: (obj: any, prop: string, value: any) => void
@@ -417,6 +429,7 @@ export const prop = Object.assign(createProp, {
   color: (props: PropInput) => createProp(color, props),
   colorstring: (props: PropInput) => createProp(colorstring, props),
   number: (props: PropInput) => createProp(number, props),
+  string: (props: PropInput) => createProp(string, props),
   texture: (props: PropInput) => createProp(textureT, props),
   gltf: (props: PropInput) => createProp(gltfT, props),
   bool: (props: PropInput) => createProp(bool, props),
