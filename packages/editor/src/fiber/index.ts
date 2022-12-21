@@ -5,3 +5,4 @@ export {
   useLoader,
   useThree
 } from "@react-three/fiber"
+export * from "./Canvas"
