@@ -11,8 +11,15 @@ export function useElementObserver(entity: EditableElement<any>) {
         let state = d.data
         if (!state) return
 
-        let position = entity.ref.position.toArray()
         let edit = false
+
+        if (state["name"] !== entity.ref.name) {
+          state["name"].disabled = true
+          state["name"].value = entity.ref.name
+          edit = true
+        }
+
+        let position = entity.ref.position.toArray()
         if (
           state["transform.position"] &&
           !eq.array(position, state["transform.position"]?.value)
@@ -47,6 +54,7 @@ export function useElementObserver(entity: EditableElement<any>) {
           state["transform.scale"].value = scale
           edit = true
         }
+
         if (edit) {
           return { date: state }
         }
