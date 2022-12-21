@@ -1,0 +1,25 @@
+{
+  "name": "@react-three/editor-kitchen-sink",
+  "description": "A simple empty project to play and test the editor",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "@react-spring/three": "^9.3.2",
+    "@react-three/drei": "^9.46.4",
+    "@react-three/editor": "workspace:*",
+    "@react-three/fiber": "^9.0.0-alpha.2",
+    "@types/three": "^0.135.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-scripts": "4.0.3",
+    "three": "0.147.0"
+  },
+  "devDependencies": {
+    "@types/react": "18.0.25",
+    "@types/react-dom": "^18.0.9",
+    "vite": "^4.0.2"
+  }
+}
