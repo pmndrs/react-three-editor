@@ -3,6 +3,8 @@ import { createMultiTunnel } from "./tunnels"
 import { CanvasProps, Canvas as FiberCanas } from "@react-three/fiber"
 import { Editor, EditorContext } from "../editable"
 import { client } from "../vite/client"
+import { CommandBar, CommandBarControls } from "../commandbar"
+import "leva"
 
 export const editorTunnel = createMultiTunnel()
 export const { In, Outs } = createMultiTunnel()
@@ -15,6 +17,8 @@ export const Canvas = forwardRef<HTMLCanvasElement, CanvasProps>(
         <EditorCanvas ref={forwardedRef} store={store} {...props}>
           {children}
         </EditorCanvas>
+        <Outs />
+        <CommandBar />
       </EditorContext.Provider>
     )
   }
@@ -28,7 +32,13 @@ export const EditorCanvas = forwardRef<
     <FiberCanas {...props} ref={forwardedRef}>
       <EditorContext.Provider value={store}>
         {children}
-        <editorTunnel.Outs fallback={<Fragment />} />
+        <editorTunnel.Outs
+          fallback={
+            <Fragment>
+              <CommandBarControls />
+            </Fragment>
+          }
+        />
       </EditorContext.Provider>
     </FiberCanas>
   )
