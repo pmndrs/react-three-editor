@@ -1,5 +1,6 @@
 import Rapier from '@dimforge/rapier3d-compat'
 import { Line, OrbitControls, PerspectiveCamera } from '@react-three/drei'
+import '@react-three/editor/rapier'
 import { useFrame } from '@react-three/fiber'
 import { Debug, Physics, RigidBody, useRapier } from '@react-three/rapier'
 import { useControls as useLevaControls } from 'leva'
@@ -110,7 +111,7 @@ const Scene = () => {
             <RigidBody
                 colliders="trimesh"
                 type="fixed"
-                position={[2.5, 0, 0]}
+                position={[4.603, 0.995, -0.895]}
                 rotation={[0, -Math.PI / 3, 0]}
                 userData={{ shape: Shapes.TORUS } as ShapeRapierUserData}
             >
@@ -137,7 +138,7 @@ const Scene = () => {
                 </mesh>
             </RigidBody>
         </>
-    )
+    );
 }
 
 export default () => {
