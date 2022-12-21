@@ -12,7 +12,8 @@
     "skipLibCheck": true
   },
   "include": [
-    "packages/*/src/**/*"
+    "packages/*/src/**/*",
+    "example/*/src/**/*"
   ],
   "exclude": [
     "**/node_modules/**/*",
