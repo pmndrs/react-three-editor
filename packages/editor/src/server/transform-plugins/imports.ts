@@ -17,6 +17,7 @@ export const importsPlugin =
       visitor: {
         Program: {
           exit: (path: NodePath<t.Program>, opts: any) => {
+            if (!data.value) return
             const imports =
               data.action_type === "insertElement"
                 ? data.value.imports

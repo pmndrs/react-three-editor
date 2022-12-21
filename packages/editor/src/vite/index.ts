@@ -15,7 +15,38 @@ const transformElements = [
   "primitive",
   "points"
 ]
-export function r3f({ babelPlugins = [] } = {}) {
+
+let shouldEdit = (node: JSXElementType) => {
+  let isEditableComponent = (node: t.JSXOpeningElement) =>
+    node.attributes.some(
+      (attr) =>
+        t.isJSXAttribute(attr) &&
+        (attr.name.name === "position" ||
+          attr.name.name === "rotation" ||
+          attr.name.name === "scale" ||
+          attr.name.name === "name")
+    ) ||
+    (t.isJSXIdentifier(node.name) &&
+      ["OrbitControls", "Physics"].includes(node.name.name)) ||
+    (t.isJSXIdentifier(node.name) &&
+      (node.name.name.endsWith("Material") ||
+        node.name.name.endsWith("Geometry"))) ||
+    (t.isJSXMemberExpression(node.name) &&
+      (node.name.property.name.endsWith("Material") ||
+        node.name.property.name.endsWith("Geometry")))
+
+  switch (node.type) {
+    case "primitive":
+      return true
+    case "namespaced-primitive":
+      return true
+    case "component":
+      return isEditableComponent(node.openingElement)
+    case "namespaced-component":
+      return isEditableComponent(node.openingElement)
+  }
+}
+export function r3f({ babelPlugins = [], editable = shouldEdit } = {}) {
   return [
     vite(),
     react({
@@ -38,36 +69,7 @@ export function r3f({ babelPlugins = [] } = {}) {
                   "useEditorUpdate"
                 ]
               },
-              isEditable: (node: JSXElementType) => {
-                let isEditableComponent = (node: t.JSXOpeningElement) =>
-                  node.attributes.some(
-                    (attr) =>
-                      t.isJSXAttribute(attr) &&
-                      (attr.name.name === "position" ||
-                        attr.name.name === "rotation" ||
-                        attr.name.name === "scale" ||
-                        attr.name.name === "name")
-                  ) ||
-                  (t.isJSXIdentifier(node.name) &&
-                    ["OrbitControls", "Physics"].includes(node.name.name)) ||
-                  (t.isJSXIdentifier(node.name) &&
-                    (node.name.name.endsWith("Material") ||
-                      node.name.name.endsWith("Geometry"))) ||
-                  (t.isJSXMemberExpression(node.name) &&
-                    (node.name.property.name.endsWith("Material") ||
-                      node.name.property.name.endsWith("Geometry")))
-
-                switch (node.type) {
-                  case "primitive":
-                    return true
-                  case "namespaced-primitive":
-                    return true
-                  case "component":
-                    return isEditableComponent(node.openingElement)
-                  case "namespaced-component":
-                    return isEditableComponent(node.openingElement)
-                }
-              }
+              isEditable: editable
             }
           ]
         ]
