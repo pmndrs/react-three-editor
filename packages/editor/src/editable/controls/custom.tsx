@@ -13,7 +13,7 @@ export const custom = createPlugin<
     data: any
     component: (input: CustomInputContextProps) => JSX.Element
   },
-  any,
+  string,
   {
     component: (input: CustomInputContextProps) => JSX.Element
   }

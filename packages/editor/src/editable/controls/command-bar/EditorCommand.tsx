@@ -1,13 +1,13 @@
 import { Icon } from "@iconify/react"
 import { Command } from "cmdk"
 import { FC, useCallback, useEffect, useRef } from "react"
-import { useEditor } from "../../../editable/Editor"
-import { ThreeEditor } from "../../ThreeEditor"
+import { Editor } from "../../Editor"
+import { useEditor } from "../../useEditor"
 import { selectActiveCommands, useCommandStore } from "./store"
 import { commandBarTunnel } from "./tunnel"
 import { CommandGroup, ExecutableCommand } from "./types"
 
-export function EditorCommand({ editor }: { editor: ThreeEditor }) {
+export function EditorCommand({ editor }: { editor: Editor }) {
   const inputRef = useRef<HTMLInputElement | null>(null)
   const listRef = useRef(null)
 

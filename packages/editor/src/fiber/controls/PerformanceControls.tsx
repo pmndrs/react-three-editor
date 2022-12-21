@@ -2,7 +2,7 @@ import { folder, useControls } from "leva"
 import { StoreType } from "leva/dist/declarations/src/types"
 import { Perf, usePerf } from "r3f-perf"
 import { useEffect } from "react"
-import { usePanel } from "./Panel"
+import { usePanel } from "../../editable/controls/Panel"
 
 export function PerfControls({
   store = "scene",

@@ -1,8 +1,8 @@
 import * as fiber from "@react-three/fiber"
 import { folder, useControls } from "leva"
-import { useEditor } from "../editable/Editor"
-import { usePanel } from "./controls/Panel"
-import { toggle } from "./controls/toggle"
+import { usePanel } from "../editable/controls/Panel"
+import { toggle } from "../editable/controls/toggle"
+import { useEditor } from "../editable/useEditor"
 
 export let Stages = fiber.Stages || {}
 
@@ -14,22 +14,20 @@ export function useEditorFrame(
   const editor = useEditor()
   const settingsPanel = editor.store((s) => s.settingsPanel)
   const panelStore = usePanel(settingsPanel)
+  const isEditorMode = editor.useMode("editor")
   let controls = useControls(
+    "world.updates",
     {
-      "frame updates": folder(
-        {
-          all: toggle({
-            value: true
-          }),
-          [name]: toggle({
-            value: true
-          })
-        },
-        {
-          order: 1000,
-          collapsed: true
-        }
-      )
+      all: toggle({
+        value: true
+      }),
+      [name]: toggle({
+        value: true
+      })
+    },
+    {
+      order: 1000,
+      collapsed: true
     },
     {
       store: panelStore.store
@@ -37,7 +35,7 @@ export function useEditorFrame(
     [panelStore.store]
   )
   return fiber.useFrame((...args) => {
-    if (controls.all && controls[name]) {
+    if (controls.all && controls[name] && !isEditorMode) {
       fn(...args)
     }
   }, ...args)

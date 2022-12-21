@@ -11,7 +11,7 @@ import {
 } from "../../editable/commands"
 import { eq } from "../../editable/controls/eq"
 import { EditableElement } from "../../editable/EditableElement"
-import { useEditor } from "../../editable/Editor"
+import { useEditor } from "../../editable/useEditor"
 
 const serializeTransform = (
   object?: Object3D

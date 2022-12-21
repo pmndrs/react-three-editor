@@ -6,7 +6,8 @@ import { useHotkeysContext } from "react-hotkeys-hook"
 import { Camera, Event, MathUtils } from "three"
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib"
 import { setEditable } from "../../editable/editable"
-import { useEditor, useEditorStore } from "../../editable/Editor"
+import { useEditorStore } from "../../editable/Editor"
+import { useEditor } from "../../editable/useEditor"
 import { ThreeEditor } from "../ThreeEditor"
 
 setEditable(
@@ -27,7 +28,7 @@ export function EditorCamera() {
   const editor = useEditor()
   const hotkeysContext = useHotkeysContext()
 
-  const [props, setCamera] = editor.useSettings("camera", {
+  const [props] = editor.useSettings("camera", {
     enabled: false,
     position: {
       value: [10, 10, 10],
@@ -71,12 +72,9 @@ export function EditorCamera() {
   useEffect(() => {
     function update(e: Event) {
       if (props.enabled) {
-        editor.setSettings(
-          "camera.position",
-          e.target.object.position.toArray()
-        )
+        editor.setSetting("camera.position", e.target.object.position.toArray())
 
-        editor.setSettings(
+        editor.setSetting(
           "camera.rotation",
           e.target.object.rotation
             .toArray()
@@ -84,10 +82,10 @@ export function EditorCamera() {
             .map((a) => MathUtils.radToDeg(a))
         )
 
-        editor.setSettings("camera.fov", e.target.object.fov)
-        editor.setSettings("camera.near", e.target.object.near)
-        editor.setSettings("camera.far", e.target.object.far)
-        editor.setSettings("camera.zoom", e.target.object.zoom)
+        editor.setSetting("camera.fov", e.target.object.fov)
+        editor.setSetting("camera.near", e.target.object.near)
+        editor.setSetting("camera.far", e.target.object.far)
+        editor.setSetting("camera.zoom", e.target.object.zoom)
       }
     }
     controls?.addEventListener("change", update)
@@ -170,7 +168,7 @@ function useSelectedState(editor: ThreeEditor) {
       selectedKey
     )
 
-    editor.setSettings("scene.selectedId", selectedId ?? "")
-    editor.setSettings("scene.selectedKey", selectedKey ?? "")
+    editor.setSetting("scene.selectedId", selectedId ?? "")
+    editor.setSetting("scene.selectedKey", selectedKey ?? "")
   }, [selectedId, selectedKey, set])
 }

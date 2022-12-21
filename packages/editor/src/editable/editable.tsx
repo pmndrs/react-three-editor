@@ -1,5 +1,3 @@
-import { useCreateStore } from "leva"
-import { mergeRefs } from "leva/plugin"
 import {
   createContext,
   createElement,
@@ -8,15 +6,12 @@ import {
   Fragment,
   ReactNode,
   Ref,
-  useCallback,
   useContext,
   useEffect,
-  useId,
-  useMemo,
-  useState
+  useMemo
 } from "react"
-import { EditableElement, JSXSource } from "./EditableElement"
-import { EditorContext, useEditor } from "./Editor"
+import { EditableElement } from "./EditableElement"
+import { EditorContext, useEditorStore } from "./Editor"
 
 type Elements = {
   [K in keyof JSX.IntrinsicElements]: FC<
@@ -32,10 +27,10 @@ export const EditableElementContext = createContext<EditableElement | null>(
 
 const memo = new WeakMap() as unknown as WeakMap<Elements, any> & Elements
 
-export function setEditable(
+export const setEditable = (
   component: any,
   editable: (props: any) => ReactNode
-) {
+) => {
   memo.set(component, editable)
 }
 
@@ -55,6 +50,51 @@ export const Editable = forwardRef(
   }
 )
 
+import { useHelper } from "@react-three/drei"
+import { applyProps } from "@react-three/fiber"
+import { BoxHelper, Group } from "three"
+import { helpers } from "./controls/helpers"
+
+export function TransformHelper({
+  editableElement: element,
+  props,
+  children
+}: {
+  editableElement: EditableElement
+  props: any
+}) {
+  const item = useMemo(() => new Group(), [])
+  element.bounds = item
+  const [{ bounds }] = element.editor.useSettings("helpers", {
+    ["bounds"]: helpers({
+      label: "bounds"
+    })
+  })
+
+  const isSelected = useEditorStore((state) => state.selectedId === element.id)
+
+  let ref =
+    bounds === "all"
+      ? { current: item }
+      : bounds === "selected" && isSelected
+      ? { current: item }
+      : undefined
+
+  useHelper(ref, BoxHelper)
+
+  useEffect(() => {
+    if (props.position || props.rotation || props.scale) {
+      applyProps(item as unknown as any, {
+        position: props.position,
+        rotation: props.rotation,
+        scale: props.scale
+      })
+    }
+  }, [item])
+
+  return <primitive object={item}>{children}</primitive>
+}
+
 export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
   Component: any
 ) {
@@ -67,128 +107,58 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
 
   if (hasRef) {
     return forwardRef(function Editable(props: any, forwardRef) {
-      const { children, ...rest } = props
-      let source = props._source
-      const isEditor = useContext(EditorContext)
-      if (!isEditor) return <Component {...props} ref={forwardRef} />
-      const [editableElement, key] = useEditableElement(
+      const editor = useContext(EditorContext)
+      if (!editor) return <Component {...props} ref={forwardRef} />
+
+      const [editableElement, overrideProps] = editor.useElement(
         Component,
-        source,
-        props
-      )
-
-      let ref = useEditableRef(editableElement)
-      editableElement.forwardedRef = true
-      const [mounted, setMounted] = useState(false)
-
-      const onPointerUp = useCallback(
-        (e: any) => {
-          props.onPointerDown?.(e)
-          let id = editableElement.id
-          e.stopPropagation()
-          editableElement.editor.selectId(id)
-        },
-        [editableElement]
+        props,
+        forwardRef ?? true
       )
 
       return (
         <EditableElementContext.Provider value={editableElement}>
-          <Component
-            key={key}
-            {...rest}
-            {...editableElement.props}
-            ref={mergeRefs([ref, forwardRef, (r) => setMounted(true)])}
-            onPointerUp={onPointerUp}
-          >
-            {children}
-          </Component>
-          {mounted && <Helpers />}
+          {createElement(Component, overrideProps)}
+          {editableElement.mounted && <Helpers />}
         </EditableElementContext.Provider>
       )
     })
   } else {
     return function Editable(props: any) {
-      const isEditor = useContext(EditorContext)
-      if (!isEditor) return <Component {...props} ref={forwardRef} />
-      const { children, ...rest } = props
-      let source = props._source
-      const [editableElement, key] = useEditableElement(
+      const editor = useContext(EditorContext)
+      if (!editor) return <Component {...props} ref={forwardRef} />
+
+      const [editableElement, overrideProps] = editor.useElement(
         Component,
-        source,
         props
       )
-      editableElement.forwardedRef = false
 
       return (
         <EditableElementContext.Provider value={editableElement}>
-          <Component key={key} {...rest} {...(editableElement.props ?? {})}>
-            {children}
-          </Component>
-          <Helpers />
+          <TransformHelper props={{}} editableElement={editableElement}>
+            {createElement(Component, overrideProps)}
+            <Helpers />
+          </TransformHelper>
         </EditableElementContext.Provider>
       )
     }
   }
 }
 
-function useRerender() {
-  const [, rerender] = useState(0)
-  return useCallback(() => rerender((i) => i + 1), [rerender])
-}
-
-function useEditableElement(
-  componentType: string | FC,
-  source: JSXSource,
-  props: any
-) {
-  const editor = useEditor()
-  const parent = useContext(EditableElementContext)
-  const id = useId()
-  const render = useRerender()
-  const [key, setKey] = useState(0)
-
-  const editableElement = useMemo(() => {
-    return editor.createElement(id, source, componentType)
-  }, [id, editor])
-
-  const store = useCreateStore()
-
-  editableElement.id = id
-  editableElement.parentId = parent?.id
-  editableElement.type = componentType
-  editableElement.source = source
-  editableElement.currentProps = { ...props }
-  editableElement.render = render
-  editableElement.remount = () => setKey((i) => i + 1)
-  editableElement.store = store
-
-  let parentId = parent?.id!
-
-  useEffect(() => {
-    editor.addElement(editableElement, parentId)
-    return () => {
-      editor.removeElement(editableElement, parentId)
-    }
-  }, [parentId, editableElement])
-
-  return [editableElement, key]
-}
-
-function useEditableRef(editableElement: EditableElement) {
-  return (el: any) => {
-    if (el) {
-      editableElement.setRef(el)
-    }
+function useEditableContext() {
+  const editableElement = useContext(EditableElementContext)
+  if (!editableElement) {
+    throw new Error("useEditableContext must be used within an Editable")
   }
+  return editableElement
 }
 
 function Helpers() {
-  const editor = useContext(EditorContext)
-  const element = useContext(EditableElementContext)!
+  const element = useEditableContext()
 
   return (
     <>
-      {editor?.plugins
+      {element.editor?.plugins
         .filter((p) => p.helper && p.applicable(element))
         .map((plugin) => (
           <Fragment key={element.id}>

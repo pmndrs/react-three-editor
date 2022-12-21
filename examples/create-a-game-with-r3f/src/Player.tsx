@@ -63,9 +63,9 @@ export function Player() {
           origin.y -= 0.31
           const direction = new THREE.Vector3(0, -1, 0)
           const ray = new rapier.Ray(origin, direction)
-          editor.debug(ray, {
-            persist: 1
-          })
+          // editor.debug(ray, {
+          //   persist: 1
+          // })
           const hit = rapierWorld.castRay(ray, 10, true)
           if ((hit?.toi ?? 0) < 0.15) {
             body.current!.applyImpulse({
@@ -123,7 +123,7 @@ export function Player() {
       colliders="ball"
       restitution={0.2}
       friction={1}
-      position={[-0.593, 4.34, -2.747]}
+      position={[-0.469, 1.69, -0.518]}
       mass={0.1}
     >
       <mesh castShadow>
@@ -138,7 +138,7 @@ export function Player() {
       <Sparkles
         count={32}
         castShadow={true}
-        position={[1.838, 0.942, 0.239]}
+        position={[3.02, 2.372, -2.279]}
         scale={[2.1, 1, 1]}
       />
     </RigidBody>

@@ -19,7 +19,7 @@ export function BlockLimbo({ position = [0, 0, 0] }: { position: Vector3 }) {
   })
 
   return (
-    <group position={position}>
+    <group position={position} name="gro1">
       <mesh position={[0, -0.1, 0]} scale={[4, 0.2, 4]} receiveShadow>
         <memo.boxGeometry name="box" />
         <memo.meshStandardMaterial name="floor2Material" color="greenyellow" />

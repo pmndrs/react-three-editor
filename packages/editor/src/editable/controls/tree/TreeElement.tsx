@@ -36,6 +36,8 @@ export function TreeElement({
     (s) => Object.keys(element.changes).length > 0
   )
 
+  const name = element.store?.useStore((s) => s.data["name"].value)
+
   return (
     <TreeItem
       collapsed={_collapsed}
@@ -76,7 +78,7 @@ export function TreeElement({
               }
             }}
           >
-            {element.displayName}
+            {name}
             {dirty ? "*" : ""}
           </div>
           <div style={{ marginLeft: "auto" }} />

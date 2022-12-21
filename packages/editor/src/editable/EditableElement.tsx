@@ -1,11 +1,12 @@
 import { useHelper } from "@react-three/drei"
+import { LevaInputs } from "leva"
 import { StoreType } from "leva/dist/declarations/src/types"
-import { useEffect, useState } from "react"
+import { mergeRefs } from "leva/plugin"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { Event, Object3D } from "three"
-import { helpers } from "../fiber/controls/helpers"
-import { getEditableElement } from "../fiber/controls/prop"
-import { ThreeEditor } from "../fiber/ThreeEditor"
-import { useEditorStore } from "./Editor"
+import { createLevaStore } from "./controls/createStore"
+import { helpers } from "./controls/helpers"
+import { Editor, useEditorStore } from "./Editor"
 
 export type JSXSource = {
   fileName: string
@@ -16,30 +17,107 @@ export type JSXSource = {
   elementName: string
 }
 
+/**
+ * An editable element is a wrapper around a React element that can be edited in the editor.
+ *
+ * Ideally, a subset of your React app would be wrapped in editable elements, maybe just React components
+ * and not the primitives. Depends on your use case.
+ *
+ * This element is tightly integrated with the editor, and is not meant to be used outside of it.
+ *
+ * It contains all information about the React element that was rendered by it, including refs, props,
+ * hooks into the render cycle, place in the react tree compared to other editable elements, etc.
+ *
+ * It also contains a leva store, which is used to edit the props of the element. It can be rendered using a
+ * leva panel, or a custom UI.
+ *
+ * It tracks changes to the props, and can be used to update the React element. Furthermore, it can be used to
+ * write the changes to you React code base, so that you don't have to copy and paste your changes from some devtools
+ * and you don't loose control of your code.
+ *
+ * */
 export class EditableElement<
   Ref extends { name?: string } = any
 > extends EventTarget {
   object?: Object3D<Event>
   ref?: Ref
-  currentProps: any
   childIds: string[] = []
   changes: Record<string, Record<string, any>> = {}
   forwardedRef: boolean = false
   props: any = {}
-  render: () => void = () => {}
   dirty: any = false
-  store: StoreType | null = null
-  editor: ThreeEditor = {} as any
+  store: StoreType | null = createLevaStore()
+  editor: Editor = {} as any
   constructor(
     public id: string,
     public source: JSXSource,
     public type: any,
-    public parentId?: string | null
+    public parentId?: string | null,
+    public currentProps: any = {}
   ) {
     super()
   }
 
   index: string | undefined
+
+  refs = {
+    setKey: null as Dispatch<SetStateAction<number>> | null,
+    forceUpdate: null as Dispatch<SetStateAction<number>> | null
+  }
+
+  mounted: boolean = false
+
+  remount() {
+    this.refs.setKey?.((i) => i + 1)
+  }
+
+  render() {
+    this.refs.forceUpdate?.((i) => i + 1)
+  }
+
+  update(source: JSXSource, props: any) {
+    this.source = source
+    this.currentProps = { ...props }
+  }
+
+  useRenderKey(forwardRef?: any) {
+    const [key, setSey] = useState(0)
+    const [_, forceUpdate] = useState(0)
+    const [mounted, setMounted] = useState(false)
+
+    this.refs.setKey = setSey
+    this.refs.forceUpdate = forceUpdate
+    this.forwardedRef = forwardRef ? true : false
+    this.mounted = mounted
+
+    useEffect(() => {
+      this.store?.addData(
+        {
+          name: {
+            value: this.displayName,
+            type: LevaInputs.STRING,
+            label: "name",
+            render: () => false
+          }
+        },
+        false
+      )
+    }, [])
+
+    return {
+      ref: mergeRefs([
+        forwardRef === true ? null : forwardRef,
+        (el: any) => {
+          if (el) {
+            this.setRef(el)
+          }
+        },
+        (el) => setMounted(true)
+      ]),
+      mounted,
+      key
+    }
+  }
 
   get treeId(): string {
     return this.parent?.index !== undefined
@@ -102,15 +180,24 @@ export class EditableElement<
     let componentName = this.source.componentName
     let elementName = this.elementName
     let remainingSlot = 30 - this.elementName.length
-    return this.ref?.name?.length && this.ref.name !== this.key
-      ? this.ref.name
-      : componentName
-      ? `${
-          componentName.length > remainingSlot
-            ? componentName.slice(0, remainingSlot) + "…"
-            : componentName
-        }.${elementName}`
-      : elementName
+
+    if (this.ref?.name?.length && this.ref.name !== this.key) {
+      return this.ref.name
+    }
+
+    if (this.currentProps["name"]) {
+      return this.currentProps["name"]
+    }
+
+    if (componentName) {
+      return `${
+        componentName.length > remainingSlot
+          ? componentName.slice(0, remainingSlot) + "…"
+          : componentName
+      }.${elementName}`
+    }
+
+    return elementName
   }
 
   set name(v: string) {
@@ -129,33 +216,31 @@ export class EditableElement<
     }
   }
 
-  remount: () => void = () => {}
   useVisible(): [any, any] {
     const [visible, setVisible] = useState(true)
     return [visible, setVisible]
   }
+
   useHelper(arg0: string, helper: any, ...args: any[]) {
     const [props] = this.editor.useSettings("helpers", {
       [arg0]: helpers({
         label: arg0
       })
     })
-    const isEditorMode = this.editor
-      .getPanel(this.editor.settingsPanel)
-      .useStore((s) => this.editor.isEditorMode())
+
     const isSelected = useEditorStore((state) => state.selectedId === this.id)
 
-    let ref = isEditorMode
-      ? props[arg0] === "all"
+    let ref =
+      props[arg0] === "all"
         ? this
         : props[arg0] === "selected" && isSelected
         ? this
         : undefined
-      : undefined
 
     // @ts-ignore
     useHelper(ref as any, helper, ...(args ?? []))
   }
+
   useCollapsed(): [any, any] {
     let storedCollapsedState =
       this.editor.expanded.size > 0
@@ -236,6 +321,7 @@ export class EditableElement<
   get controls() {
     let controls = {}
     let entity = this
+
     this.editor.plugins.forEach((plugin) => {
       if (plugin.controls && plugin.applicable(entity)) {
         Object.assign(controls, plugin.controls(entity))
@@ -305,7 +391,7 @@ export class EditableElement<
     if (path.length > 1) {
       for (let i = 0; i < path.length - 1; i++) {
         el = el?.[path[i]]
-        let edit = getEditableElement(el)
+        let edit = this.editor.getEditableElement(el)
         if (edit) {
           editable = edit
           remainingPath = path.slice(i + 1)

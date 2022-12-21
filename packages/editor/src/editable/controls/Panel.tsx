@@ -1,8 +1,8 @@
 import { useThree } from "@react-three/fiber"
-import { Leva, LevaPanel } from "leva"
+import { Leva, LevaPanel, useControls } from "leva"
 import { ComponentProps, useEffect, useState } from "react"
-import { useEditor } from "../../editable/Editor"
-import { In } from "../Canvas"
+import { useEditor } from "../useEditor"
+import { In } from "./Outs"
 
 import { StoreType } from "leva/dist/declarations/src/types"
 
@@ -27,8 +27,17 @@ export function Panel({
 } & Omit<ComponentProps<typeof LevaPanel>, "store">) {
   const panel = usePanel(id)
   const editor = useEditor()
-  editor.useSettings("panel", {})
-
+  const settingsPanel = usePanel(editor.store((s) => s.settingsPanel))
+  const mode = editor.useMode("editor")
+  useControls(
+    `world.` + `${mode ? "editor" : "play"} settings.panels`,
+    {},
+    { collapsed: true },
+    {
+      store: settingsPanel.store
+    },
+    [mode]
+  )
   const [{ hidden: different }] = editor.useSettings("panels." + id, {
     hidden: {
       value: false

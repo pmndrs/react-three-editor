@@ -1,6 +1,6 @@
 import { Command } from "cmdk"
 import { useHotkeys } from "react-hotkeys-hook"
-import { useEditor } from "../../../editable/Editor"
+import { useEditor } from "../../useEditor"
 import { EditorCommand } from "./EditorCommand"
 import { KeyboardCommands } from "./KeyboardCommand"
 import { useCommandStore } from "./store"

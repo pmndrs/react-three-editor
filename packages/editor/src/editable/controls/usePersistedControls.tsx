@@ -72,9 +72,11 @@ export function usePersistedControls<S extends Schema, T extends SchemaOrFn<S>>(
   props: T,
   deps = [],
   store = undefined as StoreType | undefined,
-  hidden = false
+  hidden = false,
+  order = 0,
+  _collapsed = true
 ): [SchemaToValues<S>] {
-  const [collapsed, setCollpased] = useState(true)
+  const [collapsed, setCollpased] = useState(_collapsed)
   const [values, set] = useControls(
     () => {
       manageProps(folderName, props)
@@ -86,7 +88,8 @@ export function usePersistedControls<S extends Schema, T extends SchemaOrFn<S>>(
           },
           {
             collapsed: collapsed,
-            render: () => !hidden
+            render: () => !hidden,
+            order: order
           }
         )
       }

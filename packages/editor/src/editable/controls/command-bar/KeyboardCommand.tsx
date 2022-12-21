@@ -1,6 +1,6 @@
 import toast from "react-hot-toast"
 import { useHotkeys } from "react-hotkeys-hook"
-import { useEditor } from "../../../editable/Editor"
+import { useEditor } from "../../useEditor"
 import { useCommandStore } from "./store"
 
 export function KeyboardCommands() {
@@ -15,7 +15,6 @@ export function KeyboardCommands() {
     <>
       {commands.map((command) => {
         if (!command.shortcut) return null
-        console.log(command.shortcut)
 
         return (
           <KeyboardShortcut

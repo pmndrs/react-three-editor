@@ -1,5 +1,5 @@
 import { Group, Mesh } from "three"
-import { EditableElement } from "../../../editable/EditableElement"
+import { EditableElement } from "../../EditableElement"
 import { CommandType } from "./types"
 
 export const commands: CommandType[] = [
@@ -9,49 +9,12 @@ export const commands: CommandType[] = [
     description: (e) => `Go to ${e.isEditorMode() ? "Play" : "Editor"} Mode`,
     execute(editor) {
       if (!editor.isEditorMode()) {
-        editor
-          .getPanel(editor.settingsPanel)
-          .useStore.setState(({ data }: any) => {
-            console.log(Object.assign({}, data))
-            data["settings.camera.enabled"].value = true
-            data["settings.scene.mode"].value = "editor"
-
-            if (data["settings.physics.paused"]) {
-              data["settings.physics.paused"].value = true
-              data["settings.physics.debug"].value = true
-            }
-
-            let panelNames = Object.keys(editor.panels)
-            for (let i = 0; i < panelNames.length; i++) {
-              data["settings.panels." + panelNames[i] + ".hidden"].value = false
-            }
-
-            return { data }
-          })
-
-        editor.remount()
+        editor.setMode("editor")
       } else {
-        editor
-          .getPanel(editor.settingsPanel)
-          .useStore.setState(({ data }: any) => {
-            data["settings.camera.enabled"].value = false
-
-            data["settings.scene.mode"].value = "play"
-
-            if (data["settings.physics.paused"]) {
-              data["settings.physics.paused"].value = false
-              data["settings.physics.debug"].value = false
-            }
-
-            let panelNames = Object.keys(editor.panels)
-            for (let i = 0; i < panelNames.length; i++) {
-              data["settings.panels." + panelNames[i] + ".hidden"].value = true
-            }
-
-            return { data }
-          })
+        editor.setMode("play")
       }
-    }
+    },
+    shortcut: ["meta", "e"]
   },
   {
     name: "Save all",
@@ -69,12 +32,14 @@ export const commands: CommandType[] = [
         }
       }
       await traverse(el)
-    }
+    },
+    shortcut: ["meta", "s"]
   },
   {
     name: "Focus",
     description: "Focus",
     icon: "ph:cube",
+    shortcut: ["meta", "f"],
     execute(editor) {
       let el = editor.root
       let selectedElement = editor.selectedElement
@@ -142,16 +107,7 @@ export const commands: CommandType[] = [
     description: "Show panels",
     icon: "ph:cube",
     execute(editor) {
-      editor
-        .getPanel(editor.settingsPanel)
-        .useStore.setState(({ data }: any) => {
-          let panelNames = Object.keys(editor.panels)
-          for (let i = 0; i < panelNames.length; i++) {
-            data["settings.panels." + panelNames[i] + ".hidden"].value = false
-          }
-
-          return { data }
-        })
+      editor.showAllPanels()
     }
   },
   {
@@ -159,16 +115,7 @@ export const commands: CommandType[] = [
     description: "Hide panels",
     icon: "ph:cube",
     execute(editor) {
-      editor
-        .getPanel(editor.settingsPanel)
-        .useStore.setState(({ data }: any) => {
-          let panelNames = Object.keys(editor.panels)
-          for (let i = 0; i < panelNames.length; i++) {
-            data["settings.panels." + panelNames[i] + ".hidden"].value = true
-          }
-
-          return { data }
-        })
+      editor.hideAllPanels()
     }
   },
   {
@@ -235,6 +182,7 @@ export const commands: CommandType[] = [
   },
   {
     name: "Remove Element",
+    icon: "ph:cube",
     render(editor) {
       return !!editor.selectedElement
     },
