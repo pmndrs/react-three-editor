@@ -1,5 +1,4 @@
-import { FC } from "react"
-import { PropsWithChildren } from "react"
+import { FC, PropsWithChildren } from "react"
 import { Canvas } from "@react-three/fiber"
 
 export type ApplicationProps = PropsWithChildren<{}>

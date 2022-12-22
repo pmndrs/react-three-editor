@@ -1,4 +1,4 @@
-import { Editor } from "../../editable"
+import { Editor } from "../editable"
 
 export type CommonProperties = {
   name: string
@@ -7,13 +7,13 @@ export type CommonProperties = {
   render?: (editor: Editor) => any
 }
 
-export type CommandGroup = CommonProperties & {
-  children: CommandType[]
+export interface CommandGroup extends CommonProperties {
+  children?: CommandType[]
 }
 
-export type ExecutableCommand = CommonProperties & {
+export interface ExecutableCommand extends CommonProperties {
   shortcut?: string[]
-  execute: (editor: Editor) => void
+  execute?: (editor: Editor) => void
 }
 
-export type CommandType = ExecutableCommand | CommandGroup
+export interface CommandType extends ExecutableCommand, CommandGroup {}

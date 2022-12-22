@@ -1,12 +1,11 @@
 import toast from "react-hot-toast"
 import { useHotkeys } from "react-hotkeys-hook"
 import { useEditor } from "../editable"
-import { useCommandStore } from "./store"
 import { ExecutableCommand } from "./types"
 
 export function KeyboardCommands() {
-  const commands = useCommandStore((state) => state.commands)
   const editor = useEditor()
+  const commands = editor.commandStore((state) => state.commands)
 
   // const [{ shortcuts: debug }] = editor.useSettings("debug", {
   //   shortcuts: false

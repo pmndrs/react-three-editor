@@ -26,3 +26,23 @@ function setRef<T>(ref: PossibleRef<T>, value: T) {
 export function composeRefs<T>(...refs: PossibleRef<T>[]) {
   return (node: T) => refs.forEach((ref) => setRef(ref, node))
 }
+
+type TreeItemType = {
+  children: TreeItemType[]
+  [key: string]: any
+}
+
+export const findInTree = <T extends TreeItemType>(
+  tree: T[],
+  predicate: string | ((item: T) => boolean),
+  prop: string = "name"
+): T | undefined => {
+  return tree.find((item) => {
+    if (typeof predicate === "function") return predicate(item)
+    if (predicate === item[prop]) return true
+    if (Array.isArray(item.children)) {
+      return findInTree(item.children, predicate, prop)
+    }
+    return false
+  })
+}
