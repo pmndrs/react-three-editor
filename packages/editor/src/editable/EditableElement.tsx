@@ -6,7 +6,8 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { Event, Object3D } from "three"
 import { createLevaStore } from "./controls/createStore"
 import { helpers } from "./controls/helpers"
-import { Editor, useEditorStore } from "./Editor"
+import { Editor } from "./Editor"
+import { useEditorStore } from "./useEditorStore"
 
 export type JSXSource = {
   fileName: string
@@ -39,6 +40,14 @@ export type JSXSource = {
 export class EditableElement<
   Ref extends { name?: string } = any
 > extends EventTarget {
+  delete() {
+    this.refs.deleted = true
+    this.render()
+  }
+
+  get deleted() {
+    return this.refs.deleted
+  }
   object?: Object3D<Event>
   ref?: Ref
   childIds: string[] = []
@@ -48,6 +57,7 @@ export class EditableElement<
   dirty: any = false
   store: StoreType | null = createLevaStore()
   editor: Editor = {} as any
+
   constructor(
     public id: string,
     public source: JSXSource,
@@ -63,7 +73,8 @@ export class EditableElement<
   refs = {
     setKey: null as Dispatch<SetStateAction<number>> | null,
     forceUpdate: null as Dispatch<SetStateAction<number>> | null,
-    setMoreChildren: null as Dispatch<SetStateAction<any>> | null
+    setMoreChildren: null as Dispatch<SetStateAction<any>> | null,
+    deleted: false
   }
 
   mounted: boolean = false
@@ -257,6 +268,7 @@ export class EditableElement<
           ? false
           : true
         : !this.editor.isSelected(this) && this.isPrimitive()
+
     const [collapsed, setCollapsed] = useState(storedCollapsedState)
 
     useEffect(() => {
@@ -400,7 +412,7 @@ export class EditableElement<
     if (path.length > 1) {
       for (let i = 0; i < path.length - 1; i++) {
         el = el?.[path[i]]
-        let edit = this.editor.getEditableElement(el)
+        let edit = this.editor.findEditableElement(el)
         if (edit) {
           editable = edit
           remainingPath = path.slice(i + 1)
@@ -410,3 +422,5 @@ export class EditableElement<
     return [el, editable, remainingPath]
   }
 }
+
+class R3fEditabelElement {}

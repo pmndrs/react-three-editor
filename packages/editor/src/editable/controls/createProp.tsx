@@ -11,7 +11,7 @@ export function createProp(
     override?: (obj: any, prop: string, value: any) => any
   },
   {
-    element = {} as any,
+    element = {} as EditableElement,
     path = [],
     persist,
     onChange,
@@ -33,6 +33,7 @@ export function createProp(
   let initialValue = el
     ? type.get(el, prop) ?? settings.default
     : settings.default
+
   return type.control
     ? type.control({
         value: initialValue,

@@ -55,8 +55,6 @@ export function TreeElement({
     ? true
     : false
 
-  console.log(name, collapsible)
-
   return (
     <TreeItem
       collapsed={_collapsed}

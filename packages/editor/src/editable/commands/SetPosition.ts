@@ -1,7 +1,7 @@
 import { Vector3Tuple } from "three"
-import { AbstractCommand } from "../CommandManager"
 import { EditableElement } from "../EditableElement"
 import { Editor } from "../Editor"
+import { AbstractCommand } from "../HistoryManager"
 
 export class SetElementPosition extends AbstractCommand {
   constructor(

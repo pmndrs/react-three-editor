@@ -6,8 +6,8 @@ import { useHotkeysContext } from "react-hotkeys-hook"
 import { Camera, Event, MathUtils } from "three"
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib"
 import { setEditable } from "../../editable/editable"
-import { useEditorStore } from "../../editable/Editor"
 import { useEditor } from "../../editable/useEditor"
+import { useEditorStore } from "../../editable/useEditorStore"
 import { ThreeEditor } from "../ThreeEditor"
 
 setEditable(

@@ -1,17 +1,5 @@
-import {
-  createContext,
-  createElement,
-  FC,
-  forwardRef,
-  Fragment,
-  ReactNode,
-  Ref,
-  useContext,
-  useEffect,
-  useMemo
-} from "react"
-import { EditableElement } from "./EditableElement"
-import { EditorContext, useEditorStore } from "./Editor"
+import { FC, forwardRef, ReactNode, Ref, useContext, useMemo } from "react"
+import { EditorContext } from "./Editor"
 
 type Elements = {
   [K in keyof JSX.IntrinsicElements]: FC<
@@ -20,10 +8,6 @@ type Elements = {
     }
   >
 }
-
-export const EditableElementContext = createContext<EditableElement | null>(
-  null
-)
 
 const memo = new WeakMap() as unknown as WeakMap<Elements, any> & Elements
 
@@ -36,72 +20,25 @@ export const setEditable = (
 
 export const Editable = forwardRef(
   ({ component, ...props }: { component: any }, ref) => {
-    const isEditor = useContext(EditorContext)
-    const mainC = useMemo(() => {
-      if (!memo.get(component) && isEditor) {
-        memo.set(component, createEditable(component))
+    const editor = useContext(EditorContext)
+    const EditableComponent = useMemo(() => {
+      if (editor) {
+        if (!memo.get(component) && editor) {
+          memo.set(component, createEditableComponent(component))
+        }
+        return memo.get(component)
       }
-      return memo.get(component)
-    }, [component, isEditor])
-    if (isEditor) {
-      return createElement(mainC, { ...props, ref })
-    }
-    return createElement(component, { ...props, ref })
+      return component
+    }, [component, editor])
+
+    return <EditableComponent {...props} ref={ref} />
   }
 )
 
-import { useHelper } from "@react-three/drei"
-import { applyProps } from "@react-three/fiber"
-import { BoxHelper, Group } from "three"
-import { helpers } from "./controls/helpers"
-
-export function BoundsHelper({
-  editableElement: element,
-  props,
-  children
-}: {
-  editableElement: EditableElement
-  props: any
-  children: ReactNode
-}) {
-  const item = useMemo(() => new Group(), [])
-
-  // @ts-ignore
-  element.bounds = item
-
-  const [{ bounds }] = element.editor.useSettings("helpers", {
-    ["bounds"]: helpers({
-      label: "bounds"
-    })
-  })
-
-  const isSelected = useEditorStore((state) => state.selectedId === element.id)
-
-  let ref =
-    bounds === "all"
-      ? { current: item }
-      : bounds === "selected" && isSelected
-      ? { current: item }
-      : undefined
-
-  useHelper(ref, BoxHelper)
-
-  useEffect(() => {
-    if (props.position || props.rotation || props.scale) {
-      applyProps(item as unknown as any, {
-        position: props.position,
-        rotation: props.rotation,
-        scale: props.scale
-      })
-    }
-  }, [item])
-
-  return <primitive object={item}>{children}</primitive>
-}
-
-export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
-  Component: any
-) {
+export function createEditableComponent<
+  K extends keyof JSX.IntrinsicElements,
+  P = {}
+>(Component: any) {
   let hasRef =
     // @ts-ignore
     typeof Component === "string" ||
@@ -121,16 +58,15 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
       )
 
       return (
-        <EditableElementContext.Provider value={editableElement}>
-          {createElement(Component, overrideProps)}
-          {editableElement.mounted && <Helpers />}
-        </EditableElementContext.Provider>
+        <editor.EditableElementProvider editableElement={editableElement}>
+          <Component {...overrideProps} />
+        </editor.EditableElementProvider>
       )
     })
   } else {
     return function Editable(props: any) {
       const editor = useContext(EditorContext)
-      if (!editor) return <Component {...props} ref={forwardRef} />
+      if (!editor) return <Component {...props} />
 
       const [editableElement, overrideProps] = editor.useElement(
         Component,
@@ -138,39 +74,12 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
       )
 
       return (
-        <EditableElementContext.Provider value={editableElement}>
-          <BoundsHelper props={{}} editableElement={editableElement}>
-            {createElement(Component, overrideProps)}
-            <Helpers />
-          </BoundsHelper>
-        </EditableElementContext.Provider>
+        <editor.EditableElementProvider editableElement={editableElement}>
+          <Component {...overrideProps} />
+        </editor.EditableElementProvider>
       )
     }
   }
-}
-
-function useEditableContext() {
-  const editableElement = useContext(EditableElementContext)
-  if (!editableElement) {
-    throw new Error("useEditableContext must be used within an Editable")
-  }
-  return editableElement
-}
-
-function Helpers() {
-  const element = useEditableContext()
-
-  return (
-    <>
-      {element.editor?.plugins
-        .filter((p) => p.helper && p.applicable(element))
-        .map((plugin) => (
-          <Fragment key={element.id}>
-            <plugin.helper element={element} />
-          </Fragment>
-        ))}
-    </>
-  )
 }
 
 export const editable = new Proxy(memo, {
@@ -179,7 +88,7 @@ export const editable = new Proxy(memo, {
     if (value) {
       return value
     }
-    const newValue = createEditable(key)
+    const newValue = createEditableComponent(key)
     target[key] = newValue as any
     return newValue
   }

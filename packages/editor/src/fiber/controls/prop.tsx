@@ -8,7 +8,7 @@ import { texture } from "./texture"
 
 export interface PropInput {
   path?: string[]
-  element?: any
+  element?: EditableElement
 
   step?: number
   min?: number

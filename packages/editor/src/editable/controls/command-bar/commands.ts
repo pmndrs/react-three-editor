@@ -127,7 +127,7 @@ export const commands: CommandType[] = [
         execute(editor) {
           const selectedElement = editor.selectedElement
           if (selectedElement) {
-            editor.addElement(selectedElement, "group")
+            editor.appendNewElement(selectedElement, "group")
           }
         }
       },
@@ -136,7 +136,7 @@ export const commands: CommandType[] = [
         execute(editor) {
           const selectedElement = editor.selectedElement
           if (selectedElement) {
-            editor.addElement(selectedElement, "mesh")
+            editor.appendNewElement(selectedElement, "mesh")
           }
         }
       },
@@ -145,7 +145,7 @@ export const commands: CommandType[] = [
         execute(editor) {
           const selectedElement = editor.selectedElement
           if (selectedElement) {
-            editor.addElement(selectedElement, "sphereGeometry")
+            editor.appendNewElement(selectedElement, "sphereGeometry")
           }
         }
       },
@@ -154,7 +154,7 @@ export const commands: CommandType[] = [
         execute(editor) {
           const selectedElement = editor.selectedElement
           if (selectedElement) {
-            editor.addElement(selectedElement, "meshStandardMaterial")
+            editor.appendNewElement(selectedElement, "meshStandardMaterial")
           }
         }
       }
@@ -169,9 +169,7 @@ export const commands: CommandType[] = [
     execute(editor) {
       const selectedElement = editor.selectedElement
       if (selectedElement) {
-        editor.deleteElement({
-          source: selectedElement.source
-        })
+        editor.deleteElement(selectedElement)
       }
     }
   }

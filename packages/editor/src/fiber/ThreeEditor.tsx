@@ -8,7 +8,7 @@ import { Editor } from "../editable/Editor"
 levaStore.store = undefined
 
 export class ThreeEditor extends Editor {
-  getEditableElement(obj: any) {
+  findEditableElement(obj: any) {
     return obj?.__r3f?.editable
   }
   setMode(value: any) {
