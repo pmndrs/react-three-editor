@@ -71,22 +71,20 @@ export function EditorCamera() {
 
   useEffect(() => {
     function update(e: Event) {
-      if (props.enabled) {
-        editor.setSetting("camera.position", e.target.object.position.toArray())
+      editor.setSetting("camera.position", e.target.object.position.toArray())
 
-        editor.setSetting(
-          "camera.rotation",
-          e.target.object.rotation
-            .toArray()
-            .slice(0, 3)
-            .map((a) => MathUtils.radToDeg(a))
-        )
+      editor.setSetting(
+        "camera.rotation",
+        e.target.object.rotation
+          .toArray()
+          .slice(0, 3)
+          .map((a) => MathUtils.radToDeg(a))
+      )
 
-        editor.setSetting("camera.fov", e.target.object.fov)
-        editor.setSetting("camera.near", e.target.object.near)
-        editor.setSetting("camera.far", e.target.object.far)
-        editor.setSetting("camera.zoom", e.target.object.zoom)
-      }
+      editor.setSetting("camera.fov", e.target.object.fov)
+      editor.setSetting("camera.near", e.target.object.near)
+      editor.setSetting("camera.far", e.target.object.far)
+      editor.setSetting("camera.zoom", e.target.object.zoom)
     }
     controls?.addEventListener("change", update)
 

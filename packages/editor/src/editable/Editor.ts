@@ -1,4 +1,12 @@
-import { createContext, useContext, useEffect, useId, useMemo } from "react"
+import {
+  createContext,
+  createElement,
+  Fragment,
+  useContext,
+  useEffect,
+  useId,
+  useMemo
+} from "react"
 import { EqualityChecker, StateSelector } from "zustand"
 import { EditableElement, JSXSource } from "./EditableElement"
 
@@ -16,7 +24,7 @@ import {
   SchemaOrFn,
   usePersistedControls
 } from "./controls/usePersistedControls"
-import { EditableElementContext } from "./editable"
+import { editable, EditableElementContext } from "./editable"
 
 type Panel = StoreType & { store: StoreType }
 
@@ -92,12 +100,12 @@ export class Editor<
     const id = useId()
 
     const editableElement = useMemo(() => {
-      return this.createElement(id, props.source, Component, props)
+      return this.createElement(id, props._source, Component, props)
     }, [id])
 
     // attaches the render, remount functions and returns a key that
     // need to be passed to the React element to cause remounts
-    const { key, ref } = editableElement.useRenderKey(forwardRef)
+    const { key, ref, moreChildren } = editableElement.useRenderKey(forwardRef)
 
     // update the element with the latest props and source
     editableElement.update(props._source, props)
@@ -105,7 +113,7 @@ export class Editor<
     const parentId = useContext(EditableElementContext)?.id!
 
     useEffect(() => {
-      this.addElement(editableElement, parentId)
+      this.appendElement(editableElement, parentId)
       return () => {
         this.removeElement(editableElement, parentId)
       }
@@ -117,7 +125,11 @@ export class Editor<
         ...props,
         ...editableElement.props,
         key,
-        ref: forwardRef ? ref : undefined
+        ref: forwardRef ? ref : undefined,
+        children:
+          typeof props.children === "function"
+            ? props.children
+            : createElement(Fragment, null, props.children, moreChildren)
       }
     ]
   }
@@ -154,11 +166,20 @@ export class Editor<
     }
   }
 
-  async insertElement(params: any) {
-    await this.client.save({
-      ...params,
-      action_type: "insertElement"
-    })
+  async addElement(element: EditableElement, componentType: string) {
+    if (typeof componentType === "string") {
+      element.refs.setMoreChildren((children) => [
+        ...children,
+        createElement(editable[componentType], {
+          _source: {
+            ...element.source,
+            lineNumber: -1,
+            elementName: componentType
+          },
+          key: children.length
+        })
+      ])
+    }
   }
 
   async deleteElement(params: any) {
@@ -192,9 +213,9 @@ export class Editor<
       selectedKey: element.key
     })
 
-    if (element?.isObject3D() || element.bounds) {
-      this.bounds.refresh(element.bounds ?? element?.getObject3D()).fit()
-    }
+    // if (element?.isObject3D() || element.bounds) {
+    //   this.bounds.refresh(element.bounds ?? element?.getObject3D()).fit()
+    // }
   }
 
   selectId(id: string): void {
@@ -219,7 +240,7 @@ export class Editor<
     return this.store.getState().elements[id]
   }
 
-  addElement(element: EditableElement, parentId: string | null) {
+  appendElement(element: EditableElement, parentId: string | null) {
     if (parentId) {
       element.parentId = parentId
       this?.store?.setState((el) => {

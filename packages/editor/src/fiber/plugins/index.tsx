@@ -1,5 +1,5 @@
 import { prop } from "../controls/prop"
-import { geometry, meshGeometry } from "./geomtries"
+import { geometry, meshGeometry } from "./geometries"
 import { group } from "./group"
 import { material } from "./materials"
 import { mesh } from "./mesh"

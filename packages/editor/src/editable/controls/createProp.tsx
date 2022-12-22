@@ -56,7 +56,7 @@ export function createProp(
 
           let val = type.set(el, prop, value)
 
-          if (val.then) {
+          if (val !== undefined && val.then) {
             val.then((setValue) => {
               console.log(setValue)
               onChange?.(value, prop, controlPath, context)

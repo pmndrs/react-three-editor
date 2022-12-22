@@ -55,16 +55,20 @@ import { applyProps } from "@react-three/fiber"
 import { BoxHelper, Group } from "three"
 import { helpers } from "./controls/helpers"
 
-export function TransformHelper({
+export function BoundsHelper({
   editableElement: element,
   props,
   children
 }: {
   editableElement: EditableElement
   props: any
+  children: ReactNode
 }) {
   const item = useMemo(() => new Group(), [])
+
+  // @ts-ignore
   element.bounds = item
+
   const [{ bounds }] = element.editor.useSettings("helpers", {
     ["bounds"]: helpers({
       label: "bounds"
@@ -135,10 +139,10 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
 
       return (
         <EditableElementContext.Provider value={editableElement}>
-          <TransformHelper props={{}} editableElement={editableElement}>
+          <BoundsHelper props={{}} editableElement={editableElement}>
             {createElement(Component, overrideProps)}
             <Helpers />
-          </TransformHelper>
+          </BoundsHelper>
         </EditableElementContext.Provider>
       )
     }

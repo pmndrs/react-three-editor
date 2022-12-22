@@ -6,7 +6,6 @@ import {
   StyledTitle,
   StyledWrapper
 } from "../folder/StyledFolder"
-import { useToggle } from "../folder/useToggle"
 
 export function TreeItem({
   title,
@@ -15,7 +14,6 @@ export function TreeItem({
   setCollapsed,
   selected,
   visible,
-  remeasure,
   collapsible,
   dirty
 }: {
@@ -25,7 +23,6 @@ export function TreeItem({
   setCollapsed: (flag: boolean) => void
   selected: boolean
   visible: boolean
-  remeasure: boolean
   collapsible: boolean
   dirty: boolean
 }) {
@@ -74,8 +71,9 @@ function CollapsibleTreeItem({
   visible: boolean
   dirty: boolean
 }) {
+  console.log(title, collapsed)
   // const context = useInputContext<{ value: { element: EditableElement } }>()
-  const { wrapperRef, contentRef } = useToggle(!collapsed)
+  // const { wrapperRef, contentRef } = useToggle(!collapsed)
   const ref = useRef<HTMLDivElement>(null)
 
   return (
@@ -91,8 +89,8 @@ function CollapsibleTreeItem({
         <div style={{ marginLeft: "2px" }} />
         {title}
       </StyledTitle>
-      <StyledWrapper ref={wrapperRef} isRoot={false} fill={true} flat={true}>
-        <StyledContent ref={contentRef} isRoot={false} toggled={!collapsed}>
+      <StyledWrapper isRoot={false} fill={true} flat={true}>
+        <StyledContent isRoot={false} toggled={!collapsed}>
           <div>{children}</div>
         </StyledContent>
       </StyledWrapper>

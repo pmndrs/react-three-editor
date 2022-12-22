@@ -35,7 +35,7 @@ export function useEditorFrame(
     [panelStore.store]
   )
   return fiber.useFrame((...args) => {
-    if (controls.all && controls[name] && !isEditorMode) {
+    if (!isEditorMode && controls.all && controls[name]) {
       fn(...args)
     }
   }, ...args)
@@ -80,24 +80,7 @@ export function useEditorUpdate(
 }
 
 export function useFrame(fn: fiber.RenderCallback, ...args: any) {
-  const loopName = fn.name
-  let controls = useControls(
-    {
-      "frame updates": folder({
-        [loopName?.length ? loopName : "useFrame"]: {
-          value: true
-        }
-      })
-    },
-    {
-      store: usePanel("scene").store
-    }
-  )
-  return fiber.useFrame((...args) => {
-    if (controls.useFrame) {
-      fn(...args)
-    }
-  }, ...args)
+  return useEditorFrame("useFrame", fn, ...args)
 }
 
 export function useUpdate(fn: fiber.RenderCallback, ...args: any) {

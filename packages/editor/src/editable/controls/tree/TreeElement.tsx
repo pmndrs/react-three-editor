@@ -21,9 +21,7 @@ export function TreeElement({
   panel?: boolean
   collapsible?: boolean
 }) {
-  const selected = element.editor.store(
-    (s) => s.selectedId === element?.id || s.selectedKey === element?.key
-  )
+  const selected = element.editor.store((s) => s.selectedKey === element?.key)
 
   const [_collapsed, setCollapsed] = panel
     ? useState(false)
@@ -31,15 +29,33 @@ export function TreeElement({
 
   const [visible, setVisible] = element.useVisible()
 
+  const [key, setTreeKey] = useState(0)
+  console.log(element.displayName, key)
+
+  element.refs.setTreeKey = setTreeKey
+
   // const [visible, setVisible] = useState(
   //   element.ref?.visible || (true as boolean)
   // )
 
-  const dirty = element.store.useStore(
+  const dirty = element.store?.useStore(
     (s) => Object.keys(element.changes).length > 0
   )
-
   const name = element.store?.useStore((s) => s.data["name"].value)
+
+  const children = element.editor.store((s) => [
+    ...(s.elements[element.id]?.children ?? [])
+  ])
+
+  let collapsible = panel
+    ? true
+    : !showChildren
+    ? false
+    : children.length
+    ? true
+    : false
+
+  console.log(name, collapsible)
 
   return (
     <TreeItem
@@ -50,15 +66,7 @@ export function TreeElement({
       }}
       visible={visible}
       selected={selected}
-      collapsible={
-        panel
-          ? true
-          : !showChildren
-          ? false
-          : element.children.length
-          ? true
-          : false
-      }
+      collapsible={collapsible}
       remeasure={panel}
       dirty={dirty}
       title={
@@ -113,7 +121,7 @@ export function TreeElement({
             marginTop: "2px"
           }}
         >
-          {element.children.map((c) => (
+          {children.map((c) => (
             <TreeElement
               element={c}
               key={c.id}

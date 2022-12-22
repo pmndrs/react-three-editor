@@ -20,8 +20,9 @@ export const importsPlugin =
             if (!data.value) return
             const imports =
               data.action_type === "insertElement"
-                ? data.value.imports
+                ? data.value.imports ?? []
                 : getDataImports(data.value)
+
             imports.forEach(({ importPath, import: _import }: any) => {
               let specifiers: string[] = _import
               if (!Array.isArray(_import)) {

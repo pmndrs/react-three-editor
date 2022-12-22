@@ -168,7 +168,7 @@ function EditorControls() {
         collapsed={false}
       />
       <SceneControls store="scene" />
-      <SelectedElementControls store="default" />
+      <SelectedElementControls store="default" order={-1} />
       <PerformanceControls store="scene" />
       <CommandBarControls />
       <CameraGizmos />

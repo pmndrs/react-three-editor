@@ -127,12 +127,7 @@ export const commands: CommandType[] = [
         execute(editor) {
           const selectedElement = editor.selectedElement
           if (selectedElement) {
-            editor.insertElement({
-              source: selectedElement.source,
-              value: {
-                componentType: "group"
-              }
-            })
+            editor.addElement(selectedElement, "group")
           }
         }
       },
@@ -141,12 +136,7 @@ export const commands: CommandType[] = [
         execute(editor) {
           const selectedElement = editor.selectedElement
           if (selectedElement) {
-            editor.insertElement({
-              source: selectedElement.source,
-              value: {
-                componentType: "mesh"
-              }
-            })
+            editor.addElement(selectedElement, "mesh")
           }
         }
       },
@@ -155,12 +145,7 @@ export const commands: CommandType[] = [
         execute(editor) {
           const selectedElement = editor.selectedElement
           if (selectedElement) {
-            editor.insertElement({
-              source: selectedElement.source,
-              value: {
-                componentType: "sphereGeometry"
-              }
-            })
+            editor.addElement(selectedElement, "sphereGeometry")
           }
         }
       },
@@ -169,12 +154,7 @@ export const commands: CommandType[] = [
         execute(editor) {
           const selectedElement = editor.selectedElement
           if (selectedElement) {
-            editor.insertElement({
-              source: selectedElement.source,
-              value: {
-                componentType: "meshStandardMaterial"
-              }
-            })
+            editor.addElement(selectedElement, "meshStandardMaterial")
           }
         }
       }

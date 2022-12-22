@@ -62,7 +62,8 @@ export class EditableElement<
 
   refs = {
     setKey: null as Dispatch<SetStateAction<number>> | null,
-    forceUpdate: null as Dispatch<SetStateAction<number>> | null
+    forceUpdate: null as Dispatch<SetStateAction<number>> | null,
+    setMoreChildren: null as Dispatch<SetStateAction<any>> | null
   }
 
   mounted: boolean = false
@@ -88,10 +89,11 @@ export class EditableElement<
     const [key, setSey] = useState(0)
     const [_, forceUpdate] = useState(0)
     const [mounted, setMounted] = useState(false)
-
+    const [moreChildren, setMoreChildren] = useState<any>([])
     this.refs.setKey = setSey
     this.refs.forceUpdate = forceUpdate
     this.forwardedRef = forwardRef ? true : false
+    this.refs.setMoreChildren = setMoreChildren
     this.mounted = mounted
 
     useEffect(() => {
@@ -108,6 +110,8 @@ export class EditableElement<
       )
     }, [])
 
+    console.log(moreChildren)
+
     return {
       ref: mergeRefs([
         forwardRef === true ? null : forwardRef,
@@ -119,6 +123,7 @@ export class EditableElement<
         (el) => setMounted(true)
       ]),
       mounted,
+      moreChildren,
       key
     }
   }

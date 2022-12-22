@@ -1,5 +1,5 @@
 import { Debug, Physics, useRapier } from "@react-three/rapier"
-import { createElement, useMemo } from "react"
+import { useMemo } from "react"
 import { setEditable } from "./editable/editable"
 import { useEditor } from "./fiber"
 
@@ -11,14 +11,11 @@ setEditable(Physics, ({ children, ...props }) => {
     }
   })
 
-  return createElement(
-    Physics,
-    {
-      paused: paused,
-      ...props
-    },
-    createElement(RapierPlugin),
-    children
+  return (
+    <Physics {...props} paused={paused}>
+      <RapierPlugin />
+      {children}
+    </Physics>
   )
 })
 
