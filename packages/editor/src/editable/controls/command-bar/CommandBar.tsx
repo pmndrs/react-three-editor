@@ -1,6 +1,6 @@
 import { Command } from "cmdk"
 import { useHotkeys } from "react-hotkeys-hook"
-import { useEditor } from "../../../editable/Editor"
+import { useEditor } from "../../useEditor"
 import { EditorCommand } from "./EditorCommand"
 import { KeyboardCommands } from "./KeyboardCommand"
 import { useCommandStore } from "./store"
@@ -11,7 +11,7 @@ export const CommandBar = () => {
   const open = useCommandStore((state) => state.open)
 
   // Toggle the menu when ⌘K is pressed
-  useHotkeys("meta+k", () => toggleOpen(), { preventDefault: true })
+  useHotkeys("meta+k", () => toggleOpen())
 
   return (
     <>

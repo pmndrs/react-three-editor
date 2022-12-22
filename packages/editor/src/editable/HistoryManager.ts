@@ -1,10 +1,8 @@
-import { Editor } from "./Editor";
+import { Editor } from "./Editor"
 
 export abstract class AbstractCommand {
   id: number = 0
-  constructor(
-    public editor: Editor
-  ) { }
+  constructor(public editor: Editor) {}
 
   shouldUpdate(command: AbstractCommand): boolean {
     return false
@@ -17,17 +15,16 @@ export abstract class AbstractCommand {
   abstract execute(redo?: boolean): void
 
   abstract undo(): void
-
 }
 
-export class CommandManager {
+export class HistoryManager {
   idCounter: number = 0
   lastCommandTime: Date = new Date()
   undos: AbstractCommand[] = []
   redos: AbstractCommand[] = []
   constructor() {}
 
-  execute( command: AbstractCommand ) {
+  execute(command: AbstractCommand) {
     const lastCommand = this.undos[this.undos.length - 1]
     const timeDifference = new Date().getTime() - this.lastCommandTime.getTime()
 
@@ -37,12 +34,12 @@ export class CommandManager {
       timeDifference < 1000 &&
       lastCommand.shouldUpdate(command)
     ) {
-      lastCommand.update( command )
+      lastCommand.update(command)
       command = lastCommand
     } else {
-      this.undos.push( command )
+      this.undos.push(command)
       command.id = ++this.idCounter
-      command.execute( )
+      command.execute()
     }
 
     this.lastCommandTime = new Date()
@@ -52,24 +49,28 @@ export class CommandManager {
     return command
   }
 
-  canUndo() { return this.undos.length > 0 }
+  canUndo() {
+    return this.undos.length > 0
+  }
 
   undo() {
-    if ( this.canUndo() ) {
+    if (this.canUndo()) {
       const command = this.undos.pop()!
       command.undo()
-      this.redos.push( command )
+      this.redos.push(command)
       return command
     }
   }
 
-  canRedo() { return this.redos.length > 0 }
+  canRedo() {
+    return this.redos.length > 0
+  }
 
   redo() {
-    if ( this.canRedo() ) {
+    if (this.canRedo()) {
       const command = this.redos.pop()!
       command.execute(true)
-      this.undos.push( command )
+      this.undos.push(command)
       return command
     }
   }
@@ -79,6 +80,4 @@ export class CommandManager {
     this.redos = []
     this.idCounter = 0
   }
-
 }
-

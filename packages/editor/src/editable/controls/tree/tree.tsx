@@ -3,6 +3,9 @@ import { EditableElement } from "../../EditableElement"
 import { TreeElement } from "./TreeElement"
 
 const StyledWrapper = styled("div", {
+  borderTop: "1px solid $elevation1",
+  borderBottom: "1px solid $elevation1",
+  padding: "$sm 0px",
   variants: {
     scrollable: {
       true: {

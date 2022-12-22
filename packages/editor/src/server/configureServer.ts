@@ -1,11 +1,11 @@
-import { readFileSync, writeFileSync } from "fs"
+import { transformFromAstAsync } from "@babel/core"
+import { parse, print } from "@vinxi/recast"
+import { readFileSync } from "fs"
+import { writeFile } from "fs-extra"
 import { ViteDevServer } from "vite"
 import { createRPCServer } from "vite-dev-rpc"
 import { configureMiddlewares } from "./middleware"
-import { parse, print, prettyPrint } from "@vinxi/recast"
-import { transformFromAstAsync, types } from "@babel/core"
 import { plugins } from "./transform-plugins"
-import { writeFile } from "fs-extra"
 
 const vinxiBabelParser = require("@vinxi/recast/parsers/babel-ts")
 export const configureServer =
@@ -31,7 +31,7 @@ export const configureServer =
             ast: true,
             plugins: plugins(data)
           })
-          const code = prettyPrint(sourceAst, {
+          const code = print(sourceAst, {
             wrapColumn: 1000
           }).code
           await writeFile(fileName, code)

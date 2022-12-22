@@ -6,7 +6,7 @@
     "url": "https://github.com/nksaraf"
   },
   "description": "",
-  "version": "0.0.12",
+  "version": "0.0.16",
   "main": "dist/react-three-editor.cjs.js",
   "module": "dist/react-three-editor.esm.js",
   "preconstruct": {
@@ -60,6 +60,7 @@
     "@types/babel__generator": "^7.6.4",
     "@vinxi/recast": "^0.21.5",
     "@vitejs/plugin-react": "^2.0.1",
+    "@xstate/react": "^3.0.1",
     "change-case": "^4.1.2",
     "cmdk": "^0.1.21",
     "debug": "^4.3.4",
@@ -76,6 +77,7 @@
     "three-stdlib": "^2.20.4",
     "tunnel-rat": "^0.1.0",
     "vite-dev-rpc": "^0.1.0",
+    "xstate": "^4.35.1",
     "zustand": "^3.7.2"
   },
   "peerDependencies": {

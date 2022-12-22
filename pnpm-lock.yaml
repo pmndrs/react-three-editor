@@ -526,6 +526,7 @@ importers:
       '@types/object-path': ^0.11.1
       '@vinxi/recast': ^0.21.5
       '@vitejs/plugin-react': ^2.0.1
+      '@xstate/react': ^3.0.1
       change-case: ^4.1.2
       cmdk: ^0.1.21
       debug: ^4.3.4
@@ -546,6 +547,7 @@ importers:
       tunnel-rat: ^0.1.0
       vite: ^3.0.7
       vite-dev-rpc: ^0.1.0
+      xstate: ^4.35.1
       zustand: ^3.7.2
     dependencies:
       '@babel/core': 7.20.5
@@ -559,6 +561,7 @@ importers:
       '@types/babel__generator': 7.6.4
       '@vinxi/recast': 0.21.5
       '@vitejs/plugin-react': 2.2.0_vite@3.2.5
+      '@xstate/react': 3.0.1_react@18.2.0+xstate@4.35.1
       change-case: 4.1.2
       cmdk: 0.1.21_biqbaboplfbrettd7655fr4n2y
       debug: 4.3.4
@@ -575,6 +578,7 @@ importers:
       three-stdlib: 2.20.4
       tunnel-rat: 0.1.0_react@18.2.0
       vite-dev-rpc: 0.1.0_vite@3.2.5
+      xstate: 4.35.1
       zustand: 3.7.2_react@18.2.0
     devDependencies:
       '@react-three/rapier': 0.10.0_react@18.2.0
@@ -6328,7 +6332,7 @@ packages:
   /@webgpu/glslang/0.0.15:
     resolution: {integrity: sha512-niT+Prh3Aff8Uf1MVBVUsaNjFj9rJAKDXuoHIKiQbB+6IUP/3J3JIhBNyZ7lDhytvXxw6ppgnwKZdDJ08UMj4Q==}
 
-  /@xstate/react/3.0.1_jxlbbcdnowciznag5x5yc5bb5i:
+  /@xstate/react/3.0.1_react@18.2.0+xstate@4.35.1:
     resolution: {integrity: sha512-/tq/gg92P9ke8J+yDNDBv5/PAxBvXJf2cYyGDByzgtl5wKaxKxzDT82Gj3eWlCJXkrBg4J5/V47//gRJuVH2fA==}
     peerDependencies:
       '@xstate/fsm': ^2.0.0
@@ -6341,9 +6345,9 @@ packages:
         optional: true
     dependencies:
       react: 18.2.0
-      use-isomorphic-layout-effect: 1.1.2_kzbn2opkn2327fwg5yzwzya5o4
+      use-isomorphic-layout-effect: 1.1.2_react@18.2.0
       use-sync-external-store: 1.2.0_react@18.2.0
-      xstate: 4.35.0
+      xstate: 4.35.1
     transitivePeerDependencies:
       - '@types/react'
     dev: false
@@ -16563,6 +16567,11 @@ packages:
     engines: {node: '>= 10.12.0'}
     dev: false
 
+  /object-path/0.11.8:
+    resolution: {integrity: sha512-YJjNZrlXJFM42wTBn6zgOJVar9KFJvzx6sTWDte8sWZF//cnjl0BxHNpfZx+ZffXX63A9q0b1zsFiBX4g4X5KA==}
+    engines: {node: '>= 10.12.0'}
+    dev: false
+
   /object-visit/1.0.1:
     resolution: {integrity: sha512-GBaMwwAVK9qbQN3Scdo0OyvgPW7l3lnaVMj84uTOZlswkX0KpF6fyDBJhtTthf7pymztoN36/KEr1DyhF96zEA==}
     engines: {node: '>=0.10.0'}
@@ -23570,8 +23579,8 @@ packages:
     resolution: {integrity: sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==}
     dev: false
 
-  /xstate/4.35.0:
-    resolution: {integrity: sha512-MSc3MCn2SDB/ShI0KHXpWGIDMo6i+qwJPKgBdyi1AClJm37k4oHJ7lr79qdTrTvirKuC2ZP+63lhsvvYrl0URQ==}
+  /xstate/4.35.1:
+    resolution: {integrity: sha512-imxk6+76HJRt7qHrUnWnAjaHHhAsUKoVa+PXkyaPd3Gll0VjZsy6/L+FkatIJnjI5Kpwp0R8k63KfIFnzVLskQ==}
     dev: false
 
   /xtend/2.2.0:

@@ -15,9 +15,14 @@ export const importsPlugin =
     }
     return {
       visitor: {
-        Program: (path: NodePath<t.Program>, opts: any) => {
-          if (typeof data?.value === "object") {
-            const imports = getDataImports(data?.value || {})
+        Program: {
+          exit: (path: NodePath<t.Program>, opts: any) => {
+            if (!data.value) return
+            const imports =
+              data.action_type === "insertElement"
+                ? data.value.imports ?? []
+                : getDataImports(data.value)
+
             imports.forEach(({ importPath, import: _import }: any) => {
               let specifiers: string[] = _import
               if (!Array.isArray(_import)) {

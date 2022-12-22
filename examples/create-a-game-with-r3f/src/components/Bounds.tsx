@@ -4,9 +4,9 @@ import { memo } from "../memo"
 export function Bounds({ length = 1 }) {
   return (
     <>
-      <RigidBody type="fixed" position={[0, 2.48, 0]}>
+      <RigidBody type="fixed" position={[0, 0, 0]}>
         <mesh
-          position={[3.717, 0.75, -10]}
+          position={[2.107, 0.75, -10]}
           scale={[0.3, 1.5, 4 * length]}
           receiveShadow
         >
@@ -40,5 +40,5 @@ export function Bounds({ length = 1 }) {
         />
       </RigidBody>
     </>
-  )
+  );
 }

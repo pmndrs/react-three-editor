@@ -1,5 +1,6 @@
 import { Icon } from "@iconify/react"
 import { LevaPanel } from "leva"
+import { useState } from "react"
 import { EditableElement } from "../../EditableElement"
 import { StyledIcon } from "../folder/StyledFolder"
 import { ElementIcon } from "./ElementIcon"
@@ -20,19 +21,32 @@ export function TreeElement({
   panel?: boolean
   collapsible?: boolean
 }) {
-  const selected = element.editor.store((s) => s.selectedId === element?.id)
+  const selected = element.editor.store((s) => s.selectedKey === element?.key)
 
-  const [_collapsed, setCollapsed] = element.useCollapsed()
+  const [_collapsed, setCollapsed] = panel
+    ? useState(false)
+    : element.useCollapsed()
 
   const [visible, setVisible] = element.useVisible()
 
-  // const [visible, setVisible] = useState(
-  //   element.ref?.visible || (true as boolean)
-  // )
+  const [key, setTreeKey] = useState(0)
 
-  const dirty = element.store.useStore(
+  const dirty = element.store?.useStore(
     (s) => Object.keys(element.changes).length > 0
   )
+  const name = element.store?.useStore((s) => s.data["name"].value)
+
+  const children = element.editor.store((s) => [
+    ...(s.elements[element.id]?.children ?? [])
+  ])
+
+  let collapsible = panel
+    ? true
+    : !showChildren
+    ? false
+    : children.length
+    ? true
+    : false
 
   return (
     <TreeItem
@@ -43,15 +57,7 @@ export function TreeElement({
       }}
       visible={visible}
       selected={selected}
-      collapsible={
-        panel
-          ? true
-          : !showChildren
-          ? false
-          : element.children.length
-          ? true
-          : false
-      }
+      collapsible={collapsible}
       remeasure={panel}
       dirty={dirty}
       title={
@@ -70,11 +76,11 @@ export function TreeElement({
                 setCollapsed((c) => !c)
               } else {
                 element.editor.select(element)
-                setCollapsed(false)
+                // setCollapsed(false)
               }
             }}
           >
-            {element.displayName}
+            {name}
             {dirty ? "*" : ""}
           </div>
           <div style={{ marginLeft: "auto" }} />
@@ -106,7 +112,7 @@ export function TreeElement({
             marginTop: "2px"
           }}
         >
-          {element.children.map((c) => (
+          {children.map((c) => (
             <TreeElement
               element={c}
               key={c.id}

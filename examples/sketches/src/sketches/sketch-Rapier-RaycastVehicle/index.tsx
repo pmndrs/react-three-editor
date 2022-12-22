@@ -8,7 +8,7 @@ import {
     RigidBody,
 } from '@react-three/rapier'
 import { useControls as useLeva } from 'leva'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { Vector3 } from 'three'
 import { Canvas } from '../Canvas'
 import { ControlsText } from './components/controls-text'
@@ -23,18 +23,18 @@ import {
     VehicleRef,
 } from './components/vehicle'
 import {
+    AFTER_RAPIER_UPDATE,
+    BEFORE_RAPIER_UPDATE,
+    LEVA_KEY,
+    RAPIER_UPDATE_PRIORITY,
+} from './constants'
+import {
     GameStateProvider,
     useGameState,
     useGameStateDispatch,
 } from './game-state'
 import { useControls } from './hooks/use-controls'
 import { usePageActive } from './hooks/use-page-active'
-import { LEVA_KEY } from './constants'
-import {
-    AFTER_RAPIER_UPDATE,
-    BEFORE_RAPIER_UPDATE,
-    RAPIER_UPDATE_PRIORITY,
-} from './constants'
 
 const Game = () => {
     const raycastVehicle = useRef<VehicleRef>(null)
@@ -201,7 +201,7 @@ const Game = () => {
             {/* traffic cones */}
             <TrafficCone position={[6.467, 0, 6]} />
             <TrafficCone position={[5.535, 2.518, 8]} />
-            <TrafficCone position={[4, 0, 10]} />
+            <TrafficCone position={[4, 0.863, 10]} />
 
             <TrafficCone position={[-2.902, 0, 16]} />
             <TrafficCone position={[3.81, 0, 18]} />
@@ -283,7 +283,7 @@ const Game = () => {
 
             {debug ? <Debug /> : null}
         </>
-    );
+    )
 }
 
 export default () => {

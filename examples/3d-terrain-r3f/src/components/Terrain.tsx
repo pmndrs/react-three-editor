@@ -1,8 +1,7 @@
 import { useEffect, useRef } from "react";
-import { Object3D, InstancedMesh } from "three";
-import { useProceduralTerrain } from "../geometry/useProceduralTerrain";
-import { TerrainStats } from "./TerrainStats";
+import { InstancedMesh, Object3D } from "three";
 import { useDisplay } from "../colors/useDisplay";
+import { useProceduralTerrain } from "../geometry/useProceduralTerrain";
 
 const emptyObject = new Object3D();
 
@@ -32,14 +31,19 @@ export function Terrain() {
 
   return (
     <>
-      <group rotation-x={-Math.PI / 2} scale={[0.05333333333333334, 0.05333333333333334, 0.05333333333333334]} position={[0.562, 3.33, 0]} rotation={[-1.5707963267948966, 0, 0]}>
+      <group
+        rotation-x={-Math.PI / 2}
+        scale={[0.05333333333333334, 0.05333333333333334, 0.05333333333333334]}
+        position={[0.562, 3.33, 0]}
+        rotation={[-1.5707963267948966, 0, 0]}
+      >
         <instancedMesh castShadow receiveShadow ref={ref} args={[, , dataBlocks.length]}>
           <boxGeometry />
           <meshPhongMaterial />
         </instancedMesh>
       </group>
 
-      <TerrainStats blockCount={dataBlocks.length} />
+      {/* <TerrainStats blockCount={dataBlocks.length} /> */}
     </>
   );
 }

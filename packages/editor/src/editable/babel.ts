@@ -200,29 +200,30 @@ export default declare<State>((api) => {
           t.isJSXIdentifier(node.name.object) &&
           node.name.object.name !== "editable"
         ) {
-          if (
-            node.name.property.name.match(/^[a-z]/) &&
-            isEditableElement({
-              type: "namespaced-primitive",
-              name: node.name.property.name,
-              node: node.name.property,
-              namespace: node.name.object.name,
-              fileName: state.filename || "",
-              openingElement: node
-            })
-          ) {
-            node.attributes.push(
-              t.jsxAttribute(
-                t.jsxIdentifier("component"),
-                t.jsxExpressionContainer(
-                  t.memberExpression(
-                    t.identifier(node.name.object.name),
-                    t.identifier(node.name.property.name)
+          if (node.name.property.name.match(/^[a-z]/)) {
+            if (
+              isEditableElement({
+                type: "namespaced-primitive",
+                name: node.name.property.name,
+                node: node.name.property,
+                namespace: node.name.object.name,
+                fileName: state.filename || "",
+                openingElement: node
+              })
+            ) {
+              node.attributes.push(
+                t.jsxAttribute(
+                  t.jsxIdentifier("component"),
+                  t.jsxExpressionContainer(
+                    t.memberExpression(
+                      t.identifier(node.name.object.name),
+                      t.identifier(node.name.property.name)
+                    )
                   )
                 )
               )
-            )
-            node.name = t.jsxIdentifier("Editable")
+              node.name = t.jsxIdentifier("Editable")
+            }
           } else if (
             isEditableElement({
               type: "namespaced-component",

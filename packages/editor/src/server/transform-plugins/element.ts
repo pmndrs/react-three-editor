@@ -1,4 +1,5 @@
 import { NodePath, PluginItem, types } from "@babel/core"
+import { filesToSkipOnHmr } from "../filesToSkipOnHmr"
 
 export const elementMutations = (data: any) => (): PluginItem => {
   return {
@@ -45,15 +46,6 @@ export const elementMutations = (data: any) => (): PluginItem => {
               const index = parent.children.indexOf(path.node)
               if (index > -1) {
                 parent.children.splice(index, 1)
-              }
-            }
-          } else if (action_type === "duplicateElement") {
-            const parent = types.isJSXElement(path.parent) && path.parent
-            if (parent) {
-              const index = parent.children.indexOf(path.node)
-              if (index > -1) {
-                const clonedNode = types.cloneNode(path.node)
-                parent.children.splice(index + 1, 0, clonedNode)
               }
             }
           }

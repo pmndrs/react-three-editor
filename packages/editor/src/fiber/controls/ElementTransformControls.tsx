@@ -11,7 +11,7 @@ import {
 } from "../../editable/commands"
 import { eq } from "../../editable/controls/eq"
 import { EditableElement } from "../../editable/EditableElement"
-import { useEditor } from "../../editable/Editor"
+import { useEditor } from "../../editable/useEditor"
 
 const serializeTransform = (
   object?: Object3D
@@ -51,8 +51,8 @@ export function ElementTransformControls({
     ref.current.setSize(Math.max((ref.current as any).size - 0.1, 0.1))
   )
   useHotkeys("=", () => ref.current.setSize((ref.current as any).size + 0.1))
-  useHotkeys("meta+z", () => editor?.commandManager.undo())
-  useHotkeys("meta+y", () => editor?.commandManager.redo())
+  useHotkeys("meta+z", () => editor?.historyManager.undo())
+  useHotkeys("meta+y", () => editor?.historyManager.redo())
 
   const updateElementTransforms = useCallback(
     (object: Object3D, mode: "translate" | "rotation" | "scale") => {
@@ -110,7 +110,7 @@ export function ElementTransformControls({
             target.object
           )
           if (mode === "translate") {
-            editor?.commandManager.execute(
+            editor?.historyManager.execute(
               new SetElementPosition(
                 editor,
                 element,
@@ -119,7 +119,7 @@ export function ElementTransformControls({
               )
             )
           } else if (mode === "rotation") {
-            editor?.commandManager.execute(
+            editor?.historyManager.execute(
               new SetElementRotation(
                 editor,
                 element,
@@ -128,7 +128,7 @@ export function ElementTransformControls({
               )
             )
           } else if (mode === "scale") {
-            editor?.commandManager.execute(
+            editor?.historyManager.execute(
               new SetElementScale(
                 editor,
                 element,

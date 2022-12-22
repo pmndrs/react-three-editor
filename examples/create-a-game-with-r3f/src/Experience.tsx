@@ -21,13 +21,13 @@ extendControls(RigidBody, {
 function Level() {
   return (
     <>
-      <BlockStart position={[0, 0, 0]} />
-      <BlockLimbo position={[0, 0, -4]} />
+      <BlockStart position={[0, 0.426, 0]} />
+      <BlockLimbo position={[0, -0.003, -4]} />
       <BlockSpinner position={[0, 0, -8]} />
       <BlockSpinner position={[0, 0, -12]} />
       <BlockAxe position={[0, 0, -16]} />
       <BlockEnd position={[0.0, 0, -20]} />
-      <Bounds length={6} name={"bounds"} />
+      <Bounds length={6} name={"yo!"} />
     </>
   )
 }

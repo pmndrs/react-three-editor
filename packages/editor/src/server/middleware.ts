@@ -1,11 +1,12 @@
-import { ViteDevServer } from "vite"
 import formidable from "formidable"
 import { existsSync } from "fs"
 import { moveSync, removeSync } from "fs-extra"
+import { ViteDevServer } from "vite"
 
 export const configureMiddlewares = (server: ViteDevServer) => {
   server.middlewares.use("/__editor/save", async (req, res) => {
-    return new Promise<string>((resolve, reject) => {
+    console.log("saving", req.url)
+    let response = await new Promise<string>((resolve, reject) => {
       formidable({
         multiples: true,
         keepExtensions: true,
@@ -13,6 +14,7 @@ export const configureMiddlewares = (server: ViteDevServer) => {
           return req.url!.slice(1)
         }
       }).parse(req, (err, fields, files) => {
+        console.log("here")
         if (err) {
           reject(err)
         }
@@ -20,11 +22,14 @@ export const configureMiddlewares = (server: ViteDevServer) => {
         const texturepath = `public/textures/${decodeURIComponent(
           req.url!.slice(1)
         )}`
+        console.log("here2")
         if (existsSync(texturepath)) {
           removeSync(texturepath)
         }
+        console.log("here3")
 
         moveSync(files["file"]!.filepath, texturepath)
+        console.log("here4")
 
         resolve(
           JSON.stringify(
@@ -35,5 +40,8 @@ export const configureMiddlewares = (server: ViteDevServer) => {
         )
       })
     })
+    res.setHeader("Content-Type", "application/json")
+    res.write(response)
+    res.end()
   })
 }
