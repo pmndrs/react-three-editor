@@ -24,7 +24,6 @@ export const commands: CommandType[] = [
       let el = editor.root
       let traverse = async (item: any) => {
         if (Object.keys(item.changes).length > 0) {
-          console.log("saving", item.key)
           await item.save()
         }
         for (var child of item.children) {

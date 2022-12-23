@@ -8,7 +8,6 @@ export const meshPhongMaterial = (
   element: EditableElement,
   path: string[] = ["ref"]
 ): Schema => {
-  console.log("Generating the phong material")
   return {
     ...commonControls(element, path),
     ...createTextureFolder(element, "map", path),

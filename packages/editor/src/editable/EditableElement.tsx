@@ -121,8 +121,6 @@ export class EditableElement<
       )
     }, [])
 
-    console.log(moreChildren)
-
     return {
       ref: mergeRefs([
         forwardRef === true ? null : forwardRef,

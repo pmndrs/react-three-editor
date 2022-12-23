@@ -12,7 +12,6 @@ export const commands: CommandType[] = [
         editor
           .getPanel(editor.settingsPanel)
           .useStore.setState(({ data }: any) => {
-            console.log(Object.assign({}, data))
             data["settings.camera.enabled"].value = true
             data["settings.scene.mode"].value = "editor"
 
@@ -61,7 +60,6 @@ export const commands: CommandType[] = [
       let el = editor.root
       let traverse = async (item: any) => {
         if (Object.keys(item.changes).length > 0) {
-          console.log("saving", item.key)
           await item.save()
         }
         for (var child of item.children) {

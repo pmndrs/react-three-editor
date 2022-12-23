@@ -71,9 +71,6 @@ function CollapsibleTreeItem({
   visible: boolean
   dirty: boolean
 }) {
-  console.log(title, collapsed)
-  // const context = useInputContext<{ value: { element: EditableElement } }>()
-  // const { wrapperRef, contentRef } = useToggle(!collapsed)
   const ref = useRef<HTMLDivElement>(null)
 
   return (

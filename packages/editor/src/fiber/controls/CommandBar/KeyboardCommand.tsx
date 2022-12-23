@@ -15,7 +15,6 @@ export function KeyboardCommands() {
     <>
       {commands.map((command) => {
         if (!command.shortcut) return null
-        console.log(command.shortcut)
 
         return (
           <KeyboardShortcut

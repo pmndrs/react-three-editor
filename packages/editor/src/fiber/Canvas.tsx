@@ -115,8 +115,6 @@ const EditorCanvas = forwardRef<
     setKey((k) => k + 1)
   }
 
-  console.log(settings.shadows)
-
   return (
     <FiberCanvas
       ref={ref}

@@ -59,7 +59,6 @@ export function createProp(
 
           if (val !== undefined && val.then) {
             val.then((setValue) => {
-              console.log(setValue)
               onChange?.(value, prop, controlPath, context)
 
               let serializale = type.serialize

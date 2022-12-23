@@ -24,7 +24,6 @@ export const texture = createPlugin({
 
     const onDrop = useCallback(
       async (acceptedFiles: File[]) => {
-        console.log(acceptedFiles)
         if (acceptedFiles.length) {
           let data = new FormData()
           data.append("file", acceptedFiles[0])
