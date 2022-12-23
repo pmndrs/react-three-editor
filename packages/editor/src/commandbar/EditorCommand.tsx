@@ -1,38 +1,56 @@
 import { Icon } from "@iconify/react"
 import { Command } from "cmdk"
 import { FC, useCallback, useEffect, useRef } from "react"
-import { Editor } from "../../Editor"
-import { useEditor } from "../../useEditor"
-import { selectActiveCommands, useCommandStore } from "./store"
+import { Editor, useEditor } from "../editable"
+import { selectActiveCommands } from "./store"
 import { commandBarTunnel } from "./tunnel"
 import { CommandGroup, ExecutableCommand } from "./types"
 
-export function EditorCommand({ editor }: { editor: Editor }) {
+export function EditorCommand() {
   const inputRef = useRef<HTMLInputElement | null>(null)
   const listRef = useRef(null)
+  const editor = useEditor()
 
   useEffect(() => {
     inputRef?.current?.focus()
   }, [])
 
-  const commands = useCommandStore(selectActiveCommands)
-  const filter = useCommandStore((state) => state.filter)
-  const setFilter = useCommandStore((state) => state.setFilter)
+  const activeCommandChain = editor.commandStore(
+    ({ activeCommandChain }) => activeCommandChain
+  )
+  const commands = editor.commandStore(selectActiveCommands)
+  const filter = editor.commandStore((state) => state.filter)
+  const onInputValueChange = useCallback(
+    (filter: string) => {
+      editor.commandStore.setState({ filter })
+    },
+    [editor.commandStore]
+  )
 
   return (
     <commandBarTunnel.In>
       <div cmdk-raycast-top-shine="" />
+      <div>
+        <div cmdk-vercel-badge="">Home</div>
+        {activeCommandChain.map((n) => {
+          return (
+            <div key={n} cmdk-vercel-badge="">
+              {n}
+            </div>
+          )
+        })}
+      </div>
       <Command.Input
         ref={inputRef}
         autoFocus
         placeholder="Search for apps and commands..."
         value={filter}
-        onValueChange={setFilter}
+        onValueChange={onInputValueChange}
       />
       <hr cmdk-raycast-loader="" />
       <Command.List ref={listRef}>
         <Command.Empty>No results found.</Command.Empty>
-        {commands.map((command) => {
+        {(commands ?? []).map((command) => {
           if (command.render && !command.render(editor)) return null
           if (Array.isArray((command as CommandGroup).children)) {
             return (
@@ -63,14 +81,14 @@ export const CommandGroupItem: FC<CommandGroupItemProps> = ({
   command,
   onSelect: _onSelect
 }) => {
+  const editor = useEditor()
   const { icon, description, render } = command
-  const openGroup = useCommandStore(({ openGroup }) => openGroup)
   const _editor = useEditor()
 
   const onSelect = useCallback(() => {
-    openGroup(command.name)
+    editor.openCommandGroup(command.name)
     _onSelect?.(command)
-  }, [])
+  }, [_onSelect, command, editor])
 
   if (render && !render(_editor)) return null
 
@@ -97,26 +115,25 @@ export const CommandItem: FC<CommandProps> = ({
   onSelect: _onSelect
 }) => {
   const { icon, description, render, shortcut } = command
-  const _editor = useEditor()
-  const toggleOpen = useCommandStore(({ toggleOpen }) => toggleOpen)
+  const editor = useEditor()
 
   const onSelect = useCallback(() => {
-    toggleOpen(false)
+    editor.toggleCommandBar(false)
     _onSelect?.(command)
-    ;(command as ExecutableCommand).execute(_editor)
-  }, [])
+    ;(command as ExecutableCommand).execute?.(editor)
+  }, [_onSelect, command, editor])
 
-  if (render && !render(_editor)) return null
+  if (render && !render(editor)) return null
 
   return (
     <Command.Item value={command.name} onSelect={onSelect}>
       {typeof icon === "function" ? (
-        icon(_editor)
+        icon(editor)
       ) : typeof icon == "string" ? (
         <Icon icon={icon} />
       ) : null}
       {typeof description === "function"
-        ? description(_editor)
+        ? description(editor)
         : description || command.name}
       <div cmdk-raycast-meta="" cmdk-raycast-submenu-shortcuts="">
         {shortcut?.map((key, i) => (
@@ -128,22 +145,3 @@ export const CommandItem: FC<CommandProps> = ({
     </Command.Item>
   )
 }
-
-/*
-<Command.Group heading="Commands">
-          {commands.map((command) => (
-            <Fragment key={command.name}>
-              {command.render(editor) ? (
-                <Item
-                  shortcut={command.shortcut}
-                  value={command.name}
-                  onSelect={() => command.execute(editor)}
-                >
-                  {command.icon(editor)}
-                  {command.description(editor)}
-                </Item>
-              ) : null}
-            </Fragment>
-          ))}
-        </Command.Group>
-*/

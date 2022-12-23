@@ -7,9 +7,9 @@ import {
   ImageLargePreview,
   ImagePreview,
   Instructions,
-  Remove
-} from "../../editable/controls/image"
-import { usePopin } from "../../editable/controls/usePopin"
+  Remove,
+  usePopin
+} from "../../editable"
 
 export const texture = createPlugin({
   sanitize(value: any) {

@@ -1,3 +1,3 @@
-import { createMultiTunnel } from "../tunnels"
+import { createMultiTunnel } from "../fiber/tunnels"
 
 export const commandBarTunnel = createMultiTunnel()

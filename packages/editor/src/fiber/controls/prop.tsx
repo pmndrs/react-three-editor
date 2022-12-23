@@ -1,8 +1,6 @@
 import { MathUtils, TextureLoader } from "three"
 import { GLTFLoader } from "three-stdlib"
-import { createProp } from "../../editable/controls/createProp"
-import { ref } from "../../editable/controls/ref"
-import { EditableElement } from "../../editable/EditableElement"
+import { createProp, ref, EditableElement } from "../../editable"
 import { gltf } from "./gltf"
 import { texture } from "./texture"
 

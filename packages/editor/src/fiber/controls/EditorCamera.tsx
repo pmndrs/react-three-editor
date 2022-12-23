@@ -5,9 +5,7 @@ import { forwardRef, useEffect, useRef } from "react"
 import { useHotkeysContext } from "react-hotkeys-hook"
 import { Camera, Event, MathUtils } from "three"
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib"
-import { setEditable } from "../../editable/editable"
-import { useEditor } from "../../editable/useEditor"
-import { useEditorStore } from "../../editable/useEditorStore"
+import { setEditable, useEditor, useEditorStore } from "../../editable"
 import { ThreeEditor } from "../ThreeEditor"
 
 setEditable(
@@ -43,19 +41,6 @@ export function EditorCamera() {
     near: { value: 0.1, min: 0.1, max: 100 },
     far: { value: 1000, min: 0.1, max: 10000 }
   })
-
-  // useHotkeys(
-  //   "meta+e",
-  //   (e, a) => {
-  //     setCamera({
-  //       enabled: !props.enabled
-  //     })
-  //   },
-  //   [props.enabled],
-  //   {
-  //     preventDefault: true
-  //   }
-  // )
 
   useSelectedState(editor)
 
@@ -108,25 +93,9 @@ export function EditorCamera() {
 
   return (
     <>
-      {/* {props.enabled && (
-        <PerspectiveCamera
-          ref={(el) => {
-            editor.camera = el
-          }}
-          {...props}
-          rotation={props.rotation.map((a) => MathUtils.degToRad(a))}
-          makeDefault
-        />
-      )} */}
       {props.enabled && (!controls || ref2.current === controls) && (
         <OrbitControls ref={ref2} makeDefault />
       )}
-      {/* <editable.primitive
-        name="Camera"
-        object={ref.current || camera}
-        _source={{}}
-      /> */}
-      {/* <PerspectiveCamera makeDefault /> */}
     </>
   )
 }
@@ -164,5 +133,5 @@ function useSelectedState(editor: ThreeEditor) {
   useEffect(() => {
     editor.setSetting("scene.selectedId", selectedId ?? "")
     editor.setSetting("scene.selectedKey", selectedKey ?? "")
-  }, [selectedId, selectedKey, set])
+  }, [editor, selectedId, selectedKey, set])
 }

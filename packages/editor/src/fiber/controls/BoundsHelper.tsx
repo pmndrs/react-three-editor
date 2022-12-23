@@ -2,9 +2,7 @@ import { useHelper } from "@react-three/drei"
 import { applyProps } from "@react-three/fiber"
 import { ReactNode, useEffect, useMemo } from "react"
 import { BoxHelper, Group } from "three"
-import { helpers } from "../../editable/controls/helpers"
-import { EditableElement } from "../../editable/EditableElement"
-import { useEditorStore } from "../../editable/useEditorStore"
+import { helpers, EditableElement, useEditorStore } from "../../editable"
 
 export function BoundsHelper({
   editableElement: element,

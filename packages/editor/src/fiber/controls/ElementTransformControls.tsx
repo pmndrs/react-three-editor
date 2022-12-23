@@ -7,11 +7,11 @@ import { TransformControls as TransformControlsImpl } from "three-stdlib"
 import {
   SetElementPosition,
   SetElementRotation,
-  SetElementScale
-} from "../../editable/commands"
-import { eq } from "../../editable/controls/eq"
-import { EditableElement } from "../../editable/EditableElement"
-import { useEditor } from "../../editable/useEditor"
+  SetElementScale,
+  eq,
+  EditableElement,
+  useEditor
+} from "../../editable"
 
 const serializeTransform = (
   object?: Object3D

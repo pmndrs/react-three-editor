@@ -4,19 +4,19 @@ import { Canvas as FiberCanvas, useThree } from "@react-three/fiber"
 import { Components } from "leva/plugin"
 import { ComponentProps, forwardRef, useMemo, useState } from "react"
 import { Toaster } from "react-hot-toast"
+import { CommandBar, CommandBarControls } from "../commandbar"
 import {
-  CommandBar,
-  CommandBarControls
-} from "../editable/controls/command-bar/CommandBar"
-import { custom } from "../editable/controls/custom"
-import { MultiToggle } from "../editable/controls/helpers"
-import { Outs } from "../editable/controls/Outs"
-import { Panel, usePanel } from "../editable/controls/Panel"
-import { createMultiTunnel } from "../editable/controls/tunnels"
-import { usePersistedControls } from "../editable/controls/usePersistedControls"
-import { EditableElementContext } from "../editable/EditableElementContext"
-import { EditorContext } from "../editable/Editor"
-import { useEditor } from "../editable/useEditor"
+  custom,
+  MultiToggle,
+  Outs,
+  Panel,
+  usePanel,
+  createMultiTunnel,
+  usePersistedControls,
+  EditableElementContext,
+  EditorContext,
+  useEditor
+} from "../editable"
 import { client } from "../vite/client"
 import { CameraGizmos } from "./controls/CameraGizmos"
 import { EditorCamera } from "./controls/EditorCamera"
