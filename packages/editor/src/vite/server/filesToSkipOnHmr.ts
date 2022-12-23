@@ -1,1 +1,2 @@
-export const filesToSkipOnHmr: Map<string, boolean> = new Map()
+export const filesToSkipOnHmr: Map<string, { skip: boolean; timeout: any }> =
+  new Map()

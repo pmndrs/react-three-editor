@@ -1,11 +1,11 @@
-import { ViteDevServer } from "vite"
 import formidable from "formidable"
 import { existsSync } from "fs"
 import { moveSync, removeSync } from "fs-extra"
+import { ViteDevServer } from "vite"
 
 export const configureMiddlewares = (server: ViteDevServer) => {
   server.middlewares.use("/__editor/save", async (req, res) => {
-    return new Promise<string>((resolve, reject) => {
+    let response = await new Promise<string>((resolve, reject) => {
       formidable({
         multiples: true,
         keepExtensions: true,
@@ -35,5 +35,8 @@ export const configureMiddlewares = (server: ViteDevServer) => {
         )
       })
     })
+
+    res.setHeader("Content-Type", "application/json")
+    res.end(response)
   })
 }

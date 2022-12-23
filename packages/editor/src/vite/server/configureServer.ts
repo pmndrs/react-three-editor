@@ -1,11 +1,12 @@
+import { transformFromAstAsync } from "@babel/core"
+import { parse, prettyPrint } from "@vinxi/recast"
+import { parse as babelParse, parser } from "@vinxi/recast/parsers/babel-ts"
+import { readFile, writeFile } from "fs-extra"
 import { ViteDevServer } from "vite"
 import { createRPCServer } from "vite-dev-rpc"
-import { configureMiddlewares } from "./middlewares"
 import { EditPatch } from "../../types"
-import { readFile, writeFile } from "fs-extra"
-import { prettyPrint, parse } from "@vinxi/recast"
-import vinxiBabelParser from "@vinxi/recast/parsers/babel-ts"
-import { transformFromAstAsync } from "@babel/core"
+import { filesToSkipOnHmr } from "./filesToSkipOnHmr"
+import { configureMiddlewares } from "./middlewares"
 import { plugins } from "./transform-plugins"
 
 const groupPatchesByFileName = (patches: EditPatch[]) => {
@@ -18,9 +19,10 @@ const groupPatchesByFileName = (patches: EditPatch[]) => {
 const applyPatches = async (fileName: string, patches: EditPatch[]) => {
   const source = await readFile(fileName)
   const sourceAst = parse(source.toString(), {
-    parser: vinxiBabelParser,
+    parser: { parser, parse: babelParse },
     jsx: true
   } as any)
+  filesToSkipOnHmr.set(fileName, { skip: true, timeout: 0 })
   await transformFromAstAsync(sourceAst, undefined, {
     cloneInputAst: false,
     filename: fileName,
@@ -30,6 +32,13 @@ const applyPatches = async (fileName: string, patches: EditPatch[]) => {
   const code = prettyPrint(sourceAst, {
     wrapColumn: 1000
   }).code
+
+  filesToSkipOnHmr.get(fileName)!.timeout = setTimeout(() => {
+    if (filesToSkipOnHmr.get(fileName)?.timeout) {
+      filesToSkipOnHmr.get(fileName)!.skip = false
+    }
+  }, 1000)
+
   await writeFile(fileName, code)
 }
 
