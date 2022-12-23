@@ -70,7 +70,7 @@ export type RReturnType<F extends SchemaOrFn> = F extends SchemaOrFn<infer S>
 export function usePersistedControls<S extends Schema, T extends SchemaOrFn<S>>(
   folderName: string,
   props: T,
-  deps = [],
+  deps: any[] = [],
   store = undefined as StoreType | undefined,
   hidden = false,
   order = 0,

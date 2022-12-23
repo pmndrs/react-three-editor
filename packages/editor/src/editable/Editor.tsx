@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import {
   createContext,
   createElement,
@@ -110,6 +111,8 @@ export class Editor<
    * elements
    */
   EditableElementProvider: React.FC<any> = EditableElementProvider
+
+  remount?: () => void
 
   constructor(
     public plugins: any[],
@@ -416,7 +419,7 @@ export class Editor<
   }
 
   setSettings(values: any) {
-    this.getPanel(this.settingsPanel).useStore.setState(({ data }) => {
+    this.getPanel(this.settingsPanel).useStore.setState(({ data }: any) => {
       for (let key in values) {
         data[`world.` + data["world.mode"].value + ` settings.` + key].value =
           values[key]
@@ -428,7 +431,7 @@ export class Editor<
   useMode<K extends string | undefined>(
     name?: K
   ): K extends undefined ? string : boolean {
-    return this.settingsPanel.useStore((s) =>
+    return this.settingsPanel.useStore((s: any) =>
       name ? s.data["world.mode"]?.value === name : s.data["world.mode"]?.value
     ) as any
   }
