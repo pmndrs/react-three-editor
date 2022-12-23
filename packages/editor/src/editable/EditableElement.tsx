@@ -107,7 +107,8 @@ export class EditableElement<
     this.refs.setMoreChildren = setMoreChildren
     this.mounted = mounted
 
-    useEffect(() => {
+    // useState so that this runs only once when the item is created
+    useState(() => {
       this.store?.addData(
         {
           name: {
@@ -119,7 +120,7 @@ export class EditableElement<
         },
         false
       )
-    }, [])
+    })
 
     return {
       ref: mergeRefs([
@@ -216,12 +217,6 @@ export class EditableElement<
     }
 
     return elementName
-  }
-
-  set name(v: string) {
-    if (this.ref) {
-      this.ref.name = v
-    }
   }
 
   get visible() {
