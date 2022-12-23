@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react"
 import { Bounds, useBounds } from "@react-three/drei"
-import { Canvas as FiberCanvas, useThree } from "@react-three/fiber"
+import { Canvas as FiberCanvas, Props, useThree } from "@react-three/fiber"
 import { Components } from "leva/plugin"
 import { ComponentProps, forwardRef, useMemo, useState } from "react"
 import { Toaster } from "react-hot-toast"
@@ -18,6 +18,7 @@ import {
   EditorContext,
   useEditor
 } from "../editable"
+import { JSXSource } from "../types"
 import { client } from "../vite/client"
 import { CameraGizmos } from "./controls/CameraGizmos"
 import { EditorCamera } from "./controls/EditorCamera"
@@ -31,32 +32,33 @@ export const editorTunnel = createMultiTunnel()
 
 export const Editor = editorTunnel.In
 
-export const Canvas = forwardRef<
-  HTMLCanvasElement,
-  ComponentProps<typeof FiberCanvas>
->(function Canvas({ children, _source, ...props }, ref) {
-  const store = useMemo(
-    () => new ThreeEditor(DEFAULT_EDITOR_PLUGINS, client),
-    []
-  )
+export type CanvasProps = Props & { _source: JSXSource }
 
-  store.root.source = _source
+export const Canvas = forwardRef<HTMLCanvasElement, CanvasProps>(
+  ({ children, _source, ...props }, ref) => {
+    const store = useMemo(
+      () => new ThreeEditor(DEFAULT_EDITOR_PLUGINS, client),
+      []
+    )
 
-  // @ts-ignore
-  window.editor = store
+    store.root.source = _source
 
-  return (
-    <EditorContext.Provider value={store}>
-      <AllCommands />
-      <EditorCanvas ref={ref} store={store} {...props}>
-        {children}
-      </EditorCanvas>
-      <Outs />
-      <CommandBar />
-      <Toaster />
-    </EditorContext.Provider>
-  )
-})
+    // @ts-ignore
+    window.editor = store
+
+    return (
+      <EditorContext.Provider value={store}>
+        <AllCommands />
+        <EditorCanvas ref={ref} store={store} {...props}>
+          {children}
+        </EditorCanvas>
+        <Outs />
+        <CommandBar />
+        <Toaster />
+      </EditorContext.Provider>
+    )
+  }
+)
 
 const EditorCanvas = forwardRef<
   HTMLCanvasElement,
@@ -141,7 +143,7 @@ const EditorCanvas = forwardRef<
 })
 
 function AssignBounds() {
-  const editor = useEditor()
+  const editor = useEditor<ThreeEditor>()
   const bounds = useBounds()
 
   editor.bounds = bounds
