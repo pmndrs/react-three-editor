@@ -13,7 +13,7 @@ export function useElementObserver(entity: EditableElement<any>) {
 
         let edit = false
 
-        if (state["name"] !== entity.ref.name) {
+        if (entity.ref?.name?.length && state["name"] !== entity.ref.name) {
           state["name"].disabled = true
           state["name"].value = entity.ref.name
           edit = true
