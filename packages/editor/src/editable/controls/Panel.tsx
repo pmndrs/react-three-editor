@@ -57,7 +57,7 @@ export function Panel({
 
   useEffect(() => {
     setPosition({ x: pos === "left" ? -size.width + width + 20 : 0, y: 0 })
-  }, [size, pos])
+  }, [size, pos, width])
 
   return (
     <In>
