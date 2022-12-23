@@ -4,19 +4,11 @@ import { StoreType } from "leva/dist/declarations/src/types"
 import { mergeRefs } from "leva/plugin"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { Event, Object3D } from "three"
+import { JSXSource } from "../types"
 import { createLevaStore } from "./controls/createStore"
 import { helpers } from "./controls/helpers"
 import { Editor } from "./Editor"
 import { useEditorStore } from "./useEditorStore"
-
-export type JSXSource = {
-  fileName: string
-  lineNumber: number
-  columnNumber: number
-  moduleName: string
-  componentName: string
-  elementName: string
-}
 
 /**
  * An editable element is a wrapper around a React element that can be edited in the editor.

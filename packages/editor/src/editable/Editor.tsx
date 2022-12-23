@@ -2,14 +2,12 @@ import {
   createContext,
   createElement,
   Fragment,
-  ReactNode,
   useContext,
   useEffect,
   useId,
   useMemo
 } from "react"
-import { EditableElement, JSXSource } from "./EditableElement"
-
+import { EditableElement } from "./EditableElement"
 import { levaStore, useControls } from "leva"
 import {
   Schema,
@@ -24,13 +22,17 @@ import {
   usePersistedControls
 } from "./controls/usePersistedControls"
 import { editable } from "./editable"
-import {
-  EditableElementContext,
-  useEditableContext
-} from "./EditableElementContext"
+import { EditableElementContext } from "./EditableElementContext"
 import { HistoryManager } from "./HistoryManager"
 
 import { createMachine } from "xstate"
+import { EditableElementProvider } from "./EditableElementProvider"
+import { JSXSource } from "../types"
+import {
+  CommandStoreState,
+  CommandStoreType,
+  createCommandBarStore
+} from "../commandbar"
 
 const machine = createMachine({
   id: "editor"
@@ -66,30 +68,6 @@ type Diff = {
   source: any
 }
 
-function EditableElementProvider({
-  editableElement,
-  children
-}: {
-  editableElement: EditableElement
-  children: ReactNode
-}) {
-  if (editableElement.forwardedRef) {
-    return (
-      <EditableElementContext.Provider value={editableElement}>
-        {children}
-        {editableElement.mounted && <Helpers />}
-      </EditableElementContext.Provider>
-    )
-  } else {
-    return (
-      <EditableElementContext.Provider value={editableElement}>
-        {children}
-        <Helpers />
-      </EditableElementContext.Provider>
-    )
-  }
-}
-
 export class Editor<
   T extends EditableElement = EditableElement
 > extends EventTarget {
@@ -104,6 +82,11 @@ export class Editor<
    * a store to keep track of all the editor state, eg. settings, mode, selected element, etc.
    */
   store: EditorStoreType
+
+  /*
+   * central store all the commands
+   */
+  commandStore: CommandStoreType
 
   /**
    * used to add undo/redo functionality
@@ -135,6 +118,7 @@ export class Editor<
   ) {
     super()
     this.store = createEditorStore()
+    this.commandStore = createCommandBarStore()
     this.root.editor = this as any
     this.root.index = ""
     this.expanded = localStorage.getItem("collapased")
@@ -178,7 +162,7 @@ export class Editor<
 
   appendNewElement(element: EditableElement, componentType: string) {
     if (typeof componentType === "string") {
-      element.refs.setMoreChildren((children) => [
+      element.refs.setMoreChildren?.((children) => [
         ...children,
         createElement(editable[componentType], {
           _source: {
@@ -329,20 +313,14 @@ export class Editor<
       selectedId: element.id,
       selectedKey: element.key
     })
-
-    // if (element?.isObject3D() || element.bounds) {
-    //   this.bounds.refresh(element.bounds ?? element?.getObject3D()).fit()
-    // }
   }
 
   selectId(id: string): void {
     if (!id) {
       return
     }
-    // let element = this.store.getState().elements[id]
     this.store.setState({
       selectedId: id
-      // selectedKey: element.key
     })
   }
 
@@ -361,10 +339,8 @@ export class Editor<
     if (!arg0) {
       return
     }
-    // let element = this.store.getState().elements[id]
     this.store.setState({
       selectedKey: arg0
-      // selectedKey: element.key
     })
   }
 
@@ -503,19 +479,4 @@ export class Editor<
   }
 }
 
-function Helpers() {
-  const element = useEditableContext()
-
-  return (
-    <>
-      {element.editor?.plugins
-        .filter((p) => p.helper && p.applicable(element))
-        .map((plugin) => (
-          <Fragment key={element.id}>
-            <plugin.helper element={element} />
-          </Fragment>
-        ))}
-    </>
-  )
-}
 export const EditorContext = createContext<Editor | null>(null)
