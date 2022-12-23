@@ -1,7 +1,7 @@
 import { types as t } from "@babel/core"
 import react from "@vitejs/plugin-react"
 import { reactThreeEditorBabel, JSXElementType } from "./babel"
-import { editor } from "../server"
+import { editor } from "./server"
 
 const transformElements = [
   "mesh",
