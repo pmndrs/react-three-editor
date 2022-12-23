@@ -64,7 +64,6 @@
     "change-case": "^4.1.2",
     "cmdk": "^0.1.21",
     "debug": "^4.3.4",
-    "draft-n-draw": "^0.3.1",
     "formidable": "^2.1.1",
     "fp-ts": "^2.12.3",
     "fs-extra": "^10.1.0",
@@ -82,11 +81,11 @@
     "zustand": "^3.7.2"
   },
   "peerDependencies": {
-    "@react-three/fiber": "8.9.1",
+    "@react-three/fiber": "*",
     "@react-three/rapier": "*",
-    "react": ">=16.8.0",
-    "react-dom": ">=16.8.0",
-    "three": "0.147.0"
+    "react": "*",
+    "react-dom": "*",
+    "three": "*"
   },
   "devDependencies": {
     "@react-three/rapier": "^0.10.0",

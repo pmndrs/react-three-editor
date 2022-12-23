@@ -22,7 +22,7 @@ export function Panel({
   id: string
   title: string
   width: number
-  collapsed: boolean
+  collapsed?: boolean
   pos: "left" | "right"
 } & Omit<ComponentProps<typeof LevaPanel>, "store">) {
   const panel = usePanel(id)

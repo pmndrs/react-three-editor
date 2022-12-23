@@ -30,13 +30,6 @@ export function TreeElement({
   const [visible, setVisible] = element.useVisible()
 
   const [key, setTreeKey] = useState(0)
-  console.log(element.displayName, key)
-
-  element.refs.setTreeKey = setTreeKey
-
-  // const [visible, setVisible] = useState(
-  //   element.ref?.visible || (true as boolean)
-  // )
 
   const dirty = element.store?.useStore(
     (s) => Object.keys(element.changes).length > 0

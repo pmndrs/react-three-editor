@@ -162,12 +162,6 @@ function useSelectedState(editor: ThreeEditor) {
   )
 
   useEffect(() => {
-    console.log(
-      "selectedElement",
-      selectedId && editor?.store.getState().elements[selectedId],
-      selectedKey
-    )
-
     editor.setSetting("scene.selectedId", selectedId ?? "")
     editor.setSetting("scene.selectedKey", selectedKey ?? "")
   }, [selectedId, selectedKey, set])

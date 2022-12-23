@@ -1,5 +1,4 @@
 import { useBounds } from "@react-three/drei"
-// import { getDrafter } from "draft-n-draw"
 import { levaStore } from "leva"
 import { useCallback } from "react"
 import { Editor } from "../editable/Editor"
@@ -53,34 +52,10 @@ export class ThreeEditor extends Editor {
     ]
   }
 
-  // drafter = getDrafter()
-
   setRef(element: any, ref: any) {
     if (ref.__r3f) {
       ref.__r3f.editable = element
     }
   }
 
-  // debug(
-  //   info: any,
-  //   v: {
-  //     persist?: number | boolean | undefined
-  //   } & Omit<Parameters<ReturnType<typeof getDrafter>["drawRay"]>[1], "persist">
-  // ) {
-  //   let editor = this
-  //   if (!this.isEditorMode()) return
-  //   if (typeof v?.persist === "number") {
-  //     let applicable = this.plugins.filter((p) => p.debug && p.applicable(info))
-
-  //     let dispose = applicable.map((p) => p.debug(info, v, editor))
-
-  //     setTimeout(() => {
-  //       dispose.forEach((d) => d())
-  //     }, v.persist * 1000)
-  //   } else {
-  //     let dispose = this.plugins
-  //       .filter((p) => p.debug && p.applicable(v))
-  //       .map((p) => p.debug(info, v, editor))
-  //   }
-  // }
 }

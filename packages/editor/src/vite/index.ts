@@ -1,8 +1,8 @@
 import { types as t } from "@babel/core"
 import react from "@vitejs/plugin-react"
-import { default as babel, JSXElementType } from "../editable/babel"
+import { reactThreeEditorBabel, JSXElementType } from "./babel"
+import { editor } from "../server"
 
-import { default as vite } from "../server"
 const transformElements = [
   "mesh",
   "group",
@@ -48,13 +48,13 @@ let shouldEdit = (node: JSXElementType) => {
 }
 export function r3f({ babelPlugins = [], editable = shouldEdit } = {}) {
   return [
-    vite(),
+    editor(),
     react({
       babel: {
         plugins: [
           ...babelPlugins,
           [
-            babel,
+            reactThreeEditorBabel,
             {
               importPath: "@react-three/editor/fiber",
               replaceImports: {

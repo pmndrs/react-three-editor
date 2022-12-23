@@ -24,6 +24,11 @@ export const transform = {
   icon: (entity: EditableElement) => "ph:cube",
   controls: (entity: EditableElement) => {
     return {
+      name: prop.string({
+        element: entity,
+        default: entity.displayName,
+        path: ["ref", "name"]
+      }),
       transform: folder(
         {
           position: prop.vector3d({

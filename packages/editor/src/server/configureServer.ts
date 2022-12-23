@@ -21,7 +21,6 @@ export const configureServer =
           if (!["insertElement", "deleteElement"].includes(data.action_type)) {
             filesToSkipOnHmr.set(fileName, true)
           }
-
           const sourceAst = parse(source, {
             parser: vinxiBabelParser,
             jsx: true
