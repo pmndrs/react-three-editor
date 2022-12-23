@@ -28,7 +28,7 @@
     "@changesets/cli": "^2.25.2",
     "@manypkg/cli": "^0.19.2",
     "@preconstruct/cli": "^2.2.2",
-    "@react-three/fiber": "^9.0.0-alpha.2",
+    "@react-three/fiber": "^8.9.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@types/jest": "^29.2.0",

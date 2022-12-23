@@ -17,7 +17,7 @@
     "@react-spring/three": "^9.3.2",
     "@react-three/drei": "^9.46.4",
     "@react-three/editor": "workspace:*",
-    "@react-three/fiber": "^9.0.0-alpha.2",
+    "@react-three/fiber": "^8.9.1",
     "@types/three": "^0.135.0",
     "leva": "^0.9.34",
     "react": "18.2.0",
