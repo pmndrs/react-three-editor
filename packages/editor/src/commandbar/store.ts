@@ -9,8 +9,8 @@ export type CommandStoreState = {
   filter: string
 }
 
-export const createCommandBarStore = (name: string = "command-store") => {
-  return create<CommandStoreState>()(
+export const createCommandBarStore = (name?: string = "command-store") => {
+  return create<CommandStoreState>(
     devtools(
       (_) => {
         return {
@@ -26,6 +26,8 @@ export const createCommandBarStore = (name: string = "command-store") => {
     )
   )
 }
+
+export type CommandStoreType = ReturnType<typeof createCommandBarStore>
 
 export const selectActiveCommands = (state: CommandStoreState) => {
   const breadcrumb = state.activeCommandChain
