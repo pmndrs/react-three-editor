@@ -11,7 +11,7 @@ export const CommandBar = () => {
   const open = useCommandStore((state) => state.open)
 
   // Toggle the menu when ⌘K is pressed
-  useHotkeys("meta+k", () => toggleOpen())
+  useHotkeys("meta+k", () => toggleOpen(), { preventDefault: true })
 
   return (
     <>
