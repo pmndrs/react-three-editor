@@ -17,7 +17,10 @@ export const CommandBar: FC<CommandBarProps> = () => {
 
   const onKeydown = useCallback(
     (event: KeyboardEvent<HTMLDivElement>) => {
-      if (event.key === "Backspace") {
+      if (
+        event.key === "Backspace" &&
+        editor.commandStore.getState().filter.length === 0
+      ) {
         editor.closeCommandGroup()
       }
     },

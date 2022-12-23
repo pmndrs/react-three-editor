@@ -7,10 +7,12 @@ export const UICommands: FC = () => {
   useEffect(() => {
     const commands: CommandType[] = [
       {
-        name: "show-panels"
+        name: "show-panels",
+        description: "Show panels"
       },
       {
-        name: "hide-panels"
+        name: "hide-panels",
+        description: "Hide panels"
       }
     ]
     editor.registerCommands(commands)

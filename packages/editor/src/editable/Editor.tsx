@@ -33,6 +33,7 @@ import {
   CommandStoreType,
   createCommandBarStore
 } from "../commandbar"
+import { CommandType } from "../commandbar/types"
 
 const machine = createMachine({
   id: "editor"
@@ -465,6 +466,73 @@ export class Editor<
     )
 
     return props as any
+  }
+
+  toggleCommandBar(flag?: boolean) {
+    this.commandStore.setState((state) => {
+      if (typeof flag !== "boolean") {
+        flag = !state.open
+      }
+      return {
+        ...state,
+        filter: !flag ? "" : state.filter,
+        activeCommandChain: !flag ? [] : state.activeCommandChain,
+        open: flag
+      }
+    })
+  }
+
+  registerCommands(commands: CommandType[]) {
+    this.commandStore.setState((state) => {
+      return {
+        ...state,
+        commands: [...state.commands, ...commands]
+      }
+    })
+  }
+
+  unregisterCommands(commands: CommandType[]) {
+    this.commandStore.setState((state) => {
+      return {
+        ...state,
+        commands: state.commands.filter(
+          (c) => !commands.some((tc) => tc.name === c.name)
+        )
+      }
+    })
+  }
+
+  openCommandGroup(name: string) {
+    this.commandStore.setState((state) => {
+      return {
+        ...state,
+        filter: "",
+        activeCommandChain: [...state.activeCommandChain, name]
+      }
+    })
+  }
+
+  closeCommandGroup(name?: string) {
+    this.commandStore.setState((state) => {
+      let activeCommandChain = [...state.activeCommandChain]
+      if (name) {
+        const index = activeCommandChain.indexOf(name)
+        if (index > -1) {
+          activeCommandChain = activeCommandChain.splice(
+            index,
+            activeCommandChain.length
+          )
+        }
+      } else {
+        activeCommandChain.pop()
+      }
+
+      return {
+        ...state,
+        filter: "",
+        activeCommandChain
+      }
+    })
   }
 
   /**

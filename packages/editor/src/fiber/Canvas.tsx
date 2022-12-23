@@ -5,6 +5,7 @@ import { Components } from "leva/plugin"
 import { ComponentProps, forwardRef, useMemo, useState } from "react"
 import { Toaster } from "react-hot-toast"
 import { CommandBar, CommandBarControls } from "../commandbar"
+import { AllCommands } from "../commandbar/commands"
 import {
   custom,
   MultiToggle,
@@ -46,6 +47,7 @@ export const Canvas = forwardRef<
 
   return (
     <EditorContext.Provider value={store}>
+      <AllCommands />
       <EditorCanvas ref={ref} store={store} {...props}>
         {children}
       </EditorCanvas>
