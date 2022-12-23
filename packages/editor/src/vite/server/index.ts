@@ -12,7 +12,7 @@ export const editor = (): Plugin => {
           attrs: {
             type: "text/css",
             rel: "stylesheet",
-            href: "node_modules/@react-three/editor/assets/commandbar-styles.css"
+            href: "node_modules/@react-three/editor/assets/style.css"
           }
         }
       ]
@@ -20,5 +20,3 @@ export const editor = (): Plugin => {
     configureServer
   }
 }
-
-export default editor
