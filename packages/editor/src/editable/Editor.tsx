@@ -25,10 +25,11 @@ import {
 import { editable } from "./editable"
 import { EditableElementContext } from "./EditableElementContext"
 import { HistoryManager } from "./HistoryManager"
+import { BirpcReturn } from "birpc"
 
 import { createMachine } from "xstate"
 import { EditableElementProvider } from "./EditableElementProvider"
-import { JSXSource } from "../types"
+import { EditPatch, JSXSource, RpcServerFunctions } from "../types"
 import {
   CommandStoreState,
   CommandStoreType,
@@ -116,9 +117,7 @@ export class Editor<
 
   constructor(
     public plugins: any[],
-    public client: {
-      save: (data: any) => Promise<void>
-    }
+    public client: BirpcReturn<RpcServerFunctions>
   ) {
     super()
     this.store = createEditorStore()
@@ -128,15 +127,17 @@ export class Editor<
     this.expanded = localStorage.getItem("collapased")
       ? new Set(JSON.parse(localStorage.getItem("collapased")!))
       : new Set()
+
+    this.client.initializeComponentsWatcher()
   }
 
   setRef(element: any, ref: any) {}
 
-  async saveDiff(diff: Diff) {
+  async saveDiff(diff: EditPatch) {
     await this.client.save(diff)
   }
 
-  async save(diffs: Diff[]) {
+  async save(diffs: EditPatch[]) {
     for (let diff of diffs) {
       await this.saveDiff(diff)
     }
