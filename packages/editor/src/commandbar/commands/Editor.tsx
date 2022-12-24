@@ -42,7 +42,7 @@ export const EditorCommands: FC = () => {
         name: "isolate",
         description: "Isolate element",
         shortcut: ["meta", "f"],
-        execute(editor: ThreeEditor) {
+        execute(editor) {
           let el = editor.root
           let selectedElement = editor.selectedElement
           let selected = selectedElement?.treeId
@@ -84,7 +84,7 @@ export const EditorCommands: FC = () => {
               focus(child, selected)
             }
           }
-          editor.bounds.refresh(selectedElement?.ref).fit()
+          ;(editor as ThreeEditor).bounds.refresh(selectedElement?.ref).fit()
         }
       },
       {
@@ -115,9 +115,9 @@ export const EditorCommands: FC = () => {
         description: "Remove element from the scene"
       }
     ]
-    editor.registerCommands(commands)
+    editor.commands.registerCommands(commands)
     return () => {
-      editor.unregisterCommands(commands)
+      editor.commands.unregisterCommands(commands)
     }
   }, [editor])
   return null

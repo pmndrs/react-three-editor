@@ -9,9 +9,9 @@ import { commandBarTunnel } from "./tunnel"
 export type CommandBarProps = {}
 export const CommandBar: FC<CommandBarProps> = () => {
   const editor = useEditor()
-  const open = editor.commandStore((state) => state.open)
+  const open = editor.commands.store((state) => state.open)
 
-  useHotkeys("meta+space", () => editor.toggleCommandBar(), {
+  useHotkeys("meta+space", () => editor.commands.toggleCommandBar(), {
     preventDefault: true
   })
 
@@ -19,9 +19,9 @@ export const CommandBar: FC<CommandBarProps> = () => {
     (event: KeyboardEvent<HTMLDivElement>) => {
       if (
         event.key === "Backspace" &&
-        editor.commandStore.getState().filter.length === 0
+        editor.commands.store.getState().filter.length === 0
       ) {
-        editor.closeCommandGroup()
+        editor.commands.closeCommandGroup()
       }
     },
     [editor]
@@ -31,7 +31,7 @@ export const CommandBar: FC<CommandBarProps> = () => {
     <>
       <Command.Dialog
         open={open}
-        onOpenChange={() => editor.toggleCommandBar()}
+        onOpenChange={() => editor.commands.toggleCommandBar()}
         className="commandbar dark vercel"
         tabIndex={-1}
         onKeyDown={onKeydown}
@@ -44,7 +44,7 @@ export const CommandBar: FC<CommandBarProps> = () => {
 
 export function CommandBarControls() {
   const editor = useEditor()
-  const open = editor.commandStore((state) => state.open)
+  const open = editor.commands.store((state) => state.open)
 
   return (
     <>

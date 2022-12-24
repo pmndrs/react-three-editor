@@ -1,4 +1,11 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { BirpcReturn } from "birpc"
+import { levaStore, useControls } from "leva"
+import {
+  Schema,
+  SchemaToValues,
+  StoreType
+} from "leva/dist/declarations/src/types"
 import {
   createContext,
   createElement,
@@ -8,13 +15,6 @@ import {
   useId,
   useMemo
 } from "react"
-import { EditableElement } from "./EditableElement"
-import { levaStore, useControls } from "leva"
-import {
-  Schema,
-  SchemaToValues,
-  StoreType
-} from "leva/dist/declarations/src/types"
 import create from "zustand"
 import { createLevaStore } from "./controls/createStore"
 import { Panel, usePanel } from "./controls/Panel"
@@ -23,19 +23,14 @@ import {
   usePersistedControls
 } from "./controls/usePersistedControls"
 import { editable } from "./editable"
+import { EditableElement } from "./EditableElement"
 import { EditableElementContext } from "./EditableElementContext"
 import { HistoryManager } from "./HistoryManager"
-import { BirpcReturn } from "birpc"
 
 import { createMachine } from "xstate"
-import { EditableElementProvider } from "./EditableElementProvider"
+import { CommandManager } from "../commandbar"
 import { EditPatch, JSXSource, RpcServerFunctions } from "../types"
-import {
-  CommandStoreState,
-  CommandStoreType,
-  createCommandBarStore
-} from "../commandbar"
-import { CommandType } from "../commandbar/types"
+import { EditableElementProvider } from "./EditableElementProvider"
 
 const machine = createMachine({
   id: "editor"
@@ -92,9 +87,9 @@ export class Editor<
   history: HistoryManager = new HistoryManager()
 
   /**
-   * used to add undo/redo functionality
+   * Command Manager
    */
-  historyManager: HistoryManager = new HistoryManager()
+  commands: CommandManager = new CommandManager()
 
   /**
    * a set with all the tree-ids of the expanded elements
@@ -121,7 +116,6 @@ export class Editor<
   ) {
     super()
     this.store = createEditorStore()
-    this.commandStore = createCommandBarStore()
     this.root.editor = this as any
     this.root.index = ""
     this.expanded = localStorage.getItem("collapased")
@@ -249,7 +243,8 @@ export class Editor<
 
     const editableElement = useMemo(() => {
       return this.createElement(id, props._source, Component, props)
-    }, [id])
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [Component, id])
 
     // attaches the render, remount functions and returns a key that
     // need to be passed to the React element to cause remounts
@@ -470,73 +465,6 @@ export class Editor<
     )
 
     return props as any
-  }
-
-  toggleCommandBar(flag?: boolean) {
-    this.commandStore.setState((state) => {
-      if (typeof flag !== "boolean") {
-        flag = !state.open
-      }
-      return {
-        ...state,
-        filter: !flag ? "" : state.filter,
-        activeCommandChain: !flag ? [] : state.activeCommandChain,
-        open: flag
-      }
-    })
-  }
-
-  registerCommands(commands: CommandType[]) {
-    this.commandStore.setState((state) => {
-      return {
-        ...state,
-        commands: [...state.commands, ...commands]
-      }
-    })
-  }
-
-  unregisterCommands(commands: CommandType[]) {
-    this.commandStore.setState((state) => {
-      return {
-        ...state,
-        commands: state.commands.filter(
-          (c) => !commands.some((tc) => tc.name === c.name)
-        )
-      }
-    })
-  }
-
-  openCommandGroup(name: string) {
-    this.commandStore.setState((state) => {
-      return {
-        ...state,
-        filter: "",
-        activeCommandChain: [...state.activeCommandChain, name]
-      }
-    })
-  }
-
-  closeCommandGroup(name?: string) {
-    this.commandStore.setState((state) => {
-      let activeCommandChain = [...state.activeCommandChain]
-      if (name) {
-        const index = activeCommandChain.indexOf(name)
-        if (index > -1) {
-          activeCommandChain = activeCommandChain.splice(
-            index,
-            activeCommandChain.length
-          )
-        }
-      } else {
-        activeCommandChain.pop()
-      }
-
-      return {
-        ...state,
-        filter: "",
-        activeCommandChain
-      }
-    })
   }
 
   /**

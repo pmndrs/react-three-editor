@@ -15,9 +15,9 @@ export const UICommands: FC = () => {
         description: "Hide panels"
       }
     ]
-    editor.registerCommands(commands)
+    editor.commands.registerCommands(commands)
     return () => {
-      editor.unregisterCommands(commands)
+      editor.commands.unregisterCommands(commands)
     }
   }, [editor])
   return null

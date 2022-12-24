@@ -6,9 +6,9 @@ export const GeneralCommands: FC = () => {
   const editor = useEditor()
   useEffect(() => {
     const commands: CommandType[] = []
-    editor.registerCommands(commands)
+    editor.commands.registerCommands(commands)
     return () => {
-      editor.unregisterCommands(commands)
+      editor.commands.unregisterCommands(commands)
     }
   }, [editor])
   return null
