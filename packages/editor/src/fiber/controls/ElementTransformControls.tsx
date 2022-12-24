@@ -51,8 +51,8 @@ export function ElementTransformControls({
     ref.current.setSize(Math.max((ref.current as any).size - 0.1, 0.1))
   )
   useHotkeys("=", () => ref.current.setSize((ref.current as any).size + 0.1))
-  useHotkeys("meta+z", () => editor?.historyManager.undo())
-  useHotkeys("meta+y", () => editor?.historyManager.redo())
+  useHotkeys("meta+z", () => editor?.history.undo())
+  useHotkeys("meta+y", () => editor?.history.redo())
 
   const updateElementTransforms = useCallback(
     (object: Object3D, mode: "translate" | "rotation" | "scale") => {
@@ -110,7 +110,7 @@ export function ElementTransformControls({
             target.object
           )
           if (mode === "translate") {
-            editor?.historyManager.execute(
+            editor?.history.execute(
               new SetElementPosition(
                 editor,
                 element,
@@ -119,7 +119,7 @@ export function ElementTransformControls({
               )
             )
           } else if (mode === "rotation") {
-            editor?.historyManager.execute(
+            editor?.history.execute(
               new SetElementRotation(
                 editor,
                 element,
@@ -128,7 +128,7 @@ export function ElementTransformControls({
               )
             )
           } else if (mode === "scale") {
-            editor?.historyManager.execute(
+            editor?.history.execute(
               new SetElementScale(
                 editor,
                 element,

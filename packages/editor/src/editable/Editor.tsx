@@ -86,10 +86,10 @@ export class Editor<
    */
   store: EditorStoreType
 
-  /*
-   * central store all the commands
+  /**
+   * used to add undo/redo functionality
    */
-  commandStore: CommandStoreType
+  history: HistoryManager = new HistoryManager()
 
   /**
    * used to add undo/redo functionality
