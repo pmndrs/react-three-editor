@@ -17,3 +17,10 @@ export type EditPatch<V = unknown> = {
   action_type: EditPatchActionType
   value: V
 }
+
+export type RpcServerFunctions = {
+  save(patches: EditPatch | EditPatch[]): Promise<void>
+  initializeComponentsWatcher(): Promise<void>
+}
+
+export type RpcClientFunctions = {}
