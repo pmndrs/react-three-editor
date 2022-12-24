@@ -4,6 +4,7 @@ import {
   AmbientLight,
   Camera,
   CameraHelper,
+  Color,
   DirectionalLight,
   DirectionalLightHelper,
   Light,
@@ -379,5 +380,23 @@ export const propControls = {
       }
     })
     return controls
+  }
+}
+
+export const color = {
+  applicable: (entity: EditableElement) => entity.ref instanceof Color,
+  controls: (entity: EditableElement) => {
+    return {
+      args: {
+        value: 0,
+        render: (args: any) => {
+          false
+        }
+      },
+      color: prop.unknown({
+        element: entity,
+        path: ["currentProps", "args", "0"]
+      })
+    }
   }
 }

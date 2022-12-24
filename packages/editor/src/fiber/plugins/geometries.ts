@@ -36,5 +36,3 @@ export const geometry = {
     }
   }
 }
-
-export const meshGeometry = {}

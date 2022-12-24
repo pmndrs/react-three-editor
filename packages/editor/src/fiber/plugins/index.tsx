@@ -1,11 +1,13 @@
 import { prop } from "../controls/prop"
-import { geometry, meshGeometry } from "./geometries"
+import { EditorControlsPlugin } from "../types"
+import { geometry } from "./geometries"
 import { group } from "./group"
 import { material } from "./materials"
 import { mesh } from "./mesh"
 import {
   ambientLight,
   camera,
+  color,
   directionalLight,
   orbitControls,
   pointLight,
@@ -17,7 +19,7 @@ import {
   transformWithoutRef
 } from "./plugins"
 
-export const DEFAULT_EDITOR_PLUGINS = [
+export const DEFAULT_EDITOR_PLUGINS: EditorControlsPlugin[] = [
   transform,
   reactComponent,
   transformWithoutRef,
@@ -28,12 +30,12 @@ export const DEFAULT_EDITOR_PLUGINS = [
   group,
   material,
   geometry,
-  meshGeometry,
   orbitControls,
   directionalLight,
   pointLight,
   ambientLight,
   spotLight,
+  color,
   {
     applicable: (el) => el.type === "primitive",
     controls: (el) => {
