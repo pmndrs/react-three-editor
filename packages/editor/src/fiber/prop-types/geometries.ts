@@ -2,8 +2,8 @@ import { folder } from "leva"
 import { BufferGeometry } from "three"
 import { all } from "."
 import { EditableElement } from "../../editable/EditableElement"
-import { replace } from "../plugins/replace"
 import { PropInput } from "./core/types"
+import { replace } from "./replace"
 
 export const boxGeometryControls = (
   element: EditableElement,
@@ -17,16 +17,25 @@ export const boxGeometryControls = (
     width: all.number({
       element,
       default: 1,
+      step: 0.1,
+      min: 0,
+      max: 100,
       path: [...replace(path, "ref", "currentProps"), "args", "0"]
     }),
     height: all.number({
       element,
       default: 1,
+      step: 0.1,
+      min: 0,
+      max: 100,
       path: [...replace(path, "ref", "currentProps"), "args", "1"]
     }),
     depth: all.number({
       element,
       default: 1,
+      step: 0.1,
+      min: 0,
+      max: 100,
       path: [...replace(path, "ref", "currentProps"), "args", "2"]
     })
   }

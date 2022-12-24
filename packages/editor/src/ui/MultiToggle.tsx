@@ -1,7 +1,5 @@
 import { Icon } from "@iconify/react"
-import { Components, InputOptions, styled, useInputContext } from "leva/plugin"
-
-import { custom } from "../../ui/leva/custom"
+import { styled, useInputContext } from "leva/plugin"
 
 export const StyedIcon = styled(Icon, {})
 
@@ -41,7 +39,6 @@ export const StyledButtonGroup = styled("div", {
 })
 
 export const MultiToggle = () => {}
-
 MultiToggle.Option = (props) => {
   const input = useInputContext<{ value: any; setValue: any }>()
   return (
@@ -56,23 +53,4 @@ MultiToggle.Option = (props) => {
 
 MultiToggle.Root = ({ children }) => {
   return <StyledButtonGroup>{children}</StyledButtonGroup>
-}
-
-export function helpers(props: InputOptions) {
-  return custom({
-    ...props,
-    data: "selected",
-    component: (input) => {
-      return (
-        <Components.Row input>
-          <Components.Label>{input.label}</Components.Label>
-          <MultiToggle.Root>
-            <MultiToggle.Option value="all" />
-            <MultiToggle.Option value="selected" />
-            <MultiToggle.Option value="none" />
-          </MultiToggle.Root>
-        </Components.Row>
-      )
-    }
-  })
 }

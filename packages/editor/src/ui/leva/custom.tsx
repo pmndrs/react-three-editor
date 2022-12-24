@@ -18,8 +18,8 @@ export const custom = createPlugin<
     component: (input: CustomInputContextProps) => JSX.Element
   }
 >({
-  normalize({ data, component }) {
-    return { value: data, settings: { component } }
+  normalize({ data, component, ...settings }) {
+    return { value: data, settings: { component, ...settings } }
   },
   component: () => {
     const input = useInputContext<CustomInputContextProps>()

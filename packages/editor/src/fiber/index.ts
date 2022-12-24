@@ -11,9 +11,9 @@ export {
   Editable,
   EditorContext,
   setEditable,
-  useControls,
   useEditor
 } from "../editable"
+export { useControls } from "../ui/leva/useControls"
 export { Canvas, Editor } from "./Canvas"
 export { CameraGizmos } from "./controls/CameraGizmos"
 export { PerformanceControls } from "./controls/PerformanceControls"

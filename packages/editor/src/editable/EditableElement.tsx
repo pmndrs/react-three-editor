@@ -6,10 +6,9 @@ import { mergeRefs } from "leva/plugin"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { toast } from "react-hot-toast"
 import { Event, Object3D } from "three"
-import { PropType } from "../fiber/prop-types/core/createProp"
 import { JSXSource } from "../types"
-import { createLevaStore } from "./controls/createStore"
-import { helpers } from "./controls/helpers"
+import { multiToggle } from "../ui/leva/multiToggle"
+import { createLevaStore } from "./createStore"
 import { Editor } from "./Editor"
 
 /**
@@ -43,6 +42,65 @@ export class EditableElement<
   useIsDirty() {
     return this.store?.useStore((s) => Object.keys(this.changes).length > 0)
   }
+
+  handlePropChange = (change: PropChange) => {
+    let { input, type, path, context } = change
+    // using the path, figure out the object that needs to be edited, the
+    // closest editable JSX element, and the path from the closest editable
+    // JSX element to the prop that needs to be edited
+    const [object, closestEditable, remainingPath] =
+      this.getEditableObjectByPath(path)
+
+    // the last item in the path is the prop that needs to be edited
+    const prop = path[path.length - 1]
+
+    // if the type has an init function, call it with the object, prop, and value, useful to some side effect on initialization from the control representation of the prop,
+    // this should be used sparingly, and the `get` function should be used to change the data representation of the prop to the control representation
+    if (input !== null && type.init && context.initial) {
+      type.init?.(object, prop, input)
+    }
+
+    if (
+      input === null ||
+      !context.fromPanel ||
+      context.initial ||
+      context.disabled
+    ) {
+      return
+    }
+
+    // if the value that's set should be used to load an object and assign that to the prop, eg. textures, gltf models in r3f. It can be async.
+    if (type.load) {
+      let loadedValue = type.load(object, prop, input)
+
+      if (loadedValue !== undefined && loadedValue.then) {
+        loadedValue.then((resolvedValue: any) => {
+          if (resolvedValue !== undefined) {
+            change.object = object
+            change.prop = prop
+            change.value = resolvedValue
+            change.closestEditable = closestEditable
+
+            this.setPropValue(change)
+          }
+        })
+      } else {
+        change.object = object
+        change.prop = prop
+        change.value = loadedValue
+        change.closestEditable = closestEditable
+
+        this.setPropValue(change)
+      }
+    } else {
+      change.object = object
+      change.prop = prop
+      change.value = input
+      change.closestEditable = closestEditable
+      this.setPropValue(change)
+    }
+  }
+
   setPropValue({
     object,
     type,
@@ -52,57 +110,48 @@ export class EditableElement<
     path,
     controlPath,
     onChange,
-    closestEditable
-  }: {
-    controlPath: string
-    object: any
-    prop: string
-    input: any
-    type: PropType
-    path: string[]
-    closestEditable?: EditableElement
-    value: any
-    onChange?: (value: any, controlPath: string) => void
-  }) {
+    closestEditable,
+    remainingPath
+  }: PropChange) {
+    type.set(object, prop, value)
+
     onChange?.(value, controlPath)
 
     let serializale = type.serialize
-      ? type.serialize(object, prop, input)
+      ? type.serialize(object, prop, input, value)
       : value
 
     // prop thats not serializable is not editable
     // since we cant do anything with the edited prop
-    if (serializale !== undefined && this instanceof EditableElement) {
-      if (closestEditable) {
-        if (this === closestEditable) {
-          let [_, ...p] = path
-          this.addChange(this, p.join("-"), serializale)
-          this.changed = true
-          let propOveride = setValue
-
-          if (propOveride !== undefined) {
-            editableElement.setProp(p.join("-"), propOveride)
-          }
-        } else {
-          editableElement.addChange(
-            closestEditable,
-            remaining.join("-"),
-            serializale
-          )
-          editableElement.changed = true
-        }
-      } else {
+    if (serializale !== undefined && closestEditable) {
+      if (this === closestEditable) {
         let [_, ...p] = path
-        editableElement.addChange(editableElement, p.join("-"), serializale)
-        editableElement.changed = true
 
-        let propOveride = type.override
-          ? type.override(object, prop, serializale)
-          : serializale
+        // handle the `args` prop by updating the args array
+        if (p[0] === "args") {
+          let prevArgs = this.currentProps.args ?? []
+          let prevPropArgs = this.props.args ?? []
 
-        if (propOveride !== undefined) {
-          editableElement.setProp(p.join("-"), propOveride)
+          let args = (prevArgs ?? prevPropArgs).map((a: any, i: number) => {
+            if (i === Number(p[1])) {
+              return serializale
+            }
+            return a
+          })
+          this.addChange(this, "args", args)
+          this.changed = true
+          this.setProp("args", args)
+          return
         }
+
+        // otherwise its a prop on the edited element itself
+        this.addChange(this, p.join("-"), serializale)
+        this.changed = true
+        this.setProp(p.join("-"), value)
+      } else {
+        // its a prop on a child editable element
+        this.addChange(closestEditable, remainingPath.join("-"), serializale)
+        this.changed = true
       }
     }
   }
@@ -307,8 +356,10 @@ export class EditableElement<
 
   useHelper(arg0: string, helper: any, ...args: any[]) {
     const [props] = this.editor.useSettings("helpers", {
-      [arg0]: helpers({
-        label: arg0
+      [arg0]: multiToggle({
+        label: arg0,
+        data: "selected",
+        options: ["all", "selected", "none"]
       })
     }) as [any]
 
@@ -495,6 +546,7 @@ export class EditableElement<
 }
 
 import { createContext, useContext } from "react"
+import { PropChange } from "../fiber/prop-types/core/types"
 
 export const EditableElementContext = createContext<EditableElement | null>(
   null

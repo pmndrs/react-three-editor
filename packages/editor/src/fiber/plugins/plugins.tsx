@@ -21,7 +21,7 @@ import { TransformHelper } from "../controls/TransformHelper"
 import { createProp } from "../prop-types/core/createProp"
 import { PropInput } from "../prop-types/core/types"
 import { primitives } from "../prop-types/primitives"
-import { replace } from "./replace"
+import { replace } from "../prop-types/replace"
 
 export const transformControls = (props: PropInput) => {
   return folder(
@@ -75,35 +75,6 @@ export const camera = {
     return null
   }
 }
-
-// export const meshMaterial = {
-//   applicable: (entity: EditableElement) =>
-//     entity.ref instanceof Mesh && entity.ref.material,
-//   controls: (entity: EditableElement) => {
-//     return {
-//       material: folder({
-//         ...(entity.ref.material instanceof MeshStandardMaterial ||
-//         entity.ref.material instanceof MeshBasicMaterial
-//           ? {
-//               color: prop.color({
-//                 element: entity,
-//                 path: ["ref", "material", "color"]
-//               }),
-//               texture: prop.texture({
-//                 element: entity,
-//                 path: ["ref", "material", "map"]
-//               })
-//             }
-//           : {}),
-
-//         wireframe: prop.bool({
-//           element: entity,
-//           path: ["ref", "material", "wireframe"]
-//         })
-//       })
-//     }
-//   }
-// }
 
 export const orbitControls = {
   applicable: (entity: EditableElement) => entity.type === OrbitControls,

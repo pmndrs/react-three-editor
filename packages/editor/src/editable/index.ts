@@ -1,5 +1,4 @@
 export * from "./commands"
-export * from "./controls"
 export * from "./editable"
 export * from "./EditableElement"
 export * from "./Editor"

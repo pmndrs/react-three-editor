@@ -5,13 +5,13 @@ import { useHotkeys } from "react-hotkeys-hook"
 import { Event, MathUtils, Object3D, Vector3Tuple } from "three"
 import { TransformControls as TransformControlsImpl } from "three-stdlib"
 import {
+  EditableElement,
   SetElementPosition,
   SetElementRotation,
   SetElementScale,
-  eq,
-  EditableElement,
   useEditor
 } from "../../editable"
+import { eq } from "../prop-types/eq"
 
 const serializeTransform = (
   object?: Object3D

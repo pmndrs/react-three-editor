@@ -1,5 +1,5 @@
-import { EditableElement } from "../../../editable/EditableElement"
-import { PropInput } from "./types"
+import { EditableElement } from "../../../editable"
+import { PropChange, PropInput } from "./types"
 
 export type PropType = {
   get: (obj: any, prop: string) => any
@@ -7,89 +7,8 @@ export type PropType = {
   control?: any
   load?: (obj: any, prop: string, value: any) => Promise<any> | any
   init?: (obj: any, prop: string, value: any) => void
-  serialize?: (obj: any, prop: string, value: any) => any
+  serialize?: (obj: any, prop: string, input: any, value: any) => any
   override?: (obj: any, prop: string, value: any) => any
-}
-
-function handlePropChange(
-  editableElement: EditableElement<any>,
-  path: string[],
-  value: any,
-  type: PropType,
-  {
-    controlPath,
-    context,
-    persist,
-    onChange
-  }: { context: any; persist: any; onChange: any }
-) {
-  // using the path, figure out the object that needs to be edited, the
-  // closest editable JSX element, and the path from the closest editable
-  // JSX element to the prop that needs to be edited
-  const [object, closestEditable, remaining] =
-    editableElement.getEditableObjectByPath(path)
-
-  // the last item in the path is the prop that needs to be edited
-  const prop = path[path.length - 1]
-
-  // if the type has an init function, call it with the object, prop, and value, useful to some side effect on initialization from the control representation of the prop,
-  // this should be used sparingly, and the `get` function should be used to change the data representation of the prop to the control representation
-  if (value !== null && type.init && context.initial) {
-    type.init?.(object, prop, value)
-  }
-
-  if (
-    value === null ||
-    !context.fromPanel ||
-    context.initial ||
-    context.disabled
-  ) {
-    return
-  }
-
-  // if the value that's set should be used to load an object and assign that to the prop, eg. textures, gltf models in r3f. It can be async.
-  if (type.load) {
-    let loadedValue = type.load(object, prop, value)
-    if (loadedValue !== undefined && loadedValue.then) {
-      loadedValue.then((resolvedValue) => {
-        editableElement.setPropValue({
-          object,
-          prop,
-          type,
-          input: value,
-          value: resolvedValue,
-          controlPath,
-          onChange,
-          closestEditable,
-          path
-        })
-      })
-    } else {
-      editableElement.setPropValue({
-        object,
-        prop,
-        type,
-        input: value,
-        value: loadedValue,
-        controlPath,
-        onChange,
-        closestEditable,
-        path
-      })
-    }
-  } else {
-    editableElement.setPropValue({
-      object,
-      prop,
-      type,
-      input: value,
-      value,
-      controlPath,
-      onChange,
-      closestEditable,
-      path
-    })
-  }
 }
 
 export function createProp(
@@ -125,11 +44,21 @@ export function createProp(
     ? type.get(el, prop) ?? settings.default
     : settings.default
 
+  let handleChange = (value: any, controlPath: string, context: any) => {
+    element.handlePropChange({
+      path,
+      input: value,
+      controlPath,
+      context,
+      onChange,
+      type
+    } as PropChange)
+  }
+
   return type.control
     ? type.control({
         value: initialValue,
-        onChange: null,
-
+        onChange: handleChange,
         ...settings
       })
     : {
@@ -153,7 +82,7 @@ export function createProp(
           // Sets the value on the object described by the path
           type.set(el, prop, value)
 
-          onChange?.(value, prop, controlPath, context)
+          onChange?.(value, controlPath)
 
           let serializale = type.serialize
             ? type.serialize(el, prop, value)

@@ -15,12 +15,12 @@ import {
   StoreType
 } from "leva/dist/declarations/src/types"
 import create from "zustand"
-import { Panel, usePanel } from "../ui/Panel"
-import { createLevaStore } from "./controls/createStore"
 import {
   SchemaOrFn,
   usePersistedControls
-} from "./controls/usePersistedControls"
+} from "../ui/leva/usePersistedControls"
+import { Panel, usePanel } from "../ui/Panel"
+import { createLevaStore } from "./createStore"
 import { editable } from "./editable"
 import { EditableElementContext } from "./EditableElement"
 import { HistoryManager } from "./HistoryManager"
