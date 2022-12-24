@@ -19,7 +19,6 @@ export function SceneControls({
   })
 
   useControls(
-    "world",
     {
       scene: tree({
         items,

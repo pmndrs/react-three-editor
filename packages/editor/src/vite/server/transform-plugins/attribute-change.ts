@@ -12,7 +12,17 @@ const valueExpression = (value: any) => {
     }
   } else if (Array.isArray(value)) {
     return types.jsxExpressionContainer(
-      types.arrayExpression(value.map((v) => types.numericLiteral(v)))
+      types.arrayExpression(
+        value.map((value) => {
+          if (typeof value === "string") {
+            return types.stringLiteral(value)
+          } else if (typeof value === "number") {
+            return types.numericLiteral(value)
+          } else if (typeof value === "boolean") {
+            return types.booleanLiteral(value)
+          }
+        })
+      )
     )
   } else if (typeof value === "string") {
     return types.jsxExpressionContainer(types.stringLiteral(value))
@@ -38,7 +48,7 @@ const addAttribute = (
     element.attributes.push(
       types.jsxAttribute(types.jsxIdentifier(path), expressionContainer)
     )
-    filesToSkipOnHmr.set(patch.source.fileName, false)
+    filesToSkipOnHmr.get(patch.source.fileName)!.skip = false
   }
 }
 
