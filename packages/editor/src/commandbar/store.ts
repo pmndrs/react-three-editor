@@ -9,7 +9,7 @@ export type CommandStoreState = {
   filter: string
 }
 
-export const createCommandBarStore = (name?: string = "command-store") => {
+export const createCommandBarStore = (name: string = "command-store") => {
   return create<CommandStoreState>(
     devtools(
       (_) => {
