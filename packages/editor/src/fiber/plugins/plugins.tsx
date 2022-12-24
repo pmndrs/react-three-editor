@@ -16,9 +16,9 @@ import {
   SpotLight,
   SpotLightHelper
 } from "three"
-import { createProp } from "../../editable"
 import { EditableElement } from "../../editable/EditableElement"
 import { TransformHelper } from "../controls/TransformHelper"
+import { createProp } from "../prop-types/core/createProp"
 import { PropInput } from "../prop-types/core/types"
 import { primitives } from "../prop-types/primitives"
 import { replace } from "./replace"

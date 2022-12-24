@@ -22,7 +22,7 @@ import {
   usePersistedControls
 } from "./controls/usePersistedControls"
 import { editable } from "./editable"
-import { EditableElementContext } from "./EditableElementContext"
+import { EditableElementContext } from "./EditableElement"
 import { HistoryManager } from "./HistoryManager"
 
 import { createMachine } from "xstate"
@@ -424,8 +424,6 @@ export class Editor<
       }
     ]
   }
-
-  rootId: string = "root"
 
   get root() {
     return this.store.getState().elements[this.rootId]

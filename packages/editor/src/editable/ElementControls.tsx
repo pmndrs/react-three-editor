@@ -1,7 +1,7 @@
 import { button, levaStore, useControls } from "leva"
 import { useState } from "react"
-import { element } from "../../ui/leva/element"
-import { EditableElement } from "../EditableElement"
+import { element } from "../ui/leva/element"
+import { EditableElement } from "./EditableElement"
 
 export function useElementControls(
   entity: EditableElement,

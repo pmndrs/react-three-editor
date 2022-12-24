@@ -3,14 +3,10 @@ import { forwardRef } from "react"
 import { Toaster } from "react-hot-toast"
 import { CommandBar } from "../commandbar"
 import { AllCommands } from "../commandbar/commands"
-import {
-  createMultiTunnel,
-  EditableElementContext,
-  EditorContext,
-  useEditor
-} from "../editable"
+import { EditableElementContext, EditorContext, useEditor } from "../editable"
 import { JSXSource } from "../types"
 import { Outs } from "../ui/tunnel"
+import { createMultiTunnel } from "../ui/tunnels"
 import { CameraBounds } from "./CameraBounds"
 import { EditorCamera } from "./controls/EditorCamera"
 import { EditorControls } from "./controls/EditorControls"

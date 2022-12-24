@@ -494,4 +494,16 @@ export class EditableElement<
   }
 }
 
-class R3fEditabelElement {}
+import { createContext, useContext } from "react"
+
+export const EditableElementContext = createContext<EditableElement | null>(
+  null
+)
+
+export function useEditableContext() {
+  const editableElement = useContext(EditableElementContext)
+  if (!editableElement) {
+    throw new Error("useEditableContext must be used within an EditableElement")
+  }
+  return editableElement
+}

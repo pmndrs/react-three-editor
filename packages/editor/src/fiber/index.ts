@@ -10,11 +10,9 @@ export {
   editable,
   Editable,
   EditorContext,
-  Panel,
   setEditable,
   useControls,
-  useEditor,
-  usePanel
+  useEditor
 } from "../editable"
 export { Canvas, Editor } from "./Canvas"
 export { CameraGizmos } from "./controls/CameraGizmos"

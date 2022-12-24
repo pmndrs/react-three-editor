@@ -1,7 +1,7 @@
 import { Icon } from "@iconify/react"
 import { Components, InputOptions, styled, useInputContext } from "leva/plugin"
 
-import { custom } from "./custom"
+import { custom } from "../../ui/leva/custom"
 
 export const StyedIcon = styled(Icon, {})
 

@@ -1,6 +1,6 @@
 import { useControls as useLevaControls } from "leva"
 import { useContext } from "react"
-import { EditableElementContext } from "../EditableElementContext"
+import { EditableElementContext } from "../EditableElement"
 
 export const useControls: typeof useLevaControls = (...args) => {
   const editor = useContext(EditableElementContext)

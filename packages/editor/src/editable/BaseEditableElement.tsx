@@ -1,6 +1,6 @@
 import { FC, PropsWithChildren } from "react"
 
-import { EditableElementContext } from "./EditableElementContext"
+import { EditableElementContext } from "./EditableElement"
 import { Helpers } from "./Helpers"
 import { useEditor } from "./useEditor"
 
@@ -28,8 +28,6 @@ export const BaseEditableElement: FC<EditableElementProps> = ({
   if (root) {
     editor.rootId = editableElement.id
   }
-
-  console.log(editableProps, editableElement.type)
 
   if (editableElement.forwardedRef) {
     return (

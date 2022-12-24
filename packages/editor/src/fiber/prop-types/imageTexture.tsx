@@ -7,10 +7,10 @@ import {
   ImageLargePreview,
   ImagePreview,
   Instructions,
-  PropType,
-  Remove,
-  usePopin
-} from "../../editable"
+  Remove
+} from "../../ui/ImageInput"
+import { usePopin } from "../../ui/usePopin"
+import { PropType } from "./core/createProp"
 
 export const levaTexture = createPlugin({
   sanitize(value: any) {
