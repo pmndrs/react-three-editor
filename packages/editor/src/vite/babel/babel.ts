@@ -5,9 +5,8 @@ import {
   template,
   types as t
 } from "@babel/core"
-import { JSXElementType } from "./types"
-import { declare } from "@babel/helper-plugin-utils"
 import { basename, extname } from "path"
+import { JSXElementType } from "./types"
 
 const TRACE_ID = "_source"
 const FILE_NAME_VAR = "_jsxFileName"

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { useBounds } from "@react-three/drei"
 import { levaStore } from "leva"
 import { useCallback } from "react"
@@ -14,7 +15,7 @@ export class ThreeEditor extends Editor {
     this.getPanel(this.settingsPanel).set({ "world.mode": value }, true)
     switch (value) {
       case "editor":
-        this.remount()
+        this.remount?.()
     }
   }
   camera: unknown
@@ -57,5 +58,4 @@ export class ThreeEditor extends Editor {
       ref.__r3f.editable = element
     }
   }
-
 }

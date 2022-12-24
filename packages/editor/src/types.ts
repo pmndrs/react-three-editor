@@ -1,3 +1,5 @@
+export * from "./vite/types"
+
 export type JSXSource = {
   fileName: string
   lineNumber: number

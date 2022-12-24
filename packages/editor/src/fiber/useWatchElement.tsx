@@ -1,7 +1,7 @@
 import { useFrame } from "@react-three/fiber"
 import * as THREE from "three"
 import { MathUtils } from "three"
-import { eq } from "../editable/controls/eq"
+import { eq } from "../editable"
 import { EditableElement } from "../editable/EditableElement"
 
 export function useElementObserver(entity: EditableElement<any>) {

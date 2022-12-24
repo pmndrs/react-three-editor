@@ -1,7 +1,6 @@
 import * as fiber from "@react-three/fiber"
 import { folder, useControls } from "leva"
-import { usePanel } from "../editable/controls/Panel"
-import { toggle } from "../editable/controls/toggle"
+import { usePanel, toggle } from "../editable"
 import { useEditor } from "../editable/useEditor"
 
 export let Stages = fiber.Stages || {}

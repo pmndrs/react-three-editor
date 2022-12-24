@@ -1,8 +1,9 @@
 import { Plugin } from "vite"
 import { configureServer } from "./configureServer"
 import { filesToSkipOnHmr } from "./filesToSkipOnHmr"
+import { ServerOptions } from "../types"
 
-export const editor = (): Plugin => {
+export const editor = (options: ServerOptions = {}): Plugin => {
   return {
     name: "vite-plugin-react-three-editor",
     enforce: "pre",
@@ -27,8 +28,6 @@ export const editor = (): Plugin => {
         }
       ]
     },
-    configureServer
+    configureServer: configureServer(options)
   }
 }
-
-export default editor

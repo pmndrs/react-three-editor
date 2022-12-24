@@ -1,10 +1,12 @@
 import { StoreType } from "leva/dist/declarations/src/types"
 import { Fragment } from "react"
-import { usePanel } from "../../editable/controls/Panel"
-import { ElementControls } from "../../editable/controls/useElementControls"
-import { EditableElement } from "../../editable/EditableElement"
-import { useEditor } from "../../editable/useEditor"
-import { useEditorStore } from "../../editable/useEditorStore"
+import {
+  usePanel,
+  ElementControls,
+  EditableElement,
+  useEditor,
+  useEditorStore
+} from "../../editable"
 import { useElementObserver } from "../useWatchElement"
 import { ElementTransformControls } from "./ElementTransformControls"
 

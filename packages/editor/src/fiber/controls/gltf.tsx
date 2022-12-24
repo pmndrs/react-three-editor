@@ -6,9 +6,9 @@ import {
   ImageContainer,
   ImageLargePreview,
   Instructions,
-  Remove
-} from "../../editable/controls/image"
-import { usePopin } from "../../editable/controls/usePopin"
+  Remove,
+  usePopin
+} from "../../editable"
 
 export const gltf = createPlugin({
   sanitize(value: any) {

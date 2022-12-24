@@ -6,11 +6,16 @@ export {
   useThree
 } from "@react-three/fiber"
 export { button, buttonGroup, folder, levaStore as defaultPanel } from "leva"
-export { Panel, usePanel } from "../editable/controls/Panel"
-export { useControls } from "../editable/controls/useControls"
-export { editable, Editable, setEditable } from "../editable/editable"
-export { EditorContext } from "../editable/Editor"
-export { useEditor } from "../editable/useEditor"
+export {
+  editable,
+  Editable,
+  EditorContext,
+  Panel,
+  setEditable,
+  useControls,
+  useEditor,
+  usePanel
+} from "../editable"
 export { Canvas, Editor } from "./Canvas"
 export { CameraGizmos } from "./controls/CameraGizmos"
 export { PerformanceControls } from "./controls/PerformanceControls"

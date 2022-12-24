@@ -1,4 +1,5 @@
 import { useContext } from "react"
+import { EqualityChecker, StateSelector } from "zustand"
 import { EditorContext, EditorStoreStateType } from "./Editor"
 
 export const useEditorStore = <U>(

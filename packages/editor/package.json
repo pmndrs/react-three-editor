@@ -61,6 +61,7 @@
     "@vinxi/recast": "^0.21.5",
     "@vitejs/plugin-react": "^2.0.1",
     "@xstate/react": "^3.0.1",
+    "birpc": "^0.2.3",
     "change-case": "^4.1.2",
     "cmdk": "^0.1.21",
     "debug": "^4.3.4",

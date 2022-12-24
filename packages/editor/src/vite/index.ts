@@ -1,4 +1,4 @@
-import { types as t } from "@babel/core"
+import { PluginItem, types as t } from "@babel/core"
 import react from "@vitejs/plugin-react"
 import { reactThreeEditorBabel, JSXElementType } from "./babel"
 import { editor } from "./server"
@@ -46,7 +46,18 @@ let shouldEdit = (node: JSXElementType) => {
       return isEditableComponent(node.openingElement)
   }
 }
-export function r3f({ babelPlugins = [], editable = shouldEdit } = {}) {
+
+export type PluginOptions = {
+  babelPlugins?: PluginItem[]
+  editable?: (node: JSXElementType) => boolean
+  componentsDir?: string
+}
+
+export function r3f({
+  babelPlugins = [],
+  editable = shouldEdit,
+  componentsDir = "src/__reactThreeEditor"
+}: PluginOptions = {}) {
   return [
     editor(),
     react({

@@ -1,22 +1,15 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { useHelper } from "@react-three/drei"
 import { LevaInputs } from "leva"
-import { StoreType } from "leva/dist/declarations/src/types"
+import { Schema, StoreType } from "leva/dist/declarations/src/types"
 import { mergeRefs } from "leva/plugin"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { Event, Object3D } from "three"
+import { JSXSource } from "../types"
 import { createLevaStore } from "./controls/createStore"
 import { helpers } from "./controls/helpers"
 import { Editor } from "./Editor"
 import { useEditorStore } from "./useEditorStore"
-
-export type JSXSource = {
-  fileName: string
-  lineNumber: number
-  columnNumber: number
-  moduleName: string
-  componentName: string
-  elementName: string
-}
 
 /**
  * An editable element is a wrapper around a React element that can be edited in the editor.
@@ -38,7 +31,7 @@ export type JSXSource = {
  *
  * */
 export class EditableElement<
-  Ref extends { name?: string } = any
+  Ref extends { name?: string; visible?: boolean } = any
 > extends EventTarget {
   delete() {
     this.refs.deleted = true
@@ -73,7 +66,7 @@ export class EditableElement<
   refs = {
     setKey: null as Dispatch<SetStateAction<number>> | null,
     forceUpdate: null as Dispatch<SetStateAction<number>> | null,
-    setMoreChildren: null as Dispatch<SetStateAction<any>> | null,
+    setMoreChildren: null as Dispatch<SetStateAction<any[]>> | null,
     deleted: false
   }
 
@@ -117,7 +110,7 @@ export class EditableElement<
             label: "name",
             render: () => false
           }
-        },
+        } as any,
         false
       )
     })
@@ -239,7 +232,7 @@ export class EditableElement<
       [arg0]: helpers({
         label: arg0
       })
-    })
+    }) as [any]
 
     const isSelected = useEditorStore((state) => state.selectedId === this.id)
 
@@ -300,7 +293,7 @@ export class EditableElement<
   get changed() {
     let data = this.store?.getData()!
     if (data && data["save"]) {
-      return !data["save"].settings.disabled
+      return !(data["save"] as any).settings.disabled
     }
 
     return this.dirty

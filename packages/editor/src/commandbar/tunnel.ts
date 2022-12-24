@@ -1,3 +1,3 @@
-import { createMultiTunnel } from "../tunnels"
+import { createMultiTunnel } from "../editable"
 
 export const commandBarTunnel = createMultiTunnel()

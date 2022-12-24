@@ -1,21 +1,20 @@
-import {
-  createContext,
-  createElement,
-  Fragment,
-  ReactNode,
-  useContext,
-  useEffect,
-  useId,
-  useMemo
-} from "react"
-import { EditableElement, JSXSource } from "./EditableElement"
-
+/* eslint-disable react-hooks/rules-of-hooks */
+import { BirpcReturn } from "birpc"
 import { levaStore, useControls } from "leva"
 import {
   Schema,
   SchemaToValues,
   StoreType
 } from "leva/dist/declarations/src/types"
+import {
+  createContext,
+  createElement,
+  Fragment,
+  useContext,
+  useEffect,
+  useId,
+  useMemo
+} from "react"
 import create from "zustand"
 import { createLevaStore } from "./controls/createStore"
 import { Panel, usePanel } from "./controls/Panel"
@@ -24,13 +23,14 @@ import {
   usePersistedControls
 } from "./controls/usePersistedControls"
 import { editable } from "./editable"
-import {
-  EditableElementContext,
-  useEditableContext
-} from "./EditableElementContext"
+import { EditableElement } from "./EditableElement"
+import { EditableElementContext } from "./EditableElementContext"
 import { HistoryManager } from "./HistoryManager"
 
 import { createMachine } from "xstate"
+import { CommandManager } from "../commandbar"
+import { EditPatch, JSXSource, RpcServerFunctions } from "../types"
+import { EditableElementProvider } from "./EditableElementProvider"
 
 const machine = createMachine({
   id: "editor"
@@ -66,30 +66,6 @@ type Diff = {
   source: any
 }
 
-function EditableElementProvider({
-  editableElement,
-  children
-}: {
-  editableElement: EditableElement
-  children: ReactNode
-}) {
-  if (editableElement.forwardedRef) {
-    return (
-      <EditableElementContext.Provider value={editableElement}>
-        {children}
-        {editableElement.mounted && <Helpers />}
-      </EditableElementContext.Provider>
-    )
-  } else {
-    return (
-      <EditableElementContext.Provider value={editableElement}>
-        {children}
-        <Helpers />
-      </EditableElementContext.Provider>
-    )
-  }
-}
-
 export class Editor<
   T extends EditableElement = EditableElement
 > extends EventTarget {
@@ -108,7 +84,12 @@ export class Editor<
   /**
    * used to add undo/redo functionality
    */
-  historyManager: HistoryManager = new HistoryManager()
+  history: HistoryManager = new HistoryManager()
+
+  /**
+   * Command Manager
+   */
+  commands: CommandManager = new CommandManager()
 
   /**
    * a set with all the tree-ids of the expanded elements
@@ -127,11 +108,11 @@ export class Editor<
    */
   EditableElementProvider: React.FC<any> = EditableElementProvider
 
+  remount?: () => void
+
   constructor(
     public plugins: any[],
-    public client: {
-      save: (data: any) => Promise<void>
-    }
+    public client: BirpcReturn<RpcServerFunctions>
   ) {
     super()
     this.store = createEditorStore()
@@ -140,15 +121,17 @@ export class Editor<
     this.expanded = localStorage.getItem("collapased")
       ? new Set(JSON.parse(localStorage.getItem("collapased")!))
       : new Set()
+
+    this.client.initializeComponentsWatcher()
   }
 
   setRef(element: any, ref: any) {}
 
-  async saveDiff(diff: Diff) {
+  async saveDiff(diff: EditPatch) {
     await this.client.save(diff)
   }
 
-  async save(diffs: Diff[]) {
+  async save(diffs: EditPatch[]) {
     for (let diff of diffs) {
       await this.saveDiff(diff)
     }
@@ -178,7 +161,7 @@ export class Editor<
 
   appendNewElement(element: EditableElement, componentType: string) {
     if (typeof componentType === "string") {
-      element.refs.setMoreChildren((children) => [
+      element.refs.setMoreChildren?.((children) => [
         ...children,
         createElement(editable[componentType], {
           _source: {
@@ -260,7 +243,8 @@ export class Editor<
 
     const editableElement = useMemo(() => {
       return this.createElement(id, props._source, Component, props)
-    }, [id])
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [Component, id])
 
     // attaches the render, remount functions and returns a key that
     // need to be passed to the React element to cause remounts
@@ -329,20 +313,14 @@ export class Editor<
       selectedId: element.id,
       selectedKey: element.key
     })
-
-    // if (element?.isObject3D() || element.bounds) {
-    //   this.bounds.refresh(element.bounds ?? element?.getObject3D()).fit()
-    // }
   }
 
   selectId(id: string): void {
     if (!id) {
       return
     }
-    // let element = this.store.getState().elements[id]
     this.store.setState({
       selectedId: id
-      // selectedKey: element.key
     })
   }
 
@@ -361,10 +339,8 @@ export class Editor<
     if (!arg0) {
       return
     }
-    // let element = this.store.getState().elements[id]
     this.store.setState({
       selectedKey: arg0
-      // selectedKey: element.key
     })
   }
 
@@ -439,7 +415,7 @@ export class Editor<
   }
 
   setSettings(values: any) {
-    this.getPanel(this.settingsPanel).useStore.setState(({ data }) => {
+    this.getPanel(this.settingsPanel).useStore.setState(({ data }: any) => {
       for (let key in values) {
         data[`world.` + data["world.mode"].value + ` settings.` + key].value =
           values[key]
@@ -451,7 +427,7 @@ export class Editor<
   useMode<K extends string | undefined>(
     name?: K
   ): K extends undefined ? string : boolean {
-    return this.settingsPanel.useStore((s) =>
+    return this.settingsPanel.useStore((s: any) =>
       name ? s.data["world.mode"]?.value === name : s.data["world.mode"]?.value
     ) as any
   }
@@ -503,19 +479,4 @@ export class Editor<
   }
 }
 
-function Helpers() {
-  const element = useEditableContext()
-
-  return (
-    <>
-      {element.editor?.plugins
-        .filter((p) => p.helper && p.applicable(element))
-        .map((plugin) => (
-          <Fragment key={element.id}>
-            <plugin.helper element={element} />
-          </Fragment>
-        ))}
-    </>
-  )
-}
 export const EditorContext = createContext<Editor | null>(null)
