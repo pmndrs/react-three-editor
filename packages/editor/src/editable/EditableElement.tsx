@@ -1,15 +1,16 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useHelper } from "@react-three/drei"
 import { LevaInputs } from "leva"
-import { Schema, StoreType } from "leva/dist/declarations/src/types"
+import { StoreType } from "leva/dist/declarations/src/types"
 import { mergeRefs } from "leva/plugin"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
+import { toast } from "react-hot-toast"
 import { Event, Object3D } from "three"
+import { PropType } from "../fiber/prop-types/core/createProp"
 import { JSXSource } from "../types"
 import { createLevaStore } from "./controls/createStore"
 import { helpers } from "./controls/helpers"
 import { Editor } from "./Editor"
-import { useEditorStore } from "./useEditorStore"
 
 /**
  * An editable element is a wrapper around a React element that can be edited in the editor.
@@ -33,6 +34,79 @@ import { useEditorStore } from "./useEditorStore"
 export class EditableElement<
   Ref extends { name?: string; visible?: boolean } = any
 > extends EventTarget {
+  useName() {
+    return this.store?.useStore((s) => s.data["name"].value)
+  }
+  useChildren() {
+    return this.editor.store((s) => [...(s.elements[this.id]?.children ?? [])])
+  }
+  useIsDirty() {
+    return this.store?.useStore((s) => Object.keys(this.changes).length > 0)
+  }
+  setPropValue({
+    object,
+    type,
+    prop,
+    value,
+    input,
+    path,
+    controlPath,
+    onChange,
+    closestEditable
+  }: {
+    controlPath: string
+    object: any
+    prop: string
+    input: any
+    type: PropType
+    path: string[]
+    closestEditable?: EditableElement
+    value: any
+    onChange?: (value: any, controlPath: string) => void
+  }) {
+    onChange?.(value, controlPath)
+
+    let serializale = type.serialize
+      ? type.serialize(object, prop, input)
+      : value
+
+    // prop thats not serializable is not editable
+    // since we cant do anything with the edited prop
+    if (serializale !== undefined && this instanceof EditableElement) {
+      if (closestEditable) {
+        if (this === closestEditable) {
+          let [_, ...p] = path
+          this.addChange(this, p.join("-"), serializale)
+          this.changed = true
+          let propOveride = setValue
+
+          if (propOveride !== undefined) {
+            editableElement.setProp(p.join("-"), propOveride)
+          }
+        } else {
+          editableElement.addChange(
+            closestEditable,
+            remaining.join("-"),
+            serializale
+          )
+          editableElement.changed = true
+        }
+      } else {
+        let [_, ...p] = path
+        editableElement.addChange(editableElement, p.join("-"), serializale)
+        editableElement.changed = true
+
+        let propOveride = type.override
+          ? type.override(object, prop, serializale)
+          : serializale
+
+        if (propOveride !== undefined) {
+          editableElement.setProp(p.join("-"), propOveride)
+        }
+      }
+    }
+  }
+
   delete() {
     this.refs.deleted = true
     this.render()
@@ -41,15 +115,15 @@ export class EditableElement<
   get deleted() {
     return this.refs.deleted
   }
-  object?: Object3D<Event>
   ref?: Ref
   childIds: string[] = []
   changes: Record<string, Record<string, any>> = {}
-  forwardedRef: boolean = false
   props: any = {}
+  forwardedRef: boolean = false
   dirty: any = false
   store: StoreType | null = createLevaStore()
   editor: Editor = {} as any
+  object?: Object3D<Event>
 
   constructor(
     public id: string,
@@ -84,12 +158,12 @@ export class EditableElement<
     this.source = source
     this.currentProps = { ...props }
 
-    if (this.store?.get("name")) {
+    if (this.store?.get("name") !== this.displayName) {
       this.store?.setValueAtPath("name", this.displayName, true)
     }
   }
 
-  useRenderKey(forwardRef?: any) {
+  useRenderState(forwardRef?: any) {
     const [key, setSey] = useState(0)
     const [_, forceUpdate] = useState(0)
     const [mounted, setMounted] = useState(false)
@@ -222,9 +296,13 @@ export class EditableElement<
     }
   }
 
-  useVisible(): [any, any] {
+  useVisible() {
     const [visible, setVisible] = useState(true)
-    return [visible, setVisible]
+    return [visible, setVisible] as const
+  }
+
+  useIsSelected() {
+    return this.editor.useState((state) => state.context.selectedId === this.id)
   }
 
   useHelper(arg0: string, helper: any, ...args: any[]) {
@@ -234,7 +312,7 @@ export class EditableElement<
       })
     }) as [any]
 
-    const isSelected = useEditorStore((state) => state.selectedId === this.id)
+    const isSelected = this.useIsSelected()
 
     let ref =
       props[arg0] === "all"
@@ -356,9 +434,16 @@ export class EditableElement<
       source: _source
     }))
 
-    await this.editor.save(diffs)
-    this.changes = {}
-    this.changed = false
+    console.debug(diffs)
+
+    try {
+      console.log(await this.editor.save(diffs))
+      this.changes = {}
+      this.changed = false
+    } catch (e) {
+      toast.error("Error saving: " + e.message)
+      console.error(e)
+    }
 
     // this.openInEditor()
   }

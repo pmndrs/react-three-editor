@@ -11,7 +11,7 @@ export const CommandBar: FC<CommandBarProps> = () => {
   const editor = useEditor()
   const open = editor.commands.store((state) => state.open)
 
-  useHotkeys("meta+space", () => editor.commands.toggleCommandBar(), {
+  useHotkeys("meta+k", () => editor.commands.toggleCommandBar(), {
     preventDefault: true
   })
 

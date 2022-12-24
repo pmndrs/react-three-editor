@@ -12,19 +12,17 @@ export class ThreeEditor extends Editor {
     return obj?.__r3f?.editable
   }
   setMode(value: any) {
-    this.getPanel(this.settingsPanel).set({ "world.mode": value }, true)
+    this.settingsPanel.setValueAtPath(this.modePath, value, true)
     switch (value) {
       case "editor":
         this.remount?.()
     }
   }
+
   camera: unknown
   bounds!: ReturnType<typeof useBounds>
   isEditorMode() {
-    let enabled =
-      this.getPanel(this.settingsPanel).get("world.mode") === "editor"
-
-    return enabled
+    return this.settingsPanel.get(this.modePath) === "editor"
   }
 
   useElement(Component: any, props: any, forwardRef?: any): [any, any] {
@@ -41,10 +39,9 @@ export class ThreeEditor extends Editor {
         onPointerUp: useCallback(
           (e: any) => {
             props.onPointerDown?.(e)
-            let id = element.id
             e.stopPropagation()
             if (!element.editor.selectedElement) {
-              element.editor.selectId(id)
+              element.editor.select(element)
             }
           },
           [element]

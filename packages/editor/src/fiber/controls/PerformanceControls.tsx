@@ -2,14 +2,16 @@ import { folder, useControls } from "leva"
 import { StoreType } from "leva/dist/declarations/src/types"
 import { Perf, usePerf } from "r3f-perf"
 import { useEffect } from "react"
-import { usePanel } from "../../editable"
+import { usePanel } from "../../ui/Panel"
 
 export function PerfControls({
-  store = "scene",
-  order
+  store = "default",
+  order,
+  render
 }: {
   store?: StoreType | string
   order?: number
+  render?: () => boolean
 }) {
   const panel = usePanel(store)
 
@@ -34,7 +36,8 @@ export function PerfControls({
         },
         {
           collapsed: true,
-          order: order
+          order: order,
+          render
         }
       )
     },
@@ -49,30 +52,37 @@ export function PerfControls({
 
 export function PerformanceControls({
   store = "scene",
-  order
+  order,
+  render
 }: {
   store?: StoreType | string
   order?: number
+  render?: () => boolean
 }) {
   return (
     <>
       <Perf headless />
-      <PerfControls store={store} order={order} />
+      <PerfControls store={store} order={order} render={render} />
       <PerformanceMonitor store={store} />
     </>
   )
 }
 
 function PerformanceMonitor({
-  store = "scene"
+  store = "scene",
+  render
 }: {
   store?: StoreType | string
+  render?: () => boolean
 }) {
   const perf = usePerf()
   const panel = usePanel(store)
 
   useEffect(() => {
     let data = panel.getData() as any
+    if (render && !render()) {
+      return
+    }
     data["performance.fps"].value = perf.log?.fps ?? 60
     data["performance.gpu"].value = perf.log?.gpu ?? 0
     data["performance.render.frame"].value = perf.gl?.render?.frame ?? 0
@@ -85,7 +95,7 @@ function PerformanceMonitor({
       perf.gl?.memory?.geometries ?? 0
     data["performance.memory.textures"].value = perf.gl?.memory?.textures ?? 0
     panel.useStore.setState({ data })
-  }, [perf, panel])
+  }, [perf, panel, render])
 
   return null
 }

@@ -1,8 +1,7 @@
 import { Icon } from "@iconify/react"
 import { styled } from "leva/plugin"
-import shallow from "zustand/shallow"
-import { In } from "../../editable/controls/Outs"
 import { useEditor } from "../../editable/useEditor"
+import { In } from "../../ui/tunnel"
 
 const StyledIcon = styled(Icon, {})
 
@@ -69,10 +68,7 @@ const StyledBottomBar = styled("div", {
 export function BottomBar() {
   const editor = useEditor()
   let mode = editor.useMode()
-  const [open, toggleOpen] = editor.useCommandStore(
-    (s) => [s.open, s.toggleOpen],
-    shallow
-  )
+  const open = editor.commands.useStore((s) => s.open)
   return (
     <In>
       <StyledBottomBar>
@@ -82,7 +78,10 @@ export function BottomBar() {
         >
           <Icon icon="mdi:pencil" fontSize={16} />
         </StyledButtonGroupButton>
-        <StyledButtonGroupButton active={open} onClick={() => toggleOpen()}>
+        <StyledButtonGroupButton
+          active={open}
+          onClick={() => editor.commands.toggleCommandBar()}
+        >
           <Icon icon="ph:command-duotone" fontSize={16} />
         </StyledButtonGroupButton>
         <StyledButtonGroupButton

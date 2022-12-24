@@ -173,9 +173,7 @@ export function ElementTransformControls({
     })
   }, [element])
 
-  const mode = editor.useMode("editor")
-
-  return mode ? (
+  return (
     <TransformControls
       object={object}
       key={element.id}
@@ -187,5 +185,5 @@ export function ElementTransformControls({
       ])}
       onChange={onChange}
     />
-  ) : null
+  )
 }

@@ -1,8 +1,7 @@
-import { prop } from "../controls/prop"
 import { EditorControlsPlugin } from "../types"
-import { geometry } from "./geometries"
+import { geometry } from "./geometry"
 import { group } from "./group"
-import { material } from "./materials"
+import { material } from "./material"
 import { mesh } from "./mesh"
 import {
   ambientLight,
@@ -28,29 +27,29 @@ export const DEFAULT_EDITOR_PLUGINS: EditorControlsPlugin[] = [
   camera,
   mesh,
   group,
-  material,
   geometry,
+  material,
   orbitControls,
   directionalLight,
   pointLight,
   ambientLight,
   spotLight,
-  color,
-  {
-    applicable: (el) => el.type === "primitive",
-    controls: (el) => {
-      return {
-        object: prop.ref({
-          element: el,
-          path: ["ref"]
-        }),
-        gltf: prop.gltf({
-          element: el,
-          path: ["currentProps", "object"]
-        })
-      }
-    }
-  }
+  color
+  // {
+  //   applicable: (el) => el.type === "primitive",
+  //   controls: (el) => {
+  //     return {
+  //       object: primitives.ref({
+  //         element: el,
+  //         path: ["ref"]
+  //       }),
+  //       gltf: primitives.gltf({
+  //         element: el,
+  //         path: ["currentProps", "object"]
+  //       })
+  //     }
+  //   }
+  // }
 ]
 
 export function addPlugin(plugin: any) {

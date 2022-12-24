@@ -1,36 +1,38 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-import { BirpcReturn } from "birpc"
+import {
+  createContext,
+  createElement,
+  useContext,
+  useEffect,
+  useId,
+  useMemo
+} from "react"
+import { EditableElement } from "./EditableElement"
+
 import { levaStore, useControls } from "leva"
 import {
   Schema,
   SchemaToValues,
   StoreType
 } from "leva/dist/declarations/src/types"
-import {
-  createContext,
-  createElement,
-  Fragment,
-  useContext,
-  useEffect,
-  useId,
-  useMemo
-} from "react"
 import create from "zustand"
+import { Panel, usePanel } from "../ui/Panel"
 import { createLevaStore } from "./controls/createStore"
-import { Panel, usePanel } from "./controls/Panel"
 import {
   SchemaOrFn,
   usePersistedControls
 } from "./controls/usePersistedControls"
 import { editable } from "./editable"
-import { EditableElement } from "./EditableElement"
 import { EditableElementContext } from "./EditableElementContext"
 import { HistoryManager } from "./HistoryManager"
 
 import { createMachine } from "xstate"
 import { CommandManager } from "../commandbar"
 import { EditPatch, JSXSource, RpcServerFunctions } from "../types"
-import { EditableElementProvider } from "./EditableElementProvider"
+import { BaseEditableElement } from "./BaseEditableElement"
+
+class PanelManager {
+  constructor(public editor: Editor) {}
+}
 
 const machine = createMachine({
   id: "editor"
@@ -43,20 +45,53 @@ export type EditorStoreStateType = {
   selectedKey: null | string
   elements: Record<string, EditableElement>
   settingsPanel: string | StoreType
+  // send: (event: any) => void
+  // state: any
+  // service: any
 }
+
+import { useSelector } from "@xstate/react"
+import {
+  ActorRef,
+  interpret,
+  Interpreter,
+  State,
+  StateMachine,
+  Subscribable
+} from "xstate"
+import { editorMachine } from "./editor.machine"
+
+export type Store<M> = M extends StateMachine<
+  infer Context,
+  infer Schema,
+  infer Event,
+  infer State,
+  infer _A,
+  infer _B,
+  infer _C
+>
+  ? {
+      state: ReturnType<
+        Interpreter<Context, Schema, Event, State>["getSnapshot"]
+      >
+      send: Interpreter<Context, Schema, Event, State>["send"]
+      service: Interpreter<Context, Schema, Event, State>
+    }
+  : never
+
+export type EditorStoreType = ReturnType<typeof createEditorStore>
 
 const createEditorStore = () => {
   return create<EditorStoreStateType>(() => ({
     selectedId: null,
     selectedKey: null,
     elements: {
-      root: new EditableElement("root", {} as any, "editor", null)
+      // root: new EditableElement("root", {} as any, "editor", null)
     },
-    settingsPanel: "scene"
+    settingsPanel: "default"
   }))
 }
-
-export type EditorStoreType = ReturnType<typeof createEditorStore>
+// const createEditorStore = () => {}
 
 type Diff = {
   action_type: string
@@ -69,6 +104,16 @@ type Diff = {
 export class Editor<
   T extends EditableElement = EditableElement
 > extends EventTarget {
+  useSelectedElement() {
+    return this.useState(() => this.selectedElement)
+  }
+
+  useStates(arg0: string) {
+    return this.useState((s) => s.toStrings()[0] === arg0)
+  }
+  setMode(mode: string): void {
+    this.settingsPanel.setValueAtPath(this.modePath, mode, true)
+  }
   /**
    * Constructor used to create the editableElement. The default is the EditableElement class
    *
@@ -80,6 +125,7 @@ export class Editor<
    * a store to keep track of all the editor state, eg. settings, mode, selected element, etc.
    */
   store: EditorStoreType
+  useStore: EditorStoreType
 
   /**
    * used to add undo/redo functionality
@@ -106,23 +152,112 @@ export class Editor<
    * `helpers` API from the plugins to add helpers to specific types of
    * elements
    */
-  EditableElementProvider: React.FC<any> = EditableElementProvider
+  Element = BaseEditableElement
 
   remount?: () => void
+  rootId: string
 
-  constructor(
-    public plugins: any[],
-    public client: BirpcReturn<RpcServerFunctions>
-  ) {
+  service
+  send
+
+  machine = editorMachine
+
+  constructor(public plugins: any[], public client: RpcServerFunctions) {
     super()
     this.store = createEditorStore()
-    this.root.editor = this as any
-    this.root.index = ""
+    this.useStore = this.store
+
+    let prevState = localStorage.getItem("r3f-editor.machine")
+    if (prevState) {
+      prevState = JSON.parse(prevState)
+    }
+
+    console.log("prevState", prevState)
+
+    const service = interpret(editorMachine, {
+      execute: false // do not execute actions on state transitions
+    })
+
+    service.onTransition((state) => {
+      // execute actions on next animation frame
+      // instead of immediately
+
+      console.log("state", state)
+      service.execute(state, {
+        selectElement: (context, event) => {
+          // console.log(context, event)
+          // context.selectedId = event.element
+        }
+      })
+
+      localStorage.setItem("r3f-editor.machine", JSON.stringify(state))
+    })
+
+    service.start(prevState ? State.create(prevState) : undefined)
+
+    this.service = service
+    this.send = service.send.bind(service)
+    this.rootId = ""
+    // this.store = create<EditorStoreStateType>((set, get) => {
+    //   // const stateDefinition =
+    //   //   JSON.parse(localStorage.getItem("r3f-editor.machine")) ||
+    //   //   editorMachine.initialState
+
+    //   let service = interpret(
+    //     editorMachine.withContext({
+    //       editor: el,
+    //       selectedElement: null
+    //     })
+    //   )
+    //     .onTransition((state) => {
+    //       const initialStateChanged =
+    //         state.changed === undefined && Object.keys(state.children).length
+
+    //       if (state.changed || initialStateChanged) {
+    //         set({ state })
+    //       }
+
+    //       state.context.editor = undefined
+    //       state.context.event = undefined
+    //       localStorage.setItem(
+    //         "r3f-editor.machine",
+    //         JSON.stringify(state.context)
+    //       )
+    //       state.context.editor = el
+    //     })
+    //     .start()
+
+    //   // service.send({ type: "SET_EDITOR", editor: this })
+
+    //   return {
+    //     selectedId: null,
+    //     selectedKey: null,
+    //     elements: {
+    //       root: new EditableElement("root", {} as any, "editor", null)
+    //     },
+    //     state: service.getSnapshot(),
+    //     send: service.send,
+    //     service,
+    //     settingsPanel: "default"
+    //   }
+    // })()
     this.expanded = localStorage.getItem("collapased")
       ? new Set(JSON.parse(localStorage.getItem("collapased")!))
       : new Set()
 
     this.client.initializeComponentsWatcher()
+  }
+
+  useState<
+    TActor extends ActorRef<any, any>,
+    T,
+    TEmitted = TActor extends Subscribable<infer Emitted> ? Emitted : never
+  >(selector: (emitted: TEmitted) => T): T {
+    return useSelector(this.service, selector)
+  }
+
+  get state() {
+    return this.service.getSnapshot()
   }
 
   setRef(element: any, ref: any) {}
@@ -185,6 +320,7 @@ export class Editor<
   }
 
   appendElement(element: EditableElement, parentId: string | null) {
+    console.log("appendElement", element.key, element.id, parentId)
     if (parentId) {
       element.parentId = parentId
       this?.store?.setState((el) => {
@@ -238,8 +374,15 @@ export class Editor<
     }
   }
 
+  /**
+   *
+   * @param Component The component type that we are going to render, it used to detect the name of the component, and can be switched later
+   * @param props The props that we are going to pass to the component
+   * @param forwardRef true or ref if we want to forward the ref to the component or undefined
+   * @returns
+   */
   useElement(Component: any, props: any, forwardRef?: any): [T, any] {
-    const id = useId()
+    const id = props.id || useId()
 
     const editableElement = useMemo(() => {
       return this.createElement(id, props._source, Component, props)
@@ -248,19 +391,25 @@ export class Editor<
 
     // attaches the render, remount functions and returns a key that
     // need to be passed to the React element to cause remounts
-    const { key, ref, moreChildren } = editableElement.useRenderKey(forwardRef)
+    const { key, ref, moreChildren } =
+      editableElement.useRenderState(forwardRef)
 
     // update the element with the latest props and source
     editableElement.update(props._source, props)
 
+    // see if we have a parent element
     const parentId = useContext(EditableElementContext)?.id!
+
+    console.log(Component, id, parentId)
 
     useEffect(() => {
       if (!editableElement.deleted) {
         this.appendElement(editableElement, parentId)
+        this.send("APPEND_ELEMENT", { elementId: editableElement.id, parentId })
       }
       return () => {
         this.removeElement(editableElement, parentId)
+        this.send("REMOVE_ELEMENT", { elementId: editableElement.id, parentId })
       }
     }, [parentId, editableElement, editableElement.deleted])
 
@@ -271,16 +420,15 @@ export class Editor<
         ...editableElement.props,
         key,
         ref: forwardRef ? ref : undefined,
-        children:
-          typeof props.children === "function"
-            ? props.children
-            : createElement(Fragment, null, props.children, moreChildren)
+        children: props.children
       }
     ]
   }
 
+  rootId: string = "root"
+
   get root() {
-    return this.store.getState().elements.root
+    return this.store.getState().elements[this.rootId]
   }
 
   getElementById(id: string): EditableElement {
@@ -295,53 +443,24 @@ export class Editor<
    * SELECTION
    */
 
-  get selection() {
-    return {
-      selectedId: this.store.getState().selectedId,
-      selectedKey: this.store.getState().selectedKey
-    }
-  }
-
   get selectedElement() {
-    if (this.store.getState().selectedId) {
-      return this.getElementById(this.store.getState().selectedId!)
+    if (this.state.context.selectedId) {
+      return this.getElementById(this.state.context.selectedId!)
     }
+
+    return null
   }
 
   select(element: EditableElement<any>): void {
-    this.store.setState({
-      selectedId: element.id,
-      selectedKey: element.key
-    })
-  }
-
-  selectId(id: string): void {
-    if (!id) {
-      return
-    }
-    this.store.setState({
-      selectedId: id
-    })
+    this.send("SELECT", { elementId: element.id })
   }
 
   clearSelection(): void {
-    this.store.setState({
-      selectedId: null,
-      selectedKey: null
-    })
+    this.send("CLEAR_SELECTION")
   }
 
   isSelected(arg0: EditableElement) {
-    return this.store.getState().selectedId === arg0.id
-  }
-
-  selectKey(arg0: any) {
-    if (!arg0) {
-      return
-    }
-    this.store.setState({
-      selectedKey: arg0
-    })
+    return this.state.context.selectedId === arg0.id
   }
 
   /**
@@ -379,6 +498,18 @@ export class Editor<
     }
   }
 
+  showAllPanels() {
+    this.settingsPanel.useStore.setState(({ data }: any) => {
+      let panelNames = Object.keys(this.panels)
+      for (let i = 0; i < panelNames.length; i++) {
+        data[this.settingsPath("panels." + panelNames[i] + ".hidden")].value =
+          false
+      }
+
+      return { data }
+    })
+  }
+
   /**
    *  SETTINGS
    * */
@@ -396,40 +527,41 @@ export class Editor<
   }
 
   getSettings(arg0: string): number[] | ArrayLike<number> {
-    return (
-      this.settingsPanel.getData()[
-        `world.` + this.settingsPanel.get("world.mode") + " settings." + arg0
-      ] as any
-    ).value as any
+    return this.settingsPanel.getData()[this.settingsPath(arg0)].value as any
   }
 
   setSetting(arg0: string, arg1: any) {
-    const mode = this.settingsPanel.get("world.mode")
-    if (this.settingsPanel.getData()[`world.` + mode + " settings." + arg0]) {
-      this.settingsPanel.setValueAtPath(
-        `world.` + mode + " settings." + arg0,
-        arg1,
-        true
-      )
+    let path = this.settingsPath(arg0)
+    if (this.settingsPanel.getData()[path]) {
+      this.settingsPanel.setValueAtPath(path, arg1, true)
     }
   }
 
   setSettings(values: any) {
-    this.getPanel(this.settingsPanel).useStore.setState(({ data }: any) => {
+    this.settingsPanel.useStore.setState(({ data }) => {
       for (let key in values) {
-        data[`world.` + data["world.mode"].value + ` settings.` + key].value =
-          values[key]
+        data[this.settingsPath(key)].value = values[key]
       }
       return { data }
     })
   }
 
-  useMode<K extends string | undefined>(
-    name?: K
-  ): K extends undefined ? string : boolean {
-    return this.settingsPanel.useStore((s: any) =>
-      name ? s.data["world.mode"]?.value === name : s.data["world.mode"]?.value
-    ) as any
+  useMode<K extends string | undefined>(name?: K) {
+    return this.useState(() => this.state.toStrings()[0])
+  }
+
+  modePath = "somethingelse.mode"
+
+  settingsPath(arg0?: string | undefined): any {
+    return (
+      `world.` +
+      `${this.state.toStrings()[0]} settings` +
+      (arg0 ? "." + arg0 : "")
+    )
+  }
+
+  get mode() {
+    return this.state.toStrings()[0]
   }
 
   useSettingsPanel() {
@@ -437,17 +569,16 @@ export class Editor<
   }
 
   useSettings<S extends Schema, T extends SchemaOrFn<S>>(
-    name: string | undefined,
+    name: string,
     arg1: T,
     hidden?: boolean
   ): [SchemaToValues<T>] {
     const settingsPanel = this.useSettingsPanel()
-    const mode = this.useMode("editor")
-
+    const mode = this.useMode()
     useControls(
-      `world.` + `${mode ? "editor" : "play"} settings`,
+      this.settingsPath(),
       {},
-      { order: 1001 },
+      { order: 1001, render: () => this.selectedElement === null },
       {
         store: settingsPanel.store
       },
@@ -455,9 +586,7 @@ export class Editor<
     )
 
     let props = usePersistedControls(
-      `world.` +
-        `${mode ? "editor" : "play"} settings` +
-        (name ? `.${name}` : ""),
+      this.settingsPath(name),
       arg1,
       [mode],
       settingsPanel.store,
@@ -466,6 +595,42 @@ export class Editor<
 
     return props as any
   }
+
+  // // Keep track of the current state, and start
+  // // with the initial state
+  // currentState = editorMachine.initialState
+
+  // // Keep track of the listeners
+  // listeners = new Set<(state: typeof editorMachine.initialState) => void>()
+
+  // // Have a way of sending/dispatching events
+  // send(
+  //   arg0: Parameters<typeof editorMachine.transition>[1],
+  //   arg1?: Parameters<typeof editorMachine.transition>[2]
+  // ) {
+  //   // Remember: machine.transition() is a pure function
+  //   this.currentState = editorMachine.transition(this.currentState, arg0, arg1)
+
+  //   // Get the side-effect actions to execute
+  //   const { actions } = this.currentState
+
+  //   actions.forEach((action) => {
+  //     // If the action is executable, execute it
+  //     console.log(action)
+  //     typeof action.exec === "function" && action.exec()
+  //   })
+
+  //   // Notify the listeners
+  //   this.listeners.forEach((listener) => listener(this.currentState))
+  // }
+
+  // listen(listener) {
+  //   this.listeners.add(listener)
+  // }
+
+  // unlisten(listener) {
+  //   this.listeners.delete(listener)
+  // }
 
   /**
    * PLUGINS

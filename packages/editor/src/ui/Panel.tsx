@@ -1,8 +1,8 @@
 import { useThree } from "@react-three/fiber"
 import { Leva, LevaPanel, useControls } from "leva"
 import { ComponentProps, useEffect, useState } from "react"
-import { useEditor } from "../useEditor"
-import { In } from "./Outs"
+import { useEditor } from "../editable"
+import { In } from "./tunnel"
 
 import { StoreType } from "leva/dist/declarations/src/types"
 
@@ -12,25 +12,27 @@ export function usePanel(defaultName: StoreType | string) {
 }
 
 export function Panel({
-  id,
+  panel: id,
   title,
   width = 280,
   collapsed = false,
   pos = "left",
+  reveal = false,
   ...props
 }: {
-  id: string
+  panel: string | ReturnType<typeof usePanel>
   title: string
   width: number
   collapsed?: boolean
   pos: "left" | "right"
+  reveal?: boolean
 } & Omit<ComponentProps<typeof LevaPanel>, "store">) {
   const panel = usePanel(id)
   const editor = useEditor()
   const settingsPanel = usePanel(editor.store((s) => s.settingsPanel))
-  const mode = editor.useMode("editor")
+  const mode = editor.useMode()
   useControls(
-    `world.` + `${mode ? "editor" : "play"} settings.panels`,
+    editor.settingsPath("panels"),
     {},
     { collapsed: true },
     {
@@ -45,7 +47,7 @@ export function Panel({
   })
 
   const size = useThree((s) => s.size)
-  const [_collapsed, setCollapsed] = useState(true)
+  const [_collapsed, setCollapsed] = useState(reveal ? true : collapsed)
   const [position, setPosition] = useState({
     x: pos === "left" ? -size.width + width + 20 : 0,
     y: 0

@@ -13,7 +13,7 @@ export function useEditorFrame(
   const editor = useEditor()
   const settingsPanel = editor.store((s) => s.settingsPanel)
   const panelStore = usePanel(settingsPanel)
-  const isEditorMode = editor.useMode("editor")
+  const isEditorMode = editor.useStates("editing")
   let controls = useControls(
     "world.updates",
     {
@@ -48,7 +48,7 @@ export function useEditorUpdate(
   const editor = useEditor()
   const settingsPanel = editor.store((s) => s.settingsPanel)
   const panelStore = usePanel(settingsPanel)
-  const isEditorMode = editor.useMode("editor")
+  const isEditorMode = editor.useStates("editing")
   let controls = useControls(
     {
       "frame updates": folder(

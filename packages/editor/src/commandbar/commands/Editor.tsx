@@ -28,7 +28,7 @@ export const EditorCommands: FC = () => {
           const mode = editor.useMode("editor")
           return `Go to ${mode ? "Play" : "Editor"} mode`
         },
-        shortcut: ["meta", "k"],
+        shortcut: ["meta", "e"],
         execute(editor) {
           const mode = editor.useMode("editor")
           if (!mode) {
