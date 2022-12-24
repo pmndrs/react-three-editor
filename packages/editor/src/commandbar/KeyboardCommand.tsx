@@ -7,9 +7,9 @@ export function KeyboardCommands() {
   const editor = useEditor()
   const commands = editor.commands.store((state) => state.commands)
 
-  // const [{ shortcuts: debug }] = editor.useSettings("debug", {
-  //   shortcuts: false
-  // })
+  const [{ shortcuts: debug }] = editor.useSettings("helpers", {
+    shortcuts: false
+  })
 
   return (
     <>
@@ -22,6 +22,7 @@ export function KeyboardCommands() {
               key={command.name}
               shortcut={command.shortcut}
               execute={() => command.execute(editor)}
+              debug={debug}
             />
           )
         })}

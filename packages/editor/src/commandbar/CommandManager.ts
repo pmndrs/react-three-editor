@@ -6,6 +6,7 @@ export class CommandManager {
    * central store all the commands
    */
   store: CommandStoreType = createCommandBarStore()
+  useStore = this.store
 
   toggleCommandBar(flag?: boolean) {
     this.store.setState((state) => {

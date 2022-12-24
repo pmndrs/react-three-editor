@@ -1,7 +1,7 @@
 import { Icon } from "@iconify/react"
 import { Command } from "cmdk"
 import { FC, useCallback, useEffect, useRef } from "react"
-import { Editor, useEditor } from "../editable"
+import { useEditor } from "../editable"
 import { selectActiveCommands } from "./store"
 import { commandBarTunnel } from "./tunnel"
 import { CommandGroup, ExecutableCommand } from "./types"
@@ -30,8 +30,7 @@ export function EditorCommand() {
   return (
     <commandBarTunnel.In>
       <div cmdk-raycast-top-shine="" />
-      <div>
-        <div cmdk-vercel-badge="">Home</div>
+      <div className="cmdk-badge">
         {activeCommandChain.map((n) => {
           return (
             <div key={n} cmdk-vercel-badge="">
