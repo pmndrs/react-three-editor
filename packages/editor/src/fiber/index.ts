@@ -28,5 +28,6 @@ export {
 } from "./useFrame"
 
 export function extendControls(t: any, controls: Record<string, {}>) {
+  
   t.controls = controls
 }

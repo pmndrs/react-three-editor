@@ -45,9 +45,7 @@ export class ThreeEditor extends Editor {
           (e: any) => {
             props.onPointerDown?.(e)
             e.stopPropagation()
-            if (!element.editor.selectedElement) {
-              element.editor.select(element)
-            }
+            element.editor.select(element)
           },
           [element]
         )
