@@ -11,6 +11,7 @@ export function Panel({
   if (props.hidden) {
     return null
   }
+
   if (floating) {
     return (
       <FloatingPanels.In>

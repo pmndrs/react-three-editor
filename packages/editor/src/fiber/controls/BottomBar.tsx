@@ -108,12 +108,14 @@ type DynamicIslandProps = {
   }
   side?: "left" | "right" | "center" | string
   placement?: "top" | "bottom" | string
+  hidden?: boolean
 }
 
 function BottomBar({
   size,
   side = "left",
-  placement = "bottom"
+  placement = "bottom",
+  hidden = false
 }: DynamicIslandProps) {
   const editor = useEditor()
   let mode = editor.useMode()
@@ -124,6 +126,11 @@ function BottomBar({
     Object.values(RightPanel.useTunnels()).filter(Boolean).length > 0
 
   const open = editor.commands.useStore((s) => s.open)
+
+  if (hidden) {
+    return null
+  }
+
   return (
     <StyledBottomBar
       style={

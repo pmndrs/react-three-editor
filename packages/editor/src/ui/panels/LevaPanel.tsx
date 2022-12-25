@@ -63,11 +63,6 @@ export function LevaPanel({
     },
     [mode]
   )
-  const [{ hidden: different }] = editor.useSettings("panels." + id, {
-    hidden: {
-      value: false
-    }
-  })
 
   const [_collapsed, setCollapsed] = useState(reveal ? true : collapsed)
   const [position, setPosition] = useState({
@@ -116,7 +111,6 @@ export function LevaPanel({
                 flat: true,
                 titleBar: false
               })}
-          hidden={Boolean(different)}
           theme={{
             space: {
               rowGap: "2px"
@@ -145,7 +139,6 @@ export function LevaPanel({
                 flat: true,
                 titleBar: false
               })}
-          hidden={Boolean(different)}
           theme={{
             space: {
               rowGap: "2px"

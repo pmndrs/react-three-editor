@@ -84,6 +84,10 @@ export const editorMachine =
                 SELECT: {
                   target: "selected",
                   actions: ["selectElement"]
+                },
+                CLEAR_SELECTION: {
+                  target: "idle",
+                  actions: ["clearSelection"]
                 }
               }
             }
@@ -97,7 +101,7 @@ export const editorMachine =
           selectedId: (_, event) => event.elementId
         }),
         clearSelection: assign({
-          selectedId: () => null
+          selectedId: () => null as string | null
         })
       }
     }

@@ -5,7 +5,7 @@ import { useEffect } from "react"
 import { usePanel } from "../../ui/panels/LevaPanel"
 
 export function PerfControls({
-  store = "default",
+  store = "settings",
   order,
   render
 }: {

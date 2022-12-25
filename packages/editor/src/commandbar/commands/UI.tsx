@@ -7,6 +7,13 @@ export const UICommands: FC = () => {
   useEffect(() => {
     const commands: CommandType[] = [
       {
+        name: "clear-selection",
+        description: "Clear selection",
+        execute(editor) {
+          editor.clearSelection()
+        }
+      },
+      {
         name: "show-panels",
         description: "Show panels",
         execute(editor) {
@@ -18,6 +25,20 @@ export const UICommands: FC = () => {
         description: "Hide panels",
         execute(editor) {
           editor.hideAllPanels()
+        }
+      },
+      {
+        name: "show-dynamic-island",
+        description: "Show Dynamic Island",
+        execute(editor) {
+          editor.setSetting("panels.island.hidden", false)
+        }
+      },
+      {
+        name: "hide-dynamic-island",
+        description: "Hide Dynamic Island",
+        execute(editor) {
+          editor.setSetting("panels.island.hidden", true)
         }
       }
     ]

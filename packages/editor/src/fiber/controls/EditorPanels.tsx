@@ -1,3 +1,4 @@
+import { Leva } from "leva"
 import { useEditor } from "../../editable"
 import { multiToggle } from "../../ui/leva/multiToggle"
 import { Panel } from "../../ui/panels/Panel"
@@ -43,6 +44,7 @@ export function EditorPanels() {
   })
   return (
     <>
+      <Leva hidden />
       <Panel panel="scene" title="scene" order={0} lazy {...props} />
       {selectedElement ? (
         <Panel
@@ -54,7 +56,7 @@ export function EditorPanels() {
         />
       ) : (
         <Panel
-          panel="default"
+          panel="settings"
           title="settings"
           order={1}
           {...settingsControls}

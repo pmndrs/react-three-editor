@@ -89,7 +89,7 @@ const createEditorStore = () => {
     elements: {
       // root: new EditableElement("root", {} as any, "editor", null)
     },
-    settingsPanel: "default"
+    settingsPanel: "settings"
   }))
 }
 // const createEditorStore = () => {}
@@ -480,7 +480,7 @@ export class Editor<
 
   panelStore = create((get, set) => ({
     panels: {
-      default: {
+      settings: {
         panel: levaStore as Panel
       }
     } as Record<string, { panel: Panel }>
