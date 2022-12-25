@@ -41,14 +41,19 @@ export class ThreeEditor extends Editor {
       element,
       {
         ...overrideProps,
-        onPointerUp: useCallback(
-          (e: any) => {
-            props.onPointerDown?.(e)
-            e.stopPropagation()
-            element.editor.select(element)
-          },
-          [element]
-        )
+        onPointerUp:
+          Component === "canvas"
+            ? undefined
+            : useCallback(
+                (e: any) => {
+                  if (this.state.matches("editing")) {
+                    props.onPointerUp?.(e)
+                    e.stopPropagation()
+                    element.editor.select(element)
+                  }
+                },
+                [element]
+              )
       }
     ]
   }

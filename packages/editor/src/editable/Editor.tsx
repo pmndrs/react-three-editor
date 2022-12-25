@@ -297,7 +297,6 @@ export class Editor<
       ])
     }
   }
-
   deleteElement(element: EditableElement) {
     element.delete()
     this.clearSelection()

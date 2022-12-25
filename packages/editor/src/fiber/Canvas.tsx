@@ -53,7 +53,7 @@ export const Canvas = forwardRef<HTMLCanvasElement, CanvasProps>(
 )
 
 const EditorCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
-  function EditorCanvas({ children, ...props }, ref) {
+  function EditorCanvas(props, ref) {
     const store = useEditor()
     const [settings] = store.useSettings("scene", {
       shadows: {
@@ -61,10 +61,13 @@ const EditorCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
       }
     })
 
-    const [editableElement] = editor.useElement("canvas", {
-      ...props,
-      id: "root"
-    })
+    const [editableElement, { children, ...overrideProps }] = editor.useElement(
+      "canvas",
+      {
+        ...props,
+        id: "root"
+      }
+    )
 
     editableElement.index = "0"
     editor.rootId = editableElement.id
@@ -74,7 +77,7 @@ const EditorCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
         onPointerMissed={(e: any) => {
           store.clearSelection()
         }}
-        {...props}
+        {...overrideProps}
         {...settings}
       >
         <EditorContext.Provider value={store}>
