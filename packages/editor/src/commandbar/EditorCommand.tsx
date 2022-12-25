@@ -1,24 +1,32 @@
 import { Icon } from "@iconify/react"
 import { Command } from "cmdk"
 import { FC, useCallback, useEffect, useRef } from "react"
-import { Editor, useEditor } from "../editable"
+import { useEditor } from "../editable"
 import { selectActiveCommands } from "./store"
 import { commandBarTunnel } from "./tunnel"
-import { CommandGroup, ExecutableCommand } from "./types"
+import { CommandType } from "./types"
 
-export function EditorCommand() {
-  const inputRef = useRef<HTMLInputElement | null>(null)
-  const listRef = useRef(null)
+export const CommandChain: FC = () => {
   const editor = useEditor()
-
-  useEffect(() => {
-    inputRef?.current?.focus()
-  }, [])
-
   const activeCommandChain = editor.commands.store(
     ({ activeCommandChain }) => activeCommandChain
   )
-  const commands = editor.commands.store(selectActiveCommands)
+  return (
+    <div>
+      <div cmdk-vercel-badge="">Home</div>
+      {activeCommandChain.map((n) => {
+        return (
+          <div key={n} cmdk-vercel-badge="">
+            {n}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+export const CommandInput: FC = () => {
+  const editor = useEditor()
   const filter = editor.commands.store((state) => state.filter)
   const onInputValueChange = useCallback(
     (filter: string) => {
@@ -26,89 +34,40 @@ export function EditorCommand() {
     },
     [editor.commands.store]
   )
+  return (
+    <Command.Input
+      autoFocus
+      placeholder="Search for apps and commands..."
+      value={filter}
+      onValueChange={onInputValueChange}
+    />
+  )
+}
+
+export function EditorCommand() {
+  const editor = useEditor()
+  const commands = editor.commands.store(selectActiveCommands)
 
   return (
     <commandBarTunnel.In>
       <div cmdk-raycast-top-shine="" />
-      <div>
-        <div cmdk-vercel-badge="">Home</div>
-        {activeCommandChain.map((n) => {
-          return (
-            <div key={n} cmdk-vercel-badge="">
-              {n}
-            </div>
-          )
-        })}
-      </div>
-      <Command.Input
-        ref={inputRef}
-        autoFocus
-        placeholder="Search for apps and commands..."
-        value={filter}
-        onValueChange={onInputValueChange}
-      />
+      <CommandChain />
+      <CommandInput />
       <hr cmdk-raycast-loader="" />
-      <Command.List ref={listRef}>
+      <Command.List>
         <Command.Empty>No results found.</Command.Empty>
         {(commands ?? []).map((command) => {
           if (command.render && !command.render(editor)) return null
-          if (Array.isArray((command as CommandGroup).children)) {
-            return (
-              <CommandGroupItem
-                key={command.name}
-                command={command as CommandGroup}
-              />
-            )
-          } else {
-            return (
-              <CommandItem
-                key={command.name}
-                command={command as ExecutableCommand}
-              />
-            )
-          }
+          return <CommandItem key={command.name} command={command} />
         })}
       </Command.List>
     </commandBarTunnel.In>
   )
 }
 
-export type CommandGroupItemProps = {
-  command: CommandGroup
-  onSelect?(command: CommandGroup): void
-}
-export const CommandGroupItem: FC<CommandGroupItemProps> = ({
-  command,
-  onSelect: _onSelect
-}) => {
-  const editor = useEditor()
-  const { icon, description, render } = command
-  const _editor = useEditor()
-
-  const onSelect = useCallback(() => {
-    editor.commands.openCommandGroup(command.name)
-    _onSelect?.(command)
-  }, [_onSelect, command, editor])
-
-  if (render && !render(_editor)) return null
-
-  return (
-    <Command.Item value={command.name} onSelect={onSelect}>
-      {typeof icon === "function" ? (
-        icon(_editor)
-      ) : typeof icon == "string" ? (
-        <Icon icon={icon} />
-      ) : null}
-      {typeof description === "function"
-        ? description(_editor)
-        : description || command.name}
-    </Command.Item>
-  )
-}
-
 export type CommandProps = {
-  command: ExecutableCommand
-  onSelect?(command: ExecutableCommand): void
+  command: CommandType
+  onSelect?(command: CommandType): void
 }
 export const CommandItem: FC<CommandProps> = ({
   command,
@@ -118,9 +77,14 @@ export const CommandItem: FC<CommandProps> = ({
   const editor = useEditor()
 
   const onSelect = useCallback(() => {
-    editor.commands.toggleCommandBar(false)
-    _onSelect?.(command)
-    ;(command as ExecutableCommand).execute?.(editor)
+    if (Array.isArray(command.subcommands) && command.subcommands.length) {
+      editor.commands.openCommandGroup(command.name)
+      _onSelect?.(command)
+    } else {
+      editor.commands.toggleCommandBar(false)
+      _onSelect?.(command)
+      command.execute?.(editor)
+    }
   }, [_onSelect, command, editor])
 
   if (render && !render(editor)) return null

@@ -22,7 +22,7 @@ import {
   SchemaOrFn,
   usePersistedControls
 } from "./controls/usePersistedControls"
-import { editable } from "./editable"
+import { Editable, editable } from "./editable"
 import { EditableElement } from "./EditableElement"
 import { EditableElementContext } from "./EditableElementContext"
 import { HistoryManager } from "./HistoryManager"

@@ -1,22 +1,8 @@
 import { FC, useEffect } from "react"
-import * as THREE from "three"
-import { BufferGeometry, Group, Material, Mesh, Object3D } from "three"
+import { Group, Mesh } from "three"
 import { EditableElement, useEditor } from "../../editable"
 import { ThreeEditor } from "../../fiber/ThreeEditor"
 import { CommandType } from "../types"
-
-function isClass(v: any) {
-  return typeof v === "function" && /^\s*class\s+/.test(v.toString())
-}
-
-const possibleItemsToAdd = Object.values(THREE)
-  .filter(isClass)
-  .filter(
-    (c: any) =>
-      c.prototype instanceof Object3D ||
-      c.prototype instanceof Material ||
-      c.prototype instanceof BufferGeometry
-  )
 
 export const EditorCommands: FC = () => {
   const editor = useEditor()
@@ -24,6 +10,7 @@ export const EditorCommands: FC = () => {
     const commands: CommandType[] = [
       {
         name: "toggle-play-mode",
+        type: "command",
         description(editor) {
           const mode = editor.useMode("editor")
           return `Go to ${mode ? "Play" : "Editor"} mode`
@@ -41,6 +28,7 @@ export const EditorCommands: FC = () => {
       {
         name: "isolate",
         description: "Isolate element",
+        type: "command",
         shortcut: ["meta", "f"],
         execute(editor) {
           let el = editor.root
@@ -90,6 +78,7 @@ export const EditorCommands: FC = () => {
       {
         name: "save-selected-element",
         description: "Save selected element",
+        type: "command",
         execute(editor) {
           editor.selectedElement?.save()
         }
@@ -97,6 +86,7 @@ export const EditorCommands: FC = () => {
       {
         name: "clear-local-storage",
         description: "Clear local storage",
+        type: "command",
         execute(editor) {
           localStorage.clear()
         }
@@ -104,15 +94,12 @@ export const EditorCommands: FC = () => {
       {
         name: "insert-element",
         description: "Insert element into the scene",
-        children: possibleItemsToAdd.map((klass: any) => {
-          return {
-            name: `${klass.name}`
-          }
-        })
+        type: "command"
       },
       {
         name: "remove-element",
-        description: "Remove element from the scene"
+        description: "Remove element from the scene",
+        type: "command"
       }
     ]
     editor.commands.registerCommands(commands)

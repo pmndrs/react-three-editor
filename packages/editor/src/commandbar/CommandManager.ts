@@ -7,6 +7,46 @@ export class CommandManager {
    */
   store: CommandStoreType = createCommandBarStore()
 
+  registerCommands(commands: CommandType[]) {
+    if (!Array.isArray(commands)) {
+      commands = [commands]
+    }
+
+    this.store.setState((state) => {
+      commands.forEach((command) => {
+        if (command.parentId && state.commands[command.parentId]) {
+          if (!Array.isArray(state.commands[command.parentId].subcommands)) {
+            state.commands[command.parentId].subcommands = []
+          }
+          state.commands[command.parentId].subcommands?.push(command.name)
+          state.commands[command.name] = command
+        } else {
+          state.commands[command.name] = command
+        }
+      })
+      return {
+        ...state
+      }
+    })
+    //
+  }
+
+  unregisterCommands(commands: CommandType[]) {
+    if (!Array.isArray(commands)) {
+      commands = [commands]
+    }
+
+    this.store.setState((state) => {
+      commands.forEach(({ name }) => {
+        delete state.commands[name]
+      })
+      return {
+        ...state
+      }
+    })
+    //
+  }
+
   toggleCommandBar(flag?: boolean) {
     this.store.setState((state) => {
       if (typeof flag !== "boolean") {
@@ -21,32 +61,16 @@ export class CommandManager {
     })
   }
 
-  registerCommands(commands: CommandType[]) {
-    this.store.setState((state) => {
-      return {
-        ...state,
-        commands: [...state.commands, ...commands]
-      }
-    })
-  }
-
-  unregisterCommands(commands: CommandType[]) {
-    this.store.setState((state) => {
-      return {
-        ...state,
-        commands: state.commands.filter(
-          (c) => !commands.some((tc) => tc.name === c.name)
-        )
-      }
-    })
-  }
-
   openCommandGroup(name: string) {
     this.store.setState((state) => {
+      let activeCommandChain = [...state.activeCommandChain]
+      if (state.commands[name]) {
+        activeCommandChain.push(name)
+      }
       return {
         ...state,
         filter: "",
-        activeCommandChain: [...state.activeCommandChain, name]
+        activeCommandChain
       }
     })
   }

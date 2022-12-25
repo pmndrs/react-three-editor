@@ -8,11 +8,13 @@ export const UICommands: FC = () => {
     const commands: CommandType[] = [
       {
         name: "show-panels",
-        description: "Show panels"
+        description: "Show panels",
+        type: "command"
       },
       {
         name: "hide-panels",
-        description: "Hide panels"
+        description: "Hide panels",
+        type: "command"
       }
     ]
     editor.commands.registerCommands(commands)

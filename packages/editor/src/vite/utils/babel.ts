@@ -47,8 +47,17 @@ export const getReactComponents = (
         node
       }
     }
+
     const isJsx = body.body.some((n) => {
-      return types.isReturnStatement(n) && types.isJSXElement(n.argument)
+      if (types.isReturnStatement(n)) {
+        if (types.isJSXElement(n.argument)) return true
+        if (
+          types.isParenthesizedExpression(n.argument) &&
+          types.isJSXElement(n.argument.expression)
+        )
+          return true
+        return false
+      }
     })
     const isHook = body.body.some(
       (n) =>
@@ -57,6 +66,7 @@ export const getReactComponents = (
         types.isIdentifier(n.expression.callee) &&
         n.expression.callee.name.startsWith("use")
     )
+    console.log(id.name, isJsx, isHook)
 
     if (isJsx || isHook) {
       return {
