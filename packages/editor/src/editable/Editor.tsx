@@ -31,6 +31,7 @@ import { createMachine } from "xstate"
 import { CommandManager } from "../commandbar"
 import { EditPatch, JSXSource, RpcServerFunctions } from "../types"
 import { EditableElementProvider } from "./EditableElementProvider"
+import { ComponentLoader } from "../component-loader"
 
 const machine = createMachine({
   id: "editor"
@@ -92,6 +93,11 @@ export class Editor<
   commands: CommandManager = new CommandManager()
 
   /**
+   * components
+   */
+  loader: ComponentLoader
+
+  /**
    * a set with all the tree-ids of the expanded elements
    */
   expanded: Set<string>
@@ -122,7 +128,8 @@ export class Editor<
       ? new Set(JSON.parse(localStorage.getItem("collapased")!))
       : new Set()
 
-    this.client.initializeComponentsWatcher()
+    this.loader = new ComponentLoader(this.client)
+    this.loader.initialize()
   }
 
   setRef(element: any, ref: any) {}
