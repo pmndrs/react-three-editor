@@ -59,7 +59,7 @@ export const editorMachine =
               on: {
                 START_PLAYING: "#editor.playing",
                 TOGGLE_MODE: "#editor.playing",
-                SELECT: "selected"
+                STOP_TRANSFORMING: "selected"
               }
             }
           }

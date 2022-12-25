@@ -104,6 +104,15 @@ export function ElementTransformControls({
       const control = ref.current
       const draggingChanged = ({ value, target }: any) => {
         draggingRef.current = !!value
+        if (draggingRef.current) {
+          element.editor.send("START_TRANSFORMING", {
+            elementId: element.treeId
+          })
+        } else {
+          element.editor.send("STOP_TRANSFORMING", {
+            elementId: element.treeId
+          })
+        }
         if (!draggingRef.current) {
           const mode = control.getMode()
           const { position, rotation, scale } = serializeTransform(
