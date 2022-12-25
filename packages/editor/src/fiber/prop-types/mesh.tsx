@@ -1,6 +1,6 @@
 import { folder } from "leva"
 import { BufferGeometry, Material, Mesh } from "three"
-import { all } from "."
+import { all, getEditableElement } from "."
 import { PropInput } from "./core/types"
 import { geometry } from "./geometries"
 import { primitives } from "./primitives"
@@ -27,10 +27,13 @@ export const meshControls = ({ element, path = ["ref"] }: PropInput) => {
     elementMesh &&
     elementMesh.geometry instanceof BufferGeometry
   ) {
-    controls["geometry"] = geometry({
-      element,
-      path: [...path, "geometry"]
-    })
+    let el = getEditableElement(elementMesh.geometry)
+    if (el) {
+      controls["geometry"] = geometry({
+        element: el,
+        path: ["ref"]
+      })
+    }
   }
   if (element && elementMesh && elementMesh.material instanceof Material) {
     controls["material"] = all.material({

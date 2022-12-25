@@ -106,7 +106,13 @@ export const EditorCommands: FC = () => {
         description: "Insert element into the scene",
         children: possibleItemsToAdd.map((klass: any) => {
           return {
-            name: `${klass.name}`
+            name: `${klass.name}`,
+            execute(editor) {
+              editor.appendNewElement(
+                editor.selectedElement!,
+                klass.name[0].toLowerCase() + klass.name.slice(1)
+              )
+            }
           }
         })
       },

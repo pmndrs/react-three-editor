@@ -18,43 +18,18 @@ import {
 } from "three"
 import { EditableElement } from "../../editable/EditableElement"
 import { TransformHelper } from "../controls/TransformHelper"
+import { all } from "../prop-types"
 import { createProp } from "../prop-types/core/createProp"
 import { PropInput } from "../prop-types/core/types"
 import { primitives } from "../prop-types/primitives"
 import { replace } from "../prop-types/replace"
-
-export const transformControls = (props: PropInput) => {
-  return folder(
-    {
-      position: primitives.vector3d({
-        element: props.element,
-        path: ["ref", "position"],
-        step: 0.1
-      }),
-      rotation: primitives.euler({
-        step: 1,
-        path: ["ref", "rotation"],
-        element: props.element
-      }),
-      scale: primitives.vector3d({
-        element: props.element,
-        path: ["ref", "scale"],
-        lock: true,
-        step: 0.1
-      })
-    },
-    {
-      collapsed: false
-    }
-  )
-}
 
 export const transform = {
   applicable: (entity: EditableElement) => entity.ref instanceof Object3D,
   icon: (entity: EditableElement) => "ph:cube",
   controls: (entity: EditableElement) => {
     return {
-      transform: transformControls({
+      transform: all.transform({
         element: entity,
         path: ["ref"]
       })
@@ -94,11 +69,7 @@ export const orbitControls = {
           get(o, p) {
             return o[p] ?? false
           },
-          set() {},
-          init() {
-            entity.props.makeDefault = true
-            entity.render()
-          }
+          set() {}
         },
         {
           element: entity,

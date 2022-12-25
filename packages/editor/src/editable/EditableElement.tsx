@@ -69,6 +69,11 @@ export class EditableElement<
       return
     }
 
+    change.object = object
+    change.prop = prop
+    change.closestEditable = closestEditable
+    change.remainingPath = remainingPath
+
     // if the value that's set should be used to load an object and assign that to the prop, eg. textures, gltf models in r3f. It can be async.
     if (type.load) {
       let loadedValue = type.load(object, prop, input)
@@ -76,31 +81,29 @@ export class EditableElement<
       if (loadedValue !== undefined && loadedValue.then) {
         loadedValue.then((resolvedValue: any) => {
           if (resolvedValue !== undefined) {
-            change.object = object
-            change.prop = prop
             change.value = resolvedValue
-            change.closestEditable = closestEditable
 
             this.setPropValue(change)
           }
         })
       } else {
-        change.object = object
-        change.prop = prop
         change.value = loadedValue
-        change.closestEditable = closestEditable
 
         this.setPropValue(change)
       }
     } else {
-      change.object = object
-      change.prop = prop
       change.value = input
-      change.closestEditable = closestEditable
       this.setPropValue(change)
     }
   }
 
+  /**
+   * Primary prop change handler, called by whoever wants to change a prop,
+   * and have it reflected in the React element, and the editor and,
+   * persisted to the code base when saved
+   * @param param0
+   * @returns
+   */
   setPropValue({
     object,
     type,
@@ -125,7 +128,7 @@ export class EditableElement<
     // since we cant do anything with the edited prop
     if (serializale !== undefined && closestEditable) {
       if (this === closestEditable) {
-        let [_, ...p] = path
+        let [...p] = path
 
         // handle the `args` prop by updating the args array
         if (p[0] === "args") {
@@ -190,7 +193,8 @@ export class EditableElement<
     setKey: null as Dispatch<SetStateAction<number>> | null,
     forceUpdate: null as Dispatch<SetStateAction<number>> | null,
     setMoreChildren: null as Dispatch<SetStateAction<any[]>> | null,
-    deleted: false
+    deleted: false,
+    key: 0
   }
 
   mounted: boolean = false
@@ -203,9 +207,12 @@ export class EditableElement<
     this.refs.forceUpdate?.((i) => i + 1)
   }
 
+  args = []
+
   update(source: JSXSource, props: any) {
     this.source = source
     this.currentProps = { ...props }
+    this.args = props.args?.length ? props.args : this.args
 
     if (this.store?.get("name") !== this.displayName) {
       this.store?.setValueAtPath("name", this.displayName, true)
@@ -221,6 +228,7 @@ export class EditableElement<
     this.refs.forceUpdate = forceUpdate
     this.forwardedRef = forwardRef ? true : false
     this.refs.setMoreChildren = setMoreChildren
+    this.refs.key = key
     this.mounted = mounted
 
     // useState so that this runs only once when the item is created
@@ -239,6 +247,7 @@ export class EditableElement<
     })
 
     return {
+      component: this.type,
       ref: mergeRefs([
         forwardRef === true ? null : forwardRef,
         (el: any) => {
@@ -304,10 +313,10 @@ export class EditableElement<
   resetControls() {}
 
   get elementName() {
-    return this.source.elementName
-      ? this.source.elementName
-      : typeof this.type === "string"
+    return typeof this.type === "string"
       ? this.type
+      : this.source.elementName
+      ? this.source.elementName
       : this.type.displayName || this.type.name
   }
 

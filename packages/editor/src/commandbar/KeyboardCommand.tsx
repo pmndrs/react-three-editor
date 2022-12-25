@@ -5,7 +5,7 @@ import { ExecutableCommand } from "./types"
 
 export function KeyboardCommands() {
   const editor = useEditor()
-  const commands = editor.commands.store((state) => state.commands)
+  const commands = editor.commands.useStore((state) => state.commands)
 
   const [{ shortcuts: debug }] = editor.useSettings("helpers", {
     shortcuts: false

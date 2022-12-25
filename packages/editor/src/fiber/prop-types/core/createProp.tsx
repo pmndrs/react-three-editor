@@ -79,10 +79,15 @@ export function createProp(
             return
           }
 
-          // Sets the value on the object described by the path
-          type.set(el, prop, value)
+          if (el) {
+            // Sets the value on the object described by the path
+            type.set(el, prop, value)
+          }
 
-          onChange?.(value, controlPath)
+          let done = onChange?.(value, controlPath)
+          if (done) {
+            return true
+          }
 
           let serializale = type.serialize
             ? type.serialize(el, prop, value)
@@ -93,16 +98,15 @@ export function createProp(
           if (serializale !== undefined && editable) {
             // if the root element is the closest editable element
             if (element === editable) {
-              let [_, ...p] = path
-
-              // handle the `args` prop by updating the args array
-              if (p[0] === "args") {
-                let prevArgs = element.currentProps.args ?? []
+              // handle the `args` prop by updating the args array,
+              // we can only update the args array on the top level element of the change
+              if (path[0] === "args") {
+                let prevArgs = element.args ?? []
                 let prevPropArgs = element.props.args ?? []
 
                 let args = (prevArgs ?? prevPropArgs).map(
                   (a: any, i: number) => {
-                    if (i === Number(p[1])) {
+                    if (i === Number(path[1])) {
                       return serializale
                     }
                     return a
@@ -113,6 +117,8 @@ export function createProp(
                 element.setProp("args", args)
                 return
               }
+
+              let [_, ...p] = path
 
               // record a change in the log to be persisted
               element.addChange(element, p.join("-"), serializale)

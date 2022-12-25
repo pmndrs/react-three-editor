@@ -1,8 +1,9 @@
 import { createProps } from "./core/createProps"
 import { material } from "./materials"
 import { mesh } from "./mesh"
-import * as types from "./primitive-types"
+import * as types from "./primitives/types"
 import { texture } from "./texture"
+import { transform } from "./transform"
 
 export function getEditableElement(obj: any): any {
   return obj?.__r3f?.editable
@@ -12,5 +13,6 @@ export const all = createProps({
   ...types,
   material,
   texture,
-  mesh
+  mesh,
+  transform
 })

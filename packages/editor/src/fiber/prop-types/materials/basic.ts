@@ -1,5 +1,5 @@
 import { Schema } from "leva/plugin"
-import { EditableElement } from "../../../editable/EditableElement"
+import { EditableElement } from "../../../editable"
 import { primitives } from "../primitives"
 import { texture } from "../texture"
 import { commonControls } from "./common"
@@ -25,6 +25,7 @@ export const meshBasicMaterial = (
       element,
       path: [...path, "refractionRatio"]
     }),
+
     ...commonControls(element, path),
     map: texture({
       collapsed: false,

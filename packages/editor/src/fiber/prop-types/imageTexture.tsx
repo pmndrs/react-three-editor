@@ -1,6 +1,7 @@
 import { Components, createPlugin, useInputContext } from "leva/plugin"
 import { MouseEvent, useCallback } from "react"
 import { useDropzone } from "react-dropzone"
+import { TextureLoader } from "three"
 import {
   DropZone,
   ImageContainer,
@@ -10,7 +11,6 @@ import {
   Remove
 } from "../../ui/ImageInput"
 import { usePopin } from "../../ui/usePopin"
-import { PropType } from "./core/createProp"
 
 export const levaTexture = createPlugin({
   sanitize(value: any) {
@@ -107,6 +107,14 @@ export const imageTexture = {
     return new TextureLoader().load(value)
   },
   serialize(obj: any, prop: string, value: any) {
+    if (value === undefined) {
+      return {
+        src: value,
+        loader: "TextureLoader",
+        expression: `undefined`,
+        imports: []
+      }
+    }
     return {
       src: value,
       loader: "TextureLoader",

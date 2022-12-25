@@ -15,16 +15,16 @@ export function EditorCommand() {
     inputRef?.current?.focus()
   }, [])
 
-  const activeCommandChain = editor.commands.store(
+  const activeCommandChain = editor.commands.useStore(
     ({ activeCommandChain }) => activeCommandChain
   )
-  const commands = editor.commands.store(selectActiveCommands)
-  const filter = editor.commands.store((state) => state.filter)
+  const commands = editor.commands.useStore(selectActiveCommands)
+  const filter = editor.commands.useStore((state) => state.filter)
   const onInputValueChange = useCallback(
     (filter: string) => {
-      editor.commands.store.setState({ filter })
+      editor.commands.useStore.setState({ filter })
     },
-    [editor.commands.store]
+    [editor.commands.useStore]
   )
 
   return (
@@ -119,6 +119,7 @@ export const CommandItem: FC<CommandProps> = ({
   const onSelect = useCallback(() => {
     editor.commands.toggleCommandBar(false)
     _onSelect?.(command)
+    console.log(command)
     ;(command as ExecutableCommand).execute?.(editor)
   }, [_onSelect, command, editor])
 

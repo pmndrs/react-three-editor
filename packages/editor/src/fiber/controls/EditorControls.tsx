@@ -1,13 +1,36 @@
 import { useThree } from "@react-three/fiber"
+import { useState } from "react"
 import { CommandBarControls } from "../../commandbar"
 import { useEditor } from "../../editable"
 import { Panel } from "../../ui/Panel"
 import { BottomBar } from "./BottomBar"
-import { CameraGizmos } from "./CameraGizmos"
 import { PerformanceControls } from "./PerformanceControls"
 import { SceneControls } from "./SceneControls"
 import { SelectedElementControls } from "./SelectedElementControls"
 
+function PropertiesPanel() {
+  const editor = useEditor()
+  const size = useThree((s) => s.size)
+  const selectedElement = editor.useState(() => editor.selectedElement)!
+  const [run, setRun] = useState(0)
+  if (selectedElement) {
+    selectedElement.resetControls = () => {
+      setRun((r) => r + 1)
+    }
+  }
+
+  console.log(run, selectedElement.id)
+  return (
+    <Panel
+      panel="properties"
+      key={run}
+      title="properties"
+      pos="right"
+      width={size.width < 1080 ? 280 : 320}
+      collapsed={false}
+    />
+  )
+}
 export function EditorControls() {
   const size = useThree((s) => s.size)
   const editor = useEditor()
@@ -23,14 +46,7 @@ export function EditorControls() {
         reveal
       />
       {selectedElement ? (
-        <Panel
-          panel="properties"
-          key={selectedElement.id}
-          title="properties"
-          pos="right"
-          width={size.width < 1080 ? 280 : 320}
-          collapsed={false}
-        />
+        <PropertiesPanel />
       ) : (
         <Panel
           panel="default"
@@ -48,7 +64,7 @@ export function EditorControls() {
         render={() => editor.selectedElement === null}
       />
       <CommandBarControls />
-      <CameraGizmos />
+      {/* <CameraGizmos /> */}
       <BottomBar />
     </>
   )

@@ -77,9 +77,9 @@ export function EditorCamera() {
 
   useEffect(() => {
     if (props.enabled && controls) {
-      camera.position.fromArray(editor.getSettings("camera.position"))
+      camera.position.fromArray(editor.getSetting("camera.position"))
       camera.rotation.fromArray(
-        editor.getSettings("camera.rotation").map((a) => MathUtils.degToRad(a))
+        editor.getSetting("camera.rotation").map((a) => MathUtils.degToRad(a))
       )
       // camera.fov = props.fov
       // camera.near = props.near

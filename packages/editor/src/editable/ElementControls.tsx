@@ -1,5 +1,4 @@
-import { button, levaStore, useControls } from "leva"
-import { useState } from "react"
+import { levaStore, useControls } from "leva"
 import { element } from "../ui/leva/element"
 import { EditableElement } from "./EditableElement"
 
@@ -7,25 +6,17 @@ export function useElementControls(
   entity: EditableElement,
   { store, order, ...options }: { store: typeof levaStore; order?: number }
 ) {
-  const [run, setRun] = useState(0)
   let entityStore = entity.store!
-  entity.resetControls = () => {
-    setRun((r) => r + 1)
-  }
-
   useControls(
     () => {
       return {
-        ...entity.controls,
-        save: button(() => {
-          entity.save()
-        })
+        ...entity.controls
       }
     },
     {
       store: entityStore
     },
-    [entity, run]
+    [entity]
   )
 
   useControls(

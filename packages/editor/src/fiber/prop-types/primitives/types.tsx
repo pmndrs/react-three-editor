@@ -1,9 +1,9 @@
 import { MathUtils } from "three"
 import { GLTFLoader } from "three-stdlib"
-import { getEditableElement } from "."
-import { PropType } from "./core/createProp"
-import { gltf as levaGltf } from "./gltf"
-import { ref as levaRef } from "./ref"
+import { getEditableElement } from ".."
+import { PropType } from "../core/createProp"
+import { gltf as levaGltf } from "../gltf"
+import { ref as levaRef } from "../ref"
 
 export const color = {
   get: (obj: any, prop: string) => {

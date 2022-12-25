@@ -1,6 +1,7 @@
 import {
   createContext,
   createElement,
+  Fragment,
   useContext,
   useEffect,
   useId,
@@ -381,18 +382,22 @@ export class Editor<
    * @param forwardRef true or ref if we want to forward the ref to the component or undefined
    * @returns
    */
-  useElement(Component: any, props: any, forwardRef?: any): [T, any] {
+  useElement(_Component: any, props: any, forwardRef?: any): [T, any] {
     const id = props.id || useId()
 
     const editableElement = useMemo(() => {
-      return this.createElement(id, props._source, Component, props)
+      return this.createElement(id, props._source, _Component, props)
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [Component, id])
+    }, [_Component, id])
 
     // attaches the render, remount functions and returns a key that
     // need to be passed to the React element to cause remounts
-    const { key, ref, moreChildren } =
-      editableElement.useRenderState(forwardRef)
+    const {
+      key,
+      ref,
+      moreChildren,
+      component: Component
+    } = editableElement.useRenderState(forwardRef)
 
     // update the element with the latest props and source
     editableElement.update(props._source, props)
@@ -420,7 +425,10 @@ export class Editor<
         ...editableElement.props,
         key,
         ref: forwardRef ? ref : undefined,
-        children: props.children
+        children:
+          props.children === "function"
+            ? props.children
+            : createElement(Fragment, null, props.children, moreChildren)
       }
     ]
   }
@@ -524,7 +532,7 @@ export class Editor<
     })
   }
 
-  getSettings(arg0: string): number[] | ArrayLike<number> {
+  getSetting(arg0: string): number[] | ArrayLike<number> {
     return this.settingsPanel.getData()[this.settingsPath(arg0)].value as any
   }
 
