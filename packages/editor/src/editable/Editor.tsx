@@ -179,6 +179,19 @@ export class Editor<
           key: children.length
         })
       ])
+    } else {
+      element.refs.setMoreChildren?.((children) => [
+        ...children,
+        createElement(Editable, {
+          component: componentType,
+          _source: {
+            ...element.source,
+            lineNumber: -1,
+            elementName: undefined
+          },
+          key: children.length
+        } as any)
+      ])
     }
   }
 
