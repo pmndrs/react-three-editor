@@ -364,6 +364,7 @@ export class EditableElement<
   }
 
   useHelper(arg0: string, helper: any, ...args: any[]) {
+    const isEditing = this.editor.useStates("editing")
     const [props] = this.editor.useSettings("helpers", {
       [arg0]: multiToggle({
         label: arg0,
@@ -374,12 +375,13 @@ export class EditableElement<
 
     const isSelected = this.useIsSelected()
 
-    let ref =
-      props[arg0] === "all"
+    let ref = isEditing
+      ? props[arg0] === "all"
         ? this
         : props[arg0] === "selected" && isSelected
         ? this
         : undefined
+      : undefined
 
     // @ts-ignore
     useHelper(ref as any, helper, ...(args ?? []))
