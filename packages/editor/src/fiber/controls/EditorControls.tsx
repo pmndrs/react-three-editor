@@ -1,5 +1,4 @@
 import { useThree } from "@react-three/fiber"
-import { useState } from "react"
 import { CommandBarControls } from "../../commandbar"
 import { useEditor } from "../../editable"
 import { Panel } from "../../ui/Panel"
@@ -12,18 +11,11 @@ function PropertiesPanel() {
   const editor = useEditor()
   const size = useThree((s) => s.size)
   const selectedElement = editor.useState(() => editor.selectedElement)!
-  const [run, setRun] = useState(0)
-  if (selectedElement) {
-    selectedElement.resetControls = () => {
-      setRun((r) => r + 1)
-    }
-  }
 
-  console.log(run, selectedElement.id)
   return (
     <Panel
       panel="properties"
-      key={run}
+      key={selectedElement.id}
       title="properties"
       pos="right"
       width={size.width < 1080 ? 280 : 320}
