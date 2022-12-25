@@ -1,15 +1,15 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useHelper } from "@react-three/drei"
 import { LevaInputs } from "leva"
-import { Schema, StoreType } from "leva/dist/declarations/src/types"
+import { StoreType } from "leva/dist/declarations/src/types"
 import { mergeRefs } from "leva/plugin"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
+import { toast } from "react-hot-toast"
 import { Event, Object3D } from "three"
 import { JSXSource } from "../types"
-import { createLevaStore } from "./controls/createStore"
-import { helpers } from "./controls/helpers"
+import { multiToggle } from "../ui/leva/multiToggle"
+import { createLevaStore } from "./createStore"
 import { Editor } from "./Editor"
-import { useEditorStore } from "./useEditorStore"
 
 /**
  * An editable element is a wrapper around a React element that can be edited in the editor.
@@ -33,6 +33,122 @@ import { useEditorStore } from "./useEditorStore"
 export class EditableElement<
   Ref extends { name?: string; visible?: boolean } = any
 > extends EventTarget {
+  handlePropChange = (change: PropChange) => {
+    let { input, type, path, context } = change
+    // using the path, figure out the object that needs to be edited, the
+    // closest editable JSX element, and the path from the closest editable
+    // JSX element to the prop that needs to be edited
+    const [object, closestEditable, remainingPath] =
+      this.getEditableObjectByPath(path)
+
+    // the last item in the path is the prop that needs to be edited
+    const prop = path[path.length - 1]
+
+    // if the type has an init function, call it with the object, prop, and value, useful to some side effect on initialization from the control representation of the prop,
+    // this should be used sparingly, and the `get` function should be used to change the data representation of the prop to the control representation
+    if (input !== null && type.init && context.initial) {
+      type.init?.(object, prop, input)
+    }
+
+    if (
+      input === null ||
+      !context.fromPanel ||
+      context.initial ||
+      context.disabled
+    ) {
+      return
+    }
+
+    change.object = object
+    change.prop = prop
+    change.closestEditable = closestEditable
+    change.remainingPath = remainingPath
+
+    // if the value that's set should be used to load an object and assign that to the prop, eg. textures, gltf models in r3f. It can be async.
+    if (type.load) {
+      let loadedValue = type.load(object, prop, input)
+
+      if (loadedValue !== undefined && loadedValue.then) {
+        loadedValue.then((resolvedValue: any) => {
+          if (resolvedValue !== undefined) {
+            change.value = resolvedValue
+
+            this.setPropValue(change)
+          }
+        })
+      } else {
+        change.value = loadedValue
+
+        this.setPropValue(change)
+      }
+    } else {
+      change.value = input
+      this.setPropValue(change)
+    }
+  }
+
+  /**
+   * Primary prop change handler, called by whoever wants to change a prop,
+   * and have it reflected in the React element, and the editor and,
+   * persisted to the code base when saved
+   * @param param0
+   * @returns
+   */
+  setPropValue({
+    object,
+    type,
+    prop,
+    value,
+    input,
+    path,
+    controlPath,
+    onChange,
+    closestEditable,
+    remainingPath
+  }: PropChange) {
+    type.set(object, prop, value)
+
+    onChange?.(value, controlPath)
+
+    let serializale = type.serialize
+      ? type.serialize(object, prop, input, value)
+      : value
+
+    // prop thats not serializable is not editable
+    // since we cant do anything with the edited prop
+    if (serializale !== undefined && closestEditable) {
+      if (this === closestEditable) {
+        let [...p] = path
+
+        // handle the `args` prop by updating the args array
+        if (p[0] === "args") {
+          let prevArgs = this.currentProps.args ?? []
+          let prevPropArgs = this.props.args ?? []
+
+          let args = (prevArgs ?? prevPropArgs).map((a: any, i: number) => {
+            if (i === Number(p[1])) {
+              return serializale
+            }
+            return a
+          })
+          this.addChange(this, "args", args)
+          this.changed = true
+          this.setProp("args", args)
+          return
+        }
+
+        // otherwise its a prop on the edited element itself
+        this.addChange(this, p.join("-"), serializale)
+        this.changed = true
+        this.setProp(p.join("-"), value)
+      } else {
+        // its a prop on a child editable element
+        this.addChange(closestEditable, remainingPath.join("-"), serializale)
+        this.changed = true
+      }
+    }
+  }
+
   delete() {
     this.refs.deleted = true
     this.render()
@@ -41,15 +157,15 @@ export class EditableElement<
   get deleted() {
     return this.refs.deleted
   }
-  object?: Object3D<Event>
   ref?: Ref
   childIds: string[] = []
   changes: Record<string, Record<string, any>> = {}
-  forwardedRef: boolean = false
   props: any = {}
+  forwardedRef: boolean = false
   dirty: any = false
   store: StoreType | null = createLevaStore()
   editor: Editor = {} as any
+  object?: Object3D<Event>
 
   constructor(
     public id: string,
@@ -67,7 +183,8 @@ export class EditableElement<
     setKey: null as Dispatch<SetStateAction<number>> | null,
     forceUpdate: null as Dispatch<SetStateAction<number>> | null,
     setMoreChildren: null as Dispatch<SetStateAction<any[]>> | null,
-    deleted: false
+    deleted: false,
+    key: 0
   }
 
   mounted: boolean = false
@@ -80,16 +197,29 @@ export class EditableElement<
     this.refs.forceUpdate?.((i) => i + 1)
   }
 
+  args = []
+
+  useName() {
+    return this.store?.useStore((s) => s.data["name"].value)
+  }
+  useChildren() {
+    return this.editor.store((s) => [...(s.elements[this.id]?.children ?? [])])
+  }
+  useIsDirty() {
+    return this.store?.useStore((s) => Object.keys(this.changes).length > 0)
+  }
+
   update(source: JSXSource, props: any) {
     this.source = source
     this.currentProps = { ...props }
+    this.args = props.args?.length ? props.args : this.args
 
-    if (this.store?.get("name")) {
+    if (this.store?.get("name") !== this.displayName) {
       this.store?.setValueAtPath("name", this.displayName, true)
     }
   }
 
-  useRenderKey(forwardRef?: any) {
+  useRenderState(forwardRef?: any) {
     const [key, setSey] = useState(0)
     const [_, forceUpdate] = useState(0)
     const [mounted, setMounted] = useState(false)
@@ -98,6 +228,7 @@ export class EditableElement<
     this.refs.forceUpdate = forceUpdate
     this.forwardedRef = forwardRef ? true : false
     this.refs.setMoreChildren = setMoreChildren
+    this.refs.key = key
     this.mounted = mounted
 
     // useState so that this runs only once when the item is created
@@ -116,6 +247,7 @@ export class EditableElement<
     })
 
     return {
+      component: this.type,
       ref: mergeRefs([
         forwardRef === true ? null : forwardRef,
         (el: any) => {
@@ -181,10 +313,10 @@ export class EditableElement<
   resetControls() {}
 
   get elementName() {
-    return this.source.elementName
-      ? this.source.elementName
-      : typeof this.type === "string"
+    return typeof this.type === "string"
       ? this.type
+      : this.source.elementName
+      ? this.source.elementName
       : this.type.displayName || this.type.name
   }
 
@@ -222,26 +354,38 @@ export class EditableElement<
     }
   }
 
-  useVisible(): [any, any] {
+  useVisible() {
     const [visible, setVisible] = useState(true)
-    return [visible, setVisible]
+    return [visible, setVisible] as const
+  }
+
+  useIsSelected() {
+    return this.editor.useState((state) => this.isSelected)
+  }
+
+  get isSelected() {
+    return this.editor.state.context.selectedId === this.treeId
   }
 
   useHelper(arg0: string, helper: any, ...args: any[]) {
+    const isEditing = this.editor.useStates("editing")
     const [props] = this.editor.useSettings("helpers", {
-      [arg0]: helpers({
-        label: arg0
+      [arg0]: multiToggle({
+        label: arg0,
+        data: "selected",
+        options: ["all", "selected", "none"]
       })
     }) as [any]
 
-    const isSelected = useEditorStore((state) => state.selectedId === this.id)
+    const isSelected = this.useIsSelected()
 
-    let ref =
-      props[arg0] === "all"
+    let ref = isEditing
+      ? props[arg0] === "all"
         ? this
         : props[arg0] === "selected" && isSelected
         ? this
         : undefined
+      : undefined
 
     // @ts-ignore
     useHelper(ref as any, helper, ...(args ?? []))
@@ -356,9 +500,16 @@ export class EditableElement<
       source: _source
     }))
 
-    await this.editor.save(diffs)
-    this.changes = {}
-    this.changed = false
+    console.debug(diffs)
+
+    try {
+      console.log(await this.editor.save(diffs))
+      this.changes = {}
+      this.changed = false
+    } catch (e) {
+      toast.error("Error saving: " + e.message)
+      console.error(e)
+    }
 
     // this.openInEditor()
   }
@@ -409,4 +560,17 @@ export class EditableElement<
   }
 }
 
-class R3fEditabelElement {}
+import { createContext, useContext } from "react"
+import { PropChange } from "../fiber/prop-types/core/types"
+
+export const EditableElementContext = createContext<EditableElement | null>(
+  null
+)
+
+export function useEditableContext() {
+  const editableElement = useContext(EditableElementContext)
+  if (!editableElement) {
+    throw new Error("useEditableContext must be used within an EditableElement")
+  }
+  return editableElement
+}

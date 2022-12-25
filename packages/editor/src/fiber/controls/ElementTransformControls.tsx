@@ -5,13 +5,13 @@ import { useHotkeys } from "react-hotkeys-hook"
 import { Event, MathUtils, Object3D, Vector3Tuple } from "three"
 import { TransformControls as TransformControlsImpl } from "three-stdlib"
 import {
+  EditableElement,
   SetElementPosition,
   SetElementRotation,
   SetElementScale,
-  eq,
-  EditableElement,
   useEditor
 } from "../../editable"
+import { eq } from "../prop-types/eq"
 
 const serializeTransform = (
   object?: Object3D
@@ -104,6 +104,15 @@ export function ElementTransformControls({
       const control = ref.current
       const draggingChanged = ({ value, target }: any) => {
         draggingRef.current = !!value
+        if (draggingRef.current) {
+          element.editor.send("START_TRANSFORMING", {
+            elementId: element.treeId
+          })
+        } else {
+          element.editor.send("STOP_TRANSFORMING", {
+            elementId: element.treeId
+          })
+        }
         if (!draggingRef.current) {
           const mode = control.getMode()
           const { position, rotation, scale } = serializeTransform(
@@ -173,9 +182,7 @@ export function ElementTransformControls({
     })
   }, [element])
 
-  const mode = editor.useMode("editor")
-
-  return mode ? (
+  return (
     <TransformControls
       object={object}
       key={element.id}
@@ -187,5 +194,5 @@ export function ElementTransformControls({
       ])}
       onChange={onChange}
     />
-  ) : null
+  )
 }

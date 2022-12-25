@@ -1,7 +1,8 @@
 import * as fiber from "@react-three/fiber"
 import { folder, useControls } from "leva"
-import { usePanel, toggle } from "../editable"
 import { useEditor } from "../editable/useEditor"
+import { toggle } from "../ui/leva/toggle"
+import { usePanel } from "../ui/panels/LevaPanel"
 
 export let Stages = fiber.Stages || {}
 
@@ -13,7 +14,7 @@ export function useEditorFrame(
   const editor = useEditor()
   const settingsPanel = editor.store((s) => s.settingsPanel)
   const panelStore = usePanel(settingsPanel)
-  const isEditorMode = editor.useMode("editor")
+  const isEditorMode = editor.useStates("editing")
   let controls = useControls(
     "world.updates",
     {
@@ -48,7 +49,7 @@ export function useEditorUpdate(
   const editor = useEditor()
   const settingsPanel = editor.store((s) => s.settingsPanel)
   const panelStore = usePanel(settingsPanel)
-  const isEditorMode = editor.useMode("editor")
+  const isEditorMode = editor.useStates("editing")
   let controls = useControls(
     {
       "frame updates": folder(

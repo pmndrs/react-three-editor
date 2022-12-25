@@ -1,179 +1,97 @@
-import { Icon } from "@iconify/react"
-import { Bounds, useBounds } from "@react-three/drei"
-import { Canvas as FiberCanvas, Props, useThree } from "@react-three/fiber"
-import { Components } from "leva/plugin"
-import { ComponentProps, forwardRef, useMemo, useState } from "react"
+import { Canvas as FiberCanvas, Props } from "@react-three/fiber"
+import { forwardRef, Suspense } from "react"
 import { Toaster } from "react-hot-toast"
-import { CommandBar, CommandBarControls } from "../commandbar"
+import { CommandBar } from "../commandbar"
 import { AllCommands } from "../commandbar/commands"
-import {
-  custom,
-  MultiToggle,
-  Outs,
-  Panel,
-  usePanel,
-  createMultiTunnel,
-  usePersistedControls,
-  EditableElementContext,
-  EditorContext,
-  useEditor
-} from "../editable"
+import { EditableElementContext, EditorContext, useEditor } from "../editable"
 import { JSXSource } from "../types"
-import { client } from "../vite/client"
-import { CameraGizmos } from "./controls/CameraGizmos"
+import { Outs } from "../ui/tunnel"
+import { createMultiTunnel } from "../ui/tunnels"
+import { CameraBounds } from "./CameraBounds"
 import { EditorCamera } from "./controls/EditorCamera"
-import { PerformanceControls } from "./controls/PerformanceControls"
-import { SceneControls } from "./controls/SceneControls"
-import { SelectedElementControls } from "./controls/SelectedElementControls"
-import { DEFAULT_EDITOR_PLUGINS } from "./plugins"
-import { ThreeEditor } from "./ThreeEditor"
-
+import { EditorControls } from "./controls/EditorControls"
+import { EditorPanels } from "./controls/EditorPanels"
+import { editor } from "./editor"
+import { PanelGroup } from "./PanelGroup"
 export const editorTunnel = createMultiTunnel()
-
 export const Editor = editorTunnel.In
-
 export type CanvasProps = Props & { _source: JSXSource }
 
 export const Canvas = forwardRef<HTMLCanvasElement, CanvasProps>(
-  ({ children, _source, ...props }, ref) => {
-    const store = useMemo(
-      () => new ThreeEditor(DEFAULT_EDITOR_PLUGINS, client),
-      []
-    )
-
-    store.root.source = _source
-
+  (props, ref) => {
     // @ts-ignore
-    window.editor = store
+    window.editor = editor
 
     return (
-      <EditorContext.Provider value={store}>
-        <AllCommands />
-        <EditorCanvas ref={ref} store={store} {...props}>
-          {children}
-        </EditorCanvas>
-        <Outs />
-        <CommandBar />
-        <Toaster />
-      </EditorContext.Provider>
+      <div
+        style={{
+          display: "contents"
+        }}
+      >
+        <EditorContext.Provider value={editor}>
+          <AllCommands />
+          <EditorPanels />
+          <div
+            style={{
+              display: "flex",
+              height: "100vh",
+              flexDirection: "row",
+              width: "100vw"
+            }}
+          >
+            <PanelGroup side="left" />
+            <EditorCanvas {...props} ref={ref} />
+            <PanelGroup side="right" />
+          </div>
+          <CommandBar />
+          <Outs />
+          <Toaster />
+        </EditorContext.Provider>
+      </div>
     )
   }
 )
 
-const EditorCanvas = forwardRef<
-  HTMLCanvasElement,
-  {
-    store: ThreeEditor
-    children: any
-  }
->(function EditorCanvas({ store, children, ...props }, ref) {
-  const data = usePersistedControls(
-    `world`,
-    {
-      mode: custom({
+const EditorCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
+  function EditorCanvas(props, ref) {
+    const store = useEditor()
+    const [settings] = store.useSettings("scene", {
+      shadows: {
+        value: true
+      }
+    })
+
+    const [editableElement, { children, ...overrideProps }] = editor.useElement(
+      "canvas",
+      {
         ...props,
-        data: "play",
-        onChange: (value, path, { initial }) => {
-          if (!initial) {
-            store.setMode(value)
-          }
-        },
-        transient: false,
-        order: -1,
-        component: (input) => {
-          return (
-            <Components.Row input>
-              <Components.Label>{input.label}</Components.Label>
-              <MultiToggle.Root>
-                <MultiToggle.Option value="editor">
-                  <Icon icon="ph:pencil" />
-                  edit
-                </MultiToggle.Option>
-                <MultiToggle.Option value="play">
-                  <Icon icon="ph:play-fill" />
-                  play
-                </MultiToggle.Option>
-              </MultiToggle.Root>
-            </Components.Row>
-          )
-        }
-      })
-    },
-    [],
-    usePanel(store.settingsPanel).store,
-    false,
-    0,
-    false
-  )
+        id: "root"
+      }
+    )
 
-  const [settings] = store.useSettings("scene", {
-    shadows: {
-      value: true
-    }
-  })
-
-  const [key, setKey] = useState(0)
-
-  store.remount = () => {
-    store.root.childIds = []
-    setKey((k) => k + 1)
+    editableElement.index = "0"
+    editor.rootId = editableElement.id
+    return (
+      <FiberCanvas
+        ref={ref}
+        onPointerMissed={(e: any) => {
+          store.clearSelection()
+        }}
+        {...overrideProps}
+        {...settings}
+      >
+        <EditorContext.Provider value={store}>
+          <EditorCamera />
+          <CameraBounds>
+            <Suspense>
+              <EditableElementContext.Provider value={editableElement}>
+                {children}
+              </EditableElementContext.Provider>
+            </Suspense>
+          </CameraBounds>
+          <editorTunnel.Outs fallback={<EditorControls />} />
+        </EditorContext.Provider>
+      </FiberCanvas>
+    )
   }
-
-  return (
-    <FiberCanvas
-      ref={ref}
-      onPointerMissed={(e: any) => {
-        store.clearSelection()
-      }}
-      {...props}
-      {...settings}
-    >
-      <EditorContext.Provider value={store}>
-        <EditorCamera />
-        <Bounds margin={2}>
-          <AssignBounds />
-          <EditableElementContext.Provider key={key} value={store.root}>
-            {children}
-          </EditableElementContext.Provider>
-        </Bounds>
-        <editorTunnel.Outs fallback={<EditorControls />} />
-      </EditorContext.Provider>
-    </FiberCanvas>
-  )
-})
-
-function AssignBounds() {
-  const editor = useEditor<ThreeEditor>()
-  const bounds = useBounds()
-
-  editor.bounds = bounds
-
-  return null
-}
-
-function EditorControls() {
-  const size = useThree((s) => s.size)
-  return (
-    <>
-      <Panel
-        id="default"
-        title="properties"
-        width={size.width < 1080 ? 280 : 320}
-        collapsed={false}
-        pos="right"
-      />
-      <Panel
-        id="scene"
-        title="scene"
-        pos="left"
-        width={size.width < 780 ? 240 : 320}
-        collapsed={false}
-      />
-      <SceneControls store="scene" />
-      <SelectedElementControls store="default" order={-1} />
-      <PerformanceControls store="scene" />
-      <CommandBarControls />
-      <CameraGizmos />
-    </>
-  )
-}
+)

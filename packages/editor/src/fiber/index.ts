@@ -10,12 +10,10 @@ export {
   editable,
   Editable,
   EditorContext,
-  Panel,
   setEditable,
-  useControls,
-  useEditor,
-  usePanel
+  useEditor
 } from "../editable"
+export { useControls } from "../ui/leva/useControls"
 export { Canvas, Editor } from "./Canvas"
 export { CameraGizmos } from "./controls/CameraGizmos"
 export { PerformanceControls } from "./controls/PerformanceControls"
@@ -30,5 +28,6 @@ export {
 } from "./useFrame"
 
 export function extendControls(t: any, controls: Record<string, {}>) {
+  
   t.controls = controls
 }

@@ -12,17 +12,13 @@ export const EditorCommands: FC = () => {
         name: "toggle-play-mode",
         type: "command",
         description(editor) {
-          const mode = editor.useMode("editor")
-          return `Go to ${mode ? "Play" : "Editor"} mode`
+          return `Go to ${
+            editor.state.matches("editing") ? "Play" : "Editor"
+          } mode`
         },
-        shortcut: ["meta", "k"],
+        shortcut: ["meta", "e"],
         execute(editor) {
-          const mode = editor.useMode("editor")
-          if (!mode) {
-            editor.settingsPanel.set({ "world.mode": "editor" }, false)
-          } else {
-            editor.settingsPanel.set({ "world.mode": "play" }, false)
-          }
+          editor.send("TOGGLE_MODE")
         }
       },
       {
@@ -96,6 +92,22 @@ export const EditorCommands: FC = () => {
         description: "Insert element into the scene",
         type: "command"
       },
+      // {
+      //   name: "duplicate-element",
+      //   description: "Duplicate element",
+      //   execute(editor) {
+      //     element.selectedElement.refs.setMoreChildren?.((children) => [
+      //       ...children,
+      //       createElement(editable[componentType], {
+      //         _source: {
+      //           ...element.source,
+      //           lineNumber: -1,
+      //           elementName: componentType
+      //         },
+      //         key: children.length
+      //       })
+      //     ])
+      // },
       {
         name: "remove-element",
         description: "Remove element from the scene",

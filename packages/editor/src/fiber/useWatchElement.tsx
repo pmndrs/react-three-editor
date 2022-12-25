@@ -1,12 +1,11 @@
 import { useFrame } from "@react-three/fiber"
-import * as THREE from "three"
-import { MathUtils } from "three"
-import { eq } from "../editable"
-import { EditableElement } from "../editable/EditableElement"
+import { MathUtils, Object3D } from "three"
+import { EditableElement } from "../editable"
+import { eq } from "./prop-types/eq"
 
 export function useElementObserver(entity: EditableElement<any>) {
   useFrame(function editorControlsSystem() {
-    if (entity.ref && entity.ref instanceof THREE.Object3D) {
+    if (entity.ref && entity.ref instanceof Object3D) {
       entity.store?.useStore.setState((d) => {
         let state = d.data
         if (!state) return

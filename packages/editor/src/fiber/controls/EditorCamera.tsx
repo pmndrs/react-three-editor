@@ -5,13 +5,12 @@ import { forwardRef, useEffect, useRef } from "react"
 import { useHotkeysContext } from "react-hotkeys-hook"
 import { Camera, Event, MathUtils } from "three"
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib"
-import { setEditable, useEditor, useEditorStore } from "../../editable"
-import { ThreeEditor } from "../ThreeEditor"
+import { setEditable, useEditor } from "../../editable"
 
 setEditable(
   OrbitControls,
   forwardRef((props, ref) => {
-    const isEditorMode = useEditor().useMode("editor")
+    const isEditorMode = useEditor().useStates("editing")
     return isEditorMode ? null : (
       <OrbitControls {...props} makeDefault ref={ref} />
     )
@@ -27,7 +26,7 @@ export function EditorCamera() {
   const hotkeysContext = useHotkeysContext()
 
   const [props] = editor.useSettings("camera", {
-    enabled: false,
+    enabled: true,
     position: {
       value: [10, 10, 10],
       step: 0.1
@@ -41,8 +40,6 @@ export function EditorCamera() {
     near: { value: 0.1, min: 0.1, max: 100 },
     far: { value: 1000, min: 0.1, max: 10000 }
   })
-
-  useSelectedState(editor)
 
   const camera = useThree((c) => c.camera)
 
@@ -80,9 +77,9 @@ export function EditorCamera() {
 
   useEffect(() => {
     if (props.enabled && controls) {
-      camera.position.fromArray(editor.getSettings("camera.position"))
+      camera.position.fromArray(editor.getSetting("camera.position"))
       camera.rotation.fromArray(
-        editor.getSettings("camera.rotation").map((a) => MathUtils.degToRad(a))
+        editor.getSetting("camera.rotation").map((a) => MathUtils.degToRad(a))
       )
       // camera.fov = props.fov
       // camera.near = props.near
@@ -98,40 +95,4 @@ export function EditorCamera() {
       )}
     </>
   )
-}
-
-function useSelectedState(editor: ThreeEditor) {
-  const selectedId = useEditorStore((s) => s.selectedId)
-  const selectedKey = useEditorStore((s) => s.selectedKey)
-  const [p, set] = editor.useSettings(
-    "scene",
-    {
-      selectedId: {
-        render: () => false,
-        onChange(e, path, context) {
-          if (context.initial) {
-            editor?.selectId(e === "" ? null : e)
-          }
-        },
-        transient: false,
-        value: selectedId ?? ""
-      },
-      selectedKey: {
-        render: () => false,
-        onChange(e, path, context) {
-          if (context.initial) {
-            editor?.selectKey(e === "" ? null : e)
-          }
-        },
-        transient: false,
-        value: selectedKey ?? ""
-      }
-    },
-    true
-  )
-
-  useEffect(() => {
-    editor.setSetting("scene.selectedId", selectedId ?? "")
-    editor.setSetting("scene.selectedKey", selectedKey ?? "")
-  }, [editor, selectedId, selectedKey, set])
 }

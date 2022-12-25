@@ -30,9 +30,9 @@ export const CommandInput: FC = () => {
   const filter = editor.commands.store((state) => state.filter)
   const onInputValueChange = useCallback(
     (filter: string) => {
-      editor.commands.store.setState({ filter })
+      editor.commands.useStore.setState({ filter })
     },
-    [editor.commands.store]
+    [editor.commands.useStore]
   )
   return (
     <Command.Input

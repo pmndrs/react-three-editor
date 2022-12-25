@@ -20,6 +20,7 @@ export function KeyboardCommands() {
               key={command.name}
               shortcut={command.shortcut}
               execute={() => command.execute(editor)}
+              debug={true}
             />
           )
         })}

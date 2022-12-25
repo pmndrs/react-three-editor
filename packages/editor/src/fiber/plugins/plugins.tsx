@@ -17,37 +17,22 @@ import {
   SpotLightHelper
 } from "three"
 import { EditableElement } from "../../editable/EditableElement"
-import { prop } from "../controls/prop"
 import { TransformHelper } from "../controls/TransformHelper"
+import { all } from "../prop-types"
+import { createProp } from "../prop-types/core/createProp"
+import { PropInput } from "../prop-types/core/types"
+import { primitives } from "../prop-types/primitives"
+import { replace } from "../prop-types/replace"
 
 export const transform = {
   applicable: (entity: EditableElement) => entity.ref instanceof Object3D,
   icon: (entity: EditableElement) => "ph:cube",
   controls: (entity: EditableElement) => {
     return {
-      transform: folder(
-        {
-          position: prop.vector3d({
-            element: entity,
-            path: ["ref", "position"],
-            step: 0.1
-          }),
-          rotation: prop.euler({
-            step: 1,
-            path: ["ref", "rotation"],
-            element: entity
-          }),
-          scale: prop.vector3d({
-            element: entity,
-            path: ["ref", "scale"],
-            lock: true,
-            step: 0.1
-          })
-        },
-        {
-          collapsed: false
-        }
-      )
+      transform: all.transform({
+        element: entity,
+        path: ["ref"]
+      })
     }
   }
 }
@@ -57,54 +42,7 @@ export const camera = {
   icon: (entity: EditableElement) => "ph:video-camera-bold",
   controls: (entity: EditableElement) => {
     return {
-      camera: folder({
-        near: prop.number({
-          element: entity,
-          path: ["ref", "near"],
-          min: 0.1,
-          max: 100
-        }),
-        far: prop.number({
-          element: entity,
-          path: ["ref", "far"],
-          min: 0.1,
-          max: 10000
-        }),
-        ...(entity.ref instanceof OrthographicCamera
-          ? {
-              zoom: prop.number({
-                element: entity,
-                path: ["ref", "zoom"]
-              }),
-              top: prop.number({
-                element: entity,
-                path: ["currentProps", "top"]
-              }),
-              bottom: prop.number({
-                element: entity,
-                path: ["currentProps", "bottom"]
-              }),
-              left: prop.number({
-                element: entity,
-                path: ["currentProps", "left"]
-              }),
-              right: prop.number({
-                element: entity,
-                path: ["currentProps", "right"]
-              })
-            }
-          : {}),
-
-        fov: prop.number({
-          element: entity,
-          min: 0,
-          max: 100,
-          path: ["ref", "fov"],
-          onChange(value) {
-            entity.ref.updateProjectionMatrix()
-          }
-        })
-      })
+      camera: cameraControls({ element: entity, path: ["ref"] })
     }
   },
   helper: ({ element }: { element: EditableElement }) => {
@@ -113,58 +51,25 @@ export const camera = {
   }
 }
 
-// export const meshMaterial = {
-//   applicable: (entity: EditableElement) =>
-//     entity.ref instanceof Mesh && entity.ref.material,
-//   controls: (entity: EditableElement) => {
-//     return {
-//       material: folder({
-//         ...(entity.ref.material instanceof MeshStandardMaterial ||
-//         entity.ref.material instanceof MeshBasicMaterial
-//           ? {
-//               color: prop.color({
-//                 element: entity,
-//                 path: ["ref", "material", "color"]
-//               }),
-//               texture: prop.texture({
-//                 element: entity,
-//                 path: ["ref", "material", "map"]
-//               })
-//             }
-//           : {}),
-
-//         wireframe: prop.bool({
-//           element: entity,
-//           path: ["ref", "material", "wireframe"]
-//         })
-//       })
-//     }
-//   }
-// }
-
 export const orbitControls = {
   applicable: (entity: EditableElement) => entity.type === OrbitControls,
   icon: (entity: EditableElement) => "mdi:orbit-variant",
   controls: (entity: EditableElement) => {
     return {
-      target: prop.ref({
+      target: primitives.ref({
         element: entity,
         path: ["ref", "object"]
       }),
-      enabled: prop.bool({
+      enabled: primitives.bool({
         element: entity,
         path: ["ref", "enabled"]
       }),
-      makeDefault: prop(
+      makeDefault: createProp(
         {
           get(o, p) {
             return o[p] ?? false
           },
-          set() {},
-          init() {
-            entity.props.makeDefault = true
-            entity.render()
-          }
+          set() {}
         },
         {
           element: entity,
@@ -181,16 +86,16 @@ export const directionalLight = {
   icon: (entity: EditableElement) => "mdi:car-light-dimmed",
   controls: (entity: EditableElement) => {
     return {
-      color: prop.color({
+      color: primitives.color({
         element: entity,
         path: ["ref", "color"]
       }),
-      intensity: prop.number({
+      intensity: primitives.number({
         element: entity,
         step: 0.1,
         path: ["ref", "intensity"]
       }),
-      castShadow: prop.bool({
+      castShadow: primitives.bool({
         element: entity,
         path: ["ref", "castShadow"]
       })
@@ -207,11 +112,11 @@ export const pointLight = {
   icon: (entity: EditableElement) => "ph:lightbulb-filament-bold",
   controls: (entity: EditableElement) => {
     return {
-      color: prop.color({
+      color: primitives.color({
         element: entity,
         path: ["ref", "color"]
       }),
-      intensity: prop.number({
+      intensity: primitives.number({
         element: entity,
         step: 0.1,
         path: ["ref", "intensity"]
@@ -225,11 +130,11 @@ export const ambientLight = {
   icon: (entity: EditableElement) => "ph:sun-bold",
   controls: (entity: EditableElement) => {
     return {
-      color: prop.color({
+      color: primitives.color({
         element: entity,
         path: ["ref", "color"]
       }),
-      intensity: prop.number({
+      intensity: primitives.number({
         element: entity,
         step: 0.1,
         path: ["ref", "intensity"]
@@ -243,19 +148,23 @@ export const spotLight = {
   icon: (entity: EditableElement) => "mdi:spotlight-beam",
   controls: (entity: EditableElement) => {
     return {
-      intensity: prop.number({
+      intensity: primitives.number({
         element: entity,
         step: 0.1,
         path: ["ref", "intensity"]
       }),
-      target: prop.ref({
+      target: primitives.ref({
         element: entity,
         path: ["ref", "target"]
       }),
-      angle: prop.number({
+      angle: primitives.number({
         element: entity,
         step: 0.1,
         path: ["ref", "angle"]
+      }),
+      castShadow: primitives.bool({
+        element: entity,
+        path: ["ref", "castShadow"]
       })
     }
   },
@@ -277,17 +186,17 @@ export const transformWithoutRef = {
     return {
       transform: folder(
         {
-          position: prop.vector3d({
+          position: primitives.vector3d({
             element: entity,
             path: ["object", "position"],
             step: 0.1
           }),
-          rotation: prop.euler({
+          rotation: primitives.euler({
             step: 1,
             path: ["object", "rotation"],
             element: entity
           }),
-          scale: prop.vector3d({
+          scale: primitives.vector3d({
             element: entity,
             path: ["object", "scale"],
             lock: true,
@@ -337,7 +246,7 @@ export const propControls = {
         .map(([k, { type = "unknown", value, ...v }]: any) => {
           return [
             k,
-            prop[type as keyof typeof prop]({
+            primitives[type as keyof typeof primitives]({
               ...v,
               element: entity,
               path: ["currentProps", k],
@@ -372,7 +281,7 @@ export const propControls = {
             props.step = 1
           }
         }
-        controls[k] = prop.unknown({
+        controls[k] = primitives.unknown({
           element: entity,
           path: ["currentProps", k],
           ...props
@@ -393,10 +302,61 @@ export const color = {
           false
         }
       },
-      color: prop.unknown({
+      color: primitives.unknown({
         element: entity,
         path: ["currentProps", "args", "0"]
       })
     }
   }
+}
+
+function cameraControls({ element, path }: PropInput) {
+  return folder({
+    near: primitives.number({
+      element: element,
+      path: [...path, "near"],
+      min: 0.1,
+      max: 100
+    }),
+    far: primitives.number({
+      element: element,
+      path: [...path, "far"],
+      min: 0.1,
+      max: 10000
+    }),
+    ...(element.ref instanceof OrthographicCamera
+      ? {
+          zoom: primitives.number({
+            element: element,
+            path: [...path, "zoom"]
+          }),
+          top: primitives.number({
+            element: element,
+            path: [...replace(path, "ref", "currentProps"), "top"]
+          }),
+          bottom: primitives.number({
+            element: element,
+            path: [...replace(path, "ref", "currentProps"), "bottom"]
+          }),
+          left: primitives.number({
+            element: element,
+            path: [...replace(path, "ref", "currentProps"), "left"]
+          }),
+          right: primitives.number({
+            element: element,
+            path: [...replace(path, "ref", "currentProps"), "right"]
+          })
+        }
+      : {}),
+
+    fov: primitives.number({
+      element: element,
+      min: 0,
+      max: 100,
+      path: [...path, "fov"],
+      onChange(value) {
+        element.ref.updateProjectionMatrix()
+      }
+    })
+  })
 }

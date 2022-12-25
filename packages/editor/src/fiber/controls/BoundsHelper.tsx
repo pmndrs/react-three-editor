@@ -2,7 +2,7 @@ import { useHelper } from "@react-three/drei"
 import { applyProps } from "@react-three/fiber"
 import { ReactNode, useEffect, useMemo } from "react"
 import { BoxHelper, Group } from "three"
-import { helpers, EditableElement, useEditorStore } from "../../editable"
+import { EditableElement, helpers } from "../../editable"
 
 export function BoundsHelper({
   editableElement: element,
@@ -24,7 +24,9 @@ export function BoundsHelper({
     })
   })
 
-  const isSelected = useEditorStore((state) => state.selectedId === element.id)
+  const isSelected = element.editor.store(
+    (state) => state.selectedId === element.id
+  )
 
   let ref =
     bounds === "all"

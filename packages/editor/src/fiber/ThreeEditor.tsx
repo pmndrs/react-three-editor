@@ -2,6 +2,7 @@
 import { useBounds } from "@react-three/drei"
 import { levaStore } from "leva"
 import { useCallback } from "react"
+import { EditableElement } from "../editable"
 import { Editor } from "../editable/Editor"
 
 // @ts-ignore
@@ -12,22 +13,24 @@ export class ThreeEditor extends Editor {
     return obj?.__r3f?.editable
   }
   setMode(value: any) {
-    this.getPanel(this.settingsPanel).set({ "world.mode": value }, true)
+    this.settingsPanel.setValueAtPath(this.modePath, value, true)
     switch (value) {
       case "editor":
         this.remount?.()
     }
   }
+
   camera: unknown
   bounds!: ReturnType<typeof useBounds>
   isEditorMode() {
-    let enabled =
-      this.getPanel(this.settingsPanel).get("world.mode") === "editor"
-
-    return enabled
+    return this.settingsPanel.get(this.modePath) === "editor"
   }
 
-  useElement(Component: any, props: any, forwardRef?: any): [any, any] {
+  useElement(
+    Component: any,
+    props: any,
+    forwardRef?: any
+  ): [EditableElement, any] {
     let [element, overrideProps] = super.useElement(
       Component,
       props,
@@ -38,17 +41,19 @@ export class ThreeEditor extends Editor {
       element,
       {
         ...overrideProps,
-        onPointerUp: useCallback(
-          (e: any) => {
-            props.onPointerDown?.(e)
-            let id = element.id
-            e.stopPropagation()
-            if (!element.editor.selectedElement) {
-              element.editor.selectId(id)
-            }
-          },
-          [element]
-        )
+        onPointerUp:
+          Component === "canvas"
+            ? undefined
+            : useCallback(
+                (e: any) => {
+                  if (this.state.matches("editing")) {
+                    props.onPointerUp?.(e)
+                    e.stopPropagation()
+                    element.editor.select(element)
+                  }
+                },
+                [element]
+              )
       }
     ]
   }

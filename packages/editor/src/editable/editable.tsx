@@ -51,16 +51,12 @@ export function createEditableComponent<
       const editor = useContext(EditorContext)
       if (!editor) return <Component {...props} ref={forwardRef} />
 
-      const [editableElement, overrideProps] = editor.useElement(
-        Component,
-        props,
-        forwardRef ?? true
-      )
-
       return (
-        <editor.EditableElementProvider editableElement={editableElement}>
-          <Component {...overrideProps} />
-        </editor.EditableElementProvider>
+        <editor.Element
+          component={Component}
+          props={props}
+          forwardRef={forwardRef ?? true}
+        />
       )
     })
   } else {
@@ -68,15 +64,12 @@ export function createEditableComponent<
       const editor = useContext(EditorContext)
       if (!editor) return <Component {...props} />
 
-      const [editableElement, overrideProps] = editor.useElement(
-        Component,
-        props
-      )
-
       return (
-        <editor.EditableElementProvider editableElement={editableElement}>
-          <Component {...overrideProps} />
-        </editor.EditableElementProvider>
+        <editor.Element
+          component={Component}
+          props={props}
+          forwardRef={false}
+        />
       )
     }
   }
