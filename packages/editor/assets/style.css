@@ -22,6 +22,24 @@
   position: absolute;
 }
 
+.resize-handle {
+  flex: 0 0 1em;
+  position: relative;
+  outline: none;
+}
+
+.vertical-handle {
+  width: 100%;
+  position: relative;
+  height: 8px;
+  background-color: var(--leva-colors-elevation2);
+}
+.vertical-handle::after {
+  content: " ";
+  display: block;
+  height: 1px;
+  width: 100%;
+}
 :root {
   --font-sans: "Inter", --apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
     Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;

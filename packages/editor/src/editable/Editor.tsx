@@ -173,28 +173,15 @@ export class Editor<
       prevState = JSON.parse(prevState)
     }
 
-    console.log("prevState", prevState)
-
     const service = interpret(editorMachine, {
       execute: false // do not execute actions on state transitions
     })
 
     service.onTransition((state) => {
-      // execute actions on next animation frame
-      // instead of immediately
-
-      console.log("state", state)
-      service.execute(state, {
-        selectElement: (context, event) => {
-          // console.log(context, event)
-          // context.selectedId = event.element
-        }
-      })
-
       localStorage.setItem("r3f-editor.machine", JSON.stringify(state))
     })
 
-    service.start(prevState ? State.create(prevState) : undefined)
+    service.start(prevState ? State.create(prevState as any) : undefined)
 
     this.service = service
     this.send = service.send.bind(service)
@@ -320,17 +307,21 @@ export class Editor<
     // })
   }
 
-  appendElement(element: EditableElement, parentId: string | null) {
-    console.log("appendElement", element.key, element.id, parentId)
+  appendElement(element: EditableElement, parent: EditableElement | null) {
+    let parentId = parent?.id!
     if (parentId) {
       element.parentId = parentId
       this?.store?.setState((el) => {
-        let parent = Object.assign(el.elements[parentId] ?? {}, {
+        let parent = el.elements[parentId] ?? {}
+        let newIndex = parent.childIds?.length ?? 0
+        element.index = `${newIndex}`
+        parent = Object.assign(parent, {
           childIds: [...(el.elements[parentId]?.childIds ?? []), element.id]
         })
 
+        element.index = `${newIndex}`
         let newLement = Object.assign(element, el.elements[element.id])
-        newLement.index = `${parent.childIds.length - 1}`
+        console.log(newLement.id, parentId)
         return {
           elements: {
             ...el.elements,
@@ -340,16 +331,19 @@ export class Editor<
         }
       })
     } else {
-      this?.store?.setState((el) => ({
-        elements: {
-          ...el.elements,
-          [element.id]: Object.assign(element, el.elements[element.id])
-        }
-      }))
+      if (element.id !== undefined) {
+        this?.store?.setState((el) => ({
+          elements: {
+            ...el.elements,
+            [element.id]: Object.assign(element, el.elements[element.id])
+          }
+        }))
+      }
     }
   }
 
-  removeElement(element: EditableElement, parentId: string | null) {
+  removeElement(element: EditableElement, parent: EditableElement | null) {
+    let parentId = parent?.id!
     if (parentId) {
       element.parentId = null
       this?.store?.setState((el) => {
@@ -403,20 +397,24 @@ export class Editor<
     editableElement.update(props._source, props)
 
     // see if we have a parent element
-    const parentId = useContext(EditableElementContext)?.id!
-
-    console.log(Component, id, parentId)
+    const parent = useContext(EditableElementContext)!
 
     useEffect(() => {
       if (!editableElement.deleted) {
-        this.appendElement(editableElement, parentId)
-        this.send("APPEND_ELEMENT", { elementId: editableElement.id, parentId })
+        this.appendElement(editableElement, parent)
+        this.send("APPEND_ELEMENT", {
+          elementId: editableElement.treeId,
+          parentId: parent?.treeId
+        })
       }
       return () => {
-        this.removeElement(editableElement, parentId)
-        this.send("REMOVE_ELEMENT", { elementId: editableElement.id, parentId })
+        this.removeElement(editableElement, parent)
+        this.send("REMOVE_ELEMENT", {
+          elementId: editableElement.treeId,
+          parentId: parent?.treeId
+        })
       }
-    }, [parentId, editableElement, editableElement.deleted])
+    }, [parent, editableElement, editableElement.deleted])
 
     return [
       editableElement,
@@ -441,6 +439,15 @@ export class Editor<
     return this.store.getState().elements[id]
   }
 
+  getElementByTreeId(id: string): EditableElement | null {
+    let els = this.store.getState().elements
+    let el = Object.values(els).find((e) => e.treeId === id)
+    if (el) {
+      return el
+    }
+    return null
+  }
+
   findEditableElement(el: any): T | null {
     throw new Error("Method not implemented.")
   }
@@ -451,14 +458,14 @@ export class Editor<
 
   get selectedElement() {
     if (this.state.context.selectedId) {
-      return this.getElementById(this.state.context.selectedId!)
+      return this.getElementByTreeId(this.state.context.selectedId!)
     }
 
     return null
   }
 
   select(element: EditableElement<any>): void {
-    this.send("SELECT", { elementId: element.id })
+    this.send("SELECT", { elementId: element.treeId })
   }
 
   clearSelection(): void {

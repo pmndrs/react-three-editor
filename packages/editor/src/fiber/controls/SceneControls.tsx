@@ -15,7 +15,7 @@ export function SceneControls({
   const panel = usePanel(store)
   const [p] = editor.store((state) => [state.elements[editor.rootId]])
   const items: Record<string, any> = {}
-  p.children.forEach((v) => {
+  p?.children.forEach((v) => {
     items[v.id] = v
   })
 

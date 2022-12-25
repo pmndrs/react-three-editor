@@ -11,16 +11,12 @@ function args({
   fields: Record<string, any>
 }) {
   let fieldNames = Object.keys(fields)
-  console.log(
-    fieldNames,
-    Array.from(fieldNames).map((i) => fields[i].default)
-  )
+
   return {
     args: {
       value: 0,
       render: () => false,
       onChange(v, x, context) {
-        console.log("heree")
         if (context.initial && !element.args?.length) {
           element.args = Array.from(fieldNames).map((i) => fields[i].default)
         }
@@ -40,14 +36,10 @@ export const boxGeometryControls = (
       path: [...path, "type"],
       options: ["BoxGeometry", "SphereGeometry", "CylinderGeometry"],
       onChange(e) {
-        console.log("hereeee")
         element.type = e.charAt(0).toLowerCase() + e.slice(1)
-        console.log(element.displayName)
         element.store?.setValueAtPath("name", element.displayName, false)
         element.render()
         return true
-        // element.editor.remount()
-        // element.resetControls()
       }
     }),
     ...args({

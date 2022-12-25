@@ -3,7 +3,6 @@ import { Fragment } from "react"
 import { EditableElement, ElementControls, useEditor } from "../../editable"
 import { usePanel } from "../../ui/Panel"
 import { useElementObserver } from "../useWatchElement"
-import { ElementTransformControls } from "./ElementTransformControls"
 
 export function SelectedElementControls({
   store = "scene",
@@ -25,10 +24,10 @@ export function SelectedElementControls({
         store={panel.store}
         order={order}
       />
-      <ElementWatcher element={selectedElement} />
-      {selectedElement.isObject3D() && isEditorMode ? (
+      {/* <ElementWatcher element={selectedElement} /> */}
+      {/* {selectedElement.isObject3D() && isEditorMode ? (
         <ElementTransformControls element={selectedElement} />
-      ) : null}
+      ) : null} */}
     </Fragment>
   ) : null
 }

@@ -25,10 +25,6 @@ export const BaseEditableElement: FC<EditableElementProps> = ({
     forwardRef
   )
 
-  if (root) {
-    editor.rootId = editableElement.id
-  }
-
   if (editableElement.forwardedRef) {
     return (
       <EditableElementContext.Provider value={editableElement}>

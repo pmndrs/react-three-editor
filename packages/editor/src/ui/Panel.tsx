@@ -1,8 +1,6 @@
-import { useThree } from "@react-three/fiber"
 import { Leva, LevaPanel, useControls } from "leva"
 import { ComponentProps, useEffect, useState } from "react"
 import { useEditor } from "../editable"
-import { In } from "./tunnel"
 
 import { StoreType } from "leva/dist/declarations/src/types"
 
@@ -18,6 +16,7 @@ export function Panel({
   collapsed = false,
   pos = "left",
   reveal = false,
+  size = { width: 1000 },
   ...props
 }: {
   panel: string | ReturnType<typeof usePanel>
@@ -46,7 +45,6 @@ export function Panel({
     }
   })
 
-  const size = useThree((s) => s.size)
   const [_collapsed, setCollapsed] = useState(reveal ? true : collapsed)
   const [position, setPosition] = useState({
     x: pos === "left" ? -size.width + width + 20 : 0,
@@ -57,22 +55,26 @@ export function Panel({
     setCollapsed(collapsed)
   }, [collapsed])
 
-  useEffect(() => {
-    setPosition({ x: pos === "left" ? -size.width + width + 20 : 0, y: 0 })
-  }, [size, pos, width])
+  // useEffect(() => {
+  //   setPosition({ x: pos === "left" ? -size.width + width + 20 : 0, y: 0 })
+  // }, [size, pos, width])
 
   return (
-    <In>
+    <>
       {panel.store ? (
         <LevaPanel
           store={panel.store}
-          titleBar={{
-            position,
-            onDragEnd(position) {
-              setPosition(position as { x: number; y: number })
-            },
-            title: title
-          }}
+          titleBar={
+            false && {
+              // position,
+              // onDragEnd(position) {
+              //   setPosition(position as { x: number; y: number })
+              // },
+              title: title
+            }
+          }
+          fill
+          flat
           hidden={Boolean(different)}
           theme={{
             space: {
@@ -87,13 +89,24 @@ export function Panel({
         />
       ) : (
         <Leva
-          titleBar={{
-            position,
-            onDragEnd(position) {
-              setPosition(position as { x: number; y: number })
-            },
-            title: title
-          }}
+          // titleBar={{
+          //   position,
+          //   onDragEnd(position) {
+          //     setPosition(position as { x: number; y: number })
+          //   },
+          //   title: title
+          // }}
+          titleBar={
+            false && {
+              // position,
+              // onDragEnd(position) {
+              //   setPosition(position as { x: number; y: number })
+              // },
+              title: title
+            }
+          }
+          fill
+          flat
           hidden={Boolean(different)}
           theme={{
             space: {
@@ -106,6 +119,6 @@ export function Panel({
           collapsed={{ collapsed: _collapsed, onChange: setCollapsed }}
         />
       )}
-    </In>
+    </>
   )
 }

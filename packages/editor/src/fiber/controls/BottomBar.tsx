@@ -1,7 +1,6 @@
 import { Icon } from "@iconify/react"
 import { styled } from "leva/plugin"
 import { useEditor } from "../../editable/useEditor"
-import { In } from "../../ui/tunnel"
 
 const StyledIcon = styled(Icon, {})
 
@@ -70,27 +69,25 @@ export function BottomBar() {
   let mode = editor.useMode()
   const open = editor.commands.useStore((s) => s.open)
   return (
-    <In>
-      <StyledBottomBar>
-        <StyledButtonGroupButton
-          onClick={() => editor.send("TOGGLE_MODE")}
-          active={mode === "editing"}
-        >
-          <Icon icon="mdi:pencil" fontSize={16} />
-        </StyledButtonGroupButton>
-        <StyledButtonGroupButton
-          active={open}
-          onClick={() => editor.commands.toggleCommandBar()}
-        >
-          <Icon icon="ph:command-duotone" fontSize={16} />
-        </StyledButtonGroupButton>
-        <StyledButtonGroupButton
-          onClick={() => editor.send("TOGGLE_MODE")}
-          active={mode === "playing"}
-        >
-          <Icon icon="ph:play-fill" fontSize={16} />
-        </StyledButtonGroupButton>
-      </StyledBottomBar>
-    </In>
+    <StyledBottomBar>
+      <StyledButtonGroupButton
+        onClick={() => editor.send("TOGGLE_MODE")}
+        active={mode === "editing"}
+      >
+        <Icon icon="mdi:pencil" fontSize={16} />
+      </StyledButtonGroupButton>
+      <StyledButtonGroupButton
+        active={open}
+        onClick={() => editor.commands.toggleCommandBar()}
+      >
+        <Icon icon="ph:command-duotone" fontSize={16} />
+      </StyledButtonGroupButton>
+      <StyledButtonGroupButton
+        onClick={() => editor.send("TOGGLE_MODE")}
+        active={mode === "playing"}
+      >
+        <Icon icon="ph:play-fill" fontSize={16} />
+      </StyledButtonGroupButton>
+    </StyledBottomBar>
   )
 }

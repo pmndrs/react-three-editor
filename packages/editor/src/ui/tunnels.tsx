@@ -1,4 +1,4 @@
-import { PropsWithChildren, ReactNode, useEffect, useId } from "react"
+import { PropsWithChildren, ReactNode, useId, useLayoutEffect } from "react"
 import tunnel from "tunnel-rat"
 import create from "zustand"
 
@@ -19,18 +19,18 @@ export function createMultiTunnel() {
     let OldTunnel = useTunnels((state) => state[id])
     if (!OldTunnel) {
       OldTunnel = tunnel()
+    }
+
+    useLayoutEffect(() => {
       useTunnels.setState({
         [id]: OldTunnel
       })
-    }
-
-    useEffect(() => {
       return () => {
         useTunnels.setState({
           [id]: undefined
         })
       }
-    }, [OldTunnel])
+    }, [id, OldTunnel])
 
     return <OldTunnel.In>{children}</OldTunnel.In>
   }
@@ -40,6 +40,8 @@ export function createMultiTunnel() {
     let activeTunnels = Object.entries(tunnels).filter(([k, v]) => v)
 
     if (activeTunnels.length === 0 && fallback) return <>{fallback}</>
+
+    console.log(tunnels)
 
     return (
       <>

@@ -33,16 +33,6 @@ import { Editor } from "./Editor"
 export class EditableElement<
   Ref extends { name?: string; visible?: boolean } = any
 > extends EventTarget {
-  useName() {
-    return this.store?.useStore((s) => s.data["name"].value)
-  }
-  useChildren() {
-    return this.editor.store((s) => [...(s.elements[this.id]?.children ?? [])])
-  }
-  useIsDirty() {
-    return this.store?.useStore((s) => Object.keys(this.changes).length > 0)
-  }
-
   handlePropChange = (change: PropChange) => {
     let { input, type, path, context } = change
     // using the path, figure out the object that needs to be edited, the
@@ -209,6 +199,16 @@ export class EditableElement<
 
   args = []
 
+  useName() {
+    return this.store?.useStore((s) => s.data["name"].value)
+  }
+  useChildren() {
+    return this.editor.store((s) => [...(s.elements[this.id]?.children ?? [])])
+  }
+  useIsDirty() {
+    return this.store?.useStore((s) => Object.keys(this.changes).length > 0)
+  }
+
   update(source: JSXSource, props: any) {
     this.source = source
     this.currentProps = { ...props }
@@ -360,7 +360,11 @@ export class EditableElement<
   }
 
   useIsSelected() {
-    return this.editor.useState((state) => state.context.selectedId === this.id)
+    return this.editor.useState((state) => this.isSelected)
+  }
+
+  get isSelected() {
+    return this.editor.state.context.selectedId === this.treeId
   }
 
   useHelper(arg0: string, helper: any, ...args: any[]) {

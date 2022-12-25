@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useBounds } from "@react-three/drei"
 import { levaStore } from "leva"
-import { useCallback } from "react"
+import { EditableElement } from "../editable"
 import { Editor } from "../editable/Editor"
 
 // @ts-ignore
@@ -25,7 +25,11 @@ export class ThreeEditor extends Editor {
     return this.settingsPanel.get(this.modePath) === "editor"
   }
 
-  useElement(Component: any, props: any, forwardRef?: any): [any, any] {
+  useElement(
+    Component: any,
+    props: any,
+    forwardRef?: any
+  ): [EditableElement, any] {
     let [element, overrideProps] = super.useElement(
       Component,
       props,
@@ -35,17 +39,17 @@ export class ThreeEditor extends Editor {
     return [
       element,
       {
-        ...overrideProps,
-        onPointerUp: useCallback(
-          (e: any) => {
-            props.onPointerDown?.(e)
-            e.stopPropagation()
-            if (!element.editor.selectedElement) {
-              element.editor.select(element)
-            }
-          },
-          [element]
-        )
+        ...overrideProps
+        // onPointerUp: useCallback(
+        //   (e: any) => {
+        //     props.onPointerDown?.(e)
+        //     e.stopPropagation()
+        //     if (!element.editor.selectedElement) {
+        //       element.editor.select(element)
+        //     }
+        //   },
+        //   [element]
+        // )
       }
     ]
   }
