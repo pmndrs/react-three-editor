@@ -174,7 +174,8 @@ export class Editor<
     }
 
     const service = interpret(editorMachine, {
-      execute: false // do not execute actions on state transitions
+      execute: false, // do not execute actions on state transitions,
+      devTools: true
     })
 
     service.onTransition((state) => {

@@ -1,4 +1,4 @@
-import { styled } from "leva/plugin"
+import { styled, useDrag } from "leva/plugin"
 
 const iconWidth = 40
 
@@ -95,6 +95,7 @@ export const TitleContainer = styled("div", {
 })
 
 import React, { useEffect, useMemo, useRef, useState } from "react"
+import { Chevron } from "../folder/Chevron"
 
 type FilterProps = {
   setFilter: (value: string) => void
@@ -185,23 +186,21 @@ export function TitleWithFilter({
     else inputRef.current?.blur()
   }, [filterShown])
 
-  // const bind = useDrag(
-  //   ({ offset: [x, y], first, last }) => {
-  //     onDrag({ x, y })
-
-  //     if (first) {
-  //       onDragStart({ x, y })
-  //     }
-
-  //     if (last) {
-  //       onDragEnd({ x, y })
-  //     }
-  //   },
-  //   {
-  //     filterTaps: true,
-  //     from: ({ offset: [x, y] }) => [from?.x || x, from?.y || y]
-  //   }
-  // )
+  const bind = useDrag(
+    ({ offset: [x, y], first, last }) => {
+      if (first) {
+        onDragStart({ x, y })
+      } else if (last) {
+        onDragEnd({ x, y })
+      } else {
+        onDrag({ x, y })
+      }
+    },
+    {
+      filterTaps: true,
+      from: ({ offset: [x, y] }) => [from?.x || x, from?.y || y]
+    }
+  )
 
   useEffect(() => {
     const handleShortcut = (event: KeyboardEvent) => {
@@ -217,13 +216,9 @@ export function TitleWithFilter({
     <>
       <StyledTitleWithFilter mode={drag ? "drag" : undefined}>
         <Icon active={!toggled} onClick={() => toggle()}>
-          {/* <Chevron toggled={toggled} width={12} height={8} /> */}
+          <Chevron toggled={toggled} width={12} height={8} />
         </Icon>
-        <TitleContainer
-          // {...(drag ? bind() : {})}
-          drag={drag}
-          filterEnabled={filterEnabled}
-        >
+        <TitleContainer {...(drag ? bind() : {})} drag={drag}>
           {title === undefined && drag ? (
             <svg
               width="20"

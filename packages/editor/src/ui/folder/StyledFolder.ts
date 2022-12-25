@@ -64,16 +64,15 @@ export const StyledTitle = styled("div", {
   $flex: "",
   color: "$folderTextColor",
   userSelect: "none",
-  cursor: "pointer",
-  padding: "6px 0px",
+  // cursor: "pointer",
+  padding: "var(--leva-tree-vertical-spacing) 0px",
   fontWeight: "medium",
   fontFamily: "$mono",
-  fontSize: "11px",
+  fontSize: "var(--leva-tree-font-size)",
 
   "> svg": {
     marginLeft: -4,
     marginRight: 4,
-    cursor: "pointer",
     fill: "$folderWidgetColor",
     opacity: 0.6
   },

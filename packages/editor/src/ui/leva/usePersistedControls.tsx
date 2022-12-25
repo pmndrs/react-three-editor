@@ -26,6 +26,17 @@ function manageProps(folderName: string, props: any) {
               props[key].value = read
             }
           }
+
+          if (props[key].onChange) {
+            let onChange = props[key].onChange
+            props[key].onChange = (e, path, context) => {
+              onChange(e, path, context)
+              localStorage.setItem(
+                `${editorName}.` + folderName + "." + key,
+                JSON.stringify(e)
+              )
+            }
+          }
         } catch (e) {
           console.log(e)
           localStorage.removeItem(`${editorName}.${folderName}.${key}`)

@@ -4,6 +4,7 @@ import {
 } from "react-resizable-panels"
 import { LevaPanel, OurPanelProps } from "./LevaPanel"
 import { LeftPanel, RightPanel } from "./panel-tunnels"
+import { panelService } from "./panelService"
 import { TitleWithFilter } from "./PanelTitle"
 
 export function DockedPanel({
@@ -18,7 +19,27 @@ export function DockedPanel({
   return (
     <Group.In>
       <ResizablePanel id={`${side}-${order}`} defaultSize={0.5} order={order}>
-        <TitleWithFilter title={title} setFilter={() => {}} toggle={() => {}} />
+        <TitleWithFilter
+          title={title}
+          setFilter={() => {}}
+          toggle={() => {}}
+          drag
+          onDrag={(e) => {
+            panelService.send("DRAGGING", {
+              e
+            })
+          }}
+          onDragStart={() => {
+            panelService.send("START_DRAGGING", {
+              panel: panel
+            })
+          }}
+          onDragEnd={() => {
+            panelService.send("STOP_DRAGGING", {
+              panel: panel
+            })
+          }}
+        />
         <div
           style={{
             height: `calc(100% - ${order === 0 ? "36" : "28"}px)`,

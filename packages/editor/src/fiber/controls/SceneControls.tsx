@@ -19,6 +19,28 @@ export function SceneControls({
     items[v.id] = v
   })
 
+  editor.useSettings("scene", {
+    fontSize: {
+      value: 12,
+      step: 1,
+      onChange(e) {
+        document.body.style.setProperty("--leva-tree-font-size", e + "px")
+      }
+    },
+    verticalSpacing: {
+      value: 0.5,
+      step: 0.1,
+      min: 0.1,
+      max: 2,
+      onChange(e) {
+        document.body.style.setProperty(
+          "--leva-tree-vertical-spacing",
+          e + "em"
+        )
+      }
+    }
+  })
+
   useControls(
     {
       scene: tree({
