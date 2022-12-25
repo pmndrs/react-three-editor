@@ -41,8 +41,6 @@ export function createMultiTunnel() {
 
     if (activeTunnels.length === 0 && fallback) return <>{fallback}</>
 
-    console.log(tunnels)
-
     return (
       <>
         {activeTunnels.map(([key, { Out }]) => (

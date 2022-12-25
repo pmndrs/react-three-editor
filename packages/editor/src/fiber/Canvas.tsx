@@ -10,13 +10,13 @@ import { createMultiTunnel } from "../ui/tunnels"
 import { CameraBounds } from "./CameraBounds"
 import { EditorCamera } from "./controls/EditorCamera"
 import { EditorControls } from "./controls/EditorControls"
+import { EditorPanels } from "./controls/EditorPanels"
 import { editor } from "./editor"
-import { ResizablePanelGroup } from "./prop-types/autoSizer"
+import { PanelGroup } from "./PanelGroup"
 export const editorTunnel = createMultiTunnel()
 export const Editor = editorTunnel.In
-export const LeftPanel = createMultiTunnel()
-export const RightPanel = createMultiTunnel()
 export type CanvasProps = Props & { _source: JSXSource }
+
 export const Canvas = forwardRef<HTMLCanvasElement, CanvasProps>(
   (props, ref) => {
     // @ts-ignore
@@ -30,7 +30,7 @@ export const Canvas = forwardRef<HTMLCanvasElement, CanvasProps>(
       >
         <EditorContext.Provider value={editor}>
           <AllCommands />
-          <EditorControls />
+          <EditorPanels />
           <div
             style={{
               display: "flex",
@@ -39,37 +39,12 @@ export const Canvas = forwardRef<HTMLCanvasElement, CanvasProps>(
               width: "100vw"
             }}
           >
-            <div
-              style={{
-                width: "25vw",
-                height: "100%",
-                display: "flex",
-                flexDirection: "column"
-              }}
-            >
-              <ResizablePanelGroup autoSaveId="left-panel" direction="vertical">
-                <LeftPanel.Outs />
-              </ResizablePanelGroup>
-            </div>
+            <PanelGroup side="left" />
             <EditorCanvas {...props} ref={ref} />
-            <div
-              style={{
-                width: "25vw",
-                height: "100%",
-                display: "flex",
-                flexDirection: "column"
-              }}
-            >
-              <ResizablePanelGroup
-                autoSaveId="right-panel"
-                direction="vertical"
-              >
-                <RightPanel.Outs />
-              </ResizablePanelGroup>
-            </div>
+            <PanelGroup side="right" />
           </div>
-          <Outs />
           <CommandBar />
+          <Outs />
           <Toaster />
         </EditorContext.Provider>
       </div>
@@ -86,8 +61,8 @@ const EditorCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
       }
     })
 
-    const [editableElement] = editor.useElement("scene", {
-      _source: props._source,
+    const [editableElement] = editor.useElement("canvas", {
+      ...props,
       id: "root"
     })
 
@@ -111,7 +86,7 @@ const EditorCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
               </EditableElementContext.Provider>
             </Suspense>
           </CameraBounds>
-          {/* <editorTunnel.Outs fallback={<EditorControls />} /> */}
+          <editorTunnel.Outs fallback={<EditorControls />} />
         </EditorContext.Provider>
       </FiberCanvas>
     )

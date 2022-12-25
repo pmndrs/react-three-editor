@@ -1,6 +1,13 @@
 import { Icon } from "@iconify/react"
+import { useThree } from "@react-three/fiber"
 import { styled } from "leva/plugin"
 import { useEditor } from "../../editable/useEditor"
+import {
+  FloatingPanels,
+  LeftPanel,
+  RightPanel
+} from "../../ui/panels/panel-tunnels"
+import { In } from "../../ui/tunnel"
 
 const StyledIcon = styled(Icon, {})
 
@@ -35,10 +42,6 @@ const StyledButtonGroupButton = styled("button", {
 
 const StyledBottomBar = styled("div", {
   position: "fixed",
-  bottom: 24,
-  left: "50%",
-  transform: "translateX(-50%)",
-  right: 0,
   height: 40,
   background: "var(--leva-colors-elevation1)",
   backdropFilter: "blur(10px)",
@@ -52,6 +55,23 @@ const StyledBottomBar = styled("div", {
   borderRadius: "$lg",
   boxShadow: "$level2",
   zIndex: 1000,
+  variants: {
+    side: {
+      left: {},
+      right: {},
+      center: {
+        transform: "translateX(-50%)"
+      }
+    },
+    placement: {
+      top: {
+        top: 24
+      },
+      bottom: {
+        bottom: 24
+      }
+    }
+  },
   // last StyledButtonGroupButton child in stitches syntax,
   [`${StyledButtonGroupButton}:last-child`]: {
     borderTopRightRadius: "$lg",
@@ -64,12 +84,65 @@ const StyledBottomBar = styled("div", {
   } // hover state for StyledButtonGroupButton in stitches syntax
 })
 
-export function BottomBar() {
+export function DynamicIsland(props: DynamicIslandProps) {
+  return (
+    <FloatingPanels.In>
+      <FloatingBottomBar {...props} />
+    </FloatingPanels.In>
+  )
+}
+
+function FloatingBottomBar(props: DynamicIslandProps) {
+  const size = useThree((s) => s.size)
+  return (
+    <In>
+      <BottomBar size={size} {...props} />
+    </In>
+  )
+}
+
+type DynamicIslandProps = {
+  size?: {
+    width: number
+    height: number
+  }
+  side?: "left" | "right" | "center" | string
+  placement?: "top" | "bottom" | string
+}
+
+function BottomBar({
+  size,
+  side = "left",
+  placement = "bottom"
+}: DynamicIslandProps) {
   const editor = useEditor()
   let mode = editor.useMode()
+
+  const hasLeft =
+    Object.values(LeftPanel.useTunnels()).filter(Boolean).length > 0
+  const hasRight =
+    Object.values(RightPanel.useTunnels()).filter(Boolean).length > 0
+
   const open = editor.commands.useStore((s) => s.open)
   return (
-    <StyledBottomBar>
+    <StyledBottomBar
+      style={
+        side !== "right"
+          ? {
+              left:
+                (hasLeft ? (hasRight ? 300 : 360) : 0) +
+                (side === "left" ? 24 : size.width / 2)
+            }
+          : {
+              right:
+                side === "right"
+                  ? (hasRight ? (hasLeft ? 300 : 360) : 0) + 24
+                  : undefined
+            }
+      }
+      side={side}
+      placement={placement}
+    >
       <StyledButtonGroupButton
         onClick={() => editor.send("TOGGLE_MODE")}
         active={mode === "editing"}

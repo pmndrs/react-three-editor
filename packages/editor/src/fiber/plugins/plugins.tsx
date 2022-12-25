@@ -161,6 +161,10 @@ export const spotLight = {
         element: entity,
         step: 0.1,
         path: ["ref", "angle"]
+      }),
+      castShadow: primitives.bool({
+        element: entity,
+        path: ["ref", "castShadow"]
       })
     }
   },

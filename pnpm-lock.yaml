@@ -480,6 +480,39 @@ importers:
       '@types/react-dom': 18.0.9
       vite: 3.2.5
 
+  examples/xmas:
+    specifiers:
+      '@react-spring/three': ^9.3.2
+      '@react-three/drei': ^9.46.4
+      '@react-three/editor': workspace:*
+      '@react-three/fiber': ^8.9.1
+      '@types/react': 18.0.25
+      '@types/react-dom': ^18.0.9
+      '@types/three': ^0.135.0
+      leva: ^0.9.34
+      react: 18.2.0
+      react-dom: 18.2.0
+      react-scripts: 4.0.3
+      three: 0.147.0
+      three-stdlib: ^2.20.4
+      vite: ^3.0.7
+    dependencies:
+      '@react-spring/three': 9.5.5_7l5c7g5ph6e5ybhvldx3hsiylq
+      '@react-three/drei': 9.48.1_xa6xk36nauwxkzngvitxgjpnr4
+      '@react-three/editor': link:../../packages/editor
+      '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
+      '@types/three': 0.135.0
+      leva: 0.9.34_biqbaboplfbrettd7655fr4n2y
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-scripts: 4.0.3_react@18.2.0
+      three: 0.147.0
+      three-stdlib: 2.20.4_three@0.147.0
+    devDependencies:
+      '@types/react': 18.0.25
+      '@types/react-dom': 18.0.9
+      vite: 3.2.5
+
   packages/editor:
     specifiers:
       '@babel/core': ^7.19.6
@@ -499,6 +532,7 @@ importers:
       '@types/formidable': ^2.0.5
       '@types/fs-extra': ^9.0.13
       '@types/object-path': ^0.11.1
+      '@types/react-virtualized-auto-sizer': ^1.0.1
       '@vinxi/recast': ^0.21.5
       '@vitejs/plugin-react': ^2.0.1
       '@xstate/react': ^3.0.1
@@ -519,6 +553,8 @@ importers:
       react-dropzone: ^14.2.3
       react-hot-toast: ^2.4.0
       react-hotkeys-hook: ^4.0.6
+      react-resizable-panels: ^0.0.11
+      react-virtualized-auto-sizer: ^1.0.7
       three-stdlib: ^2.20.4
       tunnel-rat: ^0.1.0
       vite: ^3.0.7
@@ -535,6 +571,7 @@ importers:
       '@react-three/drei': 9.46.4_biqbaboplfbrettd7655fr4n2y
       '@stitches/react': 1.2.8_react@18.2.0
       '@types/babel__generator': 7.6.4
+      '@types/react-virtualized-auto-sizer': 1.0.1
       '@vinxi/recast': 0.21.5
       '@vitejs/plugin-react': 2.2.0_vite@3.2.5
       '@xstate/react': 3.0.1_react@18.2.0+xstate@4.35.1
@@ -552,6 +589,8 @@ importers:
       react-dropzone: 14.2.3_react@18.2.0
       react-hot-toast: 2.4.0_biqbaboplfbrettd7655fr4n2y
       react-hotkeys-hook: 4.0.6_biqbaboplfbrettd7655fr4n2y
+      react-resizable-panels: 0.0.11_biqbaboplfbrettd7655fr4n2y
+      react-virtualized-auto-sizer: 1.0.7_biqbaboplfbrettd7655fr4n2y
       three-stdlib: 2.20.4
       tunnel-rat: 0.1.0_react@18.2.0
       vite-dev-rpc: 0.1.0_vite@3.2.5
@@ -5401,6 +5440,12 @@ packages:
     dependencies:
       '@types/react': 18.0.26
 
+  /@types/react-virtualized-auto-sizer/1.0.1:
+    resolution: {integrity: sha512-GH8sAnBEM5GV9LTeiz56r4ZhMOUSrP43tAQNSRVxNexDjcNKLCEtnxusAItg1owFUFE6k0NslV26gqVClVvong==}
+    dependencies:
+      '@types/react': 18.0.26
+    dev: false
+
   /@types/react/18.0.25:
     resolution: {integrity: sha512-xD6c0KDT4m7n9uD4ZHi02lzskaiqcBxf4zi+tXZY98a04wvc0hi/TcCPC2FOESZi51Nd7tlUeOJY8RofL799/g==}
     dependencies:
@@ -7656,7 +7701,7 @@ packages:
       minipass-pipeline: 1.2.4
       mkdirp: 1.0.4
       p-map: 4.0.0
-      promise-inflight: 1.0.1_bluebird@3.7.2
+      promise-inflight: 1.0.1
       rimraf: 3.0.2
       ssri: 8.0.1
       tar: 6.1.13
@@ -18856,6 +18901,15 @@ packages:
     engines: {node: '>=0.4.0'}
     dev: false
 
+  /promise-inflight/1.0.1:
+    resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
+    peerDependencies:
+      bluebird: '*'
+    peerDependenciesMeta:
+      bluebird:
+        optional: true
+    dev: false
+
   /promise-inflight/1.0.1_bluebird@3.7.2:
     resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
     peerDependencies:
@@ -19409,6 +19463,16 @@ packages:
       use-sidecar: 1.1.2_react@18.2.0
     dev: false
 
+  /react-resizable-panels/0.0.11_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-XjEcEf/4fOpAvhzuscQVwD/9foxFmExwfT5xxsBVTnjeqL+eOd6U2dFwHK5bwZOBaFpVhIaLdei0zKAE98LV6Q==}
+    peerDependencies:
+      react: ^16.14.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.14.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
+
   /react-router-dom/6.6.0_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-qC4jnvpfCPKVle1mKLD75IvZLcbVJyFMlSn16WY9ZiOed3dgSmqhslCf/u3tmSccWOujkdsT/OwGq12bELmvjg==}
     engines: {node: '>=14'}
@@ -19654,6 +19718,17 @@ packages:
       react: '>=16.8.0'
     dependencies:
       react: 18.2.0
+    dev: false
+
+  /react-virtualized-auto-sizer/1.0.7_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-Mxi6lwOmjwIjC1X4gABXMJcKHsOo0xWl3E3ugOgufB8GJU+MqrtY35aBuvCYv/razQ1Vbp7h1gWJjGjoNN5pmA==}
+    engines: {node: '>8.0.0'}
+    peerDependencies:
+      react: ^15.3.0 || ^16.0.0-alpha || ^17.0.0 || ^18.0.0-rc
+      react-dom: ^15.3.0 || ^16.0.0-alpha || ^17.0.0 || ^18.0.0-rc
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
   /react/18.2.0:

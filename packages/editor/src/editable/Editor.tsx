@@ -20,7 +20,7 @@ import {
   SchemaOrFn,
   usePersistedControls
 } from "../ui/leva/usePersistedControls"
-import { Panel, usePanel } from "../ui/Panel"
+import { usePanel } from "../ui/panels/LevaPanel"
 import { createLevaStore } from "./createStore"
 import { editable } from "./editable"
 import { EditableElementContext } from "./EditableElement"
@@ -321,7 +321,6 @@ export class Editor<
 
         element.index = `${newIndex}`
         let newLement = Object.assign(element, el.elements[element.id])
-        console.log(newLement.id, parentId)
         return {
           elements: {
             ...el.elements,
