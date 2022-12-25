@@ -516,6 +516,18 @@ export class Editor<
     })
   }
 
+  hideAllPanels() {
+    this.settingsPanel.useStore.setState(({ data }: any) => {
+      let panelNames = Object.keys(this.panels)
+      for (let i = 0; i < panelNames.length; i++) {
+        data[this.settingsPath("panels." + panelNames[i] + ".hidden")].value =
+          true
+      }
+
+      return { data }
+    })
+  }
+
   /**
    *  SETTINGS
    * */
