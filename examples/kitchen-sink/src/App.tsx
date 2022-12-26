@@ -1,6 +1,5 @@
 import { Canvas } from "@react-three/fiber"
 import { FC } from "react"
-
 export type ApplicationProps = {}
 
 export const Application: FC<ApplicationProps> = () => {
@@ -28,6 +27,9 @@ export const Application: FC<ApplicationProps> = () => {
           <sphereGeometry />
           <meshPhongMaterial />
         </mesh>
+      </group>
+      <group name="Empty group" position={[0, 0, -5]}>
+        {}
       </group>
     </Canvas>
   )

@@ -1,10 +1,10 @@
 import create from "zustand"
 import { devtools } from "zustand/middleware"
-import { CommandGroup, CommandType } from "./types"
+import { CommandType } from "./types"
 
 export type CommandStoreState = {
   open: boolean
-  commands: CommandType[]
+  commands: Record<string, CommandType>
   activeCommandChain: string[]
   filter: string
 }
@@ -15,7 +15,7 @@ export const createCommandBarStore = (name: string = "command-store") => {
       (_) => {
         return {
           open: false,
-          commands: [],
+          commands: {},
           activeCommandChain: [],
           filter: ""
         }
@@ -30,25 +30,14 @@ export const createCommandBarStore = (name: string = "command-store") => {
 export type CommandStoreType = ReturnType<typeof createCommandBarStore>
 
 export const selectActiveCommands = (state: CommandStoreState) => {
-  const breadcrumb = state.activeCommandChain
-  if (breadcrumb.length) {
-    const findInTree = (
-      name: string,
-      tree: CommandType[]
-    ): CommandType | undefined => {
-      return tree.find((item) => {
-        if (item.name === name) return true
-        if (Array.isArray((item as CommandGroup).children)) {
-          return findInTree(name, item.children ?? [])
-        }
-      })
-    }
-    const currentFolder = breadcrumb[breadcrumb.length - 1]
-    const group = findInTree(currentFolder, state.commands)
-    return Array.isArray((group as CommandGroup).children)
-      ? (group as CommandGroup).children
-      : []
+  const folderChain = state.activeCommandChain
+  if (folderChain.length) {
+    return Object.values(state.commands).filter(
+      (c) => c.parentId === folderChain[folderChain.length - 1]
+    )
+  } else {
+    return Object.values(state.commands).filter(
+      (c) => typeof c.parentId === "undefined" || c.parentId === null
+    )
   }
-
-  return state.commands
 }

@@ -542,6 +542,7 @@ importers:
       cmdk: ^0.1.21
       debug: ^4.3.4
       esbuild: ^0.15.15
+      fast-glob: ^3.2.12
       formidable: ^2.1.1
       fp-ts: ^2.12.3
       fs-extra: ^10.1.0
@@ -581,6 +582,7 @@ importers:
       change-case: 4.1.2
       cmdk: 0.1.21_biqbaboplfbrettd7655fr4n2y
       debug: 4.3.4
+      fast-glob: 3.2.12
       formidable: 2.1.1
       fp-ts: 2.13.1
       fs-extra: 10.1.0

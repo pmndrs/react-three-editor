@@ -1,6 +1,5 @@
 import { Command } from "cmdk"
 import { FC, KeyboardEvent, useCallback } from "react"
-import { useHotkeys } from "react-hotkeys-hook"
 import { useEditor } from "../editable"
 import { EditorCommand } from "./EditorCommand"
 import { KeyboardCommands } from "./KeyboardCommand"
@@ -11,9 +10,9 @@ export const CommandBar: FC<CommandBarProps> = () => {
   const editor = useEditor()
   const open = editor.commands.store((state) => state.open)
 
-  useHotkeys("meta+k", () => editor.commands.toggleCommandBar(), {
-    preventDefault: true
-  })
+  editor.useKeyboardShortcut("command-bar", "meta-k", () =>
+    editor.commands.toggleCommandBar()
+  )
 
   const onKeydown = useCallback(
     (event: KeyboardEvent<HTMLDivElement>) => {

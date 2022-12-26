@@ -7,7 +7,7 @@ import {
   useId,
   useMemo
 } from "react"
-import { EditableElement } from "./EditableElement"
+import { EditableElement, EditableElementContext } from "./EditableElement"
 
 import { levaStore, useControls } from "leva"
 import {
@@ -16,18 +16,14 @@ import {
   StoreType
 } from "leva/dist/declarations/src/types"
 import create from "zustand"
-import {
-  SchemaOrFn,
-  usePersistedControls
-} from "../ui/leva/usePersistedControls"
 import { usePanel } from "../ui/panels/LevaPanel"
 import { createLevaStore } from "./createStore"
-import { editable } from "./editable"
-import { EditableElementContext } from "./EditableElement"
+import { Editable, editable } from "./editable"
 import { HistoryManager } from "./HistoryManager"
 
 import { createMachine } from "xstate"
 import { CommandManager } from "../commandbar"
+import { ComponentLoader } from "../component-loader"
 import { EditPatch, JSXSource, RpcServerFunctions } from "../types"
 import { BaseEditableElement } from "./BaseEditableElement"
 
@@ -53,6 +49,8 @@ export type EditorStoreStateType = {
 }
 
 import { useSelector } from "@xstate/react"
+import { BirpcReturn } from "birpc"
+import { useHotkeys } from "react-hotkeys-hook"
 import {
   ActorRef,
   interpret,
@@ -61,6 +59,10 @@ import {
   StateMachine,
   Subscribable
 } from "xstate"
+import {
+  SchemaOrFn,
+  usePersistedControls
+} from "../ui/leva/usePersistedControls"
 import { editorMachine } from "./editor.machine"
 import { panelMachine } from "./panels.machine"
 
@@ -108,6 +110,24 @@ export class Editor<
   T extends EditableElement = EditableElement
 > extends EventTarget {
   uiPanels: any
+  useKeyboardShortcut(
+    name: string,
+    initialShortcut: string,
+    execute: () => void
+  ) {
+    const [shortcut] = this.useSettings("shortcuts", {
+      [name]: initialShortcut
+    })
+
+    useHotkeys(
+      shortcut[name],
+      execute,
+      {
+        preventDefault: true
+      },
+      [shortcut, execute]
+    )
+  }
   useSelectedElement() {
     return this.useState(() => this.selectedElement)
   }
@@ -149,6 +169,11 @@ export class Editor<
   commands: CommandManager = new CommandManager()
 
   /**
+   * components
+   */
+  loader: ComponentLoader
+
+  /**
    * a set with all the tree-ids of the expanded elements
    */
   expanded: Set<string>
@@ -173,7 +198,10 @@ export class Editor<
 
   machine = editorMachine
 
-  constructor(public plugins: any[], public client: RpcServerFunctions) {
+  constructor(
+    public plugins: any[],
+    public client: BirpcReturn<RpcServerFunctions>
+  ) {
     super()
     this.store = createEditorStore()
     this.useStore = this.store
@@ -237,7 +265,8 @@ export class Editor<
       ? new Set(JSON.parse(localStorage.getItem("collapased")!))
       : new Set()
 
-    this.client.initializeComponentsWatcher()
+    this.loader = new ComponentLoader(this.client)
+    this.loader.initialize()
   }
 
   useState<
@@ -298,6 +327,19 @@ export class Editor<
           },
           key: children.length
         })
+      ])
+    } else {
+      element.refs.setMoreChildren?.((children) => [
+        ...children,
+        createElement(Editable, {
+          component: componentType,
+          _source: {
+            ...element.source,
+            lineNumber: -1,
+            elementName: undefined
+          },
+          key: children.length
+        } as any)
       ])
     }
   }

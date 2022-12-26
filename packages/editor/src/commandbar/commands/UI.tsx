@@ -9,6 +9,7 @@ export const UICommands: FC = () => {
       {
         name: "clear-selection",
         description: "Clear selection",
+        type: "command",
         execute(editor) {
           editor.clearSelection()
         }
@@ -16,6 +17,7 @@ export const UICommands: FC = () => {
       {
         name: "show-panels",
         description: "Show panels",
+        type: "command",
         execute(editor) {
           editor.showAllPanels()
         }
@@ -23,6 +25,7 @@ export const UICommands: FC = () => {
       {
         name: "hide-panels",
         description: "Hide panels",
+        type: "command",
         execute(editor) {
           editor.hideAllPanels()
         }
@@ -30,6 +33,7 @@ export const UICommands: FC = () => {
       {
         name: "show-dynamic-island",
         description: "Show Dynamic Island",
+        type: "command",
         execute(editor) {
           editor.setSetting("panels.island.hidden", false)
         }
@@ -37,6 +41,7 @@ export const UICommands: FC = () => {
       {
         name: "hide-dynamic-island",
         description: "Hide Dynamic Island",
+        type: "command",
         execute(editor) {
           editor.setSetting("panels.island.hidden", true)
         }
