@@ -19,6 +19,8 @@ export { CameraGizmos } from "./controls/CameraGizmos"
 export { PerformanceControls } from "./controls/PerformanceControls"
 export { SceneControls } from "./controls/SceneControls"
 export { SelectedElementControls } from "./controls/SelectedElementControls"
+export { editor } from "./editor"
+export { memo } from "./memo"
 export {
   Stages,
   useEditorFrame,
