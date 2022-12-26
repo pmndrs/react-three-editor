@@ -8,7 +8,6 @@ import { BlockSpinner } from "./components/BlockSpinner"
 import { BlockStart } from "./components/BlockStart"
 import { Bounds } from "./components/Bounds"
 import Lights from "./Lights.js"
-import { Player } from "./Player"
 
 extendControls(RigidBody, {
   mass: { value: 1, min: 0, max: 100, step: 0.1, type: "number" },
@@ -21,6 +20,7 @@ extendControls(RigidBody, {
 function Level() {
   return (
     <>
+      <group></group>
       <BlockStart position={[0, 0.426, 0]} />
       <BlockLimbo position={[0, -0.003, -4]} />
       <BlockSpinner position={[0, 0, -8]} />
@@ -39,7 +39,7 @@ export default function Experience() {
       <Physics>
         <Level />
         <Lights />
-        <Player />
+        {/* <Player /> */}
         {/* <gridHelper /> */}
       </Physics>
     </>
