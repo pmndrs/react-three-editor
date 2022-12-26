@@ -164,6 +164,7 @@ export class Editor<
   rootId: string
 
   service
+
   send
 
   machine = editorMachine
@@ -587,7 +588,7 @@ export class Editor<
   setSettings(values: any) {
     this.settingsPanel.useStore.setState(({ data }) => {
       for (let key in values) {
-        data[this.settingsPath(key)].value = values[key]
+        ;(data as any)[this.settingsPath(key)].value = values[key]
       }
       return { data }
     })

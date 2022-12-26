@@ -37,7 +37,6 @@ export const InsertElementsSubCommands: FC = () => {
   useEffect(() => {
     return editor.loader.store.subscribe(
       (components: ComponentType[]) => {
-        console.log(components)
         const commands = components.map((component): CommandType => {
           return {
             name: component.name,

@@ -15,7 +15,6 @@ export function SelectedElementControls({
   const panel = usePanel(store)
   const editor = useEditor()
   const selectedElement = editor.useSelectedElement()
-  console.log(selectedElement)
   const isEditorMode = editor.useStates("editing")
 
   return selectedElement ? (

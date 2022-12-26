@@ -11,7 +11,6 @@ export const editor = (options: ServerOptions = {}): Plugin => {
       if (filesToSkipOnHmr.get(ctx.file)?.skip === true) {
         filesToSkipOnHmr.get(ctx.file)!.skip = false
         filesToSkipOnHmr.get(ctx.file)!.timeout = 0
-        console.log("silently updated", ctx.file)
 
         return []
       }

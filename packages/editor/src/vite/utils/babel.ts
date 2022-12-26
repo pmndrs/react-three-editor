@@ -66,7 +66,6 @@ export const getReactComponents = (
         types.isIdentifier(n.expression.callee) &&
         n.expression.callee.name.startsWith("use")
     )
-    console.log(id.name, isJsx, isHook)
 
     if (isJsx || isHook) {
       return {
