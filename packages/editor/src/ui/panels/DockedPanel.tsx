@@ -6,7 +6,6 @@ import { useEditor } from "../../editable"
 import { PanelGhost } from "../../editable/Ghost"
 import { LevaPanel, OurPanelProps } from "./LevaPanel"
 import { LeftPanel, RightPanel } from "./panel-tunnels"
-import { panelService } from "./panelService"
 import { TitleWithFilter } from "./PanelTitle"
 
 export function DockedPanel({
@@ -29,13 +28,25 @@ export function DockedPanel({
           toggle={() => {}}
           drag
           onDrag={(e) => {
-            panelService.send("DRAGGING", {
-              e
+            editor.uiPanels.send("DRAGGING", {
+              panel: panel,
+              event: {
+                offset: e.offset,
+                movement: e.movement,
+                xy: e.xy,
+                bounds: e._bounds
+              }
             })
           }}
-          onDragStart={() => {
-            panelService.send("START_DRAGGING", {
-              panelId: panel
+          onDragEnd={(e) => {
+            editor.uiPanels.send("STOP_DRAGGING", {
+              panel: panel,
+              event: {
+                offset: e.offset,
+                movement: e.movement,
+                bounds: e._bounds,
+                xy: e.xy
+              }
             })
           }}
           onDragEnd={({ xy, bounds }) => {

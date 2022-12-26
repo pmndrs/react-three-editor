@@ -3,8 +3,10 @@ import { ComponentProps, useEffect, useState } from "react"
 import { useEditor } from "../../editable"
 
 import { useThree } from "@react-three/fiber"
+import { useSelector } from "@xstate/react"
 import { StoreType } from "leva/dist/declarations/src/types"
 import { In } from "../tunnel"
+import { LevaCore } from "./FloatingPanel"
 import { LeftPanel, RightPanel } from "./panel-tunnels"
 
 export function usePanel(defaultName: StoreType | string) {
@@ -34,6 +36,7 @@ export type OurPanelProps = {
   }
 } & Omit<ComponentProps<typeof InnerLevalPanel>, "store">
 
+let origin = { x: 0, y: 0 }
 export function LevaPanel({
   panel: id,
   title,
@@ -65,52 +68,40 @@ export function LevaPanel({
   )
 
   const [_collapsed, setCollapsed] = useState(reveal ? true : collapsed)
-  const [position, setPosition] = useState({
-    x:
-      side === "left"
-        ? -(size.width + (hasRight ? (hasLeft ? 280 : 360) : 0)) + width + 40
-        : -(hasRight ? (hasLeft ? 280 : 360) : 0),
-    y: 0
-  })
+  // const [position, setPosition] = useState({
+  //   x:
+  //     side === "left"
+  //       ? -(size.width + (hasRight ? (hasLeft ? 280 : 360) : 0)) + width + 40
+  //       : -(hasRight ? (hasLeft ? 280 : 360) : 0),
+  //   y: 0
+  // })
 
   useEffect(() => {
     setCollapsed(collapsed)
   }, [collapsed])
 
-  useEffect(() => {
-    if (floating) {
-      setPosition({
-        x:
-          side === "left"
-            ? -(size.width + (hasRight ? (hasLeft ? 280 : 360) : 0)) +
-              width +
-              40
-            : -(hasRight ? (hasLeft ? 280 : 360) : 0),
-        y: 0
-      })
-    }
-  }, [size, side, width, hasLeft, hasRight])
+  // useEffect(() => {
+  //   if (floating) {
+  //     setPosition({
+  //       x:
+  //         side === "left"
+  //           ? -(size.width + (hasRight ? (hasLeft ? 280 : 360) : 0)) +
+  //             width +
+  //             40
+  //           : -(hasRight ? (hasLeft ? 280 : 360) : 0),
+  //       y: 0
+  //     })
+  //   }
+  // }, [size, side, width, hasLeft, hasRight])
 
-  return (
+  let contents = (
     <>
       {panel.store ? (
         <InnerLevalPanel
           store={panel.store}
-          {...(floating
-            ? {
-                titleBar: {
-                  title,
-                  position,
-                  onDragEnd(position) {
-                    setPosition(position as { x: number; y: number })
-                  }
-                }
-              }
-            : {
-                fill: true,
-                flat: true,
-                titleBar: false
-              })}
+          fill={true}
+          flat={true}
+          titleBar={false}
           theme={{
             space: {
               rowGap: "2px"
@@ -124,21 +115,10 @@ export function LevaPanel({
         />
       ) : (
         <Leva
-          {...(floating
-            ? {
-                titleBar: {
-                  title,
-                  position,
-                  onDragEnd(position) {
-                    setPosition(position as { x: number; y: number })
-                  }
-                }
-              }
-            : {
-                fill: true,
-                flat: true,
-                titleBar: false
-              })}
+          isRoot
+          fill={true}
+          flat={true}
+          titleBar={false}
           theme={{
             space: {
               rowGap: "2px"
@@ -151,5 +131,66 @@ export function LevaPanel({
         />
       )}
     </>
+  )
+
+  let [{ position }] = editor.useSettings("panels." + id, {
+    position: [
+      side === "left"
+        ? (hasLeft ? (hasRight ? 280 : 360) : 0) + 10
+        : (hasLeft ? (hasRight ? 280 : 360) : 0) + size.width - width,
+      10
+    ]
+  })
+
+  const offset = useSelector(editor.uiPanels, (s) =>
+    !s.matches("idle") && s.event.panel.name === id
+      ? s.event.event.movement
+      : [0, 0]
+  )
+
+  return floating ? (
+    <LevaCore
+      titleBar={{
+        title,
+        position: {
+          x: position[0] + (offset[0] ?? 0),
+          y: position[1] + (offset[1] ?? 0)
+        },
+        onDrag: (e) => {
+          editor.uiPanels.send("DRAGGING", {
+            panel: panel,
+            event: {
+              offset: e.offset,
+              movement: e.movement,
+              xy: e.xy,
+              bounds: e._bounds
+            }
+          })
+        },
+        onDragEnd: (e) => {
+          editor.uiPanels.send("STOP_DRAGGING", {
+            panel: panel,
+            event: {
+              offset: e.offset,
+              movement: e.movement,
+              xy: e.xy,
+              bounds: e._bounds
+            }
+          })
+        }
+      }}
+    >
+      <div
+        style={{
+          width: `100%`,
+          maxHeight: 500,
+          overflow: "scroll"
+        }}
+      >
+        {contents}
+      </div>
+    </LevaCore>
+  ) : (
+    contents
   )
 }

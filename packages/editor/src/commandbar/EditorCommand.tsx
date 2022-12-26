@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react"
 import { Command } from "cmdk"
-import { FC, useCallback, useEffect, useRef } from "react"
+import { FC, useCallback } from "react"
 import { useEditor } from "../editable"
 import { selectActiveCommands } from "./store"
 import { commandBarTunnel } from "./tunnel"
@@ -12,8 +12,11 @@ export const CommandChain: FC = () => {
     ({ activeCommandChain }) => activeCommandChain
   )
   return (
-    <div>
-      <div cmdk-vercel-badge="">Home</div>
+    <div
+      style={{
+        marginLeft: 8
+      }}
+    >
       {activeCommandChain.map((n) => {
         return (
           <div key={n} cmdk-vercel-badge="">

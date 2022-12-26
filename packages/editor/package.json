@@ -59,6 +59,7 @@
     "@stitches/react": "^1.2.8",
     "@types/babel__generator": "^7.6.4",
     "@types/react-virtualized-auto-sizer": "^1.0.1",
+    "@use-gesture/react": "^10.2.23",
     "@vinxi/recast": "^0.21.5",
     "@vitejs/plugin-react": "^2.0.1",
     "@xstate/react": "^3.0.1",

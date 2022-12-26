@@ -1,5 +1,3 @@
-import toast from "react-hot-toast"
-import { useHotkeys } from "react-hotkeys-hook"
 import { useEditor } from "../editable"
 import { isCommand } from "./utils"
 
@@ -18,6 +16,7 @@ export function KeyboardCommands() {
           return (
             <KeyboardShortcut
               key={command.name}
+              name={command.name}
               shortcut={command.shortcut}
               execute={() => command.execute(editor)}
               debug={true}
@@ -29,43 +28,47 @@ export function KeyboardCommands() {
 }
 
 export function KeyboardShortcut({
+  name,
   shortcut,
   execute,
   debug = false
 }: {
+  name: string
   shortcut: string[]
   execute: () => void
   debug?: boolean
 }) {
-  useHotkeys(
-    shortcut.join("+"),
-    () => {
-      if (debug)
-        toast.custom(
-          <div className="kbd-shortcut">
-            {shortcut?.map((key, i) => (
-              <kbd
-                key={`${i}`}
-                style={{
-                  marginLeft: i > 0 ? "4px" : "0px"
-                }}
-              >
-                {key === "meta"
-                  ? "⌘"
-                  : key === "shift"
-                  ? "⇧"
-                  : key.toUpperCase()}
-              </kbd>
-            ))}
-          </div>
-        )
-      execute()
-    },
-    [shortcut.join("+"), execute, debug],
-    {
-      preventDefault: true
-    }
-  )
+  useEditor().useKeyboardShortcut(name, shortcut.join("+"), execute)
+
+  // useHotkeys(
+  //   shortcut.join("+"),
+  //   () => {
+  //     if (debug)
+  //       toast.custom(
+  //         <div className="kbd-shortcut">
+  //           {shortcut?.map((key, i) => (
+  //             <kbd
+  //               key={`${i}`}
+  //               style={{
+  //                 marginLeft: i > 0 ? "4px" : "0px"
+  //               }}
+  //             >
+  //               {key === "meta"
+  //                 ? "⌘"
+  //                 : key === "shift"
+  //                 ? "⇧"
+  //                 : key.toUpperCase()}
+  //             </kbd>
+  //           ))}
+  //         </div>
+  //       )
+  //     execute()
+  //   },
+  //   [shortcut.join("+"), execute, debug],
+  //   {
+  //     preventDefault: true
+  //   }
+  // )
 
   return null
 }

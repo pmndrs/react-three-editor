@@ -81,7 +81,7 @@ export const TitleContainer = styled("div", {
     fill: "$highlight1"
   },
   color: "$highlight1",
-  paddingRight: iconWidth,
+  // paddingRight: iconWidth,
   variants: {
     drag: {
       true: {
@@ -101,6 +101,7 @@ export const TitleContainer = styled("div", {
 })
 
 import React, { forwardRef, useEffect, useMemo, useRef, useState } from "react"
+import { Chevron } from "../folder/Chevron"
 
 type FilterProps = {
   setFilter: (value: string) => void
@@ -161,10 +162,12 @@ const FilterInput = React.forwardRef<HTMLInputElement, FilterProps>(
   }
 )
 
+export type DragGestureState = Parameters<Parameters<typeof useDrag>[0]>[0]
+
 export type TitleWithFilterProps = FilterProps & {
-  onDrag: (point: { x?: number; y?: number }) => void
-  onDragStart: (point: { x?: number; y?: number }) => void
-  onDragEnd: (point: { x?: number; y?: number }) => void
+  onDrag: (point: DragGestureState) => void
+  onDragStart: (point: DragGestureState) => void
+  onDragEnd: (point: DragGestureState) => void
   title: React.ReactNode
   drag: boolean
   filterEnabled: boolean
@@ -185,7 +188,7 @@ export const TitleWithFilter = forwardRef<HTMLDivElement, TitleWithFilterProps>(
       toggled,
       title,
       drag,
-      filterEnabled,
+      filterEnabled = true,
       from
     },
     ref
@@ -232,7 +235,7 @@ export const TitleWithFilter = forwardRef<HTMLDivElement, TitleWithFilterProps>(
           ghost={ghost}
         >
           <Icon active={!toggled} onClick={() => toggle()}>
-            {/* <Chevron toggled={toggled} width={12} height={8} /> */}
+            <Chevron toggled={toggled} width={12} height={8} hidden />
           </Icon>
           <TitleContainer {...(drag ? bind() : {})} drag={drag}>
             {title === undefined && drag ? (

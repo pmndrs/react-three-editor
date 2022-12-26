@@ -12,6 +12,7 @@ export class ThreeEditor extends Editor {
   findEditableElement(obj: any) {
     return obj?.__r3f?.editable
   }
+
   setMode(value: any) {
     this.settingsPanel.setValueAtPath(this.modePath, value, true)
     switch (value) {
@@ -22,9 +23,6 @@ export class ThreeEditor extends Editor {
 
   camera: unknown
   bounds!: ReturnType<typeof useBounds>
-  isEditorMode() {
-    return this.settingsPanel.get(this.modePath) === "editor"
-  }
 
   useElement(
     Component: any,

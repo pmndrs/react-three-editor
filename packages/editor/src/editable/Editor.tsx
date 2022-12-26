@@ -9,6 +9,7 @@ import {
   useMemo
 } from "react"
 import { EditableElement, EditableElementContext } from "./EditableElement"
+
 import { levaStore, useControls } from "leva"
 import {
   Schema,
@@ -20,13 +21,9 @@ import {
   SchemaOrFn,
   usePersistedControls
 } from "../ui/leva/usePersistedControls"
-import { usePanel } from "../ui/panels/LevaPanel"
-import { createLevaStore } from "./createStore"
-import { Editable, editable } from "./editable"
-import { HistoryManager } from "./HistoryManager"
 import {
-  createMachine,
   ActorRef,
+  createMachine,
   interpret,
   Interpreter,
   State,
@@ -34,6 +31,11 @@ import {
   Subscribable
 } from "xstate"
 import { CommandManager } from "../commandbar"
+import { usePanel } from "../ui/panels/LevaPanel"
+import { createLevaStore } from "./createStore"
+import { Editable, editable } from "./editable"
+import { HistoryManager } from "./HistoryManager"
+import { ComponentLoader } from "../component-loader"
 import { EditPatch, JSXSource, RpcServerFunctions } from "../types"
 import { BaseEditableElement } from "./BaseEditableElement"
 
@@ -45,7 +47,8 @@ const machine = createMachine({
   id: "editor"
 })
 
-type Panel = StoreType & { store: StoreType }
+levaStore.name = "settings"
+type Panel = StoreType & { store: StoreType; name: string }
 
 export type EditorStoreStateType = {
   selectedId: null | string
@@ -59,8 +62,9 @@ export type EditorStoreStateType = {
 
 import { useSelector } from "@xstate/react"
 import { BirpcReturn } from "birpc"
+import { useHotkeys } from "react-hotkeys-hook"
 import { editorMachine } from "./editor.machine"
-import { ComponentLoader } from "../component-loader"
+import { panelMachine } from "./panels.machine"
 
 export type Store<M> = M extends StateMachine<
   infer Context,
@@ -105,6 +109,25 @@ type Diff = {
 export class Editor<
   T extends EditableElement = EditableElement
 > extends EventTarget {
+  uiPanels: any
+  useKeyboardShortcut(
+    name: string,
+    initialShortcut: string,
+    execute: () => void
+  ) {
+    const [shortcut] = this.useSettings("shortcuts", {
+      [name]: initialShortcut
+    })
+
+    useHotkeys(
+      shortcut[name],
+      execute,
+      {
+        preventDefault: true
+      },
+      [shortcut[name], execute]
+    )
+  }
   useSelectedElement() {
     return this.useState(() => this.selectedElement)
   }
@@ -114,6 +137,13 @@ export class Editor<
   }
   setMode(mode: string): void {
     this.settingsPanel.setValueAtPath(this.modePath, mode, true)
+  }
+
+  dockPanel(arg0: string, arg1: string) {
+    this.setSettings({
+      ["panels." + arg0 + ".side"]: arg1,
+      ["panels." + arg0 + ".floating"]: false
+    })
   }
   /**
    * Constructor used to create the editableElement. The default is the EditableElement class
@@ -177,68 +207,82 @@ export class Editor<
     this.store = createEditorStore()
     this.useStore = this.store
 
-    let prevState = localStorage.getItem("r3f-editor.machine")
-    if (prevState) {
-      prevState = JSON.parse(prevState)
-    }
+    const service = getService(
+      interpret(editorMachine, {
+        devTools: true
+      }),
+      "r3f-editor.machine"
+    )
 
-    const service = interpret(editorMachine, {
-      execute: false, // do not execute actions on state transitions,
-      devTools: true
-    })
+    this.uiPanels = interpret(
+      panelMachine.withConfig({
+        guards: {
+          isFloating: (context, event) => {
+            return this.getSetting(
+              "panels." +
+                (typeof event.panel === "string"
+                  ? event.panel
+                  : event.panel.name) +
+                ".floating"
+            ) as boolean
+          }
+        },
+        actions: {
+          dockToLeftPanel: (context, event) => {
+            this.dockPanel(
+              typeof event.panel === "string" ? event.panel : event.panel.name,
+              "left"
+            )
+          },
+          dockToRightPanel: (context, event) => {
+            this.dockPanel(
+              typeof event.panel === "string" ? event.panel : event.panel.name,
+              "right"
+            )
+          },
+          stopDragging: (context, event) => {
+            let panelId =
+              "panels." +
+              (typeof event.panel === "string" ? event.panel : event.panel.name)
+            let prevPosition = this.getSetting(panelId + ".position")
+            this.setSettings({
+              [panelId + ".position"]: [
+                prevPosition[0] + event.event.movement[0],
+                prevPosition[1] + event.event.movement[1]
+              ]
+            })
+          },
 
-    service.onTransition((state) => {
-      localStorage.setItem("r3f-editor.machine", JSON.stringify(state))
-    })
+          undock: (context, event) => {
+            let panelId =
+              typeof event.panel === "string" ? event.panel : event.panel.name
 
-    service.start(prevState ? State.create(prevState as any) : undefined)
+            this.setSettings({
+              ["panels." + panelId + ".floating"]: false,
+              ["panels." + panelId + ".position"]: event.event.xy
+            })
+          },
+
+          float: (context, event) => {
+            let panelId =
+              typeof event.panel === "string" ? event.panel : event.panel.name
+            this.setSettings({
+              ["panels." + panelId + ".floating"]: true
+            })
+          }
+        }
+      }),
+      {
+        devTools: true
+      }
+    )
+      .onTransition(() => {})
+      .start()
 
     this.service = service
     this.send = service.send.bind(service)
     this.rootId = ""
-    // this.store = create<EditorStoreStateType>((set, get) => {
-    //   // const stateDefinition =
-    //   //   JSON.parse(localStorage.getItem("r3f-editor.machine")) ||
-    //   //   editorMachine.initialState
 
-    //   let service = interpret(
-    //     editorMachine.withContext({
-    //       editor: el,
-    //       selectedElement: null
-    //     })
-    //   )
-    //     .onTransition((state) => {
-    //       const initialStateChanged =
-    //         state.changed === undefined && Object.keys(state.children).length
-
-    //       if (state.changed || initialStateChanged) {
-    //         set({ state })
-    //       }
-
-    //       state.context.editor = undefined
-    //       state.context.event = undefined
-    //       localStorage.setItem(
-    //         "r3f-editor.machine",
-    //         JSON.stringify(state.context)
-    //       )
-    //       state.context.editor = el
-    //     })
-    //     .start()
-
-    //   // service.send({ type: "SET_EDITOR", editor: this })
-
-    //   return {
-    //     selectedId: null,
-    //     selectedKey: null,
-    //     elements: {
-    //       root: new EditableElement("root", {} as any, "editor", null)
-    //     },
-    //     state: service.getSnapshot(),
-    //     send: service.send,
-    //     service,
-    //     settingsPanel: "default"
-    //   }
-    // })()
     this.expanded = localStorage.getItem("collapased")
       ? new Set(JSON.parse(localStorage.getItem("collapased")!))
       : new Set()
@@ -523,6 +567,7 @@ export class Editor<
 
       // @ts-ignore
       panels[name].panel.store = panels[name].panel
+      panels[name].panel.name = name
 
       this.panelStore.setState(() => ({
         panels
@@ -693,3 +738,21 @@ export class Editor<
 }
 
 export const EditorContext = createContext<Editor | null>(null)
+function getService<T extends Interpreter<any, any, any, any>>(
+  ser: T,
+  key: any
+) {
+  let prevState = localStorage.getItem(key)
+  if (prevState) {
+    prevState = JSON.parse(prevState)
+  }
+
+  const service = ser
+
+  service.onTransition((state) => {
+    localStorage.setItem(key, JSON.stringify(state))
+  })
+
+  service.start(prevState ? State.create(prevState as any) : undefined)
+  return service
+}
