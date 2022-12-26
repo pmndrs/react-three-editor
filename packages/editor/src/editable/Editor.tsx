@@ -7,7 +7,7 @@ import {
   useId,
   useMemo
 } from "react"
-import { EditableElement } from "./EditableElement"
+import { EditableElement, EditableElementContext } from "./EditableElement"
 
 import { levaStore, useControls } from "leva"
 import {
@@ -16,25 +16,15 @@ import {
   StoreType
 } from "leva/dist/declarations/src/types"
 import create from "zustand"
-import {
-  SchemaOrFn,
-  usePersistedControls
-} from "./controls/usePersistedControls"
-import { Editable, editable } from "./editable"
-import { EditableElement } from "./EditableElement"
-import { EditableElementContext } from "./EditableElementContext"
-} from "../ui/leva/usePersistedControls"
 import { usePanel } from "../ui/panels/LevaPanel"
 import { createLevaStore } from "./createStore"
-import { editable } from "./editable"
-import { EditableElementContext } from "./EditableElement"
+import { Editable, editable } from "./editable"
 import { HistoryManager } from "./HistoryManager"
 
 import { createMachine } from "xstate"
 import { CommandManager } from "../commandbar"
-import { EditPatch, JSXSource, RpcServerFunctions } from "../types"
-import { EditableElementProvider } from "./EditableElementProvider"
 import { ComponentLoader } from "../component-loader"
+import { EditPatch, JSXSource, RpcServerFunctions } from "../types"
 import { BaseEditableElement } from "./BaseEditableElement"
 
 class PanelManager {
@@ -58,6 +48,8 @@ export type EditorStoreStateType = {
 }
 
 import { useSelector } from "@xstate/react"
+import { BirpcReturn } from "birpc"
+import { useHotkeys } from "react-hotkeys-hook"
 import {
   ActorRef,
   interpret,
@@ -66,8 +58,11 @@ import {
   StateMachine,
   Subscribable
 } from "xstate"
+import {
+  SchemaOrFn,
+  usePersistedControls
+} from "../ui/leva/usePersistedControls"
 import { editorMachine } from "./editor.machine"
-import { BirpcReturn } from "birpc"
 
 export type Store<M> = M extends StateMachine<
   infer Context,
@@ -112,6 +107,24 @@ type Diff = {
 export class Editor<
   T extends EditableElement = EditableElement
 > extends EventTarget {
+  useKeyboardShortcut(
+    name: string,
+    initialShortcut: string,
+    execute: () => void
+  ) {
+    const [shortcut] = this.useSettings("shortcuts", {
+      [name]: initialShortcut
+    })
+
+    useHotkeys(
+      shortcut[name],
+      execute,
+      {
+        preventDefault: true
+      },
+      [shortcut, execute]
+    )
+  }
   useSelectedElement() {
     return this.useState(() => this.selectedElement)
   }
@@ -175,7 +188,10 @@ export class Editor<
 
   machine = editorMachine
 
-  constructor(public plugins: any[], public client: BirpcReturn<RpcServerFunctions>) {
+  constructor(
+    public plugins: any[],
+    public client: BirpcReturn<RpcServerFunctions>
+  ) {
     super()
     this.store = createEditorStore()
     this.useStore = this.store
