@@ -29,8 +29,8 @@ export const Canvas = forwardRef<HTMLCanvasElement, CanvasProps>(
         }}
       >
         <EditorContext.Provider value={editor}>
-          <AllCommands />
           <EditorPanels />
+          <AllCommands />
           <div
             style={{
               display: "flex",

@@ -40,6 +40,11 @@ export const panelMachine =
                 cond: "isDockingRight",
                 target: "draggingGhost.dockingRight",
                 actions: ["startDragging"]
+              },
+              {
+                cond: "isDockingCenter",
+                target: "draggingGhost.floating",
+                actions: ["startDragging"]
               }
             ]
           }

@@ -115,6 +115,7 @@ export function LevaPanel({
         />
       ) : (
         <Leva
+          isRoot
           fill={true}
           flat={true}
           titleBar={false}

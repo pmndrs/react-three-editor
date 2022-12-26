@@ -44,7 +44,7 @@ export function EditorPanels() {
   })
   return (
     <>
-      <Leva hidden />
+      <Leva isRoot hidden />
       <Panel panel="scene" title="scene" order={0} lazy {...props} />
       {selectedElement ? (
         <Panel
