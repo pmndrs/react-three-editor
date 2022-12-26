@@ -202,13 +202,12 @@ export const TitleWithFilter = forwardRef<HTMLDivElement, TitleWithFilterProps>(
     }, [filterShown])
 
     const bind = useDrag(
-      ({ movement: [x, y], first, last, xy, _bounds }) => {
-        if (first) {
-          onDragStart?.({ x, y })
-        } else if (last) {
-          onDragEnd?.({ x, y, xy, bounds: _bounds })
-        } else {
-          onDrag?.({ x, y })
+      (event) => {
+        onDrag?.(event)
+        if (event.first) {
+          onDragStart?.(event)
+        } else if (event.last) {
+          onDragEnd?.(event)
         }
       },
       {
