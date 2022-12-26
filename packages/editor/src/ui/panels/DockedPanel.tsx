@@ -49,17 +49,6 @@ export function DockedPanel({
               }
             })
           }}
-          onDragEnd={({ xy, bounds }) => {
-            panelService.send("STOP_DRAGGING", {
-              panel: panel
-            })
-
-            if (xy[0] < 200) {
-              editor.setSetting("panels." + panel + ".side", "left")
-            } else if (xy[0] > window.innerWidth - 200) {
-              editor.setSetting("panels." + panel + ".side", "right")
-            }
-          }}
         />
         <div
           style={{

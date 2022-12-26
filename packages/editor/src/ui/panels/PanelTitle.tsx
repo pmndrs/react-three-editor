@@ -165,12 +165,12 @@ const FilterInput = React.forwardRef<HTMLInputElement, FilterProps>(
 export type DragGestureState = Parameters<Parameters<typeof useDrag>[0]>[0]
 
 export type TitleWithFilterProps = FilterProps & {
-  onDrag: (point: DragGestureState) => void
-  onDragStart: (point: DragGestureState) => void
-  onDragEnd: (point: DragGestureState) => void
+  onDrag?: (point: DragGestureState) => void
+  onDragStart?: (point: DragGestureState) => void
+  onDragEnd?: (point: DragGestureState) => void
   title: React.ReactNode
   drag: boolean
-  filterEnabled: boolean
+  filterEnabled?: boolean
   from?: { x?: number; y?: number }
   ghost?: boolean
   toggled?: boolean
@@ -204,11 +204,11 @@ export const TitleWithFilter = forwardRef<HTMLDivElement, TitleWithFilterProps>(
     const bind = useDrag(
       ({ movement: [x, y], first, last, xy, _bounds }) => {
         if (first) {
-          onDragStart({ x, y })
+          onDragStart?.({ x, y })
         } else if (last) {
-          onDragEnd({ x, y, xy, bounds: _bounds })
+          onDragEnd?.({ x, y, xy, bounds: _bounds })
         } else {
-          onDrag({ x, y })
+          onDrag?.({ x, y })
         }
       },
       {
