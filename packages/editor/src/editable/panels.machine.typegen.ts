@@ -15,6 +15,7 @@ export interface Typegen0 {
   eventsCausingActions: {
     setDragPosition: "DRAGGING"
     startDragging: "START_DRAGGING"
+    stopDragging: "STOP_DRAGGING"
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {}

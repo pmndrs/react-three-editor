@@ -36,7 +36,10 @@ export const panelMachine =
             DRAGGING: {
               actions: ["setDragPosition"]
             },
-            STOP_DRAGGING: "idle"
+            STOP_DRAGGING: {
+              target: "idle",
+              actions: ["stopDragging"]
+            }
           }
         }
       },
@@ -50,6 +53,10 @@ export const panelMachine =
         }),
         setDragPosition: assign({
           dragPosition: (_, event) => event.e
+        }),
+        stopDragging: assign({
+          dragPosition: () => ({ x: 0, y: 0 }),
+          draggingPanel: () => null
         })
       }
     }

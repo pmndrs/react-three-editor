@@ -22,7 +22,7 @@ export const StyledTitleWithFilter = styled("div", {
   alignItems: "stretch",
   justifyContent: "space-between",
   height: "28px",
-  fontSize: "12px",
+  fontSize: "11px",
   fontFamily: "$mono",
   backgroundColor: "$elevation1",
   variants: {
@@ -30,6 +30,12 @@ export const StyledTitleWithFilter = styled("div", {
       drag: {
         cursor: "grab"
       }
+    },
+    ghost: {
+      true: {
+        position: "absolute"
+      },
+      false: {}
     }
   }
 })
@@ -94,8 +100,7 @@ export const TitleContainer = styled("div", {
   }
 })
 
-import React, { useEffect, useMemo, useRef, useState } from "react"
-import { Chevron } from "../folder/Chevron"
+import React, { forwardRef, useEffect, useMemo, useRef, useState } from "react"
 
 type FilterProps = {
   setFilter: (value: string) => void
@@ -166,97 +171,108 @@ export type TitleWithFilterProps = FilterProps & {
   from?: { x?: number; y?: number }
 }
 
-export function TitleWithFilter({
-  setFilter,
-  onDrag,
-  onDragStart,
-  onDragEnd,
-  toggle,
-  toggled,
-  title,
-  drag,
-  filterEnabled,
-  from
-}: TitleWithFilterProps) {
-  const [filterShown, setShowFilter] = useState(false)
-  const inputRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    if (filterShown) inputRef.current?.focus()
-    else inputRef.current?.blur()
-  }, [filterShown])
-
-  const bind = useDrag(
-    ({ offset: [x, y], first, last }) => {
-      if (first) {
-        onDragStart({ x, y })
-      } else if (last) {
-        onDragEnd({ x, y })
-      } else {
-        onDrag({ x, y })
-      }
-    },
+export const TitleWithFilter = forwardRef(
+  (
     {
-      filterTaps: true,
-      from: ({ offset: [x, y] }) => [from?.x || x, from?.y || y]
-    }
-  )
+      setFilter,
+      onDrag,
+      ghost,
+      onDragStart,
+      onDragEnd,
+      toggle,
+      toggled,
+      title,
+      drag,
+      filterEnabled,
+      from
+    }: TitleWithFilterProps,
+    ref
+  ) => {
+    const [filterShown, setShowFilter] = useState(false)
+    const inputRef = useRef<HTMLInputElement>(null)
 
-  useEffect(() => {
-    const handleShortcut = (event: KeyboardEvent) => {
-      if (event.key === "L" && event.shiftKey && event.metaKey) {
-        setShowFilter((f) => !f)
+    useEffect(() => {
+      if (filterShown) inputRef.current?.focus()
+      else inputRef.current?.blur()
+    }, [filterShown])
+
+    const bind = useDrag(
+      ({ movement: [x, y], first, last, xy, _bounds }) => {
+        console.log(xy)
+        if (first) {
+          onDragStart({ x, y })
+        } else if (last) {
+          onDragEnd({ x, y, xy, bounds: _bounds })
+        } else {
+          onDrag({ x, y })
+        }
+      },
+      {
+        filterTaps: true,
+        from: ({ offset: [x, y] }) => [from?.x || x, from?.y || y]
       }
-    }
-    window.addEventListener("keydown", handleShortcut)
-    return () => window.removeEventListener("keydown", handleShortcut)
-  }, [])
+    )
 
-  return (
-    <>
-      <StyledTitleWithFilter mode={drag ? "drag" : undefined}>
-        <Icon active={!toggled} onClick={() => toggle()}>
-          <Chevron toggled={toggled} width={12} height={8} />
-        </Icon>
-        <TitleContainer {...(drag ? bind() : {})} drag={drag}>
-          {title === undefined && drag ? (
-            <svg
-              width="20"
-              height="10"
-              viewBox="0 0 28 14"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <circle cx="2" cy="2" r="2" />
-              <circle cx="14" cy="2" r="2" />
-              <circle cx="26" cy="2" r="2" />
-              <circle cx="2" cy="12" r="2" />
-              <circle cx="14" cy="12" r="2" />
-              <circle cx="26" cy="12" r="2" />
-            </svg>
-          ) : (
-            title
-          )}
-        </TitleContainer>
-        {filterEnabled && (
-          <Icon active={filterShown} onClick={() => setShowFilter((f) => !f)}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="20"
-              viewBox="0 0 20 20"
-            >
-              <path d="M9 9a2 2 0 114 0 2 2 0 01-4 0z" />
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a4 4 0 00-3.446 6.032l-2.261 2.26a1 1 0 101.414 1.415l2.261-2.261A4 4 0 1011 5z"
-                clipRule="evenodd"
-              />
-            </svg>
+    useEffect(() => {
+      const handleShortcut = (event: KeyboardEvent) => {
+        if (event.key === "L" && event.shiftKey && event.metaKey) {
+          setShowFilter((f) => !f)
+        }
+      }
+      window.addEventListener("keydown", handleShortcut)
+      return () => window.removeEventListener("keydown", handleShortcut)
+    }, [])
+
+    return (
+      <>
+        <StyledTitleWithFilter
+          mode={drag ? "drag" : undefined}
+          ref={ref}
+          ghost={ghost}
+        >
+          <Icon active={!toggled} onClick={() => toggle()}>
+            {/* <Chevron toggled={toggled} width={12} height={8} /> */}
           </Icon>
-        )}
-      </StyledTitleWithFilter>
-      <FilterWrapper toggled={filterShown}>
-        <FilterInput ref={inputRef} setFilter={setFilter} toggle={toggle} />
-      </FilterWrapper>
-    </>
-  )
-}
+          <TitleContainer {...(drag ? bind() : {})} drag={drag}>
+            {title === undefined && drag ? (
+              <svg
+                width="20"
+                height="10"
+                viewBox="0 0 28 14"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="2" cy="2" r="2" />
+                <circle cx="14" cy="2" r="2" />
+                <circle cx="26" cy="2" r="2" />
+                <circle cx="2" cy="12" r="2" />
+                <circle cx="14" cy="12" r="2" />
+                <circle cx="26" cy="12" r="2" />
+              </svg>
+            ) : (
+              title
+            )}
+          </TitleContainer>
+          {filterEnabled && (
+            <Icon active={filterShown} onClick={() => setShowFilter((f) => !f)}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="20"
+                viewBox="0 0 20 20"
+              >
+                <path d="M9 9a2 2 0 114 0 2 2 0 01-4 0z" />
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a4 4 0 00-3.446 6.032l-2.261 2.26a1 1 0 101.414 1.415l2.261-2.261A4 4 0 1011 5z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </Icon>
+          )}
+        </StyledTitleWithFilter>
+        <FilterWrapper toggled={filterShown}>
+          <FilterInput ref={inputRef} setFilter={setFilter} toggle={toggle} />
+        </FilterWrapper>
+      </>
+    )
+  }
+)
