@@ -489,7 +489,7 @@ export class Editor<
         key,
         ref: forwardRef ? ref : undefined,
         children:
-          props.children === "function"
+          typeof props.children === "function"
             ? props.children
             : createElement(Fragment, null, props.children, moreChildren)
       }

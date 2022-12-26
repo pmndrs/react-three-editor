@@ -1,7 +1,7 @@
-import { memo } from "@react-three/editor/fiber"
 import { useFrame, Vector3 } from "@react-three/fiber"
 import { RigidBody, RigidBodyApi } from "@react-three/rapier"
 import { useRef, useState } from "react"
+import { memo } from "../memo"
 
 export function BlockLimbo({ position = [0, 0, 0] }: { position: Vector3 }) {
   const obstacle = useRef<RigidBodyApi>(null)

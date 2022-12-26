@@ -1,5 +1,5 @@
-import { memo } from "@react-three/editor/fiber"
 import { Vector3 } from "@react-three/fiber"
+import { memo } from "../memo"
 
 export const boxGeometry = <memo.boxGeometry />
 

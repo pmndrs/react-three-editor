@@ -21,6 +21,6 @@
     "../packages/*",
     "../../packages/editor/src/fiber/EditorPanel.tsx",
     "../../packages/editor/src/rapier.tsx",
-    "../../packages/editor/src/fiber/memo.tsx"
+    "src/memo.tsx"
   ]
 }

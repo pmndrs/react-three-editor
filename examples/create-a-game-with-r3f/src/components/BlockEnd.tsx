@@ -1,7 +1,7 @@
 import { useGLTF } from "@react-three/drei"
-import { memo } from "@react-three/editor/fiber"
 import { Vector3 } from "@react-three/fiber"
 import { RigidBody } from "@react-three/rapier"
+import { memo } from "../memo"
 
 export function BlockEnd({ position }: { position: Vector3 }) {
   return (

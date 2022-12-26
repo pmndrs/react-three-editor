@@ -6,6 +6,7 @@ export {
   useThree
 } from "@react-three/fiber"
 export { button, buttonGroup, folder, levaStore as defaultPanel } from "leva"
+export { memo } from "../../../../examples/create-a-game-with-r3f/src/memo"
 export {
   editable,
   Editable,
@@ -20,7 +21,6 @@ export { PerformanceControls } from "./controls/PerformanceControls"
 export { SceneControls } from "./controls/SceneControls"
 export { SelectedElementControls } from "./controls/SelectedElementControls"
 export { editor } from "./editor"
-export { memo } from "./memo"
 export {
   Stages,
   useEditorFrame,
@@ -30,6 +30,5 @@ export {
 } from "./useFrame"
 
 export function extendControls(t: any, controls: Record<string, {}>) {
-  
   t.controls = controls
 }

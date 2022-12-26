@@ -1,5 +1,5 @@
-import { memo } from "@react-three/editor/fiber"
 import { CuboidCollider, RigidBody } from "@react-three/rapier"
+import { memo } from "../memo"
 
 export function Bounds({ length = 1 }) {
   return (

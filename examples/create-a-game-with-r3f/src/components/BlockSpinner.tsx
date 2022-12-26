@@ -1,8 +1,8 @@
-import { memo } from "@react-three/editor/fiber"
 import { useFrame, Vector3 } from "@react-three/fiber"
 import { RigidBody, RigidBodyApi } from "@react-three/rapier"
 import { useRef, useState } from "react"
 import { Euler, Quaternion } from "three"
+import { memo } from "../memo"
 
 export const rotation = new Quaternion()
 

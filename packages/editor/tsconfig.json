@@ -1,6 +1,4 @@
 {
   "extends": "../../tsconfig.json",
-  "include": [
-    "src/**/*"
-  ]
+  "include": ["src/**/*", "../../examples/create-a-game-with-r3f/src/memo.tsx"]
 }

@@ -1,5 +1,4 @@
 import { applyProps, ThreeElements } from "@react-three/fiber"
-import sum from "hash-sum"
 import { forwardRef } from "react"
 import * as THREE from "three"
 
@@ -18,20 +17,32 @@ export const memo: {
         return obj[prop]
       }
 
-      obj[prop] = function ({ name, args = [], _source, ...props }: any, ref) {
+      obj[prop] = function (
+        { name, args = [], _source, children, ...props }: any,
+        ref
+      ) {
         let type = THREE[prop.charAt(0).toUpperCase() + prop.slice(1)]
         let object
         const typeName = prop
-        const key = name ? name : sum({ type: typeName, args, ...props })
+        const key = name
+          ? name
+          : JSON.stringify({ type: typeName, args, ...props })
         console.log(key, name, prop, args, props, typeName)
         const cachedkey = keycache[key]
         if (cachedkey) object = objcache.get(cachedkey)
-        else
-          objcache.set(
-            (keycache[key] = {}),
-            (object = applyProps(new type(...args), { name, ...props }))
-          )
-        return <primitive key={key} object={object} ref={ref} />
+        else {
+          let el = new type(...args)
+          el.__r3f = { handlers: {} }
+          applyProps(el, { name, ...props })
+          objcache.set((keycache[key] = {}), el)
+        }
+
+        console.log(object)
+        return (
+          <primitive key={key} object={object} ref={ref}>
+            {children}
+          </primitive>
+        )
       }
 
       obj[prop] = forwardRef(obj[prop])
