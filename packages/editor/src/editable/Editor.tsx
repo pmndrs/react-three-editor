@@ -39,7 +39,8 @@ const machine = createMachine({
   id: "editor"
 })
 
-type Panel = StoreType & { store: StoreType }
+levaStore.name = "settings"
+type Panel = StoreType & { store: StoreType; name: string }
 
 export type EditorStoreStateType = {
   selectedId: null | string
@@ -61,6 +62,7 @@ import {
   Subscribable
 } from "xstate"
 import { editorMachine } from "./editor.machine"
+import { panelMachine } from "./panels.machine"
 
 export type Store<M> = M extends StateMachine<
   infer Context,
@@ -105,6 +107,7 @@ type Diff = {
 export class Editor<
   T extends EditableElement = EditableElement
 > extends EventTarget {
+  uiPanels: any
   useSelectedElement() {
     return this.useState(() => this.selectedElement)
   }
@@ -114,6 +117,13 @@ export class Editor<
   }
   setMode(mode: string): void {
     this.settingsPanel.setValueAtPath(this.modePath, mode, true)
+  }
+
+  dockPanel(arg0: string, arg1: string) {
+    this.setSettings({
+      ["panels." + arg0 + ".side"]: arg1,
+      ["panels." + arg0 + ".floating"]: false
+    })
   }
   /**
    * Constructor used to create the editableElement. The default is the EditableElement class
@@ -168,68 +178,61 @@ export class Editor<
     this.store = createEditorStore()
     this.useStore = this.store
 
-    let prevState = localStorage.getItem("r3f-editor.machine")
-    if (prevState) {
-      prevState = JSON.parse(prevState)
-    }
+    const service = getService(
+      interpret(editorMachine, {
+        devTools: true
+      }),
+      "r3f-editor.machine"
+    )
 
-    const service = interpret(editorMachine, {
-      execute: false, // do not execute actions on state transitions,
-      devTools: true
-    })
+    this.uiPanels = interpret(
+      panelMachine.withConfig({
+        actions: {
+          dockToLeftPanel: (context, event) => {
+            this.dockPanel(
+              typeof event.panel === "string" ? event.panel : event.panel.name,
+              "left"
+            )
+          },
+          dockToRightPanel: (context, event) => {
+            this.dockPanel(
+              typeof event.panel === "string" ? event.panel : event.panel.name,
+              "right"
+            )
+          },
+          setDragPosition: (context, event) => {
+            console.log({ ...event })
+            this.setSettings({
+              ["panels." +
+              (typeof event.panel === "string"
+                ? event.panel
+                : event.panel.name) +
+              ".position"]: event.event.xy
+            })
+          },
 
-    service.onTransition((state) => {
-      localStorage.setItem("r3f-editor.machine", JSON.stringify(state))
-    })
-
-    service.start(prevState ? State.create(prevState as any) : undefined)
+          float: (context, event) => {
+            this.setSettings({
+              ["panels." +
+              (typeof event.panel === "string"
+                ? event.panel
+                : event.panel.name) +
+              ".floating"]: true
+            })
+          }
+        }
+      }),
+      {
+        devTools: true
+      }
+    )
+      .onTransition(console.log)
+      .start()
 
     this.service = service
     this.send = service.send.bind(service)
     this.rootId = ""
-    // this.store = create<EditorStoreStateType>((set, get) => {
-    //   // const stateDefinition =
-    //   //   JSON.parse(localStorage.getItem("r3f-editor.machine")) ||
-    //   //   editorMachine.initialState
 
-    //   let service = interpret(
-    //     editorMachine.withContext({
-    //       editor: el,
-    //       selectedElement: null
-    //     })
-    //   )
-    //     .onTransition((state) => {
-    //       const initialStateChanged =
-    //         state.changed === undefined && Object.keys(state.children).length
-
-    //       if (state.changed || initialStateChanged) {
-    //         set({ state })
-    //       }
-
-    //       state.context.editor = undefined
-    //       state.context.event = undefined
-    //       localStorage.setItem(
-    //         "r3f-editor.machine",
-    //         JSON.stringify(state.context)
-    //       )
-    //       state.context.editor = el
-    //     })
-    //     .start()
-
-    //   // service.send({ type: "SET_EDITOR", editor: this })
-
-    //   return {
-    //     selectedId: null,
-    //     selectedKey: null,
-    //     elements: {
-    //       root: new EditableElement("root", {} as any, "editor", null)
-    //     },
-    //     state: service.getSnapshot(),
-    //     send: service.send,
-    //     service,
-    //     settingsPanel: "default"
-    //   }
-    // })()
     this.expanded = localStorage.getItem("collapased")
       ? new Set(JSON.parse(localStorage.getItem("collapased")!))
       : new Set()
@@ -500,6 +503,7 @@ export class Editor<
 
       // @ts-ignore
       panels[name].panel.store = panels[name].panel
+      panels[name].panel.name = name
 
       this.panelStore.setState(() => ({
         panels
@@ -564,6 +568,10 @@ export class Editor<
   setSettings(values: any) {
     this.settingsPanel.useStore.setState(({ data }) => {
       for (let key in values) {
+        if (!data[this.settingsPath(key)]) {
+          debugger
+        }
+
         data[this.settingsPath(key)].value = values[key]
       }
       return { data }
@@ -669,3 +677,21 @@ export class Editor<
 }
 
 export const EditorContext = createContext<Editor | null>(null)
+function getService<T extends Interpreter<any, any, any, any>>(
+  ser: T,
+  key: any
+) {
+  let prevState = localStorage.getItem(key)
+  if (prevState) {
+    prevState = JSON.parse(prevState)
+  }
+
+  const service = ser
+
+  service.onTransition((state) => {
+    localStorage.setItem(key, JSON.stringify(state))
+  })
+
+  service.start(prevState ? State.create(prevState as any) : undefined)
+  return service
+}

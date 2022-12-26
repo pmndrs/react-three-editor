@@ -3,25 +3,27 @@
 
 import { useSelector } from "@xstate/react"
 import { useEffect, useRef } from "react"
-import { panelService } from "../ui/panels/panelService"
 import { TitleWithFilter } from "../ui/panels/PanelTitle"
+import { useEditor } from "./useEditor"
 
 export function PanelGhost({ panel }) {
   let ref = useRef<HTMLDivElement>(null)
-  const dragging = useSelector(panelService, (s) =>
-    s.matches("dragging") && s.context.draggingPanel === panel
+  const editor = useEditor()
+  const dragging = useSelector(editor.uiPanels, (s) =>
+    !s.matches("idle") && s.context.draggingPanel === panel
       ? s.context.draggingPanel
       : null
   )
 
   useEffect(() => {
-    return panelService.subscribe((s) => {
+    return editor.uiPanels.subscribe((s) => {
       if (ref.current) {
-        ref.current.style.top = `${s.context.dragPosition.y}px`
-        ref.current.style.left = `${s.context.dragPosition.x + 100}px`
+        ref.current.style.top = `${s.event.event.movement[1]}px`
+        ref.current.style.left = `${s.event.event.movement[0] + 100}px`
       }
     }).unsubscribe
   }, [])
+
   return dragging ? (
     <TitleWithFilter
       title={dragging}

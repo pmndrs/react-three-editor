@@ -7,19 +7,37 @@ export interface Typegen0 {
   }
   invokeSrcNameMap: {}
   missingImplementations: {
-    actions: never
+    actions:
+      | "dockToLeftPanel"
+      | "dockToRightPanel"
+      | "float"
+      | "setDragPosition"
+      | "stopDragging"
     delays: never
     guards: never
     services: never
   }
   eventsCausingActions: {
+    dockToLeftPanel: "STOP_DRAGGING"
+    dockToRightPanel: "STOP_DRAGGING"
+    float: "STOP_DRAGGING"
     setDragPosition: "DRAGGING"
-    startDragging: "START_DRAGGING"
+    startDragging: "DRAGGING"
     stopDragging: "STOP_DRAGGING"
   }
   eventsCausingDelays: {}
-  eventsCausingGuards: {}
+  eventsCausingGuards: {
+    isDockingCenter: "DRAGGING"
+    isDockingLeft: "DRAGGING"
+    isDockingRight: "DRAGGING"
+    isFloating: "DRAGGING"
+  }
   eventsCausingServices: {}
-  matchesStates: "dragging" | "idle"
+  matchesStates:
+    | "dockingLeft"
+    | "dockingRight"
+    | "draggingGhost"
+    | "floating"
+    | "idle"
   tags: never
 }
