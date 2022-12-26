@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import {
   createContext,
   createElement,
@@ -7,8 +8,7 @@ import {
   useId,
   useMemo
 } from "react"
-import { EditableElement } from "./EditableElement"
-
+import { EditableElement, EditableElementContext } from "./EditableElement"
 import { levaStore, useControls } from "leva"
 import {
   Schema,
@@ -19,22 +19,22 @@ import create from "zustand"
 import {
   SchemaOrFn,
   usePersistedControls
-} from "./controls/usePersistedControls"
-import { Editable, editable } from "./editable"
-import { EditableElement } from "./EditableElement"
-import { EditableElementContext } from "./EditableElementContext"
 } from "../ui/leva/usePersistedControls"
 import { usePanel } from "../ui/panels/LevaPanel"
 import { createLevaStore } from "./createStore"
-import { editable } from "./editable"
-import { EditableElementContext } from "./EditableElement"
+import { Editable, editable } from "./editable"
 import { HistoryManager } from "./HistoryManager"
-
-import { createMachine } from "xstate"
+import {
+  createMachine,
+  ActorRef,
+  interpret,
+  Interpreter,
+  State,
+  StateMachine,
+  Subscribable
+} from "xstate"
 import { CommandManager } from "../commandbar"
 import { EditPatch, JSXSource, RpcServerFunctions } from "../types"
-import { EditableElementProvider } from "./EditableElementProvider"
-import { ComponentLoader } from "../component-loader"
 import { BaseEditableElement } from "./BaseEditableElement"
 
 class PanelManager {
@@ -58,16 +58,9 @@ export type EditorStoreStateType = {
 }
 
 import { useSelector } from "@xstate/react"
-import {
-  ActorRef,
-  interpret,
-  Interpreter,
-  State,
-  StateMachine,
-  Subscribable
-} from "xstate"
-import { editorMachine } from "./editor.machine"
 import { BirpcReturn } from "birpc"
+import { editorMachine } from "./editor.machine"
+import { ComponentLoader } from "../component-loader"
 
 export type Store<M> = M extends StateMachine<
   infer Context,
@@ -175,7 +168,10 @@ export class Editor<
 
   machine = editorMachine
 
-  constructor(public plugins: any[], public client: BirpcReturn<RpcServerFunctions>) {
+  constructor(
+    public plugins: any[],
+    public client: BirpcReturn<RpcServerFunctions>
+  ) {
     super()
     this.store = createEditorStore()
     this.useStore = this.store
@@ -577,7 +573,8 @@ export class Editor<
   }
 
   getSetting(arg0: string): number[] | ArrayLike<number> {
-    return this.settingsPanel.getData()[this.settingsPath(arg0)].value as any
+    return this.settingsPanel.getInput(this.settingsPath(arg0))
+      ?.value as ArrayLike<number>
   }
 
   setSetting(arg0: string, arg1: any) {
