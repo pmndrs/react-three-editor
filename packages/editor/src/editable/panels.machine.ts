@@ -32,55 +32,105 @@ export const panelMachine =
                 actions: ["startDragging"]
               },
               {
-                target: "draggingGhost",
+                cond: "isDockingLeft",
+                target: "draggingGhost.dockingLeft",
+                actions: ["startDragging"]
+              },
+              {
+                cond: "isDockingRight",
+                target: "draggingGhost.dockingRight",
                 actions: ["startDragging"]
               }
             ]
           }
         },
         draggingGhost: {
-          on: {
-            DRAGGING: [
-              {
-                cond: "isDockingLeft",
-                target: "dockingLeft",
-                actions: ["setDragPosition"]
-              },
-              {
-                cond: "isDockingRight",
-                target: "dockingRight",
-                actions: ["setDragPosition"]
-              },
-              {
-                cond: "isFloating",
-                target: "floating",
-                actions: ["setDragPosition"]
-              },
-              {
-                actions: ["setDragPosition"]
+          states: {
+            idle: {
+              always: [
+                {
+                  cond: "isDockingLeft",
+                  target: "dockingLeft"
+                },
+                {
+                  cond: "isDockingRight",
+                  target: "dockingRight"
+                },
+                {
+                  cond: "isFloating",
+                  target: "floating"
+                }
+              ]
+            },
+            dockingLeft: {
+              on: {
+                STOP_DRAGGING: {
+                  target: "#panels.idle",
+                  actions: ["stopDragging", "dockToLeftPanel"]
+                },
+                DRAGGING: [
+                  {
+                    cond: "isDockingRight",
+                    target: "dockingRight"
+                  },
+                  {
+                    cond: "isDockingCenter",
+                    target: "floating"
+                  }
+                ]
               }
-            ],
-            STOP_DRAGGING: {
-              target: "idle",
-              actions: ["stopDragging"]
+            },
+            floating: {
+              on: {
+                DRAGGING: [
+                  {
+                    cond: "isDockingLeft",
+                    target: "dockingLeft"
+                  },
+                  {
+                    cond: "isDockingRight",
+                    target: "dockingRight"
+                  }
+                ],
+                STOP_DRAGGING: {
+                  target: "#panels.idle",
+
+                  actions: ["undock", "float"]
+                }
+              }
+            },
+            dockingRight: {
+              on: {
+                STOP_DRAGGING: {
+                  target: "#panels.idle",
+
+                  actions: ["stopDragging", "dockToRightPanel"]
+                },
+                DRAGGING: [
+                  {
+                    cond: "isDockingLeft",
+                    target: "dockingLeft"
+                  },
+                  {
+                    cond: "isDockingCenter",
+                    target: "floating"
+                  }
+                ]
+              }
             }
-          }
+          },
+          initial: "idle"
         },
         floating: {
           on: {
             DRAGGING: [
               {
                 cond: "isDockingLeft",
-                target: "dockingLeft",
-                actions: ["setDragPosition"]
+                target: "dockingLeft"
               },
               {
                 cond: "isDockingRight",
-                target: "dockingRight",
-                actions: ["setDragPosition"]
-              },
-              {
-                actions: ["setDragPosition"]
+                target: "dockingRight"
               }
             ],
             STOP_DRAGGING: {
@@ -98,16 +148,11 @@ export const panelMachine =
             DRAGGING: [
               {
                 cond: "isDockingRight",
-                target: "dockingRight",
-                actions: ["setDragPosition"]
+                target: "dockingRight"
               },
               {
                 cond: "isDockingCenter",
-                target: "floating",
-                actions: ["setDragPosition"]
-              },
-              {
-                actions: ["setDragPosition"]
+                target: "floating"
               }
             ]
           }
@@ -121,17 +166,13 @@ export const panelMachine =
             DRAGGING: [
               {
                 cond: "isDockingLeft",
-                target: "dockingLeft",
-                actions: ["setDragPosition"]
+                target: "dockingLeft"
               },
               {
                 cond: "isDockingCenter",
-                target: "floating",
-                actions: ["setDragPosition"]
+                target: "floating"
               },
-              {
-                actions: ["setDragPosition"]
-              }
+              {}
             ]
           }
         }
@@ -157,9 +198,6 @@ export const panelMachine =
             event.event.xy[0] > 210 &&
             event.event.xy[0] < window.innerWidth - 250
           )
-        },
-        isFloating: (context, event) => {
-          return true
         }
       }
     }

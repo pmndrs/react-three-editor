@@ -125,7 +125,7 @@ export class Editor<
       {
         preventDefault: true
       },
-      [shortcut, execute]
+      [shortcut[name], execute]
     )
   }
   useSelectedElement() {
@@ -215,6 +215,17 @@ export class Editor<
 
     this.uiPanels = interpret(
       panelMachine.withConfig({
+        guards: {
+          isFloating: (context, event) => {
+            return this.getSetting(
+              "panels." +
+                (typeof event.panel === "string"
+                  ? event.panel
+                  : event.panel.name) +
+                ".floating"
+            ) as boolean
+          }
+        },
         actions: {
           dockToLeftPanel: (context, event) => {
             this.dockPanel(
@@ -228,24 +239,34 @@ export class Editor<
               "right"
             )
           },
-          setDragPosition: (context, event) => {
-            console.log({ ...event })
+          stopDragging: (context, event) => {
+            let panelId =
+              "panels." +
+              (typeof event.panel === "string" ? event.panel : event.panel.name)
+            let prevPosition = this.getSetting(panelId + ".position")
             this.setSettings({
-              ["panels." +
-              (typeof event.panel === "string"
-                ? event.panel
-                : event.panel.name) +
-              ".position"]: event.event.xy
+              [panelId + ".position"]: [
+                prevPosition[0] + event.event.movement[0],
+                prevPosition[1] + event.event.movement[1]
+              ]
+            })
+          },
+
+          undock: (context, event) => {
+            let panelId =
+              typeof event.panel === "string" ? event.panel : event.panel.name
+
+            this.setSettings({
+              ["panels." + panelId + ".floating"]: false,
+              ["panels." + panelId + ".position"]: event.event.xy
             })
           },
 
           float: (context, event) => {
+            let panelId =
+              typeof event.panel === "string" ? event.panel : event.panel.name
             this.setSettings({
-              ["panels." +
-              (typeof event.panel === "string"
-                ? event.panel
-                : event.panel.name) +
-              ".floating"]: true
+              ["panels." + panelId + ".floating"]: true
             })
           }
         }
@@ -254,7 +275,7 @@ export class Editor<
         devTools: true
       }
     )
-      .onTransition(console.log)
+      .onTransition(() => {})
       .start()
 
     this.service = service

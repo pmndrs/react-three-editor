@@ -10,7 +10,7 @@ export const CommandBar: FC<CommandBarProps> = () => {
   const editor = useEditor()
   const open = editor.commands.store((state) => state.open)
 
-  editor.useKeyboardShortcut("command-bar", "meta-k", () =>
+  editor.useKeyboardShortcut("command-bar", "meta+k", () =>
     editor.commands.toggleCommandBar()
   )
 

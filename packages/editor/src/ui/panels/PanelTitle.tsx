@@ -186,7 +186,7 @@ export const TitleWithFilter = forwardRef(
       toggled,
       title,
       drag,
-      filterEnabled,
+      filterEnabled = true,
       from
     }: TitleWithFilterProps,
     ref
@@ -232,7 +232,7 @@ export const TitleWithFilter = forwardRef(
           ghost={ghost}
         >
           <Icon active={!toggled} onClick={() => toggle()}>
-            <Chevron toggled={toggled} width={12} height={8} />
+            <Chevron toggled={toggled} width={12} height={8} hidden />
           </Icon>
           <TitleContainer {...(drag ? bind() : {})} drag={drag}>
             {title === undefined && drag ? (
