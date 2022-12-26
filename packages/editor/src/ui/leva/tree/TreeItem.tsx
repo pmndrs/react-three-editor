@@ -1,4 +1,5 @@
 import { ReactNode, useRef } from "react"
+import ContextMenuDemo from "../../ContextMenu"
 import { Chevron } from "../../folder/Chevron"
 import {
   StyledContent,
@@ -29,11 +30,13 @@ export function TreeItem({
   if (!collapsible) {
     return (
       <StyledFolder dirty={dirty}>
-        <StyledTitle selected={selected} visible={visible}>
-          <Chevron hidden={true} toggled={!collapsed} />
-          <div style={{ marginLeft: "2px" }} />
-          {title}
-        </StyledTitle>
+        <ContextMenuDemo>
+          <StyledTitle selected={selected} visible={visible}>
+            <Chevron hidden={true} toggled={!collapsed} />
+            <div style={{ marginLeft: "2px" }} />
+            {title}
+          </StyledTitle>
+        </ContextMenuDemo>
       </StyledFolder>
     )
   } else {
@@ -75,17 +78,19 @@ function CollapsibleTreeItem({
 
   return (
     <StyledFolder ref={ref} dirty={dirty}>
-      <StyledTitle selected={selected} visible={visible}>
-        <Chevron
-          hidden={hideChevron}
-          toggled={!collapsed}
-          onClick={() => {
-            setCollapsed(!collapsed)
-          }}
-        />
-        <div style={{ marginLeft: "2px" }} />
-        {title}
-      </StyledTitle>
+      <ContextMenuDemo>
+        <StyledTitle selected={selected} visible={visible}>
+          <Chevron
+            hidden={hideChevron}
+            toggled={!collapsed}
+            onClick={() => {
+              setCollapsed(!collapsed)
+            }}
+          />
+          <div style={{ marginLeft: "2px" }} />
+          {title}
+        </StyledTitle>
+      </ContextMenuDemo>
       <StyledWrapper isRoot={false} fill={true} flat={true}>
         <StyledContent isRoot={false} toggled={!collapsed}>
           <div>{children}</div>
