@@ -169,9 +169,11 @@ export type TitleWithFilterProps = FilterProps & {
   drag: boolean
   filterEnabled: boolean
   from?: { x?: number; y?: number }
+  ghost?: boolean
+  toggled?: boolean
 }
 
-export const TitleWithFilter = forwardRef(
+export const TitleWithFilter = forwardRef<HTMLDivElement, TitleWithFilterProps>(
   (
     {
       setFilter,
@@ -185,7 +187,7 @@ export const TitleWithFilter = forwardRef(
       drag,
       filterEnabled,
       from
-    }: TitleWithFilterProps,
+    },
     ref
   ) => {
     const [filterShown, setShowFilter] = useState(false)
@@ -198,7 +200,6 @@ export const TitleWithFilter = forwardRef(
 
     const bind = useDrag(
       ({ movement: [x, y], first, last, xy, _bounds }) => {
-        console.log(xy)
         if (first) {
           onDragStart({ x, y })
         } else if (last) {
