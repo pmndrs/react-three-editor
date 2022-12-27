@@ -1,6 +1,6 @@
 import { PluginItem, types as t } from "@babel/core"
 import react from "@vitejs/plugin-react"
-import { reactThreeEditorBabel, JSXElementType } from "./babel"
+import { JSXElementType, reactThreeEditorBabel } from "./babel"
 import { editor } from "./server"
 
 const transformElements = [
@@ -56,35 +56,38 @@ export type PluginOptions = {
 export function r3f({
   babelPlugins = [],
   editable = shouldEdit,
-  componentsDir = "src/__reactThreeEditor"
+  enabled = true,
+  componentsDir = "src/components"
 }: PluginOptions = {}) {
-  return [
-    editor(),
-    react({
-      babel: {
-        plugins: [
-          ...babelPlugins,
-          [
-            reactThreeEditorBabel,
-            {
-              importPath: "@react-three/editor/fiber",
-              replaceImports: {
-                "@react-three/fiber": "@react-three/editor/fiber"
-              },
-              imports: {
-                path: "@react-three/editor/fiber",
-                imports: [
-                  "editable",
-                  "Editable",
-                  "useEditorFrame",
-                  "useEditorUpdate"
-                ]
-              },
-              isEditable: editable
-            }
-          ]
-        ]
-      }
-    })
-  ]
+  return enabled
+    ? [
+        editor(),
+        react({
+          babel: {
+            plugins: [
+              ...babelPlugins,
+              [
+                reactThreeEditorBabel,
+                {
+                  importPath: "@react-three/editor/fiber",
+                  replaceImports: {
+                    "@react-three/fiber": "@react-three/editor/fiber"
+                  },
+                  imports: {
+                    path: "@react-three/editor/fiber",
+                    imports: [
+                      "editable",
+                      "Editable",
+                      "useEditorFrame",
+                      "useEditorUpdate"
+                    ]
+                  },
+                  isEditable: editable
+                }
+              ]
+            ]
+          }
+        })
+      ]
+    : [react()]
 }

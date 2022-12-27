@@ -230,6 +230,7 @@ export class EditableElement<
     this.refs.setMoreChildren = setMoreChildren
     this.refs.key = key
     this.mounted = mounted
+    this.refs.moreChildren = moreChildren
 
     // useState so that this runs only once when the item is created
     useState(() => {

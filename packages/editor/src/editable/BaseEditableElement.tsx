@@ -1,4 +1,5 @@
 import { FC, PropsWithChildren } from "react"
+import { BoundsHelper } from "../fiber/controls/BoundsHelper"
 
 import { EditableElementContext } from "./EditableElement"
 import { Helpers } from "./Helpers"
@@ -35,8 +36,10 @@ export const BaseEditableElement: FC<EditableElementProps> = ({
   } else {
     return (
       <EditableElementContext.Provider value={editableElement}>
-        <editableElement.type {...editableProps} />
-        <Helpers />
+        <BoundsHelper editableElement={editableElement} props={props}>
+          <editableElement.type {...editableProps} />
+          <Helpers />
+        </BoundsHelper>
       </EditableElementContext.Provider>
     )
   }

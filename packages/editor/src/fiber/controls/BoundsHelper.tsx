@@ -2,7 +2,8 @@ import { useHelper } from "@react-three/drei"
 import { applyProps } from "@react-three/fiber"
 import { ReactNode, useEffect, useMemo } from "react"
 import { BoxHelper, Group } from "three"
-import { EditableElement, helpers } from "../../editable"
+import { EditableElement } from "../../editable"
+import { multiToggle } from "../../ui/leva/multiToggle"
 
 export function BoundsHelper({
   editableElement: element,
@@ -19,14 +20,13 @@ export function BoundsHelper({
   element.bounds = item
 
   const [{ bounds }] = element.editor.useSettings("helpers", {
-    ["bounds"]: helpers({
-      label: "bounds"
+    bounds: multiToggle({
+      data: "selected",
+      options: ["all", "selected", "none"]
     })
   })
 
-  const isSelected = element.editor.store(
-    (state) => state.selectedId === element.id
-  )
+  const isSelected = element.useIsSelected()
 
   let ref =
     bounds === "all"

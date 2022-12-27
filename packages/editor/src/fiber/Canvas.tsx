@@ -8,11 +8,13 @@ import { JSXSource } from "../types"
 import { Outs } from "../ui/tunnel"
 import { createMultiTunnel } from "../ui/tunnels"
 import { CameraBounds } from "./CameraBounds"
+import { ComponentsTray } from "./ComponentsTray"
 import { EditorCamera } from "./controls/EditorCamera"
 import { EditorControls } from "./controls/EditorControls"
 import { EditorPanels } from "./controls/EditorPanels"
 import { editor } from "./editor"
 import { PanelGroup } from "./PanelGroup"
+import { ScreenshotCanvas } from "./useScreenshotStore"
 export const editorTunnel = createMultiTunnel()
 export const Editor = editorTunnel.In
 export type CanvasProps = Props & { _source: JSXSource }
@@ -31,6 +33,8 @@ export const Canvas = forwardRef<HTMLCanvasElement, CanvasProps>(
         <EditorContext.Provider value={editor}>
           <EditorPanels />
           <AllCommands />
+          <ScreenshotCanvas />
+          <ComponentsTray />
           <div
             style={{
               display: "flex",

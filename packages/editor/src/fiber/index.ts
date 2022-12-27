@@ -1,12 +1,17 @@
 export {
+  addTail,
+  advance,
   applyProps,
+  createEvents,
   createPortal,
+  createRoot,
   extend,
   useLoader,
   useThree
 } from "@react-three/fiber"
 export { button, buttonGroup, folder, levaStore as defaultPanel } from "leva"
-export { memo } from "../../../../examples/create-a-game-with-r3f/src/memo"
+export { default as createTunnel } from "tunnel-rat"
+export { default as createStore } from "zustand"
 export {
   editable,
   Editable,
@@ -15,7 +20,8 @@ export {
   useEditor
 } from "../editable"
 export { useControls } from "../ui/leva/useControls"
-export { Canvas, Editor } from "./Canvas"
+export { createMultiTunnel } from "../ui/tunnels"
+export { Canvas, Editor, EditorRoot } from "./Canvas"
 export { CameraGizmos } from "./controls/CameraGizmos"
 export { PerformanceControls } from "./controls/PerformanceControls"
 export { SceneControls } from "./controls/SceneControls"
@@ -28,6 +34,11 @@ export {
   useFrame,
   useUpdate
 } from "./useFrame"
+export {
+  Screenshot,
+  ScreenshotCanvas,
+  useScreenshotStore
+} from "./useScreenshotStore"
 
 export function extendControls(t: any, controls: Record<string, {}>) {
   t.controls = controls

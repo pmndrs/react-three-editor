@@ -16,6 +16,8 @@ export const editorMachine =
         events: {} as
           | { type: "TOGGLE_MODE" }
           | { type: "START_PLAYING" }
+          | { type: "START_ADDING" }
+          | { type: "STOP_ADDING" }
           | { type: "START_EDITING" }
           | { type: "SELECT"; elementId: string }
           | { type: "CLEAR_SELECTION" }
@@ -34,7 +36,15 @@ export const editorMachine =
                 SELECT: {
                   target: "selected",
                   actions: ["selectElement"]
+                },
+                START_ADDING: {
+                  target: "adding"
                 }
+              }
+            },
+            adding: {
+              on: {
+                STOP_ADDING: "idle"
               }
             },
             selected: {

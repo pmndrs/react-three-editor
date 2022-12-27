@@ -21,6 +21,7 @@ export interface Typegen0 {
   eventsCausingServices: {}
   matchesStates:
     | "editing"
+    | "editing.adding"
     | "editing.idle"
     | "editing.selected"
     | "editing.transforming"
@@ -28,7 +29,7 @@ export interface Typegen0 {
     | "playing.idle"
     | "playing.selected"
     | {
-        editing?: "idle" | "selected" | "transforming"
+        editing?: "adding" | "idle" | "selected" | "transforming"
         playing?: "idle" | "selected"
       }
   tags: never

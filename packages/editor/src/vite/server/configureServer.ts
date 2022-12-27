@@ -1,17 +1,17 @@
-import { transformFromAstAsync, parseAsync, types } from "@babel/core"
+import { transformFromAstAsync, types } from "@babel/core"
 import { parse, prettyPrint } from "@vinxi/recast"
 import { parse as babelParse, parser } from "@vinxi/recast/parsers/babel-ts"
+import glob from "fast-glob"
 import { readFile, writeFile } from "fs-extra"
+import { resolve } from "path"
 import { ViteDevServer } from "vite"
 import { createRPCServer } from "vite-dev-rpc"
 import { EditPatch } from "../../types"
+import { RpcClientFunctions, RpcServerFunctions, ServerOptions } from "../types"
+import { getReactComponents } from "../utils"
 import { filesToSkipOnHmr } from "./filesToSkipOnHmr"
 import { configureMiddlewares } from "./middlewares"
 import { plugins } from "./transform-plugins"
-import { RpcClientFunctions, RpcServerFunctions, ServerOptions } from "../types"
-import { resolve } from "path"
-import glob from "fast-glob"
-import { getReactComponents } from "../utils"
 
 const groupPatchesByFileName = (patches: EditPatch[]) => {
   return patches.reduce((accum, x) => {
@@ -73,10 +73,11 @@ export const configureServer = (options: ServerOptions) => {
           )
         },
         async initializeComponentsWatcher() {
+          return []
           const componentsDir = resolve(
             process.cwd(),
             "src",
-            "__reactThreeEditor",
+            "components",
             "**/*.{tsx,jsx}"
           )
           const componentFiles = await glob(componentsDir, {

@@ -1,5 +1,7 @@
 import * as fiber from "@react-three/fiber"
 import { folder, useControls } from "leva"
+import { useContext } from "react"
+import { EditorContext } from "../editable"
 import { useEditor } from "../editable/useEditor"
 import { toggle } from "../ui/leva/toggle"
 import { usePanel } from "../ui/panels/LevaPanel"
@@ -11,7 +13,8 @@ export function useEditorFrame(
   fn: fiber.RenderCallback,
   ...args: any
 ) {
-  const editor = useEditor()
+  const editor = useContext(EditorContext)
+  if (!editor) return fiber.useFrame(fn, ...args)
   const settingsPanel = editor.store((s) => s.settingsPanel)
   const panelStore = usePanel(settingsPanel)
   const isEditorMode = editor.useStates("editing")
@@ -35,7 +38,7 @@ export function useEditorFrame(
     [panelStore.store]
   )
   return fiber.useFrame((...args) => {
-    if (!isEditorMode && controls.all && controls[name]) {
+    if (controls.all && controls[name]) {
       fn(...args)
     }
   }, ...args)

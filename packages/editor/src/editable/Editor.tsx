@@ -350,6 +350,7 @@ export class Editor<
         })
       ])
     } else {
+      console.log("appendNewElement", componentType)
       element.refs.setMoreChildren?.((children) => [
         ...children,
         createElement(Editable, {
