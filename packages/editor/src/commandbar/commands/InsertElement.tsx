@@ -1,9 +1,9 @@
 import { FC, useEffect } from "react"
+import * as THREE from "three"
+import { BufferGeometry, Material, Object3D } from "three"
+import { ComponentType } from "../../component-loader"
 import { useEditor } from "../../editable"
 import { CommandType } from "../types"
-import { BufferGeometry, Material, Object3D } from "three"
-import * as THREE from "three"
-import { ComponentType } from "../../component-loader"
 
 function isClass(v: any) {
   return typeof v === "function" && /^\s*class\s+/.test(v.toString())
@@ -25,7 +25,13 @@ export const InsertElementsSubCommands: FC = () => {
       return {
         name: component.name,
         type: "command",
-        parentId: "insert-element"
+        parentId: "insert-element",
+        async execute(_editor) {
+          _editor.appendNewElement(
+            _editor.selectedElement ?? _editor.root,
+            component.name.charAt(0).toLowerCase() + component.name.slice(1)
+          )
+        }
       }
     })
     editor.commands.registerCommands(commands)

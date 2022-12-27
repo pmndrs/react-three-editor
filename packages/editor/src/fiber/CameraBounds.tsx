@@ -15,10 +15,13 @@ export function CameraBounds({ children }: { children: ReactNode }) {
 function AssignBounds() {
   const editor = useEditor<ThreeEditor>()
   const size = useThree((s) => s.size)
+  const raycaster = useThree((s) => s.raycaster)
+  const scene = useThree((s) => s.scene)
   const bounds = useBounds()
   editor.canvasSize = size
-
+  editor.raycaster = raycaster
   editor.bounds = bounds
+  editor.scene = scene
 
   return null
 }

@@ -79,7 +79,6 @@ export const useScreenshotStore = createStore<{
       })
     } else {
       for (var key in get().previews) {
-        console.log(key)
         await get().screenshot(key)
       }
       return ""
@@ -101,9 +100,10 @@ const ActiveScreenshot = () => {
         <ambientLight />
         {/* <Physics paused={true}> */}
         <group>
-          <Out />
+          <editor.ContextBridge>
+            <Out />
+          </editor.ContextBridge>
         </group>
-        {/* </Physics> */}
       </>
     )
   }
@@ -112,7 +112,6 @@ const ActiveScreenshot = () => {
 }
 export function ScreenshotCanvas() {
   const setCanvas = useScreenshotStore((s) => s.setCanvas)
-
   return (
     <>
       <div
@@ -124,7 +123,7 @@ export function ScreenshotCanvas() {
           top: -1000
         }}
       >
-        <canvas ref={setCanvas} hidden />
+        <canvas ref={(el) => setCanvas(el)} hidden />
       </div>
     </>
   )

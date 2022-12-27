@@ -24,7 +24,7 @@ import { HistoryManager } from "./HistoryManager"
 import { createMachine } from "xstate"
 import { CommandManager } from "../commandbar"
 import { ComponentLoader } from "../component-loader"
-import { EditPatch, JSXSource, RpcServerFunctions } from "../types"
+import { RpcServerFunctions } from "../types"
 import { BaseEditableElement } from "./BaseEditableElement"
 
 class PanelManager {
@@ -51,6 +51,7 @@ export type EditorStoreStateType = {
 import { useSelector } from "@xstate/react"
 import { BirpcReturn } from "birpc"
 import { useHotkeys } from "react-hotkeys-hook"
+import { Mesh, PlaneGeometry, Raycaster } from "three"
 import {
   ActorRef,
   interpret,
@@ -110,6 +111,7 @@ export class Editor<
   T extends EditableElement = EditableElement
 > extends EventTarget {
   uiPanels: any
+  raycaster: Raycaster
   useKeyboardShortcut(
     name: string,
     initialShortcut: string,
@@ -193,7 +195,7 @@ export class Editor<
   remount?: () => void
   rootId: string
 
-  service
+  editorService
   send
 
   machine = editorMachine
@@ -206,14 +208,57 @@ export class Editor<
     this.store = createEditorStore()
     this.useStore = this.store
 
-    const service = getService(
-      interpret(editorMachine, {
-        devTools: true
+    const panel = new Mesh()
+    panel.geometry = new PlaneGeometry(100, 100)
+    panel.rotation.x = -Math.PI / 2
+
+    let editorService = interpret(
+      editorMachine.withConfig({
+        actions: {
+          addNewElement: (context, event) => {
+            this.appendNewElement(
+              this.selectedElement || this.root,
+              event.state.componentType,
+              {
+                position: [0, 0, 0]
+              }
+            )
+          }
+          // setGhostPosition: assign({
+          //   ghostPosition: (_, event) => {
+          //     // let store = useStore()
+          //     // this.raycaster.
+          //     // if (!panel.parent === this.scene) {
+          //     //   this.scene.add(panel)
+          //     // }
+          //     // let intersect = this.raycaster.intersectObject(panel, false)
+          //     // if (intersect.length > 0) {
+          //     //   console.log(intersect[0].point)
+          //     //   let point = intersect[0].point
+          //     //   return [point.x, point.y, point.z]
+
+          //     //   // entity.transform.position.lerp(pos, 0.25)
+          //     // } else {
+          //     //   return [0, 0, 0]
+          //     // }
+          //     // return [0, 0, 0]
+          //     // vec.unproject(camera)
+          //     // vec.sub(camera.position).normalize()
+          //     // var distance = -camera.position.y / vec.y
+          //     // pos.copy(camera.position).add(vec.multiplyScalar(distance))
+          //     // console.log(pos, entity, distance)
+          //   }
+          // })
+        }
       }),
-      "r3f-editor.machine"
+      {
+        devTools: true
+      }
     )
 
-    this.uiPanels = interpret(
+    const service = getPersistedService(editorService, "r3f-editor.machine")
+
+    let panelService = interpret(
       panelMachine.withConfig({
         guards: {
           isFloating: (context, event) => {
@@ -223,7 +268,7 @@ export class Editor<
                   ? event.panel
                   : event.panel.name) +
                 ".floating"
-            ) as boolean
+            ) as unknown as boolean
           }
         },
         actions: {
@@ -278,7 +323,8 @@ export class Editor<
       .onTransition(() => {})
       .start()
 
-    this.service = service
+    this.uiPanels = panelService
+    this.editorService = service
     this.send = service.send.bind(service)
     this.rootId = ""
 
@@ -295,11 +341,11 @@ export class Editor<
     T,
     TEmitted = TActor extends Subscribable<infer Emitted> ? Emitted : never
   >(selector: (emitted: TEmitted) => T): T {
-    return useSelector(this.service, selector)
+    return useSelector(this.editorService, selector)
   }
 
   get state() {
-    return this.service.getSnapshot()
+    return this.editorService.getSnapshot()
   }
 
   setRef(element: any, ref: any) {}
@@ -336,8 +382,10 @@ export class Editor<
     return element as any as T
   }
 
-  appendNewElement(element: EditableElement, componentType: string) {
+  appendNewElement(element: EditableElement, componentType: string, props) {
+    console.log("appendNewElement", componentType)
     if (typeof componentType === "string") {
+      console.log("appendNewElement", componentType)
       element.refs.setMoreChildren?.((children) => [
         ...children,
         createElement(editable[componentType], {
@@ -346,7 +394,8 @@ export class Editor<
             lineNumber: -1,
             elementName: componentType
           },
-          key: children.length
+          key: children.length,
+          ...props
         })
       ])
     } else {
@@ -360,7 +409,8 @@ export class Editor<
             lineNumber: -1,
             elementName: undefined
           },
-          key: children.length
+          key: children.length,
+          ...props
         } as any)
       ])
     }
@@ -741,7 +791,7 @@ export class Editor<
 }
 
 export const EditorContext = createContext<Editor | null>(null)
-function getService<T extends Interpreter<any, any, any, any>>(
+function getPersistedService<T extends Interpreter<any, any, any, any, any>>(
   ser: T,
   key: any
 ) {
@@ -754,6 +804,7 @@ function getService<T extends Interpreter<any, any, any, any>>(
 
   service.onTransition((state) => {
     localStorage.setItem(key, JSON.stringify(state))
+    console.log(state.toStrings())
   })
 
   service.start(prevState ? State.create(prevState as any) : undefined)

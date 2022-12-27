@@ -1,6 +1,6 @@
 import { Bounds } from "@react-three/drei"
 import { useDrag } from "leva/plugin"
-import { Suspense, useEffect } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { suspend } from "suspend-react"
 import { ComponentType } from "../component-loader"
 import { useEditor } from "../editable"
@@ -9,50 +9,70 @@ import { Screenshot, useScreenshotStore } from "./useScreenshotStore"
 
 const getComponent = async (path, name) => {
   // use import to get the React component from path
-  console.log("getting", path, name)
   const component = await import(path)
   return component[name]
 }
-function LoadComponent({ component }) {
-  const Component = suspend(async () => {
-    return getComponent(component.importPath, component.name)
-  }, [component.importPath, component.name])
+// function LoadComponent({ component }) {
+//   const Component = suspend(async () => {
+//     return getComponent(component.importPath, component.name)
+//   }, [component.importPath, component.name])
 
-  useEffect(() => {
-    useScreenshotStore.setState((s) => {
-      s.previews[component.importPath + component.name].readyForPreview = true
-      return { ...s }
-    })
-    // return () => {
-    // }
-  }, [])
-  return <Component />
-}
+//   useEffect(() => {
+//     useScreenshotStore.setState((s) => {
+//       s.previews[component.importPath + component.name].readyForPreview = true
+//       return { ...s }
+//     })
+//     // return () => {
+//     // }
+//   }, [])
+//   return <Component />
+// }
 function ComponentScreenshot({
   component,
   ...props
 }: {
   component: ComponentType
 }) {
+  const [id] = useState(
+    () => component.importPath + component.name + Math.random()
+  )
+
+  const Component = suspend(async () => {
+    return getComponent(component.importPath, component.name)
+  }, [component.importPath, component.name])
+
+  console.log(id)
   const editor = useEditor()
-  const bind = useDrag((state) => {
-    if (state.first) {
-      editor.send("START_ADDING")
-    } else if (state.last) {
-      editor.send("STOP_ADDING")
-      console.log(document.elementFromPoint(state.xy[0], state.xy[1]))
-      ;(async () => {
-        const Component = await getComponent(
-          component.importPath,
-          component.name
-        )
-        editor.appendNewElement(
-          editor.selectedElement ?? editor.root,
-          Component
-        )
-      })()
+  const bind = useDrag(
+    (state) => {
+      if (state.first) {
+        editor.send("START_ADDING", {
+          state: {
+            movement: state.movement
+          }
+        })
+      } else if (state.last) {
+        editor.send("STOP_DRAGGING", {
+          state: {
+            movement: state.movement,
+            xy: state.xy,
+            elementId: id,
+            componentType: Component
+          }
+        })
+      } else {
+        editor.send("DRAGGING", {
+          state: {
+            movement: state.movement,
+            xy: state.xy
+          }
+        })
+      }
+    },
+    {
+      preventDefault: true
     }
-  })
+  )
   return (
     <Screenshot
       id={component.importPath + component.name}
@@ -66,12 +86,10 @@ function ComponentScreenshot({
           damping={0}
           margin={2}
           observe
-          onFit={() => {
-            console.log("fit")
-          }}
+          onFit={() => {}}
           key={component.importPath + component.name}
         >
-          <LoadComponent component={component} />
+          <Component />
         </Bounds>
       </Suspense>
     </Screenshot>
@@ -79,7 +97,12 @@ function ComponentScreenshot({
 }
 export function ComponentsTray() {
   const components = editor.loader.store((s) => s.components)
-  console.log(components)
+
+  useEffect(() => {
+    setTimeout(() => {
+      useScreenshotStore.getState().screenshot()
+    }, 500)
+  }, [])
 
   return (
     <div
@@ -92,11 +115,10 @@ export function ComponentsTray() {
       }}
     >
       {components.map((c) => (
-        <ComponentScreenshot component={c} key={c.importPath + c.name} />
+        <Suspense key={c.importPath + c.name}>
+          <ComponentScreenshot component={c} />
+        </Suspense>
       ))}
-      <button onClick={() => useScreenshotStore.getState().screenshot()}>
-        screenshot
-      </button>
     </div>
   )
 }

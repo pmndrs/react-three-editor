@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useBounds } from "@react-three/drei"
 import { levaStore } from "leva"
+import { useCallback } from "react"
 import { EditableElement } from "../editable"
 import { Editor } from "../editable/Editor"
 
@@ -37,20 +38,20 @@ export class ThreeEditor extends Editor {
     return [
       element,
       {
-        ...overrideProps
-        // onPointerUp:
-        //   Component === "canvas"
-        //     ? undefined
-        //     : useCallback(
-        //         (e: any) => {
-        //           if (this.state.matches("editing")) {
-        //             props.onPointerUp?.(e)
-        //             e.stopPropagation()
-        //             element.editor.select(element)
-        //           }
-        //         },
-        //         [element]
-        //       )
+        ...overrideProps,
+        onPointerUp:
+          Component === "canvas"
+            ? undefined
+            : useCallback(
+                (e: any) => {
+                  if (this.state.matches("editing")) {
+                    props.onPointerUp?.(e)
+                    e.stopPropagation()
+                    element.editor.select(element)
+                  }
+                },
+                [element]
+              )
       }
     ]
   }

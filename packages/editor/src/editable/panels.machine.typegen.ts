@@ -3,7 +3,6 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   internalEvents: {
-    "": { type: "" }
     "xstate.init": { type: "xstate.init" }
   }
   invokeSrcNameMap: {}
@@ -29,9 +28,9 @@ export interface Typegen0 {
   eventsCausingDelays: {}
   eventsCausingGuards: {
     isDockingCenter: "DRAGGING"
-    isDockingLeft: "" | "DRAGGING"
-    isDockingRight: "" | "DRAGGING"
-    isFloating: "" | "DRAGGING"
+    isDockingLeft: "DRAGGING"
+    isDockingRight: "DRAGGING"
+    isFloating: "DRAGGING"
   }
   eventsCausingServices: {}
   matchesStates:
@@ -41,9 +40,8 @@ export interface Typegen0 {
     | "draggingGhost.dockingLeft"
     | "draggingGhost.dockingRight"
     | "draggingGhost.floating"
-    | "draggingGhost.idle"
     | "floating"
     | "idle"
-    | { draggingGhost?: "dockingLeft" | "dockingRight" | "floating" | "idle" }
+    | { draggingGhost?: "dockingLeft" | "dockingRight" | "floating" }
   tags: never
 }

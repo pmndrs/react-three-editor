@@ -1,14 +1,16 @@
 import { assign, createMachine } from "xstate"
 
 export const editorMachine =
-  /** @xstate-layout N4IgpgJg5mDOIC5SQJYBcD2AnAdKtKAdlDihADZgDEAKgPIDiDAMgKID6AsnQCKsDaABgC6iUAAcMsdCgyExIAB6IAjIIAsAJhwBWAGyadm9SoCcJ0wGZTAGhABPRJoO7BbrZoDsOy95V6AXwC7fGw8CBliUgpqAGUaAEEAJRp2AAVmBIBNAEkAOQYhUSQQSWkCOQVlBDUtXQMjCwtrO0cESxVLHDc3SxNfHtNPIJCIzFx8IhIySipY1jYAYRoihTKZSpLqzUEdHFMDg88zawAOTUsdVsQdHVMcdU89HRVbr1P1W5HwMbDJqNgYEoAGM0JBaIwWBxuHxViV1hV5FtVBptPpDMYzM1bA5EL49jpBJYiS89KYNOZ1N9QhMxlMcICQWCIHNEil0plcgU4RIpBskaBqrU0Q1MeYTji2lo9N0iWodqdTHo+sZqb9aZESIywKDwfFkqkaEkEnlYgAxOhJTj5QoiNZ8xFVRAGQT7QTKwSaFQfdSnTyWa4IO6eHCGYmK07nQSeTSnNXoP50gFAnXMqgJNJpVh5HjsBasTjZlZ2+EO2QCpSIdQaHCeU4qWMaauCNSnK64oOae6eOXuPRmO6WePjcKahkp3UsxZsZLseZLGg5Oh5HmlMubQVOXb7Q5DCXnS6B9TK3QXAbRx4mFTDxNj7WTub55arhHlp0IdSfbpt0yK0wNttjCPSwum8Xo3D0OtOjjYIfgTDUCCiNAsAAQ0IWAADNsAAWymVkDQ5bIbRfdcKyFVF6gxJoJUDHRHl0U49HUDpLl8U4iRvBD6WQtDMJwvD6CYNguF4AQS15co32RGoKPRRosRojs7lOb8mIuL06Pda9YJpUdEJIHj0KwrBcOIR8FxIySN0rBB-XuL0-U8T9xWVdRaOPWsfEEX9PSbYYdPVHBxHIFD7HpGY4jZVJWB4HJF25cS1yssibk0QN61cHoLhjcw6x0TigpCsKogiiEhOhUTLP5d8DEDTptB6OUnmrHwGyCWDCAwCA4AUGl7WS98VEDABaPZd3G3dPFMAr-igfrquk9RJTxDzDDcLwyV9Z4rBmpNphiebHWkoZaJ7HBXmJXLnm8-1drvCdmUOqTNw-T9dB7ViDEVHtTlottQyJbz1MuNs7v0nBDL4kypie6zqh-Ws+hMX1NGMSxlVo0xtH8IYdCm3ZOiMArgtCmHSwG6SG1jWU3CMEG0fbNoOldbxLv0S8Dk0YmivCg7yYWl6GyeGndguHRzmYxm8V-UMvJ8nZPx7QJ2qAA */
+  /** @xstate-layout N4IgpgJg5mDOIC5SQJYBcD2AnAdKtKAdlDihADZgDEAKgPIDiDAMgKID6AsnQCKsDaABgC6iUAAcMsdCgyExIAB6IAjIICsAZhwB2AJwA2ABzqDKo2aMqdAGhABPROpXaALHo8GATDoM71Aa4AvkF2+Nh4EDLEpBTUAMo0AIIASjTsAArMSQCaAJIAcgxCokggktIEcgrKCGpauoYmlpbWdo4Iel4GONaGXpr+6h46XiFhUZi4+EQkZJRU8axsAMI0JQoVMtVltQMqOIJHR+pGejouRq7tiP56OOcGrv7G5vqa4+CTETMx8wnJNLsJI8HiFYoiTZSbbyXaILyuA7HE5nC6aK43OpeQT3AyabqjLw+IxGQQ6T7haaTWY4ACGECixEW9AywNB4I2ZS2VVhoD2agexjurlJ3R86kxgwO-iOPlcggMggGBgMFO+VOiJFgYEoAGM0JBaIwWBxuHxORJoTyaqoNNp9MZTOZWrYHIgzOocOpBJpBO4jJoAjp-Gr0D9qTFtXqDRBmal0llchzIVyrbJeUpbQ0Hc1neY2m6EAY9EZeqZuiXvF51OTQl8wxqCJGdWB9YbEvH2DQUkkCvEAGJ0FKcZOlS2VdM2osqT16BVeLrWaykzSY-Q6XRaH3dZxEqyhqaRTU4KOtmNUJIZDKsAo8djLVicG-rFPjmFTnT4xoqPw6KznZxXQ6T9BBwbFfSMXwfUGA9w2PU821jFY2FSdgllWGg8joAoLXKNMdj5eEvCRZFTnOS5rkLFVXEOAZA2LY5nVgxsaQQ890NYNZcO5Sc4QQfwvF6FRsT3TRBmcVcqM0GiEU8EliO9PRgjrSkjybEgICwWkoCgWYGAACykNAcAAV0IEztVjHgeyYUcoQnAjMwQJ1enlRVIIXREA0xYScRwPECSJYlSVrCYGzUmlNO03TiAMoycHEchaV1WZmToVlrKSWyim4-CM1qFcy28eUFUEGdpJ8lQfxwVwF3UVxNFePRpI+FT1QimI0C0whYAAM2wABbVKOyBRN8hy188Ic-Ks3tJonQsfMgNuExN19LxFvUatIOYjqSC62kev6rAhqZegmDYLheAESaeMc2p6jmx0WiWzEAx6atfXlUZNB-FVdt+fbur6wbhpZLsez7Qdhzs1NpqnD0HnnRcLj-H012eMCt2xeqxJE3bEtpewaX+OMgVYMFMImscpvfPjvB836Hg8Dxau6DRPwJpLib+OIjQu01rty+G+NGHyjEE71jjxMTDG9IwuaJkm+Y4rjbryqcXEMMCWv0M4BlcYtMS20C9C3CxXERLoFba8LCZ5rUW0Qsn0gpvIqYhGm7pm5yvEZ7WXGrYr9CqmtFYdk8nfPc6TSu811ZFwjfbeg53A8CWqqsdwAnD1io-bB81a9jW+J-DRDhnZwAnZ+TjbOMCfUEFdIPORFc+baNDWQ1hUNVzDsOFumk61j7dZLLppKNwtapolnDF8RUFR0ZS60IDAIDgBRKXsoenMojoAFpVVtw9AZ360+OGTENpkqXhPREO51C+tT4jOY4nP3jh6JSrtcN4YyTdAsFYG2YVX7HnpIyKAn97q2mWggQYglqyymXqVZUx8wFwXUpHTuEAYE+1cMML0OhoLDDNpbS2EpCx-k9CQ9ac5zAmDDifLBkUtI6T0oZWAaB8FTnlJ6Gc3h6o1nlFcSSHQ1AbQeHVJShtBjKUwSxGIUUOGxS4cZMyFlIC8L4oQ7QgjqyENQWInyxFQKBz8EFP8IUAZvxwComKUA4rcISklFKxAdFJyuIJZ4BhTB0N8c4Ux1gcDom6MVPE+h1C2OPAdI6oMPFw13gVequgWrnAsGSZea4uj+WLMWUYLMVDt2gUki+39ND3ANvKZqiIrbwLEhuKWZUrheUKSU2IlBPFOWEpBHWlscTSRUPU42TNvDnA2n6FU+4WG4HtnnXB3SHpCJqmIp4jw-HiPdHOIqFYLBEmYSEIAA */
   createMachine(
     {
       tsTypes: {} as import("./editor.machine.typegen").Typegen0,
       id: "editor",
       initial: "editing",
       context: {
-        selectedId: null as string | null
+        selectedId: null as string | null,
+        addingElement: null as { type: string; id: string } | null,
+        ghostPosition: [0, 0, 0] as [number, number, number]
       },
       predictableActionArguments: true,
 
@@ -17,6 +19,8 @@ export const editorMachine =
           | { type: "TOGGLE_MODE" }
           | { type: "START_PLAYING" }
           | { type: "START_ADDING" }
+          | { type: "DRAGGING" }
+          | { type: "STOP_DRAGGING"; componentType: string; id: string }
           | { type: "STOP_ADDING" }
           | { type: "START_EDITING" }
           | { type: "SELECT"; elementId: string }
@@ -38,7 +42,7 @@ export const editorMachine =
                   actions: ["selectElement"]
                 },
                 START_ADDING: {
-                  target: "adding"
+                  target: "draggingGhost.unused"
                 }
               }
             },
@@ -62,6 +66,30 @@ export const editorMachine =
                 SELECT: {
                   target: "selected",
                   actions: ["selectElement"]
+                }
+              }
+            },
+            draggingGhost: {
+              initial: "unused",
+              states: {
+                unused: {
+                  on: {
+                    DRAGGING: {
+                      cond: "isOnCanvas",
+                      target: "placing"
+                    }
+                  }
+                },
+                placing: {
+                  on: {
+                    DRAGGING: {
+                      target: "placing"
+                    },
+                    STOP_DRAGGING: {
+                      target: "#editor.editing.idle",
+                      actions: ["addNewElement"]
+                    }
+                  }
                 }
               }
             },
@@ -111,8 +139,16 @@ export const editorMachine =
           selectedId: (_, event) => event.elementId
         }),
         clearSelection: assign({
-          selectedId: () => null as string | null
+          selectedId: () => null as string | null,
+          addingElement: () => null as { type: string; id: string } | null
         })
+
+        // addNewElement: assign({
+        //   addingElement: (_, ({ componentType, id })) => ({ type: componentType, id }) as { type: string; id: string } | null
+        // })
+      },
+      guards: {
+        isOnCanvas: () => true
       }
     }
   )

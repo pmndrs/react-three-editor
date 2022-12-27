@@ -36,7 +36,7 @@ export const BaseEditableElement: FC<EditableElementProps> = ({
   } else {
     return (
       <EditableElementContext.Provider value={editableElement}>
-        <BoundsHelper editableElement={editableElement} props={props}>
+        <BoundsHelper editableElement={editableElement} props={editableProps}>
           <editableElement.type {...editableProps} />
           <Helpers />
         </BoundsHelper>

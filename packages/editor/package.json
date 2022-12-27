@@ -75,6 +75,7 @@
     "fp-ts": "^2.12.3",
     "fs-extra": "^10.1.0",
     "hash-sum": "^2.0.0",
+    "its-fine": "^1.0.8",
     "leva": "^0.9.34",
     "object-path": "^0.11.8",
     "prettier": "^2.8.0",

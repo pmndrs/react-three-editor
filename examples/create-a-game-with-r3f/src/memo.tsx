@@ -27,7 +27,6 @@ export const memo: {
         const key = name
           ? name
           : JSON.stringify({ type: typeName, args, ...props })
-        console.log(key, name, prop, args, props, typeName)
         const cachedkey = keycache[key]
         if (cachedkey) object = objcache.get(cachedkey)
         else {
@@ -35,9 +34,9 @@ export const memo: {
           el.__r3f = { handlers: {} }
           applyProps(el, { name, ...props })
           objcache.set((keycache[key] = {}), el)
+          object = el
         }
 
-        console.log(object)
         return (
           <primitive key={key} object={object} ref={ref}>
             {children}

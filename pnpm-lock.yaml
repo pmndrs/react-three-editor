@@ -194,6 +194,7 @@ importers:
       '@react-three/fiber': ^8.8.9
       '@react-three/rapier': 0.9.0
       '@types/react': ^18.0.0
+      '@types/react-reconciler': ^0.28.0
       '@types/styled-components': ^5.1.24
       '@use-gesture/react': latest
       '@vitejs/plugin-react': ^2.0.1
@@ -203,6 +204,7 @@ importers:
       react: ^18.2.0
       react-dom: ^18.2.0
       react-merge-refs: ^1.1.0
+      react-reconciler: ^0.29.0
       react-use-measure: ^2.1.1
       react-use-refs: ^1.0.1
       styled-components: ^5.3.5
@@ -220,10 +222,12 @@ importers:
       '@react-three/drei': 9.46.4_xa6xk36nauwxkzngvitxgjpnr4
       '@react-three/editor': link:../../packages/editor
       '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
+      '@types/react-reconciler': 0.28.0
       '@use-gesture/react': 10.2.23_react@18.2.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-merge-refs: 1.1.0
+      react-reconciler: 0.29.0_react@18.2.0
       react-use-measure: 2.1.1_biqbaboplfbrettd7655fr4n2y
       react-use-refs: 1.0.1_react@18.2.0
       styled-components: 5.3.6_biqbaboplfbrettd7655fr4n2y
@@ -550,6 +554,7 @@ importers:
       fp-ts: ^2.12.3
       fs-extra: ^10.1.0
       hash-sum: ^2.0.0
+      its-fine: ^1.0.8
       leva: ^0.9.34
       object-path: ^0.11.8
       prettier: ^2.8.0
@@ -595,6 +600,7 @@ importers:
       fp-ts: 2.13.1
       fs-extra: 10.1.0
       hash-sum: 2.0.0
+      its-fine: 1.0.8_react@18.2.0
       leva: 0.9.34_biqbaboplfbrettd7655fr4n2y
       object-path: 0.11.8
       prettier: 2.8.0
@@ -13810,6 +13816,15 @@ packages:
       '@types/react-reconciler': 0.28.0
       react: 18.2.0
 
+  /its-fine/1.0.8_react@18.2.0:
+    resolution: {integrity: sha512-MagTA9/J6kN3aEQsQu6by3nyrttCm0whCOYo4SfiNzOfYgcr1cb29mJ3zgluaJboaWOL/lHzJeMXi/QGSCfX1Q==}
+    peerDependencies:
+      react: '>=18.0'
+    dependencies:
+      '@types/react-reconciler': 0.28.0
+      react: 18.2.0
+    dev: false
+
   /jake/10.8.5:
     resolution: {integrity: sha512-sVpxYeuAhWt0OTWITwT98oyV0GsXyMlXCF+3L1SuafBVUIr/uILGRB+NqwkzhgXKvoJpDIpQvqkUALgdmQsQxw==}
     engines: {node: '>=10'}
@@ -19499,6 +19514,17 @@ packages:
       loose-envify: 1.4.0
       react: 18.2.0
       scheduler: 0.21.0
+
+  /react-reconciler/0.29.0_react@18.2.0:
+    resolution: {integrity: sha512-wa0fGj7Zht1EYMRhKWwoo1H9GApxYLBuhoAuXN0TlltESAjDssB+Apf0T/DngVqaMyPypDmabL37vw/2aRM98Q==}
+    engines: {node: '>=0.10.0'}
+    peerDependencies:
+      react: ^18.2.0
+    dependencies:
+      loose-envify: 1.4.0
+      react: 18.2.0
+      scheduler: 0.23.0
+    dev: false
 
   /react-refresh/0.11.0:
     resolution: {integrity: sha512-F27qZr8uUqwhWZboondsPx8tnC3Ct3SxZA3V5WyEvujRyyNv0VYPhoBg1gZ8/MV5tubQp76Trw8lTv9hzRBa+A==}

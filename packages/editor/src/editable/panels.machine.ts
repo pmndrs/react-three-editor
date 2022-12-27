@@ -51,22 +51,6 @@ export const panelMachine =
         },
         draggingGhost: {
           states: {
-            idle: {
-              always: [
-                {
-                  cond: "isDockingLeft",
-                  target: "dockingLeft"
-                },
-                {
-                  cond: "isDockingRight",
-                  target: "dockingRight"
-                },
-                {
-                  cond: "isFloating",
-                  target: "floating"
-                }
-              ]
-            },
             dockingLeft: {
               on: {
                 STOP_DRAGGING: {
@@ -124,7 +108,7 @@ export const panelMachine =
               }
             }
           },
-          initial: "idle"
+          initial: "floating"
         },
         floating: {
           on: {

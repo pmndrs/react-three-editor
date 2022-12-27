@@ -73,7 +73,6 @@ export const configureServer = (options: ServerOptions) => {
           )
         },
         async initializeComponentsWatcher() {
-          return []
           const componentsDir = resolve(
             process.cwd(),
             "src",
