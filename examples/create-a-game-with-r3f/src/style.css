@@ -9,3 +9,54 @@ body,
     height: 100%;
     background: ivory;
 }
+
+.image-list {
+    display: flex;
+    position: absolute;
+    bottom: 10px;
+    padding: 20px;
+  }
+  
+  .image-item {
+    height: 80px;
+    width: 80px;
+    background-size: cover;
+    touch-action: none;
+    position: relative;
+    user-select: none;
+  }
+  
+  .image-tag {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 6px 10px;
+    background-color: #111;
+    border-radius: 4px;
+    color: #ccc;
+    font-family: "Arial";
+    font-size: 13px;
+    z-index: 2;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  
+  .Window {
+    height: 80%;
+    width: 80%;
+    position: absolute;
+    left: 20px;
+    top: 20px; 
+    transform: translateZ(0px);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.App {
+    background-color: violet;
+    height: 100%;
+    width: 100%;
+  }
+
+  
