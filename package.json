@@ -90,6 +90,7 @@
     "useTabs": false,
     "semi": false,
     "singleQuote": false,
-    "arrowParens": "always"
+    "arrowParens": "always",
+    "endOfLine": "auto"
   }
 }
