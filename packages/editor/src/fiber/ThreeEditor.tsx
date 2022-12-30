@@ -13,14 +13,6 @@ export class ThreeEditor extends Editor {
     return obj?.__r3f?.editable
   }
 
-  setMode(value: any) {
-    this.settingsPanel.setValueAtPath(this.modePath, value, true)
-    switch (value) {
-      case "editor":
-        this.remount?.()
-    }
-  }
-
   camera: unknown
   bounds!: ReturnType<typeof useBounds>
 

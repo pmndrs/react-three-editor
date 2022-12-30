@@ -19,7 +19,7 @@ export function BoundsHelper({
   // @ts-ignore
   element.bounds = item
 
-  const [{ bounds }] = element.editor.useSettings("helpers", {
+  const { bounds } = element.editor.useSettings("helpers", {
     bounds: multiToggle({
       data: "selected",
       options: ["all", "selected", "none"]

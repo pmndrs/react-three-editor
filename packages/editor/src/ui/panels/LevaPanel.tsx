@@ -133,7 +133,7 @@ export function LevaPanel({
     </>
   )
 
-  let [{ position }] = editor.useSettings("panels." + id, {
+  let { position } = editor.useSettings("panels." + id, {
     position: [
       side === "left"
         ? (hasLeft ? (hasRight ? 280 : 360) : 0) + 10

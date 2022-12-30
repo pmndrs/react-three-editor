@@ -55,14 +55,14 @@ export const Canvas = forwardRef<HTMLCanvasElement, CanvasProps>(
 
 const EditorCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
   function EditorCanvas(props, ref) {
-    const store = useEditor()
-    const [settings] = store.useSettings("scene", {
+    const editor = useEditor()
+    const canvasSettings = editor.useSettings("scene", {
       shadows: {
         value: true
       }
     })
 
-    const [editableElement, { children, ...overrideProps }] = editor.useElement(
+    const [editableElement, { children, ...canvasProps }] = editor.useElement(
       "canvas",
       {
         ...props,
@@ -74,12 +74,12 @@ const EditorCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
     return (
       <FiberCanvas
         onPointerMissed={(e: any) => {
-          store.clearSelection()
+          editor.clearSelection()
         }}
-        {...overrideProps}
-        {...settings}
+        {...canvasProps}
+        {...canvasSettings}
       >
-        <EditorContext.Provider value={store}>
+        <EditorContext.Provider value={editor}>
           <EditorCamera />
           <CameraBounds>
             <Suspense>

@@ -5,7 +5,7 @@ import { useEditor } from "./fiber"
 
 setEditable(Physics, ({ children, ...props }) => {
   const editor = useEditor()
-  const [{ paused }] = editor.useSettings("physics", {
+  const { paused } = editor.useSettings("physics", {
     paused: {
       value: false
     }
@@ -23,7 +23,7 @@ export function RapierPlugin() {
   const { rapier, world } = useRapier()
   const editor = useEditor()
 
-  const [props] = editor.useSettings("physics", {
+  const props = editor.useSettings("physics", {
     debug: {
       value: true
     }

@@ -370,13 +370,13 @@ export class EditableElement<
 
   useHelper(arg0: string, helper: any, ...args: any[]) {
     const isEditing = this.editor.useStates("editing")
-    const [props] = this.editor.useSettings("helpers", {
+    const props = this.editor.useSettings("helpers", {
       [arg0]: multiToggle({
         label: arg0,
         data: "selected",
         options: ["all", "selected", "none"]
       })
-    }) as [any]
+    })
 
     const isSelected = this.useIsSelected()
 
@@ -507,7 +507,7 @@ export class EditableElement<
       console.log(await this.editor.save(diffs))
       this.changes = {}
       this.changed = false
-    } catch (e) {
+    } catch (e: any) {
       toast.error("Error saving: " + e.message)
       console.error(e)
     }

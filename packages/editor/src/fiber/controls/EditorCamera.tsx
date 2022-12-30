@@ -25,7 +25,7 @@ export function EditorCamera() {
   const editor = useEditor()
   const hotkeysContext = useHotkeysContext()
 
-  const [props] = editor.useSettings("camera", {
+  const cameraSettings = editor.useSettings("camera", {
     enabled: true,
     position: {
       value: [10, 10, 10],
@@ -73,10 +73,10 @@ export function EditorCamera() {
     return () => {
       controls?.removeEventListener("change", update)
     }
-  }, [controls, props.enabled])
+  }, [controls, cameraSettings.enabled])
 
   useEffect(() => {
-    if (props.enabled && controls) {
+    if (cameraSettings.enabled && controls) {
       camera.position.fromArray(editor.getSetting("camera.position"))
       camera.rotation.fromArray(
         editor.getSetting("camera.rotation").map((a) => MathUtils.degToRad(a))
@@ -90,7 +90,7 @@ export function EditorCamera() {
 
   return (
     <>
-      {props.enabled && (!controls || ref2.current === controls) && (
+      {cameraSettings.enabled && (!controls || ref2.current === controls) && (
         <OrbitControls ref={ref2} makeDefault />
       )}
     </>

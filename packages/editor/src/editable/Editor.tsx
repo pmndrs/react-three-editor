@@ -21,21 +21,13 @@ import { createLevaStore } from "./createStore"
 import { Editable, editable } from "./editable"
 import { HistoryManager } from "./HistoryManager"
 
-import { createMachine } from "xstate"
 import { CommandManager } from "../commandbar"
 import { ComponentLoader } from "../component-loader"
 import { RpcServerFunctions } from "../types"
 import { BaseEditableElement } from "./BaseEditableElement"
 
-class PanelManager {
-  constructor(public editor: Editor) {}
-}
-
-const machine = createMachine({
-  id: "editor"
-})
-
 levaStore.name = "settings"
+
 type Panel = StoreType & { store: StoreType; name: string }
 
 export type EditorStoreStateType = {
@@ -60,10 +52,7 @@ import {
   StateMachine,
   Subscribable
 } from "xstate"
-import {
-  SchemaOrFn,
-  usePersistedControls
-} from "../ui/leva/usePersistedControls"
+import { usePersistedControls } from "../ui/leva/usePersistedControls"
 import { editorMachine } from "./editor.machine"
 import { panelMachine } from "./panels.machine"
 
@@ -83,6 +72,18 @@ export type Store<M> = M extends StateMachine<
       send: Interpreter<Context, Schema, Event, State>["send"]
       service: Interpreter<Context, Schema, Event, State>
     }
+  : never
+
+export type MachineInterpreter<M> = M extends StateMachine<
+  infer Context,
+  infer Schema,
+  infer Event,
+  infer State,
+  infer _A,
+  infer _B,
+  infer _C
+>
+  ? Interpreter<Context, Schema, Event, State>
   : never
 
 export type EditorStoreType = ReturnType<typeof createEditorStore>
@@ -110,43 +111,6 @@ type Diff = {
 export class Editor<
   T extends EditableElement = EditableElement
 > extends EventTarget {
-  uiPanels: any
-  raycaster: Raycaster
-  useKeyboardShortcut(
-    name: string,
-    initialShortcut: string,
-    execute: () => void
-  ) {
-    const [shortcut] = this.useSettings("shortcuts", {
-      [name]: initialShortcut
-    })
-
-    useHotkeys(
-      shortcut[name],
-      execute,
-      {
-        preventDefault: true
-      },
-      [shortcut[name], execute]
-    )
-  }
-  useSelectedElement() {
-    return this.useState(() => this.selectedElement)
-  }
-
-  useStates(arg0: string) {
-    return this.useState((s) => s.toStrings()[0] === arg0)
-  }
-  setMode(mode: string): void {
-    this.settingsPanel.setValueAtPath(this.modePath, mode, true)
-  }
-
-  dockPanel(arg0: string, arg1: string) {
-    this.setSettings({
-      ["panels." + arg0 + ".side"]: arg1,
-      ["panels." + arg0 + ".floating"]: false
-    })
-  }
   /**
    * Constructor used to create the editableElement. The default is the EditableElement class
    *
@@ -195,10 +159,14 @@ export class Editor<
   remount?: () => void
   rootId: string
 
-  editorService
+  editorService: MachineInterpreter<typeof editorMachine>
   send
 
   machine = editorMachine
+
+  uiPanels: MachineInterpreter<typeof panelMachine>
+
+  raycaster?: Raycaster
 
   constructor(
     public plugins: any[],
@@ -218,7 +186,7 @@ export class Editor<
           addNewElement: (context, event) => {
             this.appendNewElement(
               this.selectedElement || this.root,
-              event.state.componentType,
+              event.componentType,
               {
                 position: [0, 0, 0]
               }
@@ -342,6 +310,21 @@ export class Editor<
     TEmitted = TActor extends Subscribable<infer Emitted> ? Emitted : never
   >(selector: (emitted: TEmitted) => T): T {
     return useSelector(this.editorService, selector)
+  }
+
+  useSelectedElement() {
+    return this.useState(() => this.selectedElement)
+  }
+
+  useStates(arg0: string) {
+    return this.useState((s) => s.toStrings()[0] === arg0)
+  }
+
+  dockPanel(panelId: string, side: string) {
+    this.setSettings({
+      ["panels." + panelId + ".side"]: side,
+      ["panels." + panelId + ".floating"]: false
+    })
   }
 
   get state() {
@@ -714,11 +697,11 @@ export class Editor<
     return usePanel(this.store((s) => s.settingsPanel))
   }
 
-  useSettings<S extends Schema, T extends SchemaOrFn<S>>(
+  useSettings<T extends Schema>(
     name: string,
     arg1: T,
     hidden?: boolean
-  ): [SchemaToValues<T>] {
+  ): SchemaToValues<T> {
     const settingsPanel = this.useSettingsPanel()
     const mode = this.useMode()
     useControls(
@@ -788,9 +771,29 @@ export class Editor<
   }) {
     this.plugins.push(plugin)
   }
+
+  useKeyboardShortcut(
+    name: string,
+    initialShortcut: string,
+    execute: () => void
+  ) {
+    const shortcut = this.useSettings("shortcuts", {
+      [name]: initialShortcut
+    })
+
+    useHotkeys(
+      shortcut[name],
+      execute,
+      {
+        preventDefault: true
+      },
+      [shortcut[name], execute]
+    )
+  }
 }
 
 export const EditorContext = createContext<Editor | null>(null)
+
 function getPersistedService<T extends Interpreter<any, any, any, any, any>>(
   ser: T,
   key: any
