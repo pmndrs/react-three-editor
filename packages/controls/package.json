@@ -1,27 +1,21 @@
 {
-  "name": "@react-three/editor-v2",
+  "name": "@editable-jsx/controls",
   "author": {
     "name": "Nikhil Saraf",
     "email": "nsaraf98@gmail.com",
     "url": "https://github.com/nksaraf"
   },
   "description": "",
-  "version": "0.0.16",
-  "main": "dist/react-three-editor-v2.cjs.js",
-  "module": "dist/react-three-editor-v2.esm.js",
+  "version": "0.0.1",
+  "main": "dist/editable-jsx-controls.cjs.js",
+  "module": "dist/editable-jsx-controls.esm.js",
   "preconstruct": {
     "entrypoints": [
-      "index.ts",
-      "fiber/index.ts",
-      "rapier.tsx",
-      "vite/index.ts"
+      "index.ts"
     ]
   },
   "files": [
     "dist/**",
-    "fiber/**",
-    "vite/**",
-    "rapier/**",
     "LICENSE",
     "README.md"
   ],
@@ -53,9 +47,6 @@
     "@babel/generator": "^7.20.4",
     "@babel/helper-plugin-utils": "^7.20.2",
     "@babel/template": "^7.18.10",
-    "@editable-jsx/controls": "workspace:^0.0.1",
-    "@editable-jsx/core": "workspace:^0.0.1",
-    "@editable-jsx/three": "workspace:^0.0.1",
     "@iconify/react": "^4.0.1",
     "@radix-ui/colors": "^0.1.8",
     "@radix-ui/react-context-menu": "^2.1.0",

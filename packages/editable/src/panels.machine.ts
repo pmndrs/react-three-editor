@@ -193,10 +193,10 @@ export const panelMachine =
       },
       guards: {
         isDockingLeft: (context, event) => {
-          return event.event.xy[0] < 100
+          return event.event.xy[0] < 240
         },
         isDockingRight: (context, event) => {
-          return event.event.xy[0] > window.innerWidth - 100
+          return event.event.xy[0] > window.innerWidth - 240
         },
         isDockingCenter: (context, event) => {
           return (

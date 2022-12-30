@@ -1,5 +1,5 @@
+import { EditableElement } from "@editable-jsx/core"
 import { Schema } from "leva/plugin"
-import { EditableElement } from "../../../editable"
 import { primitives } from "../primitives"
 import { texture } from "../texture"
 import { commonControls } from "./common"
