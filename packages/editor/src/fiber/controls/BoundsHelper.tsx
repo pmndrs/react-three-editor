@@ -1,4 +1,4 @@
-import { EditableElement, helpers } from "@editable-jsx/core"
+import { helpers } from "@editable-jsx/core"
 import { useHelper } from "@react-three/drei"
 import { applyProps } from "@react-three/fiber"
 import { ReactNode, useEffect, useMemo } from "react"
@@ -9,7 +9,7 @@ export function BoundsHelper({
   props,
   children
 }: {
-  editableElement: EditableElement
+  editableElement: Editable
   props: any
   children: ReactNode
 }) {

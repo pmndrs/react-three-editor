@@ -1,9 +1,6 @@
-import { Interpreter, State } from "xstate"
+import { State } from "xstate"
 
-export function getService<T extends Interpreter<any, any, any, any>>(
-  ser: T,
-  key: any
-) {
+export function persisted<T>(ser: T, key: any): T {
   let prevState = localStorage.getItem(key)
   if (prevState) {
     prevState = JSON.parse(prevState)
@@ -11,10 +8,12 @@ export function getService<T extends Interpreter<any, any, any, any>>(
 
   const service = ser
 
+  // @ts-ignore
   service.onTransition((state) => {
     localStorage.setItem(key, JSON.stringify(state))
   })
 
+  // @ts-ignore
   service.start(prevState ? State.create(prevState as any) : undefined)
   return service
 }

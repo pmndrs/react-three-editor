@@ -1,4 +1,3 @@
-import { EditableElement } from "@editable-jsx/core"
 import { Icon } from "@iconify/react"
 import { ElementIcon } from "./ElementIcon"
 import { StyledIcon } from "./folder/StyledFolder"
@@ -10,7 +9,7 @@ export function ElementName({
   visible,
   setVisible
 }: {
-  element: EditableElement<any>
+  element: Editable<any>
   dirty: boolean | undefined
   visible: boolean
   setVisible: (v: boolean) => void

@@ -1,6 +1,6 @@
 import { FC, PropsWithChildren } from "react"
 
-import { EditableElementContext } from "./EditableElementContext"
+import { EditableContext } from "./EditableContext"
 import { Helpers } from "./Helpers"
 import { useEditor } from "./useEditor"
 
@@ -26,17 +26,17 @@ export const EditableComponent: FC<EditableElementProps> = ({
 
   if (editableElement.forwardedRef) {
     return (
-      <EditableElementContext.Provider value={editableElement}>
+      <EditableContext.Provider value={editableElement}>
         <editableElement.type {...editableProps} />
         {editableElement.mounted && <Helpers />}
-      </EditableElementContext.Provider>
+      </EditableContext.Provider>
     )
   } else {
     return (
-      <EditableElementContext.Provider value={editableElement}>
+      <EditableContext.Provider value={editableElement}>
         <editableElement.type {...editableProps} />
         <Helpers />
-      </EditableElementContext.Provider>
+      </EditableContext.Provider>
     )
   }
 }

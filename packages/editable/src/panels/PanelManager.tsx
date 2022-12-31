@@ -8,17 +8,8 @@ import { useSelector } from "@xstate/react"
 import create from "zustand"
 import { panelMachine } from "./panels.machine"
 
-import { ActorRef, interpret, Subscribable } from "xstate"
+import { interpret, Subscribable } from "xstate"
 import { MachineInterpreter } from "../Editor"
-export declare function useState<
-  TActor extends ActorRef<any, any>,
-  T,
-  TEmitted = TActor extends Subscribable<infer Emitted> ? Emitted : never
->(
-  selector: (emitted: TEmitted) => T,
-  compare?: (a: T, b: T) => boolean,
-  getSnapshot?: (a: TActor) => TEmitted
-): T
 
 export class Panel {
   constructor(

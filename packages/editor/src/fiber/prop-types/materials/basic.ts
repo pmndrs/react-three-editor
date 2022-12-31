@@ -1,11 +1,10 @@
-import { EditableElement } from "@editable-jsx/core"
 import { Schema } from "leva/plugin"
 import { primitives } from "../primitives"
 import { texture } from "../texture"
 import { commonControls } from "./common"
 
 export const meshBasicMaterial = (
-  element: EditableElement,
+  element: Editable,
   path: string[] = ["ref"]
 ): Schema => {
   return {

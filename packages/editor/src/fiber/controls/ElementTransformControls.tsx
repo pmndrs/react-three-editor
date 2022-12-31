@@ -1,5 +1,4 @@
 import {
-  EditableElement,
   SetElementPosition,
   SetElementRotation,
   SetElementScale,
@@ -25,7 +24,7 @@ const serializeTransform = (
 })
 
 export type ElementTransformControlsProps = {
-  element: EditableElement
+  element: Editable
 }
 
 export function ElementTransformControls({

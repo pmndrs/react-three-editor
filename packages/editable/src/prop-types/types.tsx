@@ -1,9 +1,9 @@
-import { EditableElement } from "../EditableElement"
+import { Editable } from "../Editable"
 import { PropType } from "./createProp"
 
 export interface PropInput {
   path: string[]
-  element: EditableElement
+  element: Editable
 
   step?: number
   min?: number
@@ -28,7 +28,7 @@ export type PropChange = {
 
   object: any
   prop: string
-  closestEditable?: EditableElement
+  closestEditable?: Editable
   value: any
   remainingPath: string[]
 }

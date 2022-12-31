@@ -47,9 +47,22 @@ export const CommandInput: FC = () => {
   )
 }
 
+const selectActiveCommands = (state: ) => {
+  const folderChain = state.activeCommandChain
+  if (folderChain.length) {
+    return Object.values(state.commands).filter(
+      (c) => c.parentId === folderChain[folderChain.length - 1]
+    )
+  } else {
+    return Object.values(state.commands).filter(
+      (c) => typeof c.parentId === "undefined" || c.parentId === null
+    )
+  }
+}
+
 export function EditorCommand() {
   const editor = useEditor()
-  const commands = editor.commands.store(selectActiveCommands)
+  const commands = editor.commandBar.useStore(selectActiveCommands)
 
   return (
     <commandBarTunnel.In>

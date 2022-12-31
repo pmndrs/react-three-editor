@@ -1,4 +1,3 @@
-import { EditableElement } from "@editable-jsx/core"
 import { FC } from "react"
 import { Group, Mesh } from "three"
 import { useCommands } from "../commandbar/useCommands"
@@ -29,7 +28,7 @@ export const EditorCommands: FC = () => {
         let selectedElement = editor.selectedElement
         let selected = selectedElement?.treeId
 
-        function show(c: EditableElement) {
+        function show(c: Editable) {
           if (c.ref instanceof Mesh || c.ref instanceof Group) {
             c.visible = true
           } else {
@@ -39,7 +38,7 @@ export const EditorCommands: FC = () => {
           }
         }
 
-        function hide(c: EditableElement) {
+        function hide(c: Editable) {
           if (c.ref instanceof Mesh || c.ref instanceof Group) {
             c.visible = false
           } else {
@@ -49,7 +48,7 @@ export const EditorCommands: FC = () => {
           }
         }
 
-        function focus(c: EditableElement, selected: string) {
+        function focus(c: Editable, selected: string) {
           if (!selected.startsWith(c.treeId)) {
             hide(c)
           } else if (selected === c.treeId) {

@@ -4,7 +4,7 @@ import {
   DataInput,
   LevaInputs,
   mergeRefs,
-  StoreType
+  ControlledStore
 } from "@editable-jsx/controls"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { toast } from "react-hot-toast"
@@ -31,7 +31,7 @@ import { JSXSource } from "./types"
  * and you don't loose control of your code.
  *
  * */
-export class EditableElement<
+export class Editable<
   Ref extends { name?: string; visible?: boolean } = any
 > extends EventTarget {
   ref?: Ref
@@ -303,7 +303,7 @@ export class EditableElement<
     )
   }
 
-  addChange(element: EditableElement, prop: string, value: any) {
+  addChange(element: Editable, prop: string, value: any) {
     if (!this.changes[element.id]) {
       this.changes[element.id] = { _source: element.source }
     }

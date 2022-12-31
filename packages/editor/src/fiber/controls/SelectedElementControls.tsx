@@ -1,4 +1,4 @@
-import { EditableElement, ElementControls, useEditor } from "@editable-jsx/core"
+import { ElementControls, useEditor } from "@editable-jsx/core"
 import { StoreType } from "leva/dist/declarations/src/types"
 import { Fragment } from "react"
 import { usePanel } from "../../ui/panels/LevaPanel"
@@ -33,7 +33,7 @@ export function SelectedElementControls({
   ) : null
 }
 
-function ElementWatcher({ element }: { element: EditableElement<any> }) {
+function ElementWatcher({ element }: { element: Editable<any> }) {
   useElementObserver(element)
   return null
 }

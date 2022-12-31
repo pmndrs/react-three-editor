@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { EditableElement } from "@editable-jsx/core"
 import { Editor } from "@editable-jsx/core/Editor"
 import { useBounds } from "@react-three/drei"
 import { levaStore } from "leva"
@@ -24,11 +23,7 @@ export class ThreeEditor extends Editor {
   camera: unknown
   bounds!: ReturnType<typeof useBounds>
 
-  useElement(
-    Component: any,
-    props: any,
-    forwardRef?: any
-  ): [EditableElement, any] {
+  useElement(Component: any, props: any, forwardRef?: any): [Editable, any] {
     let [element, overrideProps] = super.useElement(
       Component,
       props,

@@ -1,8 +1,4 @@
-import {
-  EditableElementContext,
-  EditorContext,
-  useEditor
-} from "@editable-jsx/core"
+import { EditableContext, EditorContext, useEditor } from "@editable-jsx/core"
 import { Canvas as FiberCanvas, Props } from "@react-three/fiber"
 import { forwardRef, Suspense } from "react"
 import { Toaster } from "react-hot-toast"
@@ -21,7 +17,7 @@ export const editorTunnel = createMultiTunnel()
 export const Editor = editorTunnel.In
 export type CanvasProps = Props & { _source: JSXSource }
 
-export const Canvas = forwardRef<HTMLCanvasElement, CanvasProps>(
+export const EditorCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
   (props, ref) => {
     // @ts-ignore
     window.editor = editor
@@ -44,20 +40,20 @@ export const Canvas = forwardRef<HTMLCanvasElement, CanvasProps>(
             }}
           >
             <PanelGroup side="left" />
-            <EditorCanvas {...props} ref={ref} />
+            <EditableCanvas {...props} ref={ref} />
             <PanelGroup side="right" />
           </div>
           <CommandBar />
-          <Outs />
           <Toaster />
+          <Outs />
         </EditorContext.Provider>
       </div>
     )
   }
 )
 
-const EditorCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
-  function EditorCanvas(props, ref) {
+const EditableCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
+  function EditableCanvas(props, ref) {
     const store = useEditor()
     const [settings] = store.useSettings("scene", {
       shadows: {
@@ -88,9 +84,9 @@ const EditorCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
           <EditorCamera />
           <CameraBounds>
             <Suspense>
-              <EditableElementContext.Provider value={editableElement}>
+              <EditableContext.Provider value={editableElement}>
                 {children}
-              </EditableElementContext.Provider>
+              </EditableContext.Provider>
             </Suspense>
           </CameraBounds>
           <editorTunnel.Outs fallback={<EditorControls />} />

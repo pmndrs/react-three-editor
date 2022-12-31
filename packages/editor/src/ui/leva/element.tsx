@@ -1,4 +1,3 @@
-import { EditableElement } from "@editable-jsx/core"
 import { LevaPanel } from "leva"
 import { createPlugin, styled, useInputContext } from "leva/plugin"
 import { ElementName } from "../ElementName"
@@ -54,7 +53,7 @@ export const StyledTitle = styled("div", {
 
 export const element = createPlugin({
   normalize(input: {
-    element: EditableElement
+    element: Editable
     collapsed?: boolean
     children?: boolean
     dirty?: boolean
@@ -70,7 +69,7 @@ export const element = createPlugin({
   },
   component: (props) => {
     const context = useInputContext<{
-      value: { element: EditableElement }
+      value: { element: Editable }
       settings: {
         collapsed: boolean
         children: boolean

@@ -2,7 +2,7 @@ import { useEditor } from "@editable-jsx/core"
 import { Command } from "cmdk"
 import { FC, KeyboardEvent, useCallback } from "react"
 import { EditorCommand } from "./EditorCommand"
-import { KeyboardCommands } from "./KeyboardCommand"
+import { KeyboardCommands } from "./KeyboardCommands"
 import { commandBarTunnel } from "./tunnel"
 
 export type CommandBarProps = {}

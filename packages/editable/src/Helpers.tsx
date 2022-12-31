@@ -1,5 +1,5 @@
 import { FC, Fragment } from "react"
-import { useEditableContext } from "./EditableElementContext"
+import { useEditableContext } from "./EditableContext"
 
 export type HelpersProps = {}
 

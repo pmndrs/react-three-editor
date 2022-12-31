@@ -6,8 +6,8 @@ import {
   useId,
   useMemo
 } from "react"
-import { EditableElement } from "./EditableElement"
-import { EditableElementContext } from "./EditableElementContext"
+import { Editable } from "./Editable"
+import { EditableContext } from "./EditableContext"
 
 import { levaStore, useControls } from "leva"
 import {
@@ -17,24 +17,28 @@ import {
   StoreType
 } from "leva/dist/declarations/src/types"
 import create from "zustand"
-import { Editable, editable } from "./editable"
+import { editable } from "./components"
 import { HistoryManager } from "./HistoryManager"
 
 import { ComponentLoader } from "../component-loader"
 import { EditPatch, JSXSource, RpcServerFunctions } from "../types"
-import { EditableComponent } from "./EditableComponent"
 import { CommandManager } from "./commands/manager"
+import { EditableComponent } from "./EditableComponent"
 
 levaStore.name = "settings"
 
 export type EditorStoreStateType = {
   selectedId: null | string
   selectedKey: null | string
-  elements: Record<string, EditableElement>
+  elements: Record<string, Editable>
   settingsPanel: string | StoreType
 }
 
-import { createStore, usePersistedControls } from "@editable-jsx/controls"
+import {
+  createStore,
+  persisted,
+  usePersistedControls
+} from "@editable-jsx/controls"
 import { Settings } from "@editable-jsx/controls/src/Settings"
 import { useSelector } from "@xstate/react"
 import { BirpcReturn } from "birpc"
@@ -48,7 +52,6 @@ import {
 } from "xstate"
 import { CommandBar } from "./commands/CommandBar"
 import { editorMachine } from "./editor.machine"
-import { getService } from "./getService"
 import { Panel, PanelManager } from "./panels/PanelManager"
 import { panelMachine } from "./panels/panels.machine"
 
@@ -86,9 +89,7 @@ type Diff = {
   source: any
 }
 
-export class Editor<
-  T extends EditableElement = EditableElement
-> extends EventTarget {
+export class Editor<T extends Editable = Editable> extends EventTarget {
   uiPanels: MachineInterpreter<typeof panelMachine>
 
   useKeyboardShortcut(
@@ -123,7 +124,7 @@ export class Editor<
    *
    * Specfic editors can override this to use their own override EditableElement class
    */
-  elementConstructor = EditableElement
+  elementConstructor = Editable
 
   /**
    * a store to keep track of all the editor state, eg. settings, mode, selected element, etc.
@@ -192,14 +193,6 @@ export class Editor<
     this.panels = new PanelManager(this.settings)
 
     // @ts-ignore
-    const service = getService(
-      interpret(editorMachine, {
-        devTools: true
-      }),
-      "r3f-editor.machine"
-    )
-
-    // @ts-ignore
     this.uiPanels = interpret(
       panelMachine.withConfig({
         guards: {
@@ -237,8 +230,13 @@ export class Editor<
 
     this.uiPanels.start()
 
-    this.service = service
-    this.send = service.send.bind(service)
+    this.service = persisted(
+      interpret(editorMachine, {
+        devTools: true
+      }),
+      "r3f-editor.machine"
+    )
+    this.send = this.service.send.bind(this.service)
     this.rootId = ""
 
     this.expanded = localStorage.getItem("collapased")
@@ -295,7 +293,7 @@ export class Editor<
     return element as any as T
   }
 
-  appendNewElement(element: EditableElement, componentType: string) {
+  appendNewElement(element: Editable, componentType: string) {
     if (typeof componentType === "string") {
       element.refs.setMoreChildren?.((children) => [
         ...children,
@@ -324,12 +322,12 @@ export class Editor<
     }
   }
 
-  deleteElement(element: EditableElement) {
+  deleteElement(element: Editable) {
     element.delete()
     this.clearSelection()
   }
 
-  appendElement(element: EditableElement, parent: EditableElement | null) {
+  appendElement(element: Editable, parent: Editable | null) {
     let parentId = parent?.id!
     if (parentId) {
       element.parentId = parentId
@@ -363,7 +361,7 @@ export class Editor<
     }
   }
 
-  removeElement(element: EditableElement, parent: EditableElement | null) {
+  removeElement(element: Editable, parent: Editable | null) {
     let parentId = parent?.id!
     if (parentId) {
       element.parentId = null
@@ -418,7 +416,7 @@ export class Editor<
     editableElement.update(props._source, props)
 
     // see if we have a parent element
-    const parent = useContext(EditableElementContext)!
+    const parent = useContext(EditableContext)!
 
     useEffect(() => {
       if (!editableElement.deleted) {
@@ -456,11 +454,11 @@ export class Editor<
     return this.store.getState().elements[this.rootId]
   }
 
-  getElementById(id: string): EditableElement {
+  getElementById(id: string): Editable {
     return this.store.getState().elements[id]
   }
 
-  getElementByTreeId(id: string): EditableElement | null {
+  getElementByTreeId(id: string): Editable | null {
     let els = this.store.getState().elements
     let el = Object.values(els).find((e) => e.treeId === id)
     if (el) {
@@ -485,7 +483,7 @@ export class Editor<
     return null
   }
 
-  select(element: EditableElement<any>): void {
+  select(element: Editable<any>): void {
     this.send("SELECT", { elementId: element.treeId })
   }
 
@@ -493,7 +491,7 @@ export class Editor<
     this.send("CLEAR_SELECTION")
   }
 
-  isSelected(arg0: EditableElement) {
+  isSelected(arg0: Editable) {
     return this.state.context.selectedId === arg0.treeId
   }
 
