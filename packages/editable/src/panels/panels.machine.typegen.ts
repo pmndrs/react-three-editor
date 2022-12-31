@@ -3,17 +3,11 @@
 export interface Typegen0 {
   "@@xstate/typegen": true
   internalEvents: {
-    "": { type: "" }
     "xstate.init": { type: "xstate.init" }
   }
   invokeSrcNameMap: {}
   missingImplementations: {
-    actions:
-      | "dockToLeftPanel"
-      | "dockToRightPanel"
-      | "float"
-      | "stopDragging"
-      | "undock"
+    actions: "dockToLeftPanel" | "dockToRightPanel" | "stopDragging" | "undock"
     delays: never
     guards: "isFloating"
     services: never
@@ -21,7 +15,6 @@ export interface Typegen0 {
   eventsCausingActions: {
     dockToLeftPanel: "STOP_DRAGGING"
     dockToRightPanel: "STOP_DRAGGING"
-    float: "STOP_DRAGGING"
     startDragging: "DRAGGING"
     stopDragging: "STOP_DRAGGING"
     undock: "STOP_DRAGGING"
@@ -29,9 +22,9 @@ export interface Typegen0 {
   eventsCausingDelays: {}
   eventsCausingGuards: {
     isDockingCenter: "DRAGGING"
-    isDockingLeft: "" | "DRAGGING"
-    isDockingRight: "" | "DRAGGING"
-    isFloating: "" | "DRAGGING"
+    isDockingLeft: "DRAGGING"
+    isDockingRight: "DRAGGING"
+    isFloating: "DRAGGING"
   }
   eventsCausingServices: {}
   matchesStates:
@@ -41,9 +34,8 @@ export interface Typegen0 {
     | "draggingGhost.dockingLeft"
     | "draggingGhost.dockingRight"
     | "draggingGhost.floating"
-    | "draggingGhost.idle"
     | "floating"
     | "idle"
-    | { draggingGhost?: "dockingLeft" | "dockingRight" | "floating" | "idle" }
+    | { draggingGhost?: "dockingLeft" | "dockingRight" | "floating" }
   tags: never
 }

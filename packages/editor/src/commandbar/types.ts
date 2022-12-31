@@ -1,4 +1,4 @@
-import { Editor } from "../editable"
+import { Editor } from "@editable-jsx/core"
 
 export type CommandType = {
   type: "seperator" | "command" | "group"

@@ -1,9 +1,9 @@
+import { useEditor } from "@editable-jsx/core"
+import { PanelGhost } from "@editable-jsx/core"
 import {
   Panel as ResizablePanel,
   PanelResizeHandle
 } from "react-resizable-panels"
-import { useEditor } from "../../editable"
-import { PanelGhost } from "../../editable/Ghost"
 import { LevaPanel, OurPanelProps } from "./LevaPanel"
 import { LeftPanel, RightPanel } from "./panel-tunnels"
 import { TitleWithFilter } from "./PanelTitle"

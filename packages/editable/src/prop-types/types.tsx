@@ -1,4 +1,4 @@
-import { EditableElement } from "../editable/EditableElement"
+import { EditableElement } from "../EditableElement"
 import { PropType } from "./createProp"
 
 export interface PropInput {

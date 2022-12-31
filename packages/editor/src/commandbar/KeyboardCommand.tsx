@@ -1,9 +1,9 @@
-import { useEditor } from "../editable"
+import { useEditor } from "@editable-jsx/core"
 import { isCommand } from "./utils"
 
 export function KeyboardCommands() {
   const editor = useEditor()
-  const commands = editor.commands.store((state) =>
+  const commands = editor.commands.useStore((state) =>
     Object.values(state.commands)
   )
 

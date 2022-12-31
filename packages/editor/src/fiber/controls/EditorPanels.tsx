@@ -1,5 +1,5 @@
+import { useEditor } from "@editable-jsx/core"
 import { Leva } from "leva"
-import { useEditor } from "../../editable"
 import { multiToggle } from "../../ui/leva/multiToggle"
 import { Panel } from "../../ui/panels/Panel"
 import { DynamicIsland } from "./BottomBar"

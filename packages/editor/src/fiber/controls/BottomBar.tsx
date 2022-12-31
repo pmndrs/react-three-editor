@@ -1,7 +1,7 @@
+import { useEditor } from "@editable-jsx/core/useEditor"
 import { Icon } from "@iconify/react"
 import { useThree } from "@react-three/fiber"
 import { styled } from "leva/plugin"
-import { useEditor } from "../../editable/useEditor"
 import {
   FloatingPanels,
   LeftPanel,

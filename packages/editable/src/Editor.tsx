@@ -11,43 +11,31 @@ import { EditableElementContext } from "./EditableElementContext"
 
 import { levaStore, useControls } from "leva"
 import {
+  DataInput,
   Schema,
   SchemaToValues,
   StoreType
 } from "leva/dist/declarations/src/types"
 import create from "zustand"
-import { usePanel } from "../ui/panels/LevaPanel"
-import { createLevaStore } from "./createStore"
 import { Editable, editable } from "./editable"
 import { HistoryManager } from "./HistoryManager"
 
-import { createMachine } from "xstate"
-import { CommandManager } from "../commandbar"
 import { ComponentLoader } from "../component-loader"
 import { EditPatch, JSXSource, RpcServerFunctions } from "../types"
-import { BaseEditableElement } from "./BaseEditableElement"
-
-class PanelManager {
-  constructor(public editor: Editor) {}
-}
-
-const machine = createMachine({
-  id: "editor"
-})
+import { EditableComponent } from "./EditableComponent"
+import { CommandManager } from "./commands/manager"
 
 levaStore.name = "settings"
-type Panel = StoreType & { store: StoreType; name: string }
 
 export type EditorStoreStateType = {
   selectedId: null | string
   selectedKey: null | string
   elements: Record<string, EditableElement>
   settingsPanel: string | StoreType
-  // send: (event: any) => void
-  // state: any
-  // service: any
 }
 
+import { createStore, usePersistedControls } from "@editable-jsx/controls"
+import { Settings } from "@editable-jsx/controls/src/Settings"
 import { useSelector } from "@xstate/react"
 import { BirpcReturn } from "birpc"
 import { useHotkeys } from "react-hotkeys-hook"
@@ -58,15 +46,13 @@ import {
   StateMachine,
   Subscribable
 } from "xstate"
-import {
-  SchemaOrFn,
-  usePersistedControls
-} from "../ui/leva/usePersistedControls"
+import { CommandBar } from "./commands/CommandBar"
 import { editorMachine } from "./editor.machine"
 import { getService } from "./getService"
-import { panelMachine } from "./panels.machine"
+import { Panel, PanelManager } from "./panels/PanelManager"
+import { panelMachine } from "./panels/panels.machine"
 
-export type Store<M> = M extends StateMachine<
+export type MachineInterpreter<M> = M extends StateMachine<
   infer Context,
   infer Schema,
   infer Event,
@@ -75,13 +61,7 @@ export type Store<M> = M extends StateMachine<
   infer _B,
   infer _C
 >
-  ? {
-      state: ReturnType<
-        Interpreter<Context, Schema, Event, State>["getSnapshot"]
-      >
-      send: Interpreter<Context, Schema, Event, State>["send"]
-      service: Interpreter<Context, Schema, Event, State>
-    }
+  ? Interpreter<Context, Schema, Event, State, _C>
   : never
 
 export type EditorStoreType = ReturnType<typeof createEditorStore>
@@ -109,7 +89,8 @@ type Diff = {
 export class Editor<
   T extends EditableElement = EditableElement
 > extends EventTarget {
-  uiPanels: any
+  uiPanels: MachineInterpreter<typeof panelMachine>
+
   useKeyboardShortcut(
     name: string,
     initialShortcut: string,
@@ -128,6 +109,7 @@ export class Editor<
       [shortcut[name], execute]
     )
   }
+
   useSelectedElement() {
     return this.useState(() => this.selectedElement)
   }
@@ -135,16 +117,7 @@ export class Editor<
   useStates(arg0: string) {
     return this.useState((s) => s.toStrings()[0] === arg0)
   }
-  setMode(mode: string): void {
-    this.settingsPanel.setValueAtPath(this.modePath, mode, true)
-  }
 
-  dockPanel(arg0: string, arg1: string) {
-    this.setSettings({
-      ["panels." + arg0 + ".side"]: arg1,
-      ["panels." + arg0 + ".floating"]: false
-    })
-  }
   /**
    * Constructor used to create the editableElement. The default is the EditableElement class
    *
@@ -155,8 +128,15 @@ export class Editor<
   /**
    * a store to keep track of all the editor state, eg. settings, mode, selected element, etc.
    */
-  store: EditorStoreType
-  useStore: EditorStoreType
+  store: EditorStoreType = createStore<EditorStoreStateType>("editor", () => ({
+    selectedId: null,
+    selectedKey: null,
+    elements: {
+      // root: new EditableElement("root", {} as any, "editor", null)
+    },
+    settingsPanel: "settings"
+  }))
+  useStore: EditorStoreType = this.store
 
   /**
    * used to add undo/redo functionality
@@ -168,6 +148,8 @@ export class Editor<
    */
   commands: CommandManager = new CommandManager()
 
+  commandBar: CommandBar = new CommandBar(this)
+
   /**
    * components
    */
@@ -177,6 +159,8 @@ export class Editor<
    * a set with all the tree-ids of the expanded elements
    */
   expanded: Set<string>
+
+  panels: PanelManager
 
   /**
    * used by the React API to wrap the React element with whatever we need,
@@ -188,7 +172,7 @@ export class Editor<
    * `helpers` API from the plugins to add helpers to specific types of
    * elements
    */
-  Element = BaseEditableElement
+  Element = EditableComponent
 
   remount?: () => void
   rootId: string
@@ -203,9 +187,11 @@ export class Editor<
     public client: BirpcReturn<RpcServerFunctions>
   ) {
     super()
-    this.store = createEditorStore()
-    this.useStore = this.store
 
+    this.settings = new Settings()
+    this.panels = new PanelManager(this.settings)
+
+    // @ts-ignore
     const service = getService(
       interpret(editorMachine, {
         devTools: true
@@ -213,60 +199,33 @@ export class Editor<
       "r3f-editor.machine"
     )
 
+    // @ts-ignore
     this.uiPanels = interpret(
       panelMachine.withConfig({
         guards: {
           isFloating: (context, event) => {
-            return this.getSetting(
-              "panels." +
-                (typeof event.panel === "string"
-                  ? event.panel
-                  : event.panel.name) +
-                ".floating"
-            ) as boolean
+            return this.panels.get(event.panel).isFloating()
           }
         },
         actions: {
           dockToLeftPanel: (context, event) => {
-            this.dockPanel(
-              typeof event.panel === "string" ? event.panel : event.panel.name,
-              "left"
-            )
+            this.panels.get(event.panel).dock("left")
           },
           dockToRightPanel: (context, event) => {
-            this.dockPanel(
-              typeof event.panel === "string" ? event.panel : event.panel.name,
-              "right"
-            )
+            this.panels.get(event.panel).dock("right")
           },
           stopDragging: (context, event) => {
-            let panelId =
-              "panels." +
-              (typeof event.panel === "string" ? event.panel : event.panel.name)
-            let prevPosition = this.getSetting(panelId + ".position")
-            this.setSettings({
-              [panelId + ".position"]: [
+            this.panels.get(event.panel).setSettings({
+              position: (prevPosition) => [
                 prevPosition[0] + event.event.movement[0],
                 prevPosition[1] + event.event.movement[1]
               ]
             })
           },
-
           undock: (context, event) => {
-            let panelId =
-              typeof event.panel === "string" ? event.panel : event.panel.name
-
-            this.setSettings({
-              ["panels." + panelId + ".floating"]: false,
-              ["panels." + panelId + ".position"]: event.event.xy
-            })
-          },
-
-          float: (context, event) => {
-            let panelId =
-              typeof event.panel === "string" ? event.panel : event.panel.name
-            this.setSettings({
-              ["panels." + panelId + ".floating"]: true
+            this.panels.get(event.panel).setSettings({
+              position: event.event.xy,
+              floating: true
             })
           }
         }
@@ -275,8 +234,8 @@ export class Editor<
         devTools: true
       }
     )
-      .onTransition(() => {})
-      .start()
+
+    this.uiPanels.start()
 
     this.service = service
     this.send = service.send.bind(service)
@@ -364,13 +323,10 @@ export class Editor<
       ])
     }
   }
+
   deleteElement(element: EditableElement) {
     element.delete()
     this.clearSelection()
-    // await this.client.save({
-    //   ...params,
-    //   action_type: "deleteElement"
-    // })
   }
 
   appendElement(element: EditableElement, parent: EditableElement | null) {
@@ -538,77 +494,17 @@ export class Editor<
   }
 
   isSelected(arg0: EditableElement) {
-    return this.state.context.selectedId === arg0.id
-  }
-
-  /**
-   * PANELS
-   **/
-
-  panelStore = create((get, set) => ({
-    panels: {
-      settings: {
-        panel: levaStore as Panel
-      }
-    } as Record<string, { panel: Panel }>
-  }))
-
-  get panels() {
-    return this.panelStore.getState().panels
-  }
-
-  getPanel(name: string | StoreType): Panel {
-    let panels = this.panels
-    if (typeof name === "string") {
-      if (panels[name]) return panels[name].panel
-
-      panels[name] = { panel: createLevaStore() }
-
-      // @ts-ignore
-      panels[name].panel.store = panels[name].panel
-      panels[name].panel.name = name
-
-      this.panelStore.setState(() => ({
-        panels
-      }))
-      return panels[name].panel
-    } else {
-      return name as Panel
-    }
-  }
-
-  showAllPanels() {
-    this.settingsPanel.useStore.setState(({ data }: any) => {
-      let panelNames = Object.keys(this.panels)
-      for (let i = 0; i < panelNames.length; i++) {
-        data[this.settingsPath("panels." + panelNames[i] + ".hidden")].value =
-          false
-      }
-
-      return { data }
-    })
-  }
-
-  hideAllPanels() {
-    this.settingsPanel.useStore.setState(({ data }: any) => {
-      let panelNames = Object.keys(this.panels)
-      for (let i = 0; i < panelNames.length; i++) {
-        data[this.settingsPath("panels." + panelNames[i] + ".hidden")].value =
-          true
-      }
-
-      return { data }
-    })
+    return this.state.context.selectedId === arg0.treeId
   }
 
   /**
    *  SETTINGS
    * */
 
-  settings = createLevaStore()
+  settings: Settings
 
   get settingsPanel(): Panel {
-    return this.getPanel(this.store.getState().settingsPanel)
+    return this.panels.get(this.store.getState().settingsPanel)
   }
 
   set settingsPanel(arg0: StoreType | string) {
@@ -617,14 +513,14 @@ export class Editor<
     })
   }
 
-  getSetting(arg0: string): number[] | ArrayLike<number> {
-    return this.settingsPanel.getData()[this.settingsPath(arg0)].value as any
+  getSetting(arg0: string) {
+    return this.settings.get(arg0)
   }
 
   setSetting(arg0: string, arg1: any) {
     let path = this.settingsPath(arg0)
-    if (this.settingsPanel.getData()[path]) {
-      this.settingsPanel.setValueAtPath(path, arg1, true)
+    if (this.settingsPanel.has(path)) {
+      this.settingsPanel.set(path, arg1)
     }
   }
 
@@ -635,7 +531,7 @@ export class Editor<
           debugger
         }
 
-        data[this.settingsPath(key)].value = values[key]
+        ;(data[this.settingsPath(key)] as DataInput).value = values[key]
       }
       return { data }
     })
@@ -644,8 +540,6 @@ export class Editor<
   useMode<K extends string | undefined>(name?: K) {
     return this.useState(() => this.state.toStrings()[0])
   }
-
-  modePath = "somethingelse.mode"
 
   settingsPath(arg0?: string | undefined): any {
     return (
@@ -663,11 +557,11 @@ export class Editor<
     return usePanel(this.store((s) => s.settingsPanel))
   }
 
-  useSettings<S extends Schema, T extends SchemaOrFn<S>>(
+  useSettings<S extends Schema>(
     name: string,
-    arg1: T,
+    arg1: S,
     hidden?: boolean
-  ): [SchemaToValues<T>] {
+  ): [SchemaToValues<S>] {
     const settingsPanel = this.useSettingsPanel()
     const mode = this.useMode()
     useControls(

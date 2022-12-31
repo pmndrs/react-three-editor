@@ -1,8 +1,8 @@
+import { EditableElement, helpers } from "@editable-jsx/core"
 import { useHelper } from "@react-three/drei"
 import { applyProps } from "@react-three/fiber"
 import { ReactNode, useEffect, useMemo } from "react"
 import { BoxHelper, Group } from "three"
-import { EditableElement, helpers } from "../../editable"
 
 export function BoundsHelper({
   editableElement: element,

@@ -1,6 +1,6 @@
+import { EditableElement } from "@editable-jsx/core/EditableElement"
 import { Schema } from "leva/plugin"
 import { ReactNode } from "react"
-import { EditableElement } from "../editable/EditableElement"
 
 export type EditorControlsPlugin = {
   applicable(element: EditableElement): boolean

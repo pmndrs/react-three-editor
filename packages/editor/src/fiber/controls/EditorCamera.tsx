@@ -1,3 +1,4 @@
+import { setEditable, useEditor } from "@editable-jsx/core"
 import { OrbitControls } from "@react-three/drei"
 import { useThree } from "@react-three/fiber"
 import { levaStore } from "leva"
@@ -5,7 +6,6 @@ import { forwardRef, useEffect, useRef } from "react"
 import { useHotkeysContext } from "react-hotkeys-hook"
 import { Camera, Event, MathUtils } from "three"
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib"
-import { setEditable, useEditor } from "../../editable"
 
 setEditable(
   OrbitControls,
@@ -53,9 +53,9 @@ export function EditorCamera() {
 
   useEffect(() => {
     function update(e: Event) {
-      editor.setSetting("camera.position", e.target.object.position.toArray())
+      editor.settings.set("camera.position", e.target.object.position.toArray())
 
-      editor.setSetting(
+      editor.settings.set(
         "camera.rotation",
         e.target.object.rotation
           .toArray()
@@ -63,10 +63,10 @@ export function EditorCamera() {
           .map((a) => MathUtils.radToDeg(a))
       )
 
-      editor.setSetting("camera.fov", e.target.object.fov)
-      editor.setSetting("camera.near", e.target.object.near)
-      editor.setSetting("camera.far", e.target.object.far)
-      editor.setSetting("camera.zoom", e.target.object.zoom)
+      editor.settings.set("camera.fov", e.target.object.fov)
+      editor.settings.set("camera.near", e.target.object.near)
+      editor.settings.set("camera.far", e.target.object.far)
+      editor.settings.set("camera.zoom", e.target.object.zoom)
     }
     controls?.addEventListener("change", update)
 
@@ -77,9 +77,9 @@ export function EditorCamera() {
 
   useEffect(() => {
     if (props.enabled && controls) {
-      camera.position.fromArray(editor.getSetting("camera.position"))
+      camera.position.fromArray(editor.settings.get("camera.position"))
       camera.rotation.fromArray(
-        editor.getSetting("camera.rotation").map((a) => MathUtils.degToRad(a))
+        editor.settings.get("camera.rotation").map((a) => MathUtils.degToRad(a))
       )
       // camera.fov = props.fov
       // camera.near = props.near

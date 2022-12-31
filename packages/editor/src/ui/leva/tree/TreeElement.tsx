@@ -1,5 +1,5 @@
-import { EditableElement } from "../../../editable"
 import { ElementName } from "../../ElementName"
+import { EditableElement } from "../@editable-jsx/core"
 import { TreeItem } from "./TreeItem"
 
 export function TreeElement({ element }: { element: EditableElement }) {

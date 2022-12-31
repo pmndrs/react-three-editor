@@ -1,9 +1,13 @@
+import {
+  EditableElementContext,
+  EditorContext,
+  useEditor
+} from "@editable-jsx/core"
 import { Canvas as FiberCanvas, Props } from "@react-three/fiber"
 import { forwardRef, Suspense } from "react"
 import { Toaster } from "react-hot-toast"
 import { CommandBar } from "../commandbar"
-import { AllCommands } from "../commandbar/commands"
-import { EditableElementContext, EditorContext, useEditor } from "../editable"
+import { AllCommands } from "../commands"
 import { JSXSource } from "../types"
 import { Outs } from "../ui/tunnel"
 import { createMultiTunnel } from "../ui/tunnels"

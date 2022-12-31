@@ -12,11 +12,10 @@ export type EditableElementProps = PropsWithChildren<{
   root?: boolean
 }>
 
-export const BaseEditableElement: FC<EditableElementProps> = ({
+export const EditableComponent: FC<EditableElementProps> = ({
   component,
   props,
-  forwardRef,
-  root
+  forwardRef
 }: EditableElementProps) => {
   const editor = useEditor()
   const [editableElement, editableProps] = editor.useElement(

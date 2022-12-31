@@ -1,7 +1,7 @@
+import { EditableElement } from "@editable-jsx/core/EditableElement"
 import { folder } from "leva"
 import { BufferGeometry } from "three"
 import { all } from "."
-import { EditableElement } from "../../editable/EditableElement"
 import { PropInput } from "./core/types"
 
 function args({

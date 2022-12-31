@@ -1,6 +1,4 @@
 {
   "extends": "../../tsconfig.json",
-  "include": [
-    "src/**/*"
-  ]
+  "include": ["src/**/*", "../editable/editable", "../controls/src/usePersistedControls.tsx"]
 }

@@ -1,5 +1,5 @@
 import { BackSide, DoubleSide, FrontSide, Material } from "three"
-import { EditableElement } from "../../../editable/EditableElement"
+import { EditableElement } from "../@editable-jsx/core/EditableElement"
 import { primitives } from "../primitives"
 
 export const commonControls = (

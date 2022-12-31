@@ -1,6 +1,6 @@
+import { EditableElement } from "@editable-jsx/core"
 import { useFrame } from "@react-three/fiber"
 import { MathUtils, Object3D } from "three"
-import { EditableElement } from "../editable"
 import { eq } from "./prop-types/eq"
 
 export function useElementObserver(entity: EditableElement<any>) {

@@ -1,6 +1,6 @@
+import { useEditor } from "@editable-jsx/core"
 import { useControls } from "leva"
 import { StoreType } from "leva/dist/declarations/src/types"
-import { useEditor } from "../../editable"
 import { tree } from "../../ui/leva/tree/tree"
 import { usePanel } from "../../ui/panels/LevaPanel"
 

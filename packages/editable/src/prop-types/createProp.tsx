@@ -1,4 +1,4 @@
-import { EditableElement } from "../editable/EditableElement"
+import { EditableElement } from "../EditableElement"
 import { PropChange, PropInput } from "./types"
 
 export type PropType = {
@@ -90,7 +90,7 @@ export function createProp(
           }
 
           let serializale = type.serialize
-            ? type.serialize(el, prop, value)
+            ? type.serialize(el, prop, value, value)
             : value
 
           // prop thats not serializable is not editable

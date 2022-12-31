@@ -1,5 +1,5 @@
+import { EditableElement } from "@editable-jsx/core"
 import { Icon } from "@iconify/react"
-import { EditableElement } from "../editable"
 import { ElementIcon } from "./ElementIcon"
 import { StyledIcon } from "./folder/StyledFolder"
 import { OpenInEditorButton } from "./OpenInEditorButton"

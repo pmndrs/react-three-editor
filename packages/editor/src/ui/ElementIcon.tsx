@@ -1,6 +1,6 @@
+import { EditableElement } from "@editable-jsx/core/EditableElement"
 import { Icon } from "@iconify/react"
 import { ComponentProps } from "react"
-import { EditableElement } from "../editable/EditableElement"
 
 export function ElementIcon({
   element,

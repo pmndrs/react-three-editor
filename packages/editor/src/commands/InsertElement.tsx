@@ -1,9 +1,10 @@
+import { useEditor } from "@editable-jsx/core"
 import { FC, useEffect } from "react"
-import { useEditor } from "../../editable"
-import { CommandType } from "../types"
-import { BufferGeometry, Material, Object3D } from "three"
 import * as THREE from "three"
-import { ComponentType } from "../../component-loader"
+import { BufferGeometry, Material, Object3D } from "three"
+import { CommandType } from "../commandbar/types"
+import { useCommands } from "../commandbar/useCommands"
+import { ComponentType } from "../component-loader"
 
 function isClass(v: any) {
   return typeof v === "function" && /^\s*class\s+/.test(v.toString())
@@ -20,19 +21,15 @@ const possibleItemsToAdd = Object.values(THREE)
 
 export const InsertElementsSubCommands: FC = () => {
   const editor = useEditor()
-  useEffect(() => {
-    const commands: CommandType[] = possibleItemsToAdd.map((component: any) => {
+  useCommands(() => {
+    return possibleItemsToAdd.map((component: any) => {
       return {
         name: component.name,
         type: "command",
         parentId: "insert-element"
       }
     })
-    editor.commands.registerCommands(commands)
-    return () => {
-      editor.commands.unregisterCommands(commands)
-    }
-  }, [editor])
+  })
 
   useEffect(() => {
     return editor.loader.store.subscribe(

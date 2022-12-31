@@ -1,6 +1,8 @@
 {
   "extends": "../../tsconfig.json",
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "../editor/src/fiber/ElementControls.tsx",
+    "../controls/src/Settings.tsx"
   ]
 }

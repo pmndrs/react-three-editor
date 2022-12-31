@@ -1,5 +1,5 @@
 import { createPlugin, styled, useInputContext } from "leva/plugin"
-import { EditableElement } from "../../../editable"
+import { EditableElement } from "../@editable-jsx/core"
 import { TreeElement } from "./TreeElement"
 
 const StyledWrapper = styled("div", {

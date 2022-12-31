@@ -1,9 +1,8 @@
+import { useEditor } from "@editable-jsx/core"
 import { Leva, LevaPanel as InnerLevalPanel, useControls } from "leva"
 import { ComponentProps, useEffect, useState } from "react"
-import { useEditor } from "../../editable"
 
 import { useThree } from "@react-three/fiber"
-import { useSelector } from "@xstate/react"
 import { StoreType } from "leva/dist/declarations/src/types"
 import { In } from "../tunnel"
 import { LevaCore } from "./FloatingPanel"
@@ -142,7 +141,7 @@ export function LevaPanel({
     ]
   })
 
-  const offset = useSelector(editor.uiPanels, (s) =>
+  const offset = editor.panels.useState((s) =>
     !s.matches("idle") && s.event.panel.name === id
       ? s.event.event.movement
       : [0, 0]
@@ -157,7 +156,7 @@ export function LevaPanel({
           y: position[1] + (offset[1] ?? 0)
         },
         onDrag: (e) => {
-          editor.uiPanels.send("DRAGGING", {
+          editor.panels.send("DRAGGING", {
             panel: panel,
             event: {
               offset: e.offset,
@@ -168,7 +167,7 @@ export function LevaPanel({
           })
         },
         onDragEnd: (e) => {
-          editor.uiPanels.send("STOP_DRAGGING", {
+          editor.panels.send("STOP_DRAGGING", {
             panel: panel,
             event: {
               offset: e.offset,

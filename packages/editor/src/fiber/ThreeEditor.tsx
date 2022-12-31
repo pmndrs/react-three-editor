@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { EditableElement } from "@editable-jsx/core"
+import { Editor } from "@editable-jsx/core/Editor"
 import { useBounds } from "@react-three/drei"
 import { levaStore } from "leva"
 import { useCallback } from "react"
-import { EditableElement } from "../editable"
-import { Editor } from "../editable/Editor"
 
 // @ts-ignore
 levaStore.store = undefined

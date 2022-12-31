@@ -1,5 +1,5 @@
 import { Schema } from "leva/plugin"
-import { EditableElement } from "../../../editable/EditableElement"
+import { EditableElement } from "../@editable-jsx/core/EditableElement"
 
 export const meshPhongMaterial = (
   element: EditableElement,

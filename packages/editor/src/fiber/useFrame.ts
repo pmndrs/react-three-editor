@@ -1,6 +1,6 @@
+import { useEditor } from "@editable-jsx/core/useEditor"
 import * as fiber from "@react-three/fiber"
 import { folder, useControls } from "leva"
-import { useEditor } from "../editable/useEditor"
 import { toggle } from "../ui/leva/toggle"
 import { usePanel } from "../ui/panels/LevaPanel"
 

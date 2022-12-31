@@ -1,15 +1,16 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import {
-  createStore,
+  createControlledStore,
+  DataInput,
   LevaInputs,
   mergeRefs,
-  StoreType,
-  DataInput
+  StoreType
 } from "@editable-jsx/controls"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { toast } from "react-hot-toast"
-import { JSXSource } from "../types"
 import { Editor } from "./Editor"
+import { PropChange } from "./prop-types/types"
+import { JSXSource } from "./types"
 
 /**
  * An editable element is a wrapper around a React element that can be edited in the editor.
@@ -39,7 +40,7 @@ export class EditableElement<
   props: any = {}
   forwardedRef: boolean = false
   dirty: any = false
-  store: StoreType | null = createStore()
+  store: StoreType | null = createControlledStore()
   editor: Editor = {} as any
 
   constructor(
@@ -381,7 +382,7 @@ export class EditableElement<
       console.log(await this.editor.save(diffs))
       this.changes = {}
       this.changed = false
-    } catch (e) {
+    } catch (e: any) {
       toast.error("Error saving: " + e.message)
       console.error(e)
     }

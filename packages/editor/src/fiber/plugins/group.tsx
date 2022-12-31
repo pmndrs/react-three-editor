@@ -1,5 +1,5 @@
+import { EditableElement } from "@editable-jsx/core/EditableElement"
 import { BoxHelper } from "three"
-import { EditableElement } from "../../editable/EditableElement"
 
 export const group = {
   applicable: (object: any) => object.ref?.isGroup,

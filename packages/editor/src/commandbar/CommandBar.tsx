@@ -1,6 +1,6 @@
+import { useEditor } from "@editable-jsx/core"
 import { Command } from "cmdk"
 import { FC, KeyboardEvent, useCallback } from "react"
-import { useEditor } from "../editable"
 import { EditorCommand } from "./EditorCommand"
 import { KeyboardCommands } from "./KeyboardCommand"
 import { commandBarTunnel } from "./tunnel"
@@ -8,19 +8,19 @@ import { commandBarTunnel } from "./tunnel"
 export type CommandBarProps = {}
 export const CommandBar: FC<CommandBarProps> = () => {
   const editor = useEditor()
-  const open = editor.commands.store((state) => state.open)
+  const open = editor.commandBar.useStore((state) => state.open)
 
   editor.useKeyboardShortcut("command-bar", "meta+k", () =>
-    editor.commands.toggleCommandBar()
+    editor.commandBar.toggleCommandBar()
   )
 
   const onKeydown = useCallback(
     (event: KeyboardEvent<HTMLDivElement>) => {
       if (
         event.key === "Backspace" &&
-        editor.commands.store.getState().filter.length === 0
+        editor.commandBar.filter.length === 0
       ) {
-        editor.commands.closeCommandGroup()
+        editor.commandBar.closeCommandGroup()
       }
     },
     [editor]
@@ -30,7 +30,7 @@ export const CommandBar: FC<CommandBarProps> = () => {
     <>
       <Command.Dialog
         open={open}
-        onOpenChange={() => editor.commands.toggleCommandBar()}
+        onOpenChange={() => editor.commandBar.toggleCommandBar()}
         className="commandbar dark vercel"
         tabIndex={-1}
         onKeyDown={onKeydown}
@@ -43,7 +43,7 @@ export const CommandBar: FC<CommandBarProps> = () => {
 
 export function CommandBarControls() {
   const editor = useEditor()
-  const open = editor.commands.store((state) => state.open)
+  const open = editor.commandBar.useStore((state) => state.open)
 
   return (
     <>

@@ -1,7 +1,7 @@
+import { useEditor } from "@editable-jsx/core"
 import { Bounds, useBounds } from "@react-three/drei"
 import { useThree } from "@react-three/fiber"
 import { ReactNode } from "react"
-import { useEditor } from "../editable"
 import { ThreeEditor } from "./ThreeEditor"
 
 export function CameraBounds({ children }: { children: ReactNode }) {

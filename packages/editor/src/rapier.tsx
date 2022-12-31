@@ -1,6 +1,6 @@
 import { Debug, Physics, useRapier } from "@react-three/rapier"
 import { useMemo } from "react"
-import { setEditable } from "./editable/editable"
+import { setEditable } from "@editable-jsx/core"
 import { useEditor } from "./fiber"
 
 setEditable(Physics, ({ children, ...props }) => {

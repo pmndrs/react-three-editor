@@ -1,3 +1,4 @@
+import { EditableElement } from "@editable-jsx/core/EditableElement"
 import { OrbitControls } from "@react-three/drei"
 import { folder } from "leva"
 import {
@@ -16,7 +17,6 @@ import {
   SpotLight,
   SpotLightHelper
 } from "three"
-import { EditableElement } from "../../editable/EditableElement"
 import { TransformHelper } from "../controls/TransformHelper"
 import { all } from "../prop-types"
 import { createProp } from "../prop-types/core/createProp"

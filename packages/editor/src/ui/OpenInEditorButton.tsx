@@ -1,4 +1,4 @@
-import { EditableElement } from "../editable/EditableElement"
+import { EditableElement } from "@editable-jsx/core/EditableElement"
 import { StyledIcon } from "./folder/StyledFolder"
 
 export function OpenInEditorButton({ element }: { element: EditableElement }) {

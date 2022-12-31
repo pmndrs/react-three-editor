@@ -1,5 +1,5 @@
+import { EditableElement } from "@editable-jsx/core"
 import { BoxHelper } from "three"
-import { EditableElement } from "../../editable"
 import { all } from "../prop-types"
 
 export const mesh = {

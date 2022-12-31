@@ -1,14 +1,14 @@
+import { useEditor } from "@editable-jsx/core"
 import { Icon } from "@iconify/react"
 import { Command } from "cmdk"
 import { FC, useCallback } from "react"
-import { useEditor } from "../editable"
 import { selectActiveCommands } from "./store"
 import { commandBarTunnel } from "./tunnel"
 import { CommandType } from "./types"
 
 export const CommandChain: FC = () => {
   const editor = useEditor()
-  const activeCommandChain = editor.commands.store(
+  const activeCommandChain = editor.commandBar.useStore(
     ({ activeCommandChain }) => activeCommandChain
   )
   return (

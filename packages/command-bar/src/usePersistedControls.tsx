@@ -29,7 +29,7 @@ function manageProps(folderName: string, props: any) {
 
           if (props[key].onChange) {
             let onChange = props[key].onChange
-            props[key].onChange = (e, path, context) => {
+            props[key].onChange = (e: any, path: string, context: any) => {
               onChange(e, path, context)
               localStorage.setItem(
                 `${editorName}.` + folderName + "." + key,

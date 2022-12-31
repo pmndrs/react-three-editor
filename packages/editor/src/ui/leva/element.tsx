@@ -1,6 +1,6 @@
+import { EditableElement } from "@editable-jsx/core"
 import { LevaPanel } from "leva"
 import { createPlugin, styled, useInputContext } from "leva/plugin"
-import { EditableElement } from "../../editable"
 import { ElementName } from "../ElementName"
 import { StyledIcon } from "../folder/StyledFolder"
 

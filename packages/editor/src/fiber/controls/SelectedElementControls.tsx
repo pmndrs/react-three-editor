@@ -1,6 +1,6 @@
+import { EditableElement, ElementControls, useEditor } from "@editable-jsx/core"
 import { StoreType } from "leva/dist/declarations/src/types"
 import { Fragment } from "react"
-import { EditableElement, ElementControls, useEditor } from "../../editable"
 import { usePanel } from "../../ui/panels/LevaPanel"
 import { useElementObserver } from "../useWatchElement"
 import { ElementTransformControls } from "./ElementTransformControls"

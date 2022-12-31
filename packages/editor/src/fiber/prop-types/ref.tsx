@@ -1,6 +1,6 @@
+import { EditableElement } from "@editable-jsx/core/EditableElement"
 import { Components, createPlugin, useInputContext } from "leva/plugin"
 import { useCallback } from "react"
-import { EditableElement } from "../../editable/EditableElement"
 import { ElementIcon } from "../../ui/ElementIcon"
 import { StyledFolder, StyledTitle } from "../../ui/folder/StyledFolder"
 import { OpenInEditorButton } from "../../ui/OpenInEditorButton"
