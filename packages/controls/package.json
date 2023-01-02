@@ -64,6 +64,7 @@
     "change-case": "^4.1.2",
     "cmdk": "^0.1.21",
     "debug": "^4.3.4",
+    "edit": "link:../edit",
     "fast-glob": "^3.2.12",
     "formidable": "^2.1.1",
     "fp-ts": "^2.12.3",
@@ -74,6 +75,7 @@
     "r3f-perf": "^6.5.0",
     "react-dropzone": "^14.2.3",
     "react-hot-toast": "^2.4.0",
+    "react-hotkeys-hook": "^4.0.6",
     "tunnel-rat": "^0.1.0",
     "xstate": "^4.35.1",
     "zustand": "^3.7.2"

@@ -1,4 +1,4 @@
-import { useCommands } from "@editable-jsx/core/src/command-bar/useCommands"
+import { useCommands } from "@editable-jsx/commander"
 import { FC } from "react"
 import { Group, Mesh } from "three"
 import { ThreeEditor } from "../fiber/ThreeEditor"

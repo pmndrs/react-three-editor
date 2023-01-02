@@ -1,5 +1,5 @@
 {
-  "name": "@editable-jsx/command-bar",
+  "name": "@editable-jsx/tree",
   "author": {
     "name": "Nikhil Saraf",
     "email": "nsaraf98@gmail.com",
@@ -7,8 +7,8 @@
   },
   "description": "",
   "version": "0.0.1",
-  "main": "dist/editable-jsx-command-bar.cjs.js",
-  "module": "dist/editable-jsx-command-bar.esm.js",
+  "main": "dist/editable-jsx-tree.cjs.js",
+  "module": "dist/editable-jsx-tree.esm.js",
   "preconstruct": {
     "entrypoints": [
       "index.ts"
@@ -47,6 +47,7 @@
     "@babel/generator": "^7.20.4",
     "@babel/helper-plugin-utils": "^7.20.2",
     "@babel/template": "^7.18.10",
+    "@editable-jsx/controls": "workspace:^0.0.1",
     "@iconify/react": "^4.0.1",
     "@radix-ui/colors": "^0.1.8",
     "@radix-ui/react-context-menu": "^2.1.0",

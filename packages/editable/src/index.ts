@@ -1,5 +1,3 @@
-export * from "./command-bar/CommandBar"
-export * from "./command-bar/useCommandBar"
 export * from "./editable"
 export * from "./EditableContext"
 export * from "./EditableElement"

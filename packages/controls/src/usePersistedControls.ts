@@ -120,5 +120,5 @@ export function usePersistedControls<S extends Schema, T extends SchemaOrFn<S>>(
     })
   }, [folderName, values])
 
-  return values
+  return values as any
 }

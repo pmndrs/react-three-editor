@@ -20,6 +20,7 @@
   left: 50vw;
   transform: translateX(-50%);
   position: absolute;
+  z-index: 10000;
 }
 
 .resize-handle {

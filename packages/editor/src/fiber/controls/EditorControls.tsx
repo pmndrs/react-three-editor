@@ -1,11 +1,11 @@
-import { CommandBar, useEditor } from "@editable-jsx/core"
-import { KeyboardCommands } from "@editable-jsx/core/src/command-bar/KeyboardCommands"
+import { CommandBar, KeyboardCommands } from "@editable-jsx/commander"
+import { useSettings } from "@editable-jsx/controls"
 import { PerformanceControls } from "./PerformanceControls"
 import { SceneControls } from "./SceneControls"
 import { SelectedElementControls } from "./SelectedElementControls"
 
 export function EditorControls() {
-  const { grid, axes } = useEditor().useSettings("helpers", {
+  const { grid, axes } = useSettings("helpers", {
     grid: true,
     axes: true
   })

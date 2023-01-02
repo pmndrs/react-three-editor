@@ -1,4 +1,4 @@
-import { CommandType } from "./types"
+import { CommandType } from "./CommandManager"
 
 export const isCommandGroup = (command: CommandType) => {
   return !command.execute

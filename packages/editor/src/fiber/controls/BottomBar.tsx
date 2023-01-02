@@ -1,6 +1,6 @@
+import { useCommandBar } from "@editable-jsx/commander"
 import { Floating } from "@editable-jsx/controls"
 import { useEditor } from "@editable-jsx/core"
-import { useCommandBar } from "@editable-jsx/core/src/command-bar/useCommandBar"
 import { LeftPanelGroup, RightPanelGroup } from "@editable-jsx/panels"
 import { Icon } from "@iconify/react"
 import { styled } from "leva/plugin"
@@ -85,7 +85,7 @@ export function DynamicIsland(props: DynamicIslandProps) {
 }
 
 type DynamicIslandProps = {
-  size: {
+  size?: {
     width: number
     height: number
   }

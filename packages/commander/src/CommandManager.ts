@@ -1,16 +1,15 @@
-import create from "zustand"
-import { devtools } from "zustand/middleware"
-import { Editor } from "./Editor"
+import { createStore, Store } from "@editable-jsx/controls"
+import { createContext, useContext } from "react"
 
-export type CommandType = {
+export type CommandType<T = any> = {
   type: "seperator" | "command" | "group"
   name: string
-  icon?: string | ((editor: Editor) => JSX.Element)
-  description?: string | ((editor: Editor) => string | JSX.Element)
-  render?: (editor: Editor) => any
+  icon?: string | ((editor: T) => JSX.Element)
+  description?: string | ((editor: T) => string | JSX.Element)
+  render?: (editor: T) => any
   parentId?: string | null
   shortcut?: string[]
-  execute?(editor: Editor): void
+  execute?(editor: T): void
   subcommands?: string[]
 }
 
@@ -18,47 +17,24 @@ export type CommandStoreState = {
   commands: Record<string, CommandType>
 }
 
-export const createCommandsStore = (name: string = "command-store") => {
-  return create<CommandStoreState>(
-    devtools(
-      (_) => {
-        return {
-          commands: {}
-        }
-      },
-      {
-        name
-      }
-    )
-  )
-}
+export class CommandManager<T = any> {
+  constructor(public context = {} as T) {}
 
-export type CommandStoreType = ReturnType<typeof createCommandsStore>
-
-// export const selectActiveCommands = (state: CommandBar) => {
-//   const folderChain = state.activeCommandChain
-//   if (folderChain.length) {
-//     return Object.values(state.commands).filter(
-//       (c) => c.parentId === folderChain[folderChain.length - 1]
-//     )
-//   } else {
-//     return Object.values(state.commands).filter(
-//       (c) => typeof c.parentId === "undefined" || c.parentId === null
-//     )
-//   }
-// }
-
-export class CommandManager {
   has(name: string) {
     return this.store.getState().commands[name] ? true : false
   }
   /*
    * central store all the commands
    */
-  store: CommandStoreType = createCommandsStore()
+  store: Store<{
+    commands: Record<string, CommandType<T>>
+  }> = createStore("commands", (set, get) => ({
+    commands: {}
+  }))
+
   useStore = this.store
 
-  registerCommands(commands: CommandType[]) {
+  registerCommands(commands: CommandType<T>[]) {
     if (!Array.isArray(commands)) {
       commands = [commands]
     }
@@ -82,7 +58,7 @@ export class CommandManager {
     //
   }
 
-  unregisterCommands(commands: CommandType[]) {
+  unregisterCommands(commands: CommandType<T>[]) {
     if (!Array.isArray(commands)) {
       commands = [commands]
     }
@@ -97,4 +73,10 @@ export class CommandManager {
     })
     //
   }
+}
+
+export const CommandManagerContext = createContext({} as CommandManager)
+
+export function useCommandManager<T>(): CommandManager<T> {
+  return useContext(CommandManagerContext)
 }

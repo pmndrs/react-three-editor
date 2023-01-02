@@ -10,9 +10,8 @@ import {
 import { EditableContext } from "./EditableContext"
 import { EditableElement } from "./EditableElement"
 
+import { CommandBarManager, CommandManager } from "@editable-jsx/commander"
 import { PanelManager } from "@editable-jsx/panels"
-import create from "zustand"
-import { CommandManager } from "./commands"
 import { Editable, editable } from "./editable"
 import { HistoryManager } from "./history"
 
@@ -21,20 +20,18 @@ import {
   EditPatch,
   interpret,
   ISettings,
+  JSXSource,
   MachineInterpreter,
   persisted,
   Schema,
   SchemaToValues,
   Settings,
+  Store,
   Subscribable,
-  usePersistedControls,
   useSelector
 } from "@editable-jsx/controls"
 import { BirpcReturn } from "birpc"
-import { useControls } from "leva"
-import { useHotkeys } from "react-hotkeys-hook"
 import { Raycaster } from "three"
-import { CommandBar } from "./commands/CommandBar"
 import { ComponentLoader } from "./component-loader"
 import { editorMachine } from "./editor.machine"
 import { Helpers } from "./helpers"
@@ -157,20 +154,6 @@ class Tree {
   }
 }
 
-export type EditorStoreType = ReturnType<typeof createEditorStore>
-
-const createEditorStore = () => {
-  return create<EditorStoreStateType>(() => ({
-    selectedId: null,
-    selectedKey: null,
-    elements: {
-      // root: new EditableElement("root", {} as any, "editor", null)
-    },
-    settingsPanel: "settings"
-  }))
-}
-// const createEditorStore = () => {}
-
 type Diff = {
   action_type: string
   value: {
@@ -193,9 +176,9 @@ export class Editor<T extends EditableElement = EditableElement>
   /**
    * a store to keep track of all the editor state, eg. settings, mode, selected element, etc.
    */
-  store: EditorStoreType = createStore<EditorStoreStateType>("editor", () => ({
-    selectedId: null,
-    selectedKey: null,
+  store: Store<EditorStoreStateType> = createStore("editor", () => ({
+    selectedId: null as null | string,
+    selectedKey: null as null | string,
     elements: {
       // root: new EditableElement("root", {} as any, "editor", null)
     },
@@ -204,7 +187,7 @@ export class Editor<T extends EditableElement = EditableElement>
 
   tree: Tree = new Tree(this.root)
 
-  useStore: EditorStoreType = this.store
+  useStore = this.store
 
   /**
    * used to add undo/redo functionality
@@ -216,7 +199,7 @@ export class Editor<T extends EditableElement = EditableElement>
    */
   commands: CommandManager = new CommandManager()
 
-  commandBar: CommandBar = new CommandBar(this)
+  commandBar: CommandBarManager = new CommandBarManager(this, this.commands)
 
   /**
    * components
@@ -483,7 +466,7 @@ export class Editor<T extends EditableElement = EditableElement>
     const id = props.id || useId()
 
     const editableElement = useMemo(() => {
-      return this.createElement(id, props._source, _Component, props)
+      return this.createElement(id, props._source ?? {}, _Component, props)
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [_Component, id])
 
@@ -497,7 +480,7 @@ export class Editor<T extends EditableElement = EditableElement>
     } = editableElement.useRenderState(forwardRef)
 
     // update the element with the latest props and source
-    editableElement.update(props._source, props)
+    editableElement.update(props._source ?? {}, props)
 
     // see if we have a parent element
     const parent = useContext(EditableContext)!
@@ -579,9 +562,9 @@ export class Editor<T extends EditableElement = EditableElement>
     return this.state.context.selectedId === arg0.treeId
   }
 
-  /**
-   *  SETTINGS
-   * */
+  /***********************************
+   *            SETTINGS
+   * ********************************/
 
   #settings: Settings
 
@@ -615,29 +598,16 @@ export class Editor<T extends EditableElement = EditableElement>
     hidden?: boolean
   ): SchemaToValues<S> {
     const mode = this.useMode()
-    useControls(
-      this.settingsPath(),
-      {},
-      {
-        order: -1,
-        render: () => this.selectedElement === null,
-        collapsed: true
-      },
-      {
-        store: this.settingsStore
-      },
-      [mode]
-    )
 
-    let props = usePersistedControls(
-      this.settingsPath(name),
-      arg1,
-      [mode],
-      this.settingsStore,
+    Settings.useSettingsFolder(this, undefined, {
+      order: -1,
+      render: () => this.selectedElement === null,
+      collapsed: true
+    })
+
+    return Settings.useSettings(this, name, arg1, {
       hidden
-    )
-
-    return props as any
+    })
   }
 
   /**
@@ -650,35 +620,4 @@ export class Editor<T extends EditableElement = EditableElement>
   }) {
     this.plugins.push(plugin)
   }
-
-  useKeyboardShortcut(
-    name: string,
-    initialShortcut: string,
-    execute: () => void
-  ) {
-    const shortcut = this.useSettings("shortcuts", {
-      [name]: initialShortcut
-    })
-
-    useHotkeys(
-      shortcut[name],
-      execute,
-      {
-        preventDefault: true
-      },
-      [shortcut[name], execute]
-    )
-  }
-}
-
-function resolveSettings(sets: ISettings, arg0: { [key: string]: any }) {
-  let settings = {} as Record<string, any>
-  for (let key in arg0) {
-    let value = arg0[key]
-    if (typeof value === "function") {
-      value = (value as (...args: any[]) => any)(sets.getSetting(key))
-    }
-    settings[key] = value
-  }
-  return settings
 }

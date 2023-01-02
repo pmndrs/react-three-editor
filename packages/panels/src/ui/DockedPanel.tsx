@@ -13,7 +13,7 @@ export function DockedPanel({
   title,
   side,
   panel,
-  reveal,
+  lazy,
   order = 0,
   width
 }: PanelProps & { order?: number }) {
@@ -55,7 +55,6 @@ export function DockedPanel({
         <div
           style={{
             height: `calc(100% - ${order === 0 ? "36" : "28"}px)`,
-
             overflow: "scroll",
             backgroundColor: "var(--leva-colors-elevation2)"
           }}
@@ -66,7 +65,7 @@ export function DockedPanel({
             side={side}
             width={width}
             collapsed={false}
-            reveal={reveal}
+            lazy={lazy}
           />
         </div>
         {order === 0 && (

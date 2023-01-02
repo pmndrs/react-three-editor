@@ -9,13 +9,13 @@ export function ControlsPanel({
   width = 280,
   collapsed = false,
   side = "left",
-  reveal = false,
+  lazy = false,
   size = { width: 1000 },
   ...props
 }: PanelProps) {
   const panel = usePanel(id)
 
-  const [_collapsed, setCollapsed] = useState(reveal ? true : collapsed)
+  const [_collapsed, setCollapsed] = useState(lazy ? true : collapsed)
 
   useEffect(() => {
     setCollapsed(collapsed)

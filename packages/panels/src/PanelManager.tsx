@@ -5,6 +5,7 @@ import {
   defaultStore,
   interpret,
   ISettings,
+  ISettingsImpl,
   MachineInterpreter,
   Schema,
   SchemaToValues,
@@ -24,6 +25,7 @@ type PanelSettings = {
 
 export class Panel implements ISettings {
   #store: ControlledStore
+  settings: ISettingsImpl
   constructor(
     public name: string,
     public manager: PanelManager,
@@ -32,14 +34,27 @@ export class Panel implements ISettings {
     this.#store = _store
     // @ts-ignore
     this.#store.name = name
-  }
 
-  get settingsStore() {
-    return this.manager.settingsStore
-  }
-
-  getSetting(path: keyof PanelSettings) {
-    return Settings.getSettingsAtPath(this, this.settingsPath(path))
+    this.settings = {
+      store: this.manager.settings.store,
+      path: (path: string) =>
+        this.manager.settings.path(
+          "panels." + this.name + (path ? "." + path : "")
+        ),
+      get: (path: keyof PanelSettings) => {
+        return Settings.getSettingsAtPath(
+          this.settings,
+          this.settings.path(path)
+        )
+      },
+      set: (arg0: {
+        [key in keyof PanelSettings]?:
+          | PanelSettings[key]
+          | ((prev: PanelSettings[key]) => PanelSettings[key])
+      }) => {
+        Settings.setSettingsAtPaths(this.settings, arg0)
+      }
+    }
   }
 
   // to be used for leva APIs
@@ -60,10 +75,6 @@ export class Panel implements ISettings {
     this.#store.setValueAtPath(path, arg1, arg2)
   }
 
-  settingsPath(path: string) {
-    return this.manager.settingsPath("panels." + this.name + "." + path)
-  }
-
   getData() {
     return this.#store.getData()
   }
@@ -77,22 +88,14 @@ export class Panel implements ISettings {
   }
 
   dock(side: "left" | "right") {
-    this.setSettings({
+    this.settings.set({
       floating: false,
       side
     })
   }
 
   isFloating(): boolean {
-    return this.getSetting("floating")
-  }
-
-  setSettings(arg0: {
-    [key in keyof PanelSettings]?:
-      | PanelSettings[key]
-      | ((prev: PanelSettings[key]) => PanelSettings[key])
-  }) {
-    Settings.setSettingsAtPaths(this, arg0)
+    return this.settings.get("floating")
   }
 
   useSettings<S extends Schema>(arg1: S, hidden?: boolean): SchemaToValues<S> {
@@ -116,7 +119,7 @@ export class PanelManager implements ISettings {
   send
   subscribe
 
-  constructor(private settings: ISettings) {
+  constructor(public settings: ISettingsImpl) {
     this.service = interpret(
       panelMachine.withConfig({
         guards: {
@@ -158,22 +161,6 @@ export class PanelManager implements ISettings {
     this.subscribe = this.service.subscribe.bind(this.service)
   }
 
-  get settingsStore() {
-    return this.settings.settingsStore
-  }
-
-  getSetting(arg0: string) {
-    return this.settings.getSetting(arg0)
-  }
-
-  setSettings<T extends Record<string, any>>(values: T): void {
-    this.settings.setSettings(values)
-  }
-
-  settingsPath(name: string): string {
-    return this.settings.settingsPath(name)
-  }
-
   get machine() {
     return this.service.getSnapshot()
   }
@@ -213,18 +200,18 @@ export class PanelManager implements ISettings {
     let panelNames = Object.keys(this.panels)
     let settings = {} as Record<string, any>
     for (let i = 0; i < panelNames.length; i++) {
-      settings[this.get(panelNames[i]).settingsPath("hidden")] = false
+      settings[this.get(panelNames[i]).settings.path("hidden")] = false
     }
-    this.setSettings(settings)
+    this.settings.set(settings)
   }
 
   hideAllPanels() {
     let panelNames = Object.keys(this.panels)
     let settings = {} as Record<string, any>
     for (let i = 0; i < panelNames.length; i++) {
-      settings[this.get(panelNames[i]).settingsPath("hidden")] = true
+      settings[this.get(panelNames[i]).settings.path("hidden")] = true
     }
 
-    this.setSettings(settings)
+    this.settings.set(settings)
   }
 }

@@ -1,11 +1,11 @@
 import { EditableContext, EditorContext, useEditor } from "@editable-jsx/core"
 import { Canvas as FiberCanvas } from "@react-three/fiber"
 import { forwardRef, Suspense } from "react"
-import { CameraBounds } from "./CameraBounds"
-import { CanvasProps, editorTunnel } from "./Canvas"
+import { CanvasProps, EditorUI } from "./Canvas"
 import { EditorCamera } from "./controls/EditorCamera"
 import { EditorControls } from "./controls/EditorControls"
 import { editor } from "./editor"
+import { EditorBounds } from "./EditorBounds"
 
 export const EditableCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
   function EditableCanvas(props, ref) {
@@ -37,14 +37,14 @@ export const EditableCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
       >
         <EditorContext.Provider value={store}>
           <EditorCamera />
-          <CameraBounds>
+          <EditorBounds>
             <Suspense>
               <EditableContext.Provider value={editableElement}>
                 {children}
               </EditableContext.Provider>
             </Suspense>
-          </CameraBounds>
-          <editorTunnel.Out fallback={<EditorControls />} />
+          </EditorBounds>
+          <EditorUI.Out fallback={<EditorControls />} />
         </EditorContext.Provider>
       </FiberCanvas>
     )

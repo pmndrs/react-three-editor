@@ -1,9 +1,10 @@
-import { useEditor } from "../useEditor"
+import { useKeyboardShortcut } from "@editable-jsx/controls"
+import { useCommandManager } from "./CommandManager"
 import { isCommand } from "./utils"
 
 export function KeyboardCommands() {
-  const editor = useEditor()
-  const commands = editor.commands.useStore((state) =>
+  const commandManager = useCommandManager()
+  const commands = commandManager.useStore((state) =>
     Object.values(state.commands)
   )
 
@@ -18,7 +19,7 @@ export function KeyboardCommands() {
               key={command.name}
               name={command.name}
               shortcut={command.shortcut}
-              execute={() => command.execute(editor)}
+              execute={() => command.execute(commandManager.context)}
               debug={true}
             />
           )
@@ -38,7 +39,7 @@ export function KeyboardShortcut({
   execute: () => void
   debug?: boolean
 }) {
-  useEditor().useKeyboardShortcut(name, shortcut.join("+"), execute)
+  useKeyboardShortcut(name, shortcut.join("+"), execute)
 
   // useHotkeys(
   //   shortcut.join("+"),

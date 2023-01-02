@@ -1,21 +1,55 @@
+import { useControls } from "leva"
+import { FolderSettings, Schema, SchemaToValues } from "leva/plugin"
+import { createContext, useContext } from "react"
 import { ControlledStore, defaultStore } from "./store"
+import { usePersistedControls } from "./usePersistedControls"
 
 export interface ISettings {
-  settingsStore: ControlledStore
-  getSetting(arg0: string): any
-  settingsDeps?: any[]
-  setSettings<T extends Record<string, any>>(values: T): void
-  settingsPath(name: string): string
+  // settingsStore: ControlledStore
+  // getSetting(arg0: string): any
+  // settingsDeps?: any[]
+  // setSettings<T extends Record<string, any>>(values: T): void
+  // settingsPath(name: string | undefined): string
+
+  settings: ISettingsImpl
 }
 
-function resolveSettings(sets: ISettings, arg0: { [key: string]: any }) {
+export interface ISettingsImpl {
+  store: ControlledStore
+  get(arg0: string): any
+  deps?: any[]
+  set<T extends Record<string, any>>(values: T): void
+  path(name: string | undefined): string
+}
+
+export const SettingsContext = createContext({} as ISettingsImpl)
+const useSettingsContext = () => {
+  return useContext(SettingsContext)
+}
+
+export function useSettings<S extends Schema>(
+  name: string,
+  schema: S
+): SchemaToValues<S> {
+  const settings = useSettingsContext()
+  let props = usePersistedControls(
+    settings.path(name),
+    schema,
+    settings.deps || [],
+    settings.store
+  )
+
+  return props as any
+}
+
+function resolveSettings(sets: ISettingsImpl, arg0: { [key: string]: any }) {
   let settings = {} as Record<string, any>
   for (let key in arg0) {
     let value = arg0[key]
     if (typeof value === "function") {
-      value = (value as (...args: any[]) => any)(sets.getSetting(key))
+      value = (value as (...args: any[]) => any)(sets.get(key))
     }
-    settings[sets.settingsPath(key)] = value
+    settings[sets.path(key)] = value
   }
   return settings
 }
@@ -23,34 +57,47 @@ function resolveSettings(sets: ISettings, arg0: { [key: string]: any }) {
 export class Settings {
   store: ControlledStore = defaultStore
 
-  static getSettingsAtPath(manager: ISettings, path: string) {
-    return manager.settingsStore.get(path)
+  static getSettingsAtPath(manager: ISettingsImpl, path: string) {
+    return manager.store.get(path)
+  }
+
+  static useSettings<S extends Schema>(
+    settings: ISettingsImpl,
+    name: string,
+    schema: Schema,
+    { hidden }
+  ): SchemaToValues<S> {
+    return usePersistedControls(
+      settings.path(name),
+      schema as any,
+      settings.deps || [],
+      settings.store
+    )
+  }
+
+  static useSettingsFolder<S extends Schema>(
+    settings: ISettingsImpl,
+    name: string | undefined,
+    options: FolderSettings
+  ): void {
+    useControls(
+      settings.path(name),
+      {},
+      options,
+      {
+        store: settings.store
+      },
+      settings.deps || []
+    )
   }
 
   static setSettingsAtPaths(
-    manager: ISettings,
+    manager: ISettingsImpl,
     values: { [key: string]: any }
   ) {
     let settings = resolveSettings(manager, values)
     console.log("settings", settings)
 
-    return manager.settingsStore.set(settings, true)
-  }
-
-  get(arg0: string) {
-    return this.store.get(arg0)
-  }
-
-  set<T extends string>(values: T, value: any): void
-  set<T extends Record<string, any>>(values: T): void
-  set<T extends string | Record<string, any>>(
-    values: T,
-    value?: T extends string ? any : undefined
-  ): void {
-    if (typeof values === "string") {
-      this.store.set({ [values]: value }, true)
-    } else {
-      this.store.set(values, true)
-    }
+    return manager.store.set(settings, true)
   }
 }

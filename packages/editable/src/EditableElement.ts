@@ -11,6 +11,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { toast } from "react-hot-toast"
 import { Editor } from "./Editor"
 import { PropChange } from "./prop-types/types"
+import { multiToggle } from "./ui/leva/multiToggle"
 
 /**
  * An editable element is a wrapper around a React element that can be edited in the editor.
@@ -174,18 +175,6 @@ export class EditableElement<
     )
   }
 
-  // setObject3D(item: Object3D<Event>) {
-  //   this.object = item
-  // }
-
-  // getObject3D() {
-  //   return this.object || this.ref
-  // }
-
-  // isObject3D() {
-  //   return this.object || this.ref instanceof Object3D
-  // }
-
   resetControls() {}
 
   get elementName() {
@@ -242,30 +231,6 @@ export class EditableElement<
   get isSelected() {
     return this.editor.state.context.selectedId === this.treeId
   }
-
-  // useHelper(arg0: string, helper: any, ...args: any[]) {
-  //   const isEditing = this.editor.useStates("editing")
-  //   const [props] = this.editor.useSettings("helpers", {
-  //     [arg0]: multiToggle({
-  //       label: arg0,
-  //       data: "selected",
-  //       options: ["all", "selected", "none"]
-  //     })
-  //   }) as [any]
-
-  //   const isSelected = this.useIsSelected()
-
-  //   let ref = isEditing
-  //     ? props[arg0] === "all"
-  //       ? this
-  //       : props[arg0] === "selected" && isSelected
-  //       ? this
-  //       : undefined
-  //     : undefined
-
-  //   // @ts-ignore
-  //   useHelper(ref as any, helper, ...(args ?? []))
-  // }
 
   useCollapsed(): [any, any] {
     let storedCollapsedState =
@@ -559,4 +524,52 @@ export class EditableElement<
   get deleted() {
     return this.refs.deleted
   }
+
+  useHelper(arg0: string, helper: any, ...args: any[]) {
+    const isEditing = this.editor.useStates("editing")
+    const prop = this.editor.useSettings("helpers", {
+      [arg0]: multiToggle({
+        label: arg0,
+        data: "selected",
+        options: ["all", "selected", "none"]
+      })
+    })[arg0]
+
+    const isSelected = this.useIsSelected()
+
+    let ref = isEditing
+      ? prop === "all"
+        ? this
+        : prop === "selected" && isSelected
+        ? this
+        : undefined
+      : undefined
+
+    // @ts-ignore
+    useHelper(ref as any, helper, ...(args ?? []))
+  }
+}
+
+function useEditorHelper(arg0: string, helper: any, ...args: any[]) {
+  const isEditing = this.editor.useStates("editing")
+  const [props] = this.editor.useSettings("helpers", {
+    [arg0]: multiToggle({
+      label: arg0,
+      data: "selected",
+      options: ["all", "selected", "none"]
+    })
+  }) as [any]
+
+  const isSelected = this.useIsSelected()
+
+  let ref = isEditing
+    ? props[arg0] === "all"
+      ? this
+      : props[arg0] === "selected" && isSelected
+      ? this
+      : undefined
+    : undefined
+
+  // @ts-ignore
+  useHelper(ref as any, helper, ...(args ?? []))
 }

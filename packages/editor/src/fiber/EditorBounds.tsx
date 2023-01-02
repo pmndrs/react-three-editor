@@ -4,7 +4,7 @@ import { useThree } from "@react-three/fiber"
 import { ReactNode } from "react"
 import { ThreeEditor } from "./ThreeEditor"
 
-export function CameraBounds({ children }: { children: ReactNode }) {
+export function EditorBounds({ children }: { children: ReactNode }) {
   return (
     <Bounds margin={2}>
       <AssignBounds />

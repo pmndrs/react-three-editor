@@ -1,9 +1,14 @@
-import { Floating, styled, useTransform } from "@editable-jsx/controls"
+import {
+  DragState,
+  Floating,
+  styled,
+  useTransform
+} from "@editable-jsx/controls"
 import { memo, useEffect } from "react"
 import { usePanel } from "../usePanel"
 import { usePanelManager } from "../usePanelManager"
 import { ControlsPanel } from "./ControlsPanel"
-import { DragGestureState, TitleWithFilter } from "./PanelTitle"
+import { TitleWithFilter } from "./PanelTitle"
 import { LeftPanelGroup, RightPanelGroup } from "./tunnels"
 import { PanelProps } from "./types"
 
@@ -65,9 +70,9 @@ export const FloatingPanelRoot = memo(
     collapsed?: boolean
     setCollapsed?: (flag: boolean) => void
     title?: string
-    onDrag?: (point: DragGestureState) => void
-    onDragStart?: (point: DragGestureState) => void
-    onDragEnd?: (point: DragGestureState) => void
+    onDrag?: (point: DragState) => void
+    onDragStart?: (point: DragState) => void
+    onDragEnd?: (point: DragState) => void
     position?: { x: number; y: number }
   }) => {
     const [rootRef, set] = useTransform<HTMLDivElement>()
@@ -184,14 +189,7 @@ export function FloatingControlsPanel(
           overflow: "scroll"
         }}
       >
-        <ControlsPanel
-          panel={props.panel}
-          title={props.title}
-          side={props.side}
-          reveal={props.reveal}
-          width={320}
-          collapsed={false}
-        />
+        <ControlsPanel {...props} width={320} collapsed={false} />
       </div>
     </FloatingPanelRoot>
   )
