@@ -55,7 +55,13 @@ export const EditorCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
   }
 )
 
-function EditorProvider({ editor, children }: { editor }) {
+function EditorProvider({
+  editor,
+  children
+}: {
+  editor: ReturnType<typeof useEditor>
+  children: React.ReactNode
+}) {
   return (
     <EditorContext.Provider value={editor}>
       <SettingsContext.Provider value={editor.settings}>

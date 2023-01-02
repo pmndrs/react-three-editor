@@ -25,7 +25,7 @@ type PanelSettings = {
 
 export class Panel implements ISettings {
   #store: ControlledStore
-  settings: ISettingsImpl
+  settings: ISettingsImpl<PanelSettings>
   constructor(
     public name: string,
     public manager: PanelManager,
@@ -107,19 +107,25 @@ export class PanelManager implements ISettings {
   /** reactive store */
   store: Store<{
     panels: Record<string, Panel>
-  }> = createStore("panels", (set, get) => ({
-    panels: {
-      settings: new Panel("settings", this, defaultStore)
-    }
-  }))
-  useStore = this.store
+  }>
+  useStore
 
+  settings: ISettingsImpl
   /** State Machine */
   service
   send
   subscribe
 
-  constructor(public settings: ISettingsImpl) {
+  constructor(settings: ISettingsImpl<any>) {
+    this.settings = settings
+    this.store = createStore("panels", (set, get) => ({
+      panels: {
+        settings: new Panel("settings", this, defaultStore)
+      }
+    }))
+
+    this.useStore = this.store
+
     this.service = interpret(
       panelMachine.withConfig({
         guards: {
@@ -135,7 +141,7 @@ export class PanelManager implements ISettings {
             this.get(event.panel).dock("right")
           },
           stopDragging: (context, event) => {
-            this.get(event.panel).setSettings({
+            this.get(event.panel).settings.set({
               position: (prevPosition) => [
                 prevPosition[0] + event.event.movement[0],
                 prevPosition[1] + event.event.movement[1]
@@ -143,7 +149,7 @@ export class PanelManager implements ISettings {
             })
           },
           undock: (context, event) => {
-            this.get(event.panel).setSettings({
+            this.get(event.panel).settings.set({
               position: event.event.xy,
               floating: true
             })

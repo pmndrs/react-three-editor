@@ -8,7 +8,8 @@ export function PanelGroup({ side = "left" }) {
   return (
     <div
       style={{
-        width: "25vw",
+        width: "40vw",
+        maxWidth: 320,
         height: "100%",
         display: "flex",
         flexDirection: "column"

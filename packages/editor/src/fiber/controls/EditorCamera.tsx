@@ -51,7 +51,7 @@ export function EditorCamera() {
 
   useEffect(() => {
     function update(e: Event) {
-      editor.setSettings({
+      editor.settings.set({
         "camera.position": e.target.object.position.toArray(),
         "camera.rotation": e.target.object.rotation
           .toArray()
@@ -72,9 +72,9 @@ export function EditorCamera() {
 
   useEffect(() => {
     if (cameraSettings.enabled && controls) {
-      camera.position.fromArray(editor.getSetting("camera.position"))
+      camera.position.fromArray(editor.settings.get("camera.position"))
       camera.rotation.fromArray(
-        editor.getSetting("camera.rotation").map((a) => MathUtils.degToRad(a))
+        editor.settings.get("camera.rotation").map((a) => MathUtils.degToRad(a))
       )
     }
   }, [camera, controls])

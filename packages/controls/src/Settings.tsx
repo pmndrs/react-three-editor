@@ -5,21 +5,21 @@ import { ControlledStore, defaultStore } from "./store"
 import { usePersistedControls } from "./usePersistedControls"
 
 export interface ISettings {
-  // settingsStore: ControlledStore
-  // getSetting(arg0: string): any
-  // settingsDeps?: any[]
-  // setSettings<T extends Record<string, any>>(values: T): void
-  // settingsPath(name: string | undefined): string
-
   settings: ISettingsImpl
 }
 
-export interface ISettingsImpl {
+export interface ISettingsImpl<T = any> {
   store: ControlledStore
-  get(arg0: string): any
+  get(arg0: keyof T): any
   deps?: any[]
-  set<T extends Record<string, any>>(values: T): void
-  path(name: string | undefined): string
+  set<
+    T extends {
+      [key: string]: any
+    }
+  >(values: {
+    [key in keyof T]?: T[key] | ((prev: T[key]) => T[key])
+  }): void
+  path(name: T | string | undefined): string
 }
 
 export const SettingsContext = createContext({} as ISettingsImpl)
@@ -57,8 +57,8 @@ function resolveSettings(sets: ISettingsImpl, arg0: { [key: string]: any }) {
 export class Settings {
   store: ControlledStore = defaultStore
 
-  static getSettingsAtPath(manager: ISettingsImpl, path: string) {
-    return manager.store.get(path)
+  static getSettingsAtPath(settings: ISettingsImpl, path: string) {
+    return settings.store.get(path)
   }
 
   static useSettings<S extends Schema>(
@@ -96,8 +96,6 @@ export class Settings {
     values: { [key: string]: any }
   ) {
     let settings = resolveSettings(manager, values)
-    console.log("settings", settings)
-
     return manager.store.set(settings, true)
   }
 }

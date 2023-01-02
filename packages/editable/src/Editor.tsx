@@ -20,6 +20,7 @@ import {
   EditPatch,
   interpret,
   ISettings,
+  ISettingsImpl,
   JSXSource,
   MachineInterpreter,
   persisted,
@@ -35,131 +36,13 @@ import { Raycaster } from "three"
 import { ComponentLoader } from "./component-loader"
 import { editorMachine } from "./editor.machine"
 import { Helpers } from "./helpers"
+import { Tree } from "./Tree"
 
 export type EditorStoreStateType = {
   selectedId: null | string
   selectedKey: null | string
   elements: Record<string, EditableElement>
   settingsPanel: string
-}
-
-class Tree {
-  root: EditableElement
-  constructor(root: EditableElement) {
-    this.root = root
-  }
-
-  appendNewElement(
-    element: EditableElement,
-    componentType: string | FC,
-    props: any
-  ) {
-    console.log("appendNewElement", componentType)
-    if (typeof componentType === "string") {
-      console.log("appendNewElement", componentType)
-      element.refs.setMoreChildren?.((children) => [
-        ...children,
-        createElement(editable[componentType], {
-          _source: {
-            ...element.source,
-            lineNumber: -1,
-            elementName: componentType
-          },
-          key: children.length,
-          ...props
-        })
-      ])
-    } else {
-      console.log("appendNewElement", componentType)
-      element.refs.setMoreChildren?.((children) => [
-        ...children,
-        createElement(Editable, {
-          component: componentType,
-          _source: {
-            ...element.source,
-            lineNumber: -1,
-            elementName:
-              componentType.displayName || componentType.name || undefined
-          },
-          key: children.length,
-          ...props
-        } as any)
-      ])
-    }
-  }
-
-  deleteElement(element: EditableElement) {
-    element.delete()
-  }
-
-  appendElement(element: EditableElement, parent: EditableElement | null) {
-    let parentId = parent?.id!
-    if (parentId) {
-      element.parentId = parentId
-      this?.store?.setState((el) => {
-        let parent = el.elements[parentId] ?? {}
-        let newIndex = parent.childIds?.length ?? 0
-        element.index = `${newIndex}`
-        parent = Object.assign(parent, {
-          childIds: [...(el.elements[parentId]?.childIds ?? []), element.id]
-        })
-
-        element.index = `${newIndex}`
-        let newLement = Object.assign(element, el.elements[element.id])
-        return {
-          elements: {
-            ...el.elements,
-            [newLement.id]: newLement,
-            [parentId]: parent
-          }
-        }
-      })
-    } else {
-      if (element.id !== undefined) {
-        this?.store?.setState((el) => ({
-          elements: {
-            ...el.elements,
-            [element.id]: Object.assign(element, el.elements[element.id])
-          }
-        }))
-      }
-    }
-  }
-
-  removeElement(element: EditableElement, parent: EditableElement | null) {
-    let parentId = parent?.id!
-    if (parentId) {
-      element.parentId = null
-      this?.store?.setState((el) => {
-        let e = {
-          ...el.elements
-        }
-
-        if (e[parentId]) {
-          e[parentId].childIds = e[parentId]?.childIds.filter(
-            (c: string) => c !== element.id
-          )
-        }
-
-        delete e[element.id]
-        return { elements: e }
-      })
-    } else {
-      this?.store?.setState((el) => {
-        let e = { ...el }
-        delete e.elements[element.id]
-        return e
-      })
-    }
-  }
-}
-
-type Diff = {
-  action_type: string
-  value: {
-    [x: string]: any
-  }
-  source: any
 }
 
 export class Editor<T extends EditableElement = EditableElement>
@@ -257,14 +140,37 @@ export class Editor<T extends EditableElement = EditableElement>
 
   raycaster?: Raycaster
 
+  settings: ISettingsImpl
+
   constructor(
     public plugins: any[],
     public client: BirpcReturn<RpcServerFunctions>
   ) {
     super()
 
-    this.#settings = new Settings()
-    this.panels = new PanelManager(this)
+    let core = new Settings()
+
+    let settingsPath = (path?: string | undefined) => {
+      return (
+        `world.` +
+        `${this.state.toStrings()[0]} settings` +
+        (path ? "." + path : "")
+      )
+    }
+
+    let editor = this
+    this.settings = {
+      get: (key) =>
+        Settings.getSettingsAtPath(this.settings, settingsPath(key)),
+      set: (values) => Settings.setSettingsAtPaths(this.settings, values),
+      path: settingsPath,
+      store: core.store,
+      get deps() {
+        return [editor.mode]
+      }
+    }
+
+    this.panels = new PanelManager(this.settings)
 
     this.service = persisted(
       interpret(editorMachine, {
@@ -566,46 +472,18 @@ export class Editor<T extends EditableElement = EditableElement>
    *            SETTINGS
    * ********************************/
 
-  #settings: Settings
-
-  get settingsStore() {
-    return this.#settings.store
-  }
-
-  get settingsDeps() {
-    return [this.mode]
-  }
-
-  settingsPath(arg0?: string | undefined): any {
-    return (
-      `world.` +
-      `${this.state.toStrings()[0]} settings` +
-      (arg0 ? "." + arg0 : "")
-    )
-  }
-
-  getSetting(name: string) {
-    return Settings.getSettingsAtPath(this, this.settingsPath(name))
-  }
-
-  setSettings(arg0: { [key: string]: any }) {
-    Settings.setSettingsAtPaths(this, arg0)
-  }
-
   useSettings<S extends Schema>(
     name: string,
     arg1: S,
     hidden?: boolean
   ): SchemaToValues<S> {
-    const mode = this.useMode()
-
-    Settings.useSettingsFolder(this, undefined, {
+    Settings.useSettingsFolder(this.settings, undefined, {
       order: -1,
       render: () => this.selectedElement === null,
       collapsed: true
     })
 
-    return Settings.useSettings(this, name, arg1, {
+    return Settings.useSettings(this.settings, name, arg1, {
       hidden
     })
   }
