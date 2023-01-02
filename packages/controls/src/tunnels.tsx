@@ -31,7 +31,6 @@ export function createMultiTunnel(): MultiTunnel {
         [tunnelId]: OldTunnel
       })
       return () => {
-        console.log("unmounting", tunnelId)
         useTunnels.setState((state) => {
           let newState = { ...state }
           delete newState[tunnelId]

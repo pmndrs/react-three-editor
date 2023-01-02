@@ -22,7 +22,7 @@ export interface ISettingsImpl<T = any> {
   path(name: T | string | undefined): string
 }
 
-export const SettingsContext = createContext({} as ISettingsImpl)
+export const SettingsContext = createContext({} as { settings: ISettingsImpl })
 const useSettingsContext = () => {
   return useContext(SettingsContext)
 }
@@ -31,7 +31,7 @@ export function useSettings<S extends Schema>(
   name: string,
   schema: S
 ): SchemaToValues<S> {
-  const settings = useSettingsContext()
+  const settings = useSettingsContext().settings
   let props = usePersistedControls(
     settings.path(name),
     schema,

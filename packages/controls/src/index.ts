@@ -2,7 +2,7 @@ import { useHotkeys } from "react-hotkeys-hook"
 import { useSettings } from "./settings"
 
 export type { DragState } from "@use-gesture/react"
-export * from "@xstate/react"
+export { useSelector } from "@xstate/react"
 export * from "leva/plugin"
 export * from "react-hot-toast"
 export { default as toast } from "react-hot-toast"

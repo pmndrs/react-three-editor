@@ -35,6 +35,7 @@ export class Panel implements ISettings {
     // @ts-ignore
     this.#store.name = name
 
+    let panel = this
     this.settings = {
       store: this.manager.settings.store,
       path: (path: string) =>
@@ -46,6 +47,9 @@ export class Panel implements ISettings {
           this.settings,
           this.settings.path(path)
         )
+      },
+      get deps() {
+        return panel.manager.settings.deps || []
       },
       set: (arg0: {
         [key in keyof PanelSettings]?:

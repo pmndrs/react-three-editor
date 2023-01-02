@@ -14,7 +14,7 @@ import { EditorContext, useEditor } from "@editable-jsx/core"
 import { PanelGroup, PanelManagerContext } from "@editable-jsx/panels"
 import { Canvas as FiberCanvas, Props } from "@react-three/fiber"
 import { FiberProvider } from "its-fine"
-import { forwardRef, Suspense } from "react"
+import { forwardRef, PropsWithChildren, Suspense, useMemo } from "react"
 import { AllCommands } from "../commands"
 import { EditorCamera } from "./controls/EditorCamera"
 import { EditorControls } from "./controls/EditorControls"
@@ -55,6 +55,22 @@ export const EditorCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
   }
 )
 
+function SettingsProvider({ children }: PropsWithChildren) {
+  const editor = useEditor()
+  const mode = editor.useMode()
+
+  const settings = useMemo(
+    () => ({ settings: editor.settings }),
+    [mode, editor.settings]
+  )
+
+  return (
+    <SettingsContext.Provider value={settings}>
+      {children}
+    </SettingsContext.Provider>
+  )
+}
+
 function EditorProvider({
   editor,
   children
@@ -64,7 +80,7 @@ function EditorProvider({
 }) {
   return (
     <EditorContext.Provider value={editor}>
-      <SettingsContext.Provider value={editor.settings}>
+      <SettingsProvider>
         <CommandManagerContext.Provider value={editor.commands}>
           <CommandBarContext.Provider value={editor.commandBar}>
             <PanelManagerContext.Provider value={editor.panels}>
@@ -78,7 +94,7 @@ function EditorProvider({
             </PanelManagerContext.Provider>
           </CommandBarContext.Provider>
         </CommandManagerContext.Provider>
-      </SettingsContext.Provider>
+      </SettingsProvider>
     </EditorContext.Provider>
   )
 }

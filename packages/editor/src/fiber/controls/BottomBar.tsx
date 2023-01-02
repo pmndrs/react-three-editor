@@ -89,8 +89,8 @@ type DynamicIslandProps = {
     width: number
     height: number
   }
-  side?: "left" | "right" | "center" | string
-  placement?: "top" | "bottom" | string
+  side?: "left" | "right" | "center"
+  placement?: "top" | "bottom"
   hidden?: boolean
 }
 
@@ -121,7 +121,7 @@ function BottomBar({
           ? {
               left:
                 (hasLeft ? (hasRight ? 300 : 360) : 0) +
-                (side === "left" ? 24 : size.width / 2)
+                (side === "left" ? 24 : size!.width / 2)
             }
           : {
               right:

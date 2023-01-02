@@ -59,30 +59,23 @@ export class Editor<T extends EditableElement = EditableElement>
   /**
    * a store to keep track of all the editor state, eg. settings, mode, selected element, etc.
    */
-  store: Store<EditorStoreStateType> = createStore("editor", () => ({
-    selectedId: null as null | string,
-    selectedKey: null as null | string,
-    elements: {
-      // root: new EditableElement("root", {} as any, "editor", null)
-    },
-    settingsPanel: "settings"
-  }))
+  store: Store<EditorStoreStateType>
 
-  tree: Tree = new Tree(this.root)
+  tree?: Tree
 
-  useStore = this.store
+  useStore
 
   /**
    * used to add undo/redo functionality
    */
-  history: HistoryManager = new HistoryManager()
+  history: HistoryManager
 
   /**
    * Command Manager
    */
-  commands: CommandManager = new CommandManager()
+  commands: CommandManager
 
-  commandBar: CommandBarManager = new CommandBarManager(this, this.commands)
+  commandBar: CommandBarManager
 
   /**
    * components
@@ -148,6 +141,24 @@ export class Editor<T extends EditableElement = EditableElement>
   ) {
     super()
 
+    this.store = createStore("editor", () => ({
+      selectedId: null as null | string,
+      selectedKey: null as null | string,
+      elements: {},
+      settingsPanel: "settings"
+    }))
+
+    this.useStore = this.store
+
+    this.service = persisted(
+      interpret(editorMachine, {
+        devTools: true
+      }),
+      "r3f-editor.machine"
+    )
+
+    this.send = this.service.send.bind(this.service)
+
     let core = new Settings()
 
     let settingsPath = (path?: string | undefined) => {
@@ -160,7 +171,7 @@ export class Editor<T extends EditableElement = EditableElement>
 
     let editor = this
     this.settings = {
-      get: (key) =>
+      get: (key: string) =>
         Settings.getSettingsAtPath(this.settings, settingsPath(key)),
       set: (values) => Settings.setSettingsAtPaths(this.settings, values),
       path: settingsPath,
@@ -170,16 +181,13 @@ export class Editor<T extends EditableElement = EditableElement>
       }
     }
 
+    this.history = new HistoryManager()
+
+    this.commands = new CommandManager(this)
+
+    this.commandBar = new CommandBarManager(this, this.commands)
     this.panels = new PanelManager(this.settings)
 
-    this.service = persisted(
-      interpret(editorMachine, {
-        devTools: true
-      }),
-      "r3f-editor.machine"
-    )
-
-    this.send = this.service.send.bind(this.service)
     this.rootId = ""
 
     this.expanded = localStorage.getItem("collapased")
@@ -477,6 +485,9 @@ export class Editor<T extends EditableElement = EditableElement>
     arg1: S,
     hidden?: boolean
   ): SchemaToValues<S> {
+    // make sure to rerender when the mode changes
+    this.useMode()
+
     Settings.useSettingsFolder(this.settings, undefined, {
       order: -1,
       render: () => this.selectedElement === null,

@@ -3,7 +3,7 @@ import { CommandType, useCommands } from "@editable-jsx/commander"
 import { FC, useEffect } from "react"
 import * as THREE from "three"
 import { BufferGeometry, Material, Object3D } from "three"
-import { ComponentType } from "../component-loader"
+import { ComponentType } from "@editable-jsx/core/src/component-loader"
 
 function isClass(v: any) {
   return typeof v === "function" && /^\s*class\s+/.test(v.toString())
