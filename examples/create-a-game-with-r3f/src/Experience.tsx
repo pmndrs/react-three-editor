@@ -1,14 +1,7 @@
 import { OrbitControls } from "@react-three/drei"
-import { extendControls } from "@react-three/editor"
+import { EditorRoot, extendControls } from "@react-three/editor"
 import { Physics, RigidBody } from "@react-three/rapier"
-import { BlockAxe } from "./components/BlockAxe"
-import { BlockEnd } from "./components/BlockEnd"
-import { BlockLimbo } from "./components/BlockLimbo"
-import { BlockSpinner } from "./components/BlockSpinner"
-import { BlockStart } from "./components/BlockStart"
-import { Bounds } from "./components/Bounds"
 import Lights from "./Lights.js"
-import { Player } from "./Player"
 
 extendControls(RigidBody, {
   mass: { value: 1, min: 0, max: 100, step: 0.1, type: "number" },
@@ -21,13 +14,14 @@ extendControls(RigidBody, {
 function Level() {
   return (
     <>
+      {/* <group></group>
       <BlockStart position={[0, 0.426, 0]} />
       <BlockLimbo position={[0, -0.003, -4]} />
       <BlockSpinner position={[0, 0, -8]} />
       <BlockSpinner position={[0, 0, -12]} />
       <BlockAxe position={[0, 0, -16]} />
       <BlockEnd position={[0.0, 0, -20]} />
-      <Bounds length={6} name={"yo!"} />
+      <Bounds length={6} name={"yo!"} /> */}
     </>
   )
 }
@@ -37,9 +31,11 @@ export default function Experience() {
     <>
       <OrbitControls makeDefault />
       <Physics>
-        <Level />
-        <Lights />
-        <Player />
+        <EditorRoot>
+          <Level />
+          <Lights />
+        </EditorRoot>
+        {/* <Player /> */}
         {/* <gridHelper /> */}
       </Physics>
     </>

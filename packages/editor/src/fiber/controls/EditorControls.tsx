@@ -1,16 +1,24 @@
-import { CommandBarControls } from "../../commandbar"
-import { FloatingPanels } from "../../ui/panels/panel-tunnels"
+import { CommandBar, useEditor } from "@editable-jsx/core"
+import { KeyboardCommands } from "@editable-jsx/core/src/command-bar/KeyboardCommands"
+import { PerformanceControls } from "./PerformanceControls"
 import { SceneControls } from "./SceneControls"
 import { SelectedElementControls } from "./SelectedElementControls"
 
 export function EditorControls() {
+  const { grid, axes } = useEditor().useSettings("helpers", {
+    grid: true,
+    axes: true
+  })
+
   return (
     <>
-      <FloatingPanels.Outs />
-
-      <SelectedElementControls store={"properties"} />
-      <SceneControls store={"scene"} />
-      <CommandBarControls />
+      <SelectedElementControls panel="properties" />
+      <SceneControls panel="scene" />
+      <CommandBar.In />
+      <KeyboardCommands />
+      <PerformanceControls panel="settings" order={1} />
+      {grid && <gridHelper />}
+      {axes && <axesHelper />}
     </>
   )
 }

@@ -1,15 +1,15 @@
-import { ElementControls, useEditor } from "@editable-jsx/core"
-import { StoreType } from "leva/dist/declarations/src/types"
+import { EditableElement, useEditor } from "@editable-jsx/core"
+import { usePanel } from "@editable-jsx/panels"
 import { Fragment } from "react"
-import { usePanel } from "../../ui/panels/LevaPanel"
+import { ElementControls } from "../ElementControls"
 import { useElementObserver } from "../useWatchElement"
 import { ElementTransformControls } from "./ElementTransformControls"
 
 export function SelectedElementControls({
-  store = "scene",
+  panel: store = "scene",
   order
 }: {
-  store?: StoreType | string
+  panel?: string
   order?: number
 }) {
   const panel = usePanel(store)
@@ -33,7 +33,7 @@ export function SelectedElementControls({
   ) : null
 }
 
-function ElementWatcher({ element }: { element: Editable<any> }) {
+function ElementWatcher({ element }: { element: EditableElement<any> }) {
   useElementObserver(element)
   return null
 }

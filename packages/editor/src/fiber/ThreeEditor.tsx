@@ -1,29 +1,22 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { Editor } from "@editable-jsx/core/Editor"
+import { EditableElement, Editor } from "@editable-jsx/core"
 import { useBounds } from "@react-three/drei"
-import { levaStore } from "leva"
-import { useCallback } from "react"
-
-// @ts-ignore
-levaStore.store = undefined
+import { FC, useCallback } from "react"
 
 export class ThreeEditor extends Editor {
+  ContextBridge!: FC
   findEditableElement(obj: any) {
     return obj?.__r3f?.editable
-  }
-
-  setMode(value: any) {
-    this.settingsPanel.setValueAtPath(this.modePath, value, true)
-    switch (value) {
-      case "editor":
-        this.remount?.()
-    }
   }
 
   camera: unknown
   bounds!: ReturnType<typeof useBounds>
 
-  useElement(Component: any, props: any, forwardRef?: any): [Editable, any] {
+  useElement(
+    Component: any,
+    props: any,
+    forwardRef?: any
+  ): [EditableElement, any] {
     let [element, overrideProps] = super.useElement(
       Component,
       props,
@@ -35,7 +28,7 @@ export class ThreeEditor extends Editor {
       {
         ...overrideProps,
         onPointerUp:
-          Component === "canvas"
+          Component === "root"
             ? undefined
             : useCallback(
                 (e: any) => {

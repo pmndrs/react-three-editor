@@ -1,71 +1,161 @@
 import {
   createElement,
+  FC,
   Fragment,
   useContext,
   useEffect,
   useId,
   useMemo
 } from "react"
-import { Editable } from "./Editable"
 import { EditableContext } from "./EditableContext"
+import { EditableElement } from "./EditableElement"
 
-import { levaStore, useControls } from "leva"
+import { PanelManager } from "@editable-jsx/panels"
+import create from "zustand"
+import { CommandManager } from "./commands"
+import { Editable, editable } from "./editable"
+import { HistoryManager } from "./history"
+
 import {
-  DataInput,
+  createStore,
+  EditPatch,
+  interpret,
+  ISettings,
+  MachineInterpreter,
+  persisted,
   Schema,
   SchemaToValues,
-  StoreType
-} from "leva/dist/declarations/src/types"
-import create from "zustand"
-import { editable } from "./components"
-import { HistoryManager } from "./HistoryManager"
-
-import { ComponentLoader } from "../component-loader"
-import { EditPatch, JSXSource, RpcServerFunctions } from "../types"
-import { CommandManager } from "./commands/manager"
-import { EditableComponent } from "./EditableComponent"
-
-levaStore.name = "settings"
+  Settings,
+  Subscribable,
+  usePersistedControls,
+  useSelector
+} from "@editable-jsx/controls"
+import { BirpcReturn } from "birpc"
+import { useControls } from "leva"
+import { useHotkeys } from "react-hotkeys-hook"
+import { Raycaster } from "three"
+import { CommandBar } from "./commands/CommandBar"
+import { ComponentLoader } from "./component-loader"
+import { editorMachine } from "./editor.machine"
+import { Helpers } from "./helpers"
 
 export type EditorStoreStateType = {
   selectedId: null | string
   selectedKey: null | string
-  elements: Record<string, Editable>
-  settingsPanel: string | StoreType
+  elements: Record<string, EditableElement>
+  settingsPanel: string
 }
 
-import {
-  createStore,
-  persisted,
-  usePersistedControls
-} from "@editable-jsx/controls"
-import { Settings } from "@editable-jsx/controls/src/Settings"
-import { useSelector } from "@xstate/react"
-import { BirpcReturn } from "birpc"
-import { useHotkeys } from "react-hotkeys-hook"
-import {
-  ActorRef,
-  interpret,
-  Interpreter,
-  StateMachine,
-  Subscribable
-} from "xstate"
-import { CommandBar } from "./commands/CommandBar"
-import { editorMachine } from "./editor.machine"
-import { Panel, PanelManager } from "./panels/PanelManager"
-import { panelMachine } from "./panels/panels.machine"
+class Tree {
+  root: EditableElement
+  constructor(root: EditableElement) {
+    this.root = root
+  }
 
-export type MachineInterpreter<M> = M extends StateMachine<
-  infer Context,
-  infer Schema,
-  infer Event,
-  infer State,
-  infer _A,
-  infer _B,
-  infer _C
->
-  ? Interpreter<Context, Schema, Event, State, _C>
-  : never
+  appendNewElement(
+    element: EditableElement,
+    componentType: string | FC,
+    props: any
+  ) {
+    console.log("appendNewElement", componentType)
+    if (typeof componentType === "string") {
+      console.log("appendNewElement", componentType)
+      element.refs.setMoreChildren?.((children) => [
+        ...children,
+        createElement(editable[componentType], {
+          _source: {
+            ...element.source,
+            lineNumber: -1,
+            elementName: componentType
+          },
+          key: children.length,
+          ...props
+        })
+      ])
+    } else {
+      console.log("appendNewElement", componentType)
+      element.refs.setMoreChildren?.((children) => [
+        ...children,
+        createElement(Editable, {
+          component: componentType,
+          _source: {
+            ...element.source,
+            lineNumber: -1,
+            elementName:
+              componentType.displayName || componentType.name || undefined
+          },
+          key: children.length,
+          ...props
+        } as any)
+      ])
+    }
+  }
+
+  deleteElement(element: EditableElement) {
+    element.delete()
+  }
+
+  appendElement(element: EditableElement, parent: EditableElement | null) {
+    let parentId = parent?.id!
+    if (parentId) {
+      element.parentId = parentId
+      this?.store?.setState((el) => {
+        let parent = el.elements[parentId] ?? {}
+        let newIndex = parent.childIds?.length ?? 0
+        element.index = `${newIndex}`
+        parent = Object.assign(parent, {
+          childIds: [...(el.elements[parentId]?.childIds ?? []), element.id]
+        })
+
+        element.index = `${newIndex}`
+        let newLement = Object.assign(element, el.elements[element.id])
+        return {
+          elements: {
+            ...el.elements,
+            [newLement.id]: newLement,
+            [parentId]: parent
+          }
+        }
+      })
+    } else {
+      if (element.id !== undefined) {
+        this?.store?.setState((el) => ({
+          elements: {
+            ...el.elements,
+            [element.id]: Object.assign(element, el.elements[element.id])
+          }
+        }))
+      }
+    }
+  }
+
+  removeElement(element: EditableElement, parent: EditableElement | null) {
+    let parentId = parent?.id!
+    if (parentId) {
+      element.parentId = null
+      this?.store?.setState((el) => {
+        let e = {
+          ...el.elements
+        }
+
+        if (e[parentId]) {
+          e[parentId].childIds = e[parentId]?.childIds.filter(
+            (c: string) => c !== element.id
+          )
+        }
+
+        delete e[element.id]
+        return { elements: e }
+      })
+    } else {
+      this?.store?.setState((el) => {
+        let e = { ...el }
+        delete e.elements[element.id]
+        return e
+      })
+    }
+  }
+}
 
 export type EditorStoreType = ReturnType<typeof createEditorStore>
 
@@ -89,42 +179,16 @@ type Diff = {
   source: any
 }
 
-export class Editor<T extends Editable = Editable> extends EventTarget {
-  uiPanels: MachineInterpreter<typeof panelMachine>
-
-  useKeyboardShortcut(
-    name: string,
-    initialShortcut: string,
-    execute: () => void
-  ) {
-    const [shortcut] = this.useSettings("shortcuts", {
-      [name]: initialShortcut
-    })
-
-    useHotkeys(
-      shortcut[name],
-      execute,
-      {
-        preventDefault: true
-      },
-      [shortcut[name], execute]
-    )
-  }
-
-  useSelectedElement() {
-    return this.useState(() => this.selectedElement)
-  }
-
-  useStates(arg0: string) {
-    return this.useState((s) => s.toStrings()[0] === arg0)
-  }
-
+export class Editor<T extends EditableElement = EditableElement>
+  extends EventTarget
+  implements ISettings
+{
   /**
    * Constructor used to create the editableElement. The default is the EditableElement class
    *
    * Specfic editors can override this to use their own override EditableElement class
    */
-  elementConstructor = Editable
+  elementConstructor = EditableElement
 
   /**
    * a store to keep track of all the editor state, eg. settings, mode, selected element, etc.
@@ -137,6 +201,9 @@ export class Editor<T extends Editable = Editable> extends EventTarget {
     },
     settingsPanel: "settings"
   }))
+
+  tree: Tree = new Tree(this.root)
+
   useStore: EditorStoreType = this.store
 
   /**
@@ -173,15 +240,39 @@ export class Editor<T extends Editable = Editable> extends EventTarget {
    * `helpers` API from the plugins to add helpers to specific types of
    * elements
    */
-  Element = EditableComponent
+  renderElement(component: any, props: any, forwardRef: any) {
+    const [editableElement, editableProps] = this.useElement(
+      component,
+      props,
+      forwardRef
+    )
+
+    if (editableElement.forwardedRef) {
+      return (
+        <EditableContext.Provider value={editableElement}>
+          <editableElement.type {...editableProps} />
+          {editableElement.mounted && <Helpers />}
+        </EditableContext.Provider>
+      )
+    } else {
+      return (
+        <EditableContext.Provider value={editableElement}>
+          <editableElement.type {...editableProps} />
+          <Helpers />
+        </EditableContext.Provider>
+      )
+    }
+  }
 
   remount?: () => void
   rootId: string
 
-  service
+  service: MachineInterpreter<typeof editorMachine>
   send
 
   machine = editorMachine
+
+  raycaster?: Raycaster
 
   constructor(
     public plugins: any[],
@@ -189,46 +280,8 @@ export class Editor<T extends Editable = Editable> extends EventTarget {
   ) {
     super()
 
-    this.settings = new Settings()
-    this.panels = new PanelManager(this.settings)
-
-    // @ts-ignore
-    this.uiPanels = interpret(
-      panelMachine.withConfig({
-        guards: {
-          isFloating: (context, event) => {
-            return this.panels.get(event.panel).isFloating()
-          }
-        },
-        actions: {
-          dockToLeftPanel: (context, event) => {
-            this.panels.get(event.panel).dock("left")
-          },
-          dockToRightPanel: (context, event) => {
-            this.panels.get(event.panel).dock("right")
-          },
-          stopDragging: (context, event) => {
-            this.panels.get(event.panel).setSettings({
-              position: (prevPosition) => [
-                prevPosition[0] + event.event.movement[0],
-                prevPosition[1] + event.event.movement[1]
-              ]
-            })
-          },
-          undock: (context, event) => {
-            this.panels.get(event.panel).setSettings({
-              position: event.event.xy,
-              floating: true
-            })
-          }
-        }
-      }),
-      {
-        devTools: true
-      }
-    )
-
-    this.uiPanels.start()
+    this.#settings = new Settings()
+    this.panels = new PanelManager(this)
 
     this.service = persisted(
       interpret(editorMachine, {
@@ -236,6 +289,7 @@ export class Editor<T extends Editable = Editable> extends EventTarget {
       }),
       "r3f-editor.machine"
     )
+
     this.send = this.service.send.bind(this.service)
     this.rootId = ""
 
@@ -248,11 +302,30 @@ export class Editor<T extends Editable = Editable> extends EventTarget {
   }
 
   useState<
-    TActor extends ActorRef<any, any>,
     T,
-    TEmitted = TActor extends Subscribable<infer Emitted> ? Emitted : never
+    TEmitted = MachineInterpreter<typeof editorMachine> extends Subscribable<
+      infer Emitted
+    >
+      ? Emitted
+      : never
   >(selector: (emitted: TEmitted) => T): T {
     return useSelector(this.service, selector)
+  }
+
+  get mode() {
+    return this.state.toStrings()[0]
+  }
+
+  useMode<K extends string | undefined>(name?: K) {
+    return this.useState(() => this.state.toStrings()[0])
+  }
+
+  useSelectedElement() {
+    return this.useState(() => this.selectedElement)
+  }
+
+  useStates(arg0: string) {
+    return this.useState((s) => s.toStrings()[0] === arg0)
   }
 
   get state() {
@@ -293,8 +366,14 @@ export class Editor<T extends Editable = Editable> extends EventTarget {
     return element as any as T
   }
 
-  appendNewElement(element: Editable, componentType: string) {
+  appendNewElement(
+    element: EditableElement,
+    componentType: string | FC,
+    props: any
+  ) {
+    console.log("appendNewElement", componentType)
     if (typeof componentType === "string") {
+      console.log("appendNewElement", componentType)
       element.refs.setMoreChildren?.((children) => [
         ...children,
         createElement(editable[componentType], {
@@ -303,10 +382,12 @@ export class Editor<T extends Editable = Editable> extends EventTarget {
             lineNumber: -1,
             elementName: componentType
           },
-          key: children.length
+          key: children.length,
+          ...props
         })
       ])
     } else {
+      console.log("appendNewElement", componentType)
       element.refs.setMoreChildren?.((children) => [
         ...children,
         createElement(Editable, {
@@ -314,20 +395,22 @@ export class Editor<T extends Editable = Editable> extends EventTarget {
           _source: {
             ...element.source,
             lineNumber: -1,
-            elementName: undefined
+            elementName:
+              componentType.displayName || componentType.name || undefined
           },
-          key: children.length
+          key: children.length,
+          ...props
         } as any)
       ])
     }
   }
 
-  deleteElement(element: Editable) {
+  deleteElement(element: EditableElement) {
     element.delete()
     this.clearSelection()
   }
 
-  appendElement(element: Editable, parent: Editable | null) {
+  appendElement(element: EditableElement, parent: EditableElement | null) {
     let parentId = parent?.id!
     if (parentId) {
       element.parentId = parentId
@@ -361,7 +444,7 @@ export class Editor<T extends Editable = Editable> extends EventTarget {
     }
   }
 
-  removeElement(element: Editable, parent: Editable | null) {
+  removeElement(element: EditableElement, parent: EditableElement | null) {
     let parentId = parent?.id!
     if (parentId) {
       element.parentId = null
@@ -389,7 +472,8 @@ export class Editor<T extends Editable = Editable> extends EventTarget {
   }
 
   /**
-   *
+   * useElement creates a new Element for the given component type and props and returns the element and the props
+   * you need to pass to the component
    * @param Component The component type that we are going to render, it used to detect the name of the component, and can be switched later
    * @param props The props that we are going to pass to the component
    * @param forwardRef true or ref if we want to forward the ref to the component or undefined
@@ -443,7 +527,7 @@ export class Editor<T extends Editable = Editable> extends EventTarget {
         key,
         ref: forwardRef ? ref : undefined,
         children:
-          props.children === "function"
+          typeof props.children === "function"
             ? props.children
             : createElement(Fragment, null, props.children, moreChildren)
       }
@@ -454,11 +538,11 @@ export class Editor<T extends Editable = Editable> extends EventTarget {
     return this.store.getState().elements[this.rootId]
   }
 
-  getElementById(id: string): Editable {
+  getElementById(id: string): EditableElement {
     return this.store.getState().elements[id]
   }
 
-  getElementByTreeId(id: string): Editable | null {
+  getElementByTreeId(id: string): EditableElement | null {
     let els = this.store.getState().elements
     let el = Object.values(els).find((e) => e.treeId === id)
     if (el) {
@@ -483,7 +567,7 @@ export class Editor<T extends Editable = Editable> extends EventTarget {
     return null
   }
 
-  select(element: Editable<any>): void {
+  select(element: EditableElement<any>): void {
     this.send("SELECT", { elementId: element.treeId })
   }
 
@@ -491,7 +575,7 @@ export class Editor<T extends Editable = Editable> extends EventTarget {
     this.send("CLEAR_SELECTION")
   }
 
-  isSelected(arg0: Editable) {
+  isSelected(arg0: EditableElement) {
     return this.state.context.selectedId === arg0.treeId
   }
 
@@ -499,44 +583,14 @@ export class Editor<T extends Editable = Editable> extends EventTarget {
    *  SETTINGS
    * */
 
-  settings: Settings
+  #settings: Settings
 
-  get settingsPanel(): Panel {
-    return this.panels.get(this.store.getState().settingsPanel)
+  get settingsStore() {
+    return this.#settings.store
   }
 
-  set settingsPanel(arg0: StoreType | string) {
-    this.store.setState({
-      settingsPanel: arg0
-    })
-  }
-
-  getSetting(arg0: string) {
-    return this.settings.get(arg0)
-  }
-
-  setSetting(arg0: string, arg1: any) {
-    let path = this.settingsPath(arg0)
-    if (this.settingsPanel.has(path)) {
-      this.settingsPanel.set(path, arg1)
-    }
-  }
-
-  setSettings(values: any) {
-    this.settingsPanel.useStore.setState(({ data }) => {
-      for (let key in values) {
-        if (!data[this.settingsPath(key)]) {
-          debugger
-        }
-
-        ;(data[this.settingsPath(key)] as DataInput).value = values[key]
-      }
-      return { data }
-    })
-  }
-
-  useMode<K extends string | undefined>(name?: K) {
-    return this.useState(() => this.state.toStrings()[0])
+  get settingsDeps() {
+    return [this.mode]
   }
 
   settingsPath(arg0?: string | undefined): any {
@@ -547,27 +601,30 @@ export class Editor<T extends Editable = Editable> extends EventTarget {
     )
   }
 
-  get mode() {
-    return this.state.toStrings()[0]
+  getSetting(name: string) {
+    return Settings.getSettingsAtPath(this, this.settingsPath(name))
   }
 
-  useSettingsPanel() {
-    return usePanel(this.store((s) => s.settingsPanel))
+  setSettings(arg0: { [key: string]: any }) {
+    Settings.setSettingsAtPaths(this, arg0)
   }
 
   useSettings<S extends Schema>(
     name: string,
     arg1: S,
     hidden?: boolean
-  ): [SchemaToValues<S>] {
-    const settingsPanel = this.useSettingsPanel()
+  ): SchemaToValues<S> {
     const mode = this.useMode()
     useControls(
       this.settingsPath(),
       {},
-      { order: 1001, render: () => this.selectedElement === null },
       {
-        store: settingsPanel.store
+        order: -1,
+        render: () => this.selectedElement === null,
+        collapsed: true
+      },
+      {
+        store: this.settingsStore
       },
       [mode]
     )
@@ -576,48 +633,12 @@ export class Editor<T extends Editable = Editable> extends EventTarget {
       this.settingsPath(name),
       arg1,
       [mode],
-      settingsPanel.store,
+      this.settingsStore,
       hidden
     )
 
     return props as any
   }
-
-  // // Keep track of the current state, and start
-  // // with the initial state
-  // currentState = editorMachine.initialState
-
-  // // Keep track of the listeners
-  // listeners = new Set<(state: typeof editorMachine.initialState) => void>()
-
-  // // Have a way of sending/dispatching events
-  // send(
-  //   arg0: Parameters<typeof editorMachine.transition>[1],
-  //   arg1?: Parameters<typeof editorMachine.transition>[2]
-  // ) {
-  //   // Remember: machine.transition() is a pure function
-  //   this.currentState = editorMachine.transition(this.currentState, arg0, arg1)
-
-  //   // Get the side-effect actions to execute
-  //   const { actions } = this.currentState
-
-  //   actions.forEach((action) => {
-  //     // If the action is executable, execute it
-  //     console.log(action)
-  //     typeof action.exec === "function" && action.exec()
-  //   })
-
-  //   // Notify the listeners
-  //   this.listeners.forEach((listener) => listener(this.currentState))
-  // }
-
-  // listen(listener) {
-  //   this.listeners.add(listener)
-  // }
-
-  // unlisten(listener) {
-  //   this.listeners.delete(listener)
-  // }
 
   /**
    * PLUGINS
@@ -629,4 +650,35 @@ export class Editor<T extends Editable = Editable> extends EventTarget {
   }) {
     this.plugins.push(plugin)
   }
+
+  useKeyboardShortcut(
+    name: string,
+    initialShortcut: string,
+    execute: () => void
+  ) {
+    const shortcut = this.useSettings("shortcuts", {
+      [name]: initialShortcut
+    })
+
+    useHotkeys(
+      shortcut[name],
+      execute,
+      {
+        preventDefault: true
+      },
+      [shortcut[name], execute]
+    )
+  }
+}
+
+function resolveSettings(sets: ISettings, arg0: { [key: string]: any }) {
+  let settings = {} as Record<string, any>
+  for (let key in arg0) {
+    let value = arg0[key]
+    if (typeof value === "function") {
+      value = (value as (...args: any[]) => any)(sets.getSetting(key))
+    }
+    settings[key] = value
+  }
+  return settings
 }

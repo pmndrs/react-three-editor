@@ -1,12 +1,14 @@
-import { createStore } from "@editable-jsx/controls"
+import { createStore, Store } from "@editable-jsx/controls"
 import { Editor } from "../Editor"
 
+export type CommandBarState = {
+  open: boolean
+  activeCommandChain: string[]
+  filter: string
+}
+
 export class CommandBar {
-  store = createStore<{
-    open: boolean
-    activeCommandChain: string[]
-    filter: string
-  }>("command-store", (_) => {
+  store: Store<CommandBarState> = createStore("command-store", (_) => {
     return {
       open: false,
       activeCommandChain: [],
@@ -27,7 +29,16 @@ export class CommandBar {
     return this.useStore.getState().filter
   }
 
-  toggleCommandBar(flag?: boolean) {
+  set filter(value: string) {
+    this.store.setState((state) => {
+      return {
+        ...state,
+        filter: value
+      }
+    })
+  }
+
+  toggle(flag?: boolean) {
     this.store.setState((state) => {
       if (typeof flag !== "boolean") {
         flag = !state.open

@@ -14,20 +14,22 @@ export type TunnelsStateType = Record<
 export function createMultiTunnel() {
   const useTunnels = create<TunnelsStateType>(() => ({}))
 
-  function In({ children }: PropsWithChildren<{}>) {
-    const id = useId()
-    let OldTunnel = useTunnels((state) => state[id])
+  function In({ children, id }: PropsWithChildren<{ id?: string }>) {
+    const renderId = useId()
+
+    id = id || renderId
+    let OldTunnel = useTunnels((state) => state[id!])
     if (!OldTunnel) {
       OldTunnel = tunnel()
     }
 
     useLayoutEffect(() => {
       useTunnels.setState({
-        [id]: OldTunnel
+        [id!]: OldTunnel
       })
       return () => {
         useTunnels.setState({
-          [id]: undefined
+          [id!]: undefined
         })
       }
     }, [id, OldTunnel])

@@ -3,7 +3,6 @@ import { OrbitControls } from "@react-three/drei"
 import { useThree } from "@react-three/fiber"
 import { levaStore } from "leva"
 import { forwardRef, useEffect, useRef } from "react"
-import { useHotkeysContext } from "react-hotkeys-hook"
 import { Camera, Event, MathUtils } from "three"
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib"
 
@@ -23,9 +22,8 @@ export function EditorCamera() {
   const ref = useRef<Camera>(null!)
   const ref2 = useRef<OrbitControlsImpl>(null!)
   const editor = useEditor()
-  const hotkeysContext = useHotkeysContext()
 
-  const [props] = editor.useSettings("camera", {
+  const cameraSettings = editor.useSettings("camera", {
     enabled: true,
     position: {
       value: [10, 10, 10],
@@ -53,44 +51,37 @@ export function EditorCamera() {
 
   useEffect(() => {
     function update(e: Event) {
-      editor.settings.set("camera.position", e.target.object.position.toArray())
-
-      editor.settings.set(
-        "camera.rotation",
-        e.target.object.rotation
+      editor.setSettings({
+        "camera.position": e.target.object.position.toArray(),
+        "camera.rotation": e.target.object.rotation
           .toArray()
           .slice(0, 3)
-          .map((a) => MathUtils.radToDeg(a))
-      )
-
-      editor.settings.set("camera.fov", e.target.object.fov)
-      editor.settings.set("camera.near", e.target.object.near)
-      editor.settings.set("camera.far", e.target.object.far)
-      editor.settings.set("camera.zoom", e.target.object.zoom)
+          .map((a) => MathUtils.radToDeg(a)),
+        "camera.fov": e.target.object.fov,
+        "camera.near": e.target.object.near,
+        "camera.far": e.target.object.far,
+        "camera.zoom": e.target.object.zoom
+      })
     }
     controls?.addEventListener("change", update)
 
     return () => {
       controls?.removeEventListener("change", update)
     }
-  }, [controls, props.enabled])
+  }, [controls, cameraSettings.enabled])
 
   useEffect(() => {
-    if (props.enabled && controls) {
-      camera.position.fromArray(editor.settings.get("camera.position"))
+    if (cameraSettings.enabled && controls) {
+      camera.position.fromArray(editor.getSetting("camera.position"))
       camera.rotation.fromArray(
-        editor.settings.get("camera.rotation").map((a) => MathUtils.degToRad(a))
+        editor.getSetting("camera.rotation").map((a) => MathUtils.degToRad(a))
       )
-      // camera.fov = props.fov
-      // camera.near = props.near
-      // camera.far = props.far
-      // camera.zoom = props.zoom
     }
   }, [camera, controls])
 
   return (
     <>
-      {props.enabled && (!controls || ref2.current === controls) && (
+      {cameraSettings.enabled && (!controls || ref2.current === controls) && (
         <OrbitControls ref={ref2} makeDefault />
       )}
     </>

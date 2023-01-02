@@ -1,7 +1,7 @@
+import { EditableElement } from "@editable-jsx/core/EditableElement"
 import { folder } from "leva"
 import { Schema } from "leva/plugin"
 import { MeshStandardMaterial } from "three"
-import { EditableElement } from "../@editable-jsx/core/EditableElement"
 import { primitives } from "../primitives"
 import { texture } from "../texture"
 import { commonControls } from "./common"

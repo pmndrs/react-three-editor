@@ -1,9 +1,9 @@
 import { useEditor } from "@editable-jsx/core"
+import { CommandType } from "@editable-jsx/core/src/command-bar/types"
+import { useCommands } from "@editable-jsx/core/src/command-bar/useCommands"
 import { FC, useEffect } from "react"
 import * as THREE from "three"
 import { BufferGeometry, Material, Object3D } from "three"
-import { CommandType } from "../commandbar/types"
-import { useCommands } from "../commandbar/useCommands"
 import { ComponentType } from "../component-loader"
 
 function isClass(v: any) {
@@ -26,7 +26,13 @@ export const InsertElementsSubCommands: FC = () => {
       return {
         name: component.name,
         type: "command",
-        parentId: "insert-element"
+        parentId: "insert-element",
+        async execute(_editor) {
+          _editor.appendNewElement(
+            _editor.selectedElement ?? _editor.root,
+            component.name.charAt(0).toLowerCase() + component.name.slice(1)
+          )
+        }
       }
     })
   })

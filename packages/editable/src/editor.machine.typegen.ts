@@ -7,20 +7,27 @@ export interface Typegen0 {
   }
   invokeSrcNameMap: {}
   missingImplementations: {
-    actions: never
+    actions: "addNewElement"
     delays: never
     guards: never
     services: never
   }
   eventsCausingActions: {
+    addNewElement: "STOP_DRAGGING"
     clearSelection: "CLEAR_SELECTION"
     selectElement: "SELECT"
   }
   eventsCausingDelays: {}
-  eventsCausingGuards: {}
+  eventsCausingGuards: {
+    isOnCanvas: "DRAGGING"
+  }
   eventsCausingServices: {}
   matchesStates:
     | "editing"
+    | "editing.adding"
+    | "editing.draggingGhost"
+    | "editing.draggingGhost.placing"
+    | "editing.draggingGhost.unused"
     | "editing.idle"
     | "editing.selected"
     | "editing.transforming"
@@ -28,7 +35,13 @@ export interface Typegen0 {
     | "playing.idle"
     | "playing.selected"
     | {
-        editing?: "idle" | "selected" | "transforming"
+        editing?:
+          | "adding"
+          | "draggingGhost"
+          | "idle"
+          | "selected"
+          | "transforming"
+          | { draggingGhost?: "placing" | "unused" }
         playing?: "idle" | "selected"
       }
   tags: never

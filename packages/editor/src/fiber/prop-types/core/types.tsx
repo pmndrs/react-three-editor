@@ -1,4 +1,4 @@
-import { EditableElement } from "../@editable-jsx/core"
+import { EditableElement } from "@editable-jsx/core"
 import { PropType } from "./createProp"
 
 export interface PropInput {

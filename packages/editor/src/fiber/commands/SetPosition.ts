@@ -1,9 +1,7 @@
+import { EditableElement, Editor, ExecutableCommand } from "@editable-jsx/core"
 import { Vector3Tuple } from "three"
-import { EditableElement } from "../EditableElement"
-import { Editor } from "../Editor"
-import { AbstractCommand } from "../HistoryManager"
 
-export class SetElementPosition extends AbstractCommand {
+export class SetElementPosition extends ExecutableCommand {
   constructor(
     public editor: Editor,
     public element: EditableElement,

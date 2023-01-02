@@ -1,8 +1,9 @@
-import { useEditor } from "@editable-jsx/core/useEditor"
+import { EditorContext, useEditor } from "@editable-jsx/core"
 import * as fiber from "@react-three/fiber"
 import { folder, useControls } from "leva"
+import { useContext } from "react"
 import { toggle } from "../ui/leva/toggle"
-import { usePanel } from "../ui/panels/LevaPanel"
+import { editor } from "./editor"
 
 export let Stages = fiber.Stages || {}
 
@@ -11,9 +12,9 @@ export function useEditorFrame(
   fn: fiber.RenderCallback,
   ...args: any
 ) {
-  const editor = useEditor()
-  const settingsPanel = editor.store((s) => s.settingsPanel)
-  const panelStore = usePanel(settingsPanel)
+  const editor = useContext(EditorContext)
+  if (!editor) return fiber.useFrame(fn, ...args)
+
   const isEditorMode = editor.useStates("editing")
   let controls = useControls(
     "world.updates",
@@ -30,12 +31,11 @@ export function useEditorFrame(
       collapsed: true
     },
     {
-      store: panelStore.store
-    },
-    [panelStore.store]
+      store: editor.settings.store
+    }
   )
   return fiber.useFrame((...args) => {
-    if (!isEditorMode && controls.all && controls[name]) {
+    if (controls.all && controls[name]) {
       fn(...args)
     }
   }, ...args)
@@ -47,8 +47,6 @@ export function useEditorUpdate(
   ...args: any
 ) {
   const editor = useEditor()
-  const settingsPanel = editor.store((s) => s.settingsPanel)
-  const panelStore = usePanel(settingsPanel)
   const isEditorMode = editor.useStates("editing")
   let controls = useControls(
     {
@@ -68,10 +66,10 @@ export function useEditorUpdate(
       )
     },
     {
-      store: panelStore.store
-    },
-    [panelStore.store]
+      store: editor.settings.store
+    }
   )
+
   return fiber.useUpdate((...args) => {
     if (!isEditorMode && controls.all && controls[name]) {
       fn(...args)
@@ -94,7 +92,7 @@ export function useUpdate(fn: fiber.RenderCallback, ...args: any) {
       })
     },
     {
-      store: usePanel("scene").store
+      store: editor.settings.store
     }
   )
   return fiber.useUpdate((...args) => {

@@ -1,15 +1,11 @@
-import {
-  SetElementPosition,
-  SetElementRotation,
-  SetElementScale,
-  useEditor
-} from "@editable-jsx/core"
+import { useEditor } from "@editable-jsx/core"
 import { TransformControls } from "@react-three/drei"
 import { mergeRefs } from "leva/plugin"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
 import { Event, MathUtils, Object3D, Vector3Tuple } from "three"
 import { TransformControls as TransformControlsImpl } from "three-stdlib"
+import { SetElementPosition } from "../commands/SetPosition"
 import { eq } from "../prop-types/eq"
 
 const serializeTransform = (

@@ -1,13 +1,9 @@
-import { useEditor } from "@editable-jsx/core/useEditor"
+import { Floating } from "@editable-jsx/controls"
+import { useEditor } from "@editable-jsx/core"
+import { useCommandBar } from "@editable-jsx/core/src/command-bar/useCommandBar"
+import { LeftPanelGroup, RightPanelGroup } from "@editable-jsx/panels"
 import { Icon } from "@iconify/react"
-import { useThree } from "@react-three/fiber"
 import { styled } from "leva/plugin"
-import {
-  FloatingPanels,
-  LeftPanel,
-  RightPanel
-} from "../../ui/panels/panel-tunnels"
-import { In } from "../../ui/tunnel"
 
 const StyledIcon = styled(Icon, {})
 
@@ -85,24 +81,11 @@ const StyledBottomBar = styled("div", {
 })
 
 export function DynamicIsland(props: DynamicIslandProps) {
-  return (
-    <FloatingPanels.In>
-      <FloatingBottomBar {...props} />
-    </FloatingPanels.In>
-  )
-}
-
-function FloatingBottomBar(props: DynamicIslandProps) {
-  const size = useThree((s) => s.size)
-  return (
-    <In>
-      <BottomBar size={size} {...props} />
-    </In>
-  )
+  return <Floating>{(size) => <BottomBar {...props} size={size} />}</Floating>
 }
 
 type DynamicIslandProps = {
-  size?: {
+  size: {
     width: number
     height: number
   }
@@ -121,11 +104,11 @@ function BottomBar({
   let mode = editor.useMode()
 
   const hasLeft =
-    Object.values(LeftPanel.useTunnels()).filter(Boolean).length > 0
+    Object.values(LeftPanelGroup.useTunnels()).filter(Boolean).length > 0
   const hasRight =
-    Object.values(RightPanel.useTunnels()).filter(Boolean).length > 0
+    Object.values(RightPanelGroup.useTunnels()).filter(Boolean).length > 0
 
-  const open = editor.commands.useStore((s) => s.open)
+  const open = useCommandBar().useStore((s) => s.open)
 
   if (hidden) {
     return null
@@ -158,7 +141,7 @@ function BottomBar({
       </StyledButtonGroupButton>
       <StyledButtonGroupButton
         active={open}
-        onClick={() => editor.commands.toggleCommandBar()}
+        onClick={() => editor.commandBar.toggle()}
       >
         <Icon icon="ph:command-duotone" fontSize={16} />
       </StyledButtonGroupButton>

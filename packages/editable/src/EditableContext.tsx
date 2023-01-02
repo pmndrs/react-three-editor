@@ -1,7 +1,7 @@
 import { createContext, useContext } from "react"
-import { Editable } from "./Editable"
+import { EditableElement } from "./EditableElement"
 
-export const EditableContext = createContext<Editable | null>(null)
+export const EditableContext = createContext<EditableElement | null>(null)
 
 export function useEditableContext() {
   const editableElement = useContext(EditableContext)

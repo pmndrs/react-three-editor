@@ -1,17 +1,17 @@
-import { transformFromAstAsync, parseAsync, types } from "@babel/core"
+import { transformFromAstAsync, types } from "@babel/core"
 import { parse, prettyPrint } from "@vinxi/recast"
 import { parse as babelParse, parser } from "@vinxi/recast/parsers/babel-ts"
+import glob from "fast-glob"
 import { readFile, writeFile } from "fs-extra"
+import { resolve } from "path"
 import { ViteDevServer } from "vite"
 import { createRPCServer } from "vite-dev-rpc"
 import { EditPatch } from "../../types"
+import { RpcClientFunctions, RpcServerFunctions, ServerOptions } from "../types"
+import { getReactComponents } from "../utils"
 import { filesToSkipOnHmr } from "./filesToSkipOnHmr"
 import { configureMiddlewares } from "./middlewares"
 import { plugins } from "./transform-plugins"
-import { RpcClientFunctions, RpcServerFunctions, ServerOptions } from "../types"
-import { resolve } from "path"
-import glob from "fast-glob"
-import { getReactComponents } from "../utils"
 
 const groupPatchesByFileName = (patches: EditPatch[]) => {
   return patches.reduce((accum, x) => {
@@ -73,46 +73,53 @@ export const configureServer = (options: ServerOptions) => {
           )
         },
         async initializeComponentsWatcher() {
-          const componentsDir = resolve(
-            process.cwd(),
-            "src",
-            "__reactThreeEditor",
-            "**/*.{tsx,jsx}"
-          )
-          const componentFiles = await glob(componentsDir, {
-            cwd: process.cwd()
-          })
-          const files = await Promise.all(
-            componentFiles.map(async (fileName) => {
-              try {
-                const source = await readFile(fileName)
-                const sourceAst = parse(source.toString(), {
-                  parser: { parser, parse: babelParse },
-                  jsx: true
-                } as any)
-                const program = sourceAst.program as types.Program
-                const components = program.body
-                  .map((node) => {
-                    const compo = getReactComponents(node)
-                    if (compo) {
-                      return compo.componentName
-                    }
-                  })
-                  .filter(Boolean) as string[]
-                return {
-                  fileName,
-                  components
-                }
-              } catch (error) {
-                console.log("something went wring while parsing the file")
-                return {
-                  fileName,
-                  components: []
-                }
-              }
+          try {
+            const componentsDir = resolve(
+              process.cwd(),
+              "src",
+              "components",
+              "**/*.{tsx,jsx}"
+            )
+            const componentFiles = await glob(componentsDir, {
+              cwd: process.cwd()
             })
-          )
-          return files.filter((f) => f.components.length)
+
+            const files = await Promise.all(
+              componentFiles.map(async (fileName) => {
+                try {
+                  const source = await readFile(fileName)
+                  const sourceAst = parse(source.toString(), {
+                    parser: { parser, parse: babelParse },
+                    jsx: true
+                  } as any)
+                  const program = sourceAst.program as types.Program
+                  const components = program.body
+                    .map((node) => {
+                      const compo = getReactComponents(node)
+                      if (compo) {
+                        return compo.componentName
+                      }
+                    })
+                    .filter(Boolean) as string[]
+                  return {
+                    fileName,
+                    components
+                  }
+                } catch (error) {
+                  console.log("something went wring while parsing the file")
+                  return {
+                    fileName,
+                    components: []
+                  }
+                }
+              })
+            )
+
+            return files.filter((f) => f.components.length)
+          } catch (error) {
+            console.log("something went wrong while initializing the watcher")
+            return []
+          }
           // server.watcher.add(componentsDir)
         }
       }

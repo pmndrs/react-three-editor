@@ -10,14 +10,14 @@ import { editor } from "./editor"
 export const EditableCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
   function EditableCanvas(props, ref) {
     const store = useEditor()
-    const [settings] = store.useSettings("scene", {
+    const settings = store.useSettings("scene", {
       shadows: {
         value: true
       }
     })
 
     const [editableElement, { children, ...overrideProps }] = editor.useElement(
-      "canvas",
+      "root",
       {
         ...props,
         id: "root"
@@ -44,7 +44,7 @@ export const EditableCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
               </EditableContext.Provider>
             </Suspense>
           </CameraBounds>
-          <editorTunnel.Outs fallback={<EditorControls />} />
+          <editorTunnel.Out fallback={<EditorControls />} />
         </EditorContext.Provider>
       </FiberCanvas>
     )

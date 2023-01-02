@@ -1,5 +1,5 @@
+import { useCommands } from "@editable-jsx/core/src/command-bar/useCommands"
 import { FC } from "react"
-import { useCommands } from "../commandbar/useCommands"
 
 export const UICommands: FC = () => {
   useCommands(() => [
@@ -16,7 +16,7 @@ export const UICommands: FC = () => {
       description: "Show panels",
       type: "command",
       execute(editor) {
-        editor.showAllPanels()
+        editor.panels.showAllPanels()
       }
     },
     {
@@ -24,7 +24,7 @@ export const UICommands: FC = () => {
       description: "Hide panels",
       type: "command",
       execute(editor) {
-        editor.hideAllPanels()
+        editor.panels.hideAllPanels()
       }
     },
     {
@@ -32,7 +32,7 @@ export const UICommands: FC = () => {
       description: "Show Dynamic Island",
       type: "command",
       execute(editor) {
-        editor.setSetting("panels.island.hidden", false)
+        editor.settings.set("panels.island.hidden", false)
       }
     },
     {
@@ -40,7 +40,7 @@ export const UICommands: FC = () => {
       description: "Hide Dynamic Island",
       type: "command",
       execute(editor) {
-        editor.setSetting("panels.island.hidden", true)
+        editor.settings.set("panels.island.hidden", true)
       }
     }
   ])

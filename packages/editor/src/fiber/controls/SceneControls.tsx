@@ -1,14 +1,13 @@
 import { useEditor } from "@editable-jsx/core"
+import { usePanel } from "@editable-jsx/panels"
 import { useControls } from "leva"
-import { StoreType } from "leva/dist/declarations/src/types"
 import { tree } from "../../ui/leva/tree/tree"
-import { usePanel } from "../../ui/panels/LevaPanel"
 
 export function SceneControls({
-  store = "scene",
+  panel: store = "scene",
   order
 }: {
-  store?: StoreType | string
+  panel?: string
   order?: number
 }) {
   const editor = useEditor()

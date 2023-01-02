@@ -1,4 +1,4 @@
-import { Editable } from "../Editable"
+import { EditableElement } from "../EditableElement"
 import { PropChange, PropInput } from "./types"
 
 export type PropType = {
@@ -14,7 +14,7 @@ export type PropType = {
 export function createProp(
   type: PropType | ((props: PropInput) => any),
   {
-    element = {} as Editable,
+    element = {} as EditableElement,
     path = [],
     onChange,
     ...settings

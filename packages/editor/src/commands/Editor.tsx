@@ -1,6 +1,6 @@
+import { useCommands } from "@editable-jsx/core/src/command-bar/useCommands"
 import { FC } from "react"
 import { Group, Mesh } from "three"
-import { useCommands } from "../commandbar/useCommands"
 import { ThreeEditor } from "../fiber/ThreeEditor"
 
 export const EditorCommands: FC = () => {

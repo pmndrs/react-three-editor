@@ -74,24 +74,15 @@
     "r3f-perf": "^6.5.0",
     "react-dropzone": "^14.2.3",
     "react-hot-toast": "^2.4.0",
-    "react-hotkeys-hook": "^4.0.6",
-    "react-resizable-panels": "^0.0.11",
-    "react-virtualized-auto-sizer": "^1.0.7",
-    "three-stdlib": "^2.20.4",
     "tunnel-rat": "^0.1.0",
-    "vite-dev-rpc": "^0.1.0",
     "xstate": "^4.35.1",
     "zustand": "^3.7.2"
   },
   "peerDependencies": {
-    "@react-three/fiber": "*",
-    "@react-three/rapier": "*",
     "react": "*",
-    "react-dom": "*",
-    "three": "*"
+    "react-dom": "*"
   },
   "devDependencies": {
-    "@react-three/rapier": "^0.10.0",
     "@types/babel__core": "^7.1.20",
     "@types/babel__helper-plugin-utils": "^7.10.0",
     "@types/babel__template": "^7.4.1",
