@@ -1,29 +1,20 @@
-import {
-  CommandBar,
-  CommandBarContext,
-  CommandManagerContext
-} from "@editable-jsx/commander"
+import { CommandBar } from "@editable-jsx/commander"
 import {
   createMultiTunnel,
   Floating,
   JSXSource,
-  SettingsContext,
   Toaster
 } from "@editable-jsx/controls"
-import { EditorContext, useEditor } from "@editable-jsx/core"
-import { PanelGroup, PanelManagerContext } from "@editable-jsx/panels"
-import { Canvas as FiberCanvas, Props } from "@react-three/fiber"
-import { FiberProvider } from "its-fine"
-import { forwardRef, PropsWithChildren, Suspense, useMemo } from "react"
+import { PanelContainer, PanelGroup } from "@editable-jsx/panels"
+import { Props } from "@react-three/fiber"
+import { forwardRef } from "react"
 import { AllCommands } from "../commands"
-import { EditorCamera } from "./controls/EditorCamera"
-import { EditorControls } from "./controls/EditorControls"
+import { ComponentsTray } from "./ComponentsTray"
 import { EditorPanels } from "./controls/EditorPanels"
+import { EditableCanvas } from "./EditableCanvas"
 import { editor } from "./editor"
-import { EditorBounds } from "./EditorBounds"
-import { EditorRoot } from "./EditorRoot"
-import { ThreeCanvas } from "./ThreeCanvas"
-import { ThreeFloatingProvider } from "./ThreeFloating"
+import { EditorProvider } from "./EditorProvider"
+import { ScreenshotCanvas } from "./useScreenshotStore"
 
 export const EditorUI = createMultiTunnel()
 export type CanvasProps = Props & { _source?: JSXSource }
@@ -35,109 +26,34 @@ export const EditorCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
 
     return (
       <EditorProvider editor={editor}>
+        {/* Registers all the commands: keyboard shortcuts & command palette */}
         <AllCommands />
-        {/*<ScreenshotCanvas />
-          <ComponentsTray /> */}
-        <div
-          style={{
-            display: "flex",
-            height: "100vh",
-            flexDirection: "row",
-            width: "100vw"
-          }}
-        >
+
+        {/* Headless canvas for screenshots */}
+        <ScreenshotCanvas />
+
+        {/* Tray of user component library to pick and place entities */}
+        <ComponentsTray />
+
+        {/* Panels active in the editor */}
+        <EditorPanels />
+
+        {/* Editor layout and the Canvas in the middle */}
+        <PanelContainer>
           <PanelGroup side="left" />
           <EditableCanvas {...props} ref={ref} />
           <PanelGroup side="right" />
-        </div>
+        </PanelContainer>
+
+        {/* Command bar dialog */}
+        <CommandBar.Out />
+
+        {/* Floating UI, panels, bottom bar */}
+        <Floating.Out />
+
+        {/* Toaster for alerts */}
+        <Toaster />
       </EditorProvider>
-    )
-  }
-)
-
-function SettingsProvider({ children }: PropsWithChildren) {
-  const editor = useEditor()
-  const mode = editor.useMode()
-
-  const settings = useMemo(
-    () => ({ settings: editor.settings }),
-    [mode, editor.settings]
-  )
-
-  return (
-    <SettingsContext.Provider value={settings}>
-      {children}
-    </SettingsContext.Provider>
-  )
-}
-
-function EditorProvider({
-  editor,
-  children
-}: {
-  editor: ReturnType<typeof useEditor>
-  children: React.ReactNode
-}) {
-  return (
-    <EditorContext.Provider value={editor}>
-      <SettingsProvider>
-        <CommandManagerContext.Provider value={editor.commands}>
-          <CommandBarContext.Provider value={editor.commandBar}>
-            <PanelManagerContext.Provider value={editor.panels}>
-              <ThreeFloatingProvider>
-                <EditorPanels />
-                {children}
-                <CommandBar.Out />
-                <Floating.Out />
-                <Toaster />
-              </ThreeFloatingProvider>
-            </PanelManagerContext.Provider>
-          </CommandBarContext.Provider>
-        </CommandManagerContext.Provider>
-      </SettingsProvider>
-    </EditorContext.Provider>
-  )
-}
-
-const EditableCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
-  function EditorCanvas(props, ref) {
-    const editor = useEditor()
-    const canvasSettings = editor.useSettings("scene", {
-      shadows: {
-        value: true
-      }
-    })
-
-    const [editableElement, { children, ...canvasProps }] = editor.useElement(
-      "root",
-      {
-        ...props,
-        id: "root"
-      },
-      ref
-    )
-
-    return (
-      <FiberCanvas
-        onPointerMissed={(e: any) => {
-          editor.clearSelection()
-        }}
-        {...canvasProps}
-        {...canvasSettings}
-      >
-        <EditorContext.Provider value={editor}>
-          <EditorCamera />
-          <EditorBounds>
-            <Suspense>
-              <FiberProvider>
-                <EditorRoot element={editableElement}>{children}</EditorRoot>
-              </FiberProvider>
-            </Suspense>
-          </EditorBounds>
-          <ThreeCanvas.Out />
-          <EditorUI.Out fallback={<EditorControls />} />
-        </EditorContext.Provider>
-      </FiberCanvas>
     )
   }
 )

@@ -75,7 +75,7 @@ export class EditableElement<
     this.refs.forceUpdate?.((i) => i + 1)
   }
 
-  args = []
+  args = [] as any[]
 
   useName() {
     return this.properties.useStore(

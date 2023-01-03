@@ -1,14 +1,24 @@
 import { useCommands } from "@editable-jsx/commander"
+import { Editor } from "@editable-jsx/core"
 import { FC } from "react"
 
 export const UICommands: FC = () => {
-  useCommands(() => [
+  useCommands<Editor>(() => [
     {
       name: "clear-selection",
       description: "Clear selection",
       type: "command",
       execute(editor) {
         editor.clearSelection()
+      }
+    },
+    {
+      name: "open-command-palette",
+      description: "Open command palette",
+      type: "command",
+      shortcut: ["meta", "k"],
+      execute(editor) {
+        editor.commandBar.toggle()
       }
     },
     {

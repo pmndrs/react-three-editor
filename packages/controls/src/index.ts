@@ -3,6 +3,7 @@ import { useSettings } from "./settings"
 
 export type { DragState } from "@use-gesture/react"
 export { useSelector } from "@xstate/react"
+export { button, buttonGroup, folder } from "leva"
 export * from "leva/plugin"
 export * from "react-hot-toast"
 export { default as toast } from "react-hot-toast"

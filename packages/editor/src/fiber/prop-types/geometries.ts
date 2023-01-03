@@ -1,15 +1,15 @@
-import { EditableElement } from "@editable-jsx/core/EditableElement"
+import { Schema } from "@editable-jsx/controls"
+import { EditableElement, PropInput } from "@editable-jsx/core"
 import { folder } from "leva"
 import { BufferGeometry } from "three"
 import { all } from "."
-import { PropInput } from "./core/types"
 
 function args({
   element,
   fields
 }: PropInput & {
   fields: Record<string, any>
-}) {
+}): Schema {
   let fieldNames = Object.keys(fields)
 
   return {
@@ -35,9 +35,9 @@ export const boxGeometryControls = (
       element,
       path: [...path, "type"],
       options: ["BoxGeometry", "SphereGeometry", "CylinderGeometry"],
-      onChange(e) {
+      onChange(e: string) {
         element.type = e.charAt(0).toLowerCase() + e.slice(1)
-        element.store?.setValueAtPath("name", element.displayName, false)
+        element.properties.setValueAtPath("name", element.displayName, false)
         element.render()
         return true
       }
@@ -108,7 +108,7 @@ export const sphereGeometryControls = (
       element,
       path: [...path, "type"],
       options: ["BoxGeometry", "SphereGeometry", "CylinderGeometry"],
-      onChange(e) {
+      onChange(e: string) {
         element.type = e.charAt(0).toLowerCase() + e.slice(1)
         element.render()
         // element.resetControls()

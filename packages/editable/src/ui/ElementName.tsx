@@ -1,5 +1,4 @@
-import { HoveredIcon } from "@editable-jsx/ui"
-import { Icon } from "@iconify/react"
+import { HoveredIcon, Icon } from "@editable-jsx/ui"
 import { EditableElement } from "../EditableElement"
 import { ElementIcon } from "./ElementIcon"
 import { OpenInEditorButton } from "./OpenInEditorButton"
@@ -40,9 +39,7 @@ export function ElementName({
         style={{
           marginLeft: 2
         }}
-        onClick={(e) => (
-          setVisible?.((v: boolean) => !v), (element.visible = !element.visible)
-        )}
+        onClick={(e) => (setVisible?.(!visible), (element.visible = !visible))}
       />
       <div style={{ marginLeft: 4 }} />
       {dirty ? (

@@ -1,5 +1,6 @@
 import { CommandBar, KeyboardCommands } from "@editable-jsx/commander"
 import { useEditor } from "@editable-jsx/core"
+import { EditorCamera } from "./EditorCamera"
 import { PerformanceControls } from "./PerformanceControls"
 import { SceneControls } from "./SceneControls"
 import { SelectedElementControls } from "./SelectedElementControls"
@@ -12,6 +13,7 @@ export function EditorControls() {
 
   return (
     <>
+      <EditorCamera />
       <SelectedElementControls panel="properties" />
       <SceneControls panel="scene" />
       <CommandBar.In />

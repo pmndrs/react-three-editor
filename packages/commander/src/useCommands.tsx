@@ -2,7 +2,7 @@ import { useEffect, useMemo } from "react"
 import { CommandType, useCommandManager } from "./CommandManager"
 
 export function useCommands<T = any>(
-  _commands: CommandType[] | ((ctx: T) => CommandType[]),
+  _commands: CommandType<T>[] | ((ctx: T) => CommandType<T>[]),
   deps: any[] = []
 ) {
   const commandManager = useCommandManager<T>()

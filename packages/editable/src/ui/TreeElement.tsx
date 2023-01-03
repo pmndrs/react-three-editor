@@ -4,7 +4,7 @@ import { ElementName } from "../ui/ElementName"
 
 export function TreeElement({ element }: { element: EditableElement }) {
   const selected = element.useIsSelected()
-  const [_collapsed, setCollapsed] = element.useCollapsed()
+  const [collapsed, setCollapsed] = element.useCollapsed()
   const dirty = element.useIsDirty()
   const children = element.useChildren()
   const [visible, setVisible] = element.useVisible()
@@ -13,10 +13,8 @@ export function TreeElement({ element }: { element: EditableElement }) {
 
   return (
     <TreeItem
-      collapsed={_collapsed}
-      setCollapsed={(c) => {
-        setCollapsed(c)
-      }}
+      collapsed={collapsed}
+      setCollapsed={setCollapsed}
       visible={visible}
       selected={selected}
       collapsible={collapsible}
@@ -30,15 +28,15 @@ export function TreeElement({ element }: { element: EditableElement }) {
         />
       }
     >
-      {!_collapsed && (
+      {!collapsed && (
         <div
           style={{
             marginLeft: "2px",
             marginTop: "2px"
           }}
         >
-          {children.map((c) => (
-            <TreeElement element={c} key={c.id} />
+          {children.map((child) => (
+            <TreeElement element={child} key={child.id} />
           ))}
         </div>
       )}

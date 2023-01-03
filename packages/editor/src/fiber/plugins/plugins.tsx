@@ -1,3 +1,4 @@
+import { createProp, PropInput } from "@editable-jsx/core"
 import { EditableElement } from "@editable-jsx/core/EditableElement"
 import { OrbitControls } from "@react-three/drei"
 import { folder } from "leva"
@@ -19,8 +20,6 @@ import {
 } from "three"
 import { TransformHelper } from "../controls/TransformHelper"
 import { all } from "../prop-types"
-import { createProp } from "../prop-types/core/createProp"
-import { PropInput } from "../prop-types/core/types"
 import { primitives } from "../prop-types/primitives"
 import { replace } from "../prop-types/replace"
 

@@ -1,4 +1,5 @@
-import { createProps } from "./core/createProps"
+import { createProps } from "@editable-jsx/core"
+
 import { material } from "./materials"
 import { mesh } from "./mesh"
 import * as types from "./primitives/types"

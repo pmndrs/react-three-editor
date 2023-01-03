@@ -3,7 +3,7 @@ import { OrbitControls } from "@react-three/drei"
 import { useThree } from "@react-three/fiber"
 import { levaStore } from "leva"
 import { forwardRef, useEffect, useRef } from "react"
-import { Camera, Event, MathUtils } from "three"
+import { Camera, MathUtils } from "three"
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib"
 
 const EditableOrbitControls = createEditable(OrbitControls)
@@ -15,7 +15,7 @@ setEditable(
     return isEditorMode ? (
       <EditableOrbitControls {...props} enabled={false} ref={ref} />
     ) : (
-      <EditableOrbitControls {...props} makeDefault ref={ref} />
+      <EditableOrbitControls {...props} enabled={true} makeDefault ref={ref} />
     )
   })
 )
@@ -26,6 +26,7 @@ export function EditorCamera() {
   const ref = useRef<Camera>(null!)
   const ref2 = useRef<OrbitControlsImpl>(null!)
   const editor = useEditor()
+  const isEditorMode = editor.useState((s) => s.matches("editing"))
 
   const cameraSettings = editor.useSettings("camera", {
     enabled: true,
@@ -54,17 +55,17 @@ export function EditorCamera() {
   const controls = useThree((c) => c.controls)
 
   useEffect(() => {
-    function update(e: Event) {
+    function update(e: { target: OrbitControlsImpl }) {
       editor.settings.set({
         "camera.position": e.target.object.position.toArray(),
         "camera.rotation": e.target.object.rotation
           .toArray()
           .slice(0, 3)
-          .map((a) => MathUtils.radToDeg(a)),
-        "camera.fov": e.target.object.fov,
-        "camera.near": e.target.object.near,
-        "camera.far": e.target.object.far,
-        "camera.zoom": e.target.object.zoom
+          .map((a) => MathUtils.radToDeg(a))
+        // "camera.fov": e.target.object.fov,
+        // "camera.near": e.target.object.near,
+        // "camera.far": e.target.object.far,
+        // "camera.zoom": e.target.object.zoom
       })
     }
     controls?.addEventListener("change", update)
@@ -85,7 +86,7 @@ export function EditorCamera() {
 
   return (
     <>
-      {cameraSettings.enabled && (!controls || ref2.current === controls) && (
+      {cameraSettings.enabled && isEditorMode && (
         <OrbitControls ref={ref2} makeDefault />
       )}
     </>

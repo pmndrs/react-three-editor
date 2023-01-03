@@ -1,13 +1,11 @@
-import { folder } from "leva"
-import { Schema } from "leva/plugin"
+import { folder, Schema } from "@editable-jsx/controls"
+import { createProp, PropInput } from "@editable-jsx/core"
 import {
   ClampToEdgeWrapping,
   MirroredRepeatWrapping,
   RepeatWrapping,
   Texture
 } from "three"
-import { createProp } from "./core/createProp"
-import { PropInput } from "./core/types"
 import { imageTexture } from "./imageTexture"
 import { primitives } from "./primitives"
 
@@ -26,17 +24,17 @@ export const textureControls = ({ element, path }: PropInput) => {
       label: "texture",
       onChange(value, p) {
         let o = element.getObjectByPath<Texture>(path)
-        element.store?.setValueAtPath(
+        element.properties.setValueAtPath(
           p.replace("Texture", "WrapS"),
           o.wrapS,
           false
         )
-        element.store?.setValueAtPath(
+        element.properties.setValueAtPath(
           p.replace("Texture", "WrapT"),
           o.wrapT,
           false
         )
-        element.store?.setValueAtPath(
+        element.properties.setValueAtPath(
           p.replace("Texture", "Repeat"),
           o.repeat.toArray(),
           false

@@ -1,51 +1,56 @@
-import { EditableContext, EditorContext, useEditor } from "@editable-jsx/core"
+import { useEditor } from "@editable-jsx/core"
 import { Canvas as FiberCanvas } from "@react-three/fiber"
+import { FiberProvider } from "its-fine"
 import { forwardRef, Suspense } from "react"
 import { CanvasProps, EditorUI } from "./Canvas"
-import { EditorCamera } from "./controls/EditorCamera"
 import { EditorControls } from "./controls/EditorControls"
-import { editor } from "./editor"
 import { EditorBounds } from "./EditorBounds"
+import { EditorRoot } from "./EditorRoot"
+import { ThreeCanvas } from "./ThreeCanvas"
 
 export const EditableCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
-  function EditableCanvas(props, ref) {
-    const store = useEditor()
-    const settings = store.useSettings("scene", {
+  function EditorCanvas(props, ref) {
+    const editor = useEditor()
+    const canvasSettings = editor.useSettings("scene", {
       shadows: {
         value: true
       }
     })
 
-    const [editableElement, { children, ...overrideProps }] = editor.useElement(
+    const [editableElement, { children, ...canvasProps }] = editor.useElement(
       "root",
       {
         ...props,
         id: "root"
-      }
+      },
+      ref
     )
 
-    editableElement.index = "0"
-    editor.rootId = editableElement.id
     return (
       <FiberCanvas
-        ref={ref}
         onPointerMissed={(e: any) => {
-          store.clearSelection()
+          editor.clearSelection()
         }}
-        {...overrideProps}
-        {...settings}
+        {...canvasProps}
+        {...canvasSettings}
       >
-        <EditorContext.Provider value={store}>
-          <EditorCamera />
-          <EditorBounds>
-            <Suspense>
-              <EditableContext.Provider value={editableElement}>
-                {children}
-              </EditableContext.Provider>
-            </Suspense>
-          </EditorBounds>
-          <EditorUI.Out fallback={<EditorControls />} />
-        </EditorContext.Provider>
+        {/** drei's Bounds component to be able to focus on elements */}
+        <EditorBounds>
+          <Suspense>
+            <FiberProvider>
+              <EditorRoot element={editableElement}>{children}</EditorRoot>
+            </FiberProvider>
+          </Suspense>
+        </EditorBounds>
+
+        {/** Used by editor elements that need to live inside the R3F provider/scene */}
+        <ThreeCanvas.Out />
+
+        {/*
+         * Editor UI. This can be overriden by using the EditorUI.In component
+         * in your app to override the default UI.
+         */}
+        <EditorUI.Out fallback={<EditorControls />} />
       </FiberCanvas>
     )
   }
