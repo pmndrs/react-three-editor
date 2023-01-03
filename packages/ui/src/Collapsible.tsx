@@ -1,12 +1,12 @@
 import { ReactNode, useRef } from "react"
-import { Chevron } from "./folder/Chevron"
+import { Chevron } from "./Chevron"
 import {
   StyledContent,
   StyledFolder,
   StyledTitle,
   StyledWrapper
-} from "./folder/StyledFolder"
-import { useToggle } from "./folder/useToggle"
+} from "./StyledFolder"
+import { useToggle } from "./useToggle"
 
 export function Collapsible({
   title,

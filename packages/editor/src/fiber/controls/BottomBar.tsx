@@ -2,8 +2,7 @@ import { useCommandBar } from "@editable-jsx/commander"
 import { Floating } from "@editable-jsx/controls"
 import { useEditor } from "@editable-jsx/core"
 import { LeftPanelGroup, RightPanelGroup } from "@editable-jsx/panels"
-import { Icon } from "@iconify/react"
-import { styled } from "leva/plugin"
+import { Icon, styled } from "@editable-jsx/ui"
 
 const StyledIcon = styled(Icon, {})
 

@@ -1,6 +1,6 @@
 import { EditableElement, useEditor } from "@editable-jsx/core"
 import { usePanel } from "@editable-jsx/panels"
-import { Fragment } from "react"
+import { Fragment, useEffect } from "react"
 import { ElementControls } from "../ElementControls"
 import { useElementObserver } from "../useWatchElement"
 import { ElementTransformControls } from "./ElementTransformControls"
@@ -17,6 +17,19 @@ export function SelectedElementControls({
   const selectedElement = editor.useSelectedElement()
   console.log(selectedElement)
   const isEditorMode = editor.useStates("editing")
+
+  useEffect(() => {
+    return () => {
+      if (!selectedElement) return
+      selectedElement.properties.useStore.setState(({ data }) => {
+        return {
+          data: {
+            name: data.name
+          }
+        }
+      })
+    }
+  }, [selectedElement])
 
   return selectedElement ? (
     <Fragment key={selectedElement.id}>

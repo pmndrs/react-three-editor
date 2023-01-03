@@ -1,4 +1,4 @@
-import { setEditable, useEditor } from "@editable-jsx/core"
+import { createEditable, setEditable, useEditor } from "@editable-jsx/core"
 import { OrbitControls } from "@react-three/drei"
 import { useThree } from "@react-three/fiber"
 import { levaStore } from "leva"
@@ -6,12 +6,16 @@ import { forwardRef, useEffect, useRef } from "react"
 import { Camera, Event, MathUtils } from "three"
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib"
 
+const EditableOrbitControls = createEditable(OrbitControls)
+
 setEditable(
   OrbitControls,
   forwardRef((props, ref) => {
     const isEditorMode = useEditor().useStates("editing")
-    return isEditorMode ? null : (
-      <OrbitControls {...props} makeDefault ref={ref} />
+    return isEditorMode ? (
+      <EditableOrbitControls {...props} enabled={false} ref={ref} />
+    ) : (
+      <EditableOrbitControls {...props} makeDefault ref={ref} />
     )
   })
 )

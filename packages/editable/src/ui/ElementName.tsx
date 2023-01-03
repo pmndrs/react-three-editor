@@ -1,7 +1,7 @@
+import { HoveredIcon } from "@editable-jsx/ui"
 import { Icon } from "@iconify/react"
 import { EditableElement } from "../EditableElement"
 import { ElementIcon } from "./ElementIcon"
-import { StyledIcon } from "./folder/StyledFolder"
 import { OpenInEditorButton } from "./OpenInEditorButton"
 
 export function ElementName({
@@ -11,9 +11,9 @@ export function ElementName({
   setVisible
 }: {
   element: EditableElement<any>
-  dirty: boolean | undefined
-  visible: boolean
-  setVisible: (v: boolean) => void
+  dirty?: boolean | undefined
+  visible?: boolean
+  setVisible?: (v: boolean) => void
 }) {
   const name = element.useName()
 
@@ -31,17 +31,17 @@ export function ElementName({
           element.editor.select(element)
         }}
       >
-        {name + " " + dirty ? "*" : ""}
+        {name + " " + (dirty ? "*" : "")}
       </div>
       <div style={{ marginLeft: "auto" }} />
       <OpenInEditorButton element={element} />
-      <StyledIcon
+      <HoveredIcon
         icon={visible ? "ph:eye-bold" : "ph:eye-closed-bold"}
         style={{
           marginLeft: 2
         }}
         onClick={(e) => (
-          setVisible((v: boolean) => !v), (element.visible = !element.visible)
+          setVisible?.((v: boolean) => !v), (element.visible = !element.visible)
         )}
       />
       <div style={{ marginLeft: 4 }} />

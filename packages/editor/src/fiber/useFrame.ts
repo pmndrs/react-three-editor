@@ -2,7 +2,7 @@ import { EditorContext, useEditor } from "@editable-jsx/core"
 import * as fiber from "@react-three/fiber"
 import { folder, useControls } from "leva"
 import { useContext } from "react"
-import { toggle } from "../ui/leva/toggle"
+import { toggle } from "@editable-jsx/ui"
 import { editor } from "./editor"
 
 export let Stages = fiber.Stages || {}

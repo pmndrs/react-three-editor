@@ -1,6 +1,5 @@
-import { Icon } from "@iconify/react"
-import "@stitches/react"
 import { styled } from "leva/plugin"
+import { HoveredIcon } from "./HoveredIcon"
 
 export const StyledFolder = styled("div", {
   variants: {
@@ -14,7 +13,6 @@ export const StyledFolder = styled("div", {
     }
   }
 })
-export const StyledIcon = styled(Icon, {})
 
 export const StyledWrapper = styled("div", {
   position: "relative",
@@ -76,7 +74,7 @@ export const StyledTitle = styled("div", {
     fill: "$folderWidgetColor",
     opacity: 0.6
   },
-  [`> ${StyledIcon}`]: {
+  [`> ${HoveredIcon}`]: {
     opacity: 0
   },
   "&:hover > svg": {
@@ -91,7 +89,7 @@ export const StyledTitle = styled("div", {
   [`${StyledFolder}:hover > & > svg`]: {
     opacity: 1
   },
-  [`${StyledFolder}:hover > & > ${StyledIcon}`]: {
+  [`${StyledFolder}:hover > & > ${HoveredIcon}`]: {
     opacity: 1
   },
   variants: {

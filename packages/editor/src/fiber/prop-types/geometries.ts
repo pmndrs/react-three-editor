@@ -109,8 +109,6 @@ export const sphereGeometryControls = (
       path: [...path, "type"],
       options: ["BoxGeometry", "SphereGeometry", "CylinderGeometry"],
       onChange(e) {
-        console.log("hereeee")
-        debugger
         element.type = e.charAt(0).toLowerCase() + e.slice(1)
         element.render()
         // element.resetControls()

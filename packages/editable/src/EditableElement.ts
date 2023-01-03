@@ -3,15 +3,16 @@ import {
   ControlledStore,
   createControlledStore,
   DataInput,
+  EditPatch,
   JSXSource,
   LevaInputs,
   mergeRefs
 } from "@editable-jsx/controls"
+import { multiToggle } from "@editable-jsx/ui"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { toast } from "react-hot-toast"
 import { Editor } from "./Editor"
 import { PropChange } from "./prop-types/types"
-import { multiToggle } from "./ui/leva/multiToggle"
 
 /**
  * An editable element is a wrapper around a React element that can be edited in the editor.
@@ -41,7 +42,7 @@ export class EditableElement<
   props: any = {}
   forwardedRef: boolean = false
   dirty: any = false
-  store: ControlledStore = createControlledStore()
+  properties: ControlledStore = createControlledStore()
   editor: Editor = {} as any
 
   constructor(
@@ -77,13 +78,21 @@ export class EditableElement<
   args = []
 
   useName() {
-    return this.store?.useStore((s) => (s.data["name"] as DataInput).value)
+    return this.properties.useStore(
+      (s) => (s.data["name"] as DataInput).value as string
+    )
   }
+
   useChildren() {
-    return this.editor.store((s) => [...(s.elements[this.id]?.children ?? [])])
+    return this.editor.useStore((s) => [
+      ...(s.elements[this.id]?.children ?? [])
+    ])
   }
+
   useIsDirty() {
-    return this.store?.useStore((s) => Object.keys(this.changes).length > 0)
+    return this.properties?.useStore(
+      (s) => Object.keys(this.changes).length > 0
+    )
   }
 
   update(source: JSXSource, props: any) {
@@ -91,8 +100,8 @@ export class EditableElement<
     this.currentProps = { ...props }
     this.args = props.args?.length ? props.args : this.args
 
-    if (this.store?.get("name") !== this.displayName) {
-      this.store?.setValueAtPath("name", this.displayName, true)
+    if (this.properties?.get("name") !== this.displayName) {
+      this.properties?.setValueAtPath("name", this.displayName, true)
     }
   }
 
@@ -110,7 +119,7 @@ export class EditableElement<
 
     // useState so that this runs only once when the item is created
     useState(() => {
-      this.store?.addData(
+      this.properties?.addData(
         {
           name: {
             value: this.displayName,
@@ -276,7 +285,7 @@ export class EditableElement<
   }
 
   get changed() {
-    let data = this.store?.getData()!
+    let data = this.properties?.getData()!
     if (data && data["save"]) {
       return !(data["save"] as any).settings.disabled
     }
@@ -285,13 +294,13 @@ export class EditableElement<
   }
 
   set changed(value) {
-    let data = this.store?.getData()!
+    let data = this.properties?.getData()!
     if (data && data["save"]) {
-      this.store?.setSettingsAtPath("save", {
+      this.properties?.setSettingsAtPath("save", {
         disabled: !value
       })
     } else {
-      this.store?.useStore.setState((s) => ({ ...s }))
+      this.properties?.useStore.setState((s) => ({ ...s }))
     }
 
     this.dirty = value
@@ -335,13 +344,14 @@ export class EditableElement<
   }
 
   async save() {
-    let diffs = Object.values(this.changes).map(({ _source, ...value }) => ({
-      action_type: "updateAttribute",
-      value,
-      source: _source
-    }))
-
-    console.debug(diffs)
+    let diffs = Object.values(this.changes).map(
+      ({ _source, ...value }) =>
+        ({
+          action_type: "updateAttribute",
+          value,
+          source: _source
+        } satisfies EditPatch)
+    )
 
     try {
       console.log(await this.editor.save(diffs))
@@ -548,28 +558,4 @@ export class EditableElement<
     // @ts-ignore
     useHelper(ref as any, helper, ...(args ?? []))
   }
-}
-
-function useEditorHelper(arg0: string, helper: any, ...args: any[]) {
-  const isEditing = this.editor.useStates("editing")
-  const [props] = this.editor.useSettings("helpers", {
-    [arg0]: multiToggle({
-      label: arg0,
-      data: "selected",
-      options: ["all", "selected", "none"]
-    })
-  }) as [any]
-
-  const isSelected = this.useIsSelected()
-
-  let ref = isEditing
-    ? props[arg0] === "all"
-      ? this
-      : props[arg0] === "selected" && isSelected
-      ? this
-      : undefined
-    : undefined
-
-  // @ts-ignore
-  useHelper(ref as any, helper, ...(args ?? []))
 }

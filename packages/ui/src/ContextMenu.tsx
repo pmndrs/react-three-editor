@@ -5,10 +5,15 @@ import {
   ChevronRightIcon,
   DotFilledIcon
 } from "@radix-ui/react-icons"
-import { styled } from "@stitches/react"
 import React from "react"
+import { styled } from "./styled"
 
-const ContextMenuDemo = ({ children, ...props }) => {
+const ContextMenuDemo = ({
+  children,
+  ...props
+}: {
+  children: React.ReactNode
+}) => {
   const [bookmarksChecked, setBookmarksChecked] = React.useState(true)
   const [urlsChecked, setUrlsChecked] = React.useState(false)
   const [person, setPerson] = React.useState("pedro")

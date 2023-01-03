@@ -1,5 +1,5 @@
 {
-  "name": "@editable-jsx/tree",
+  "name": "@editable-jsx/ui",
   "author": {
     "name": "Nikhil Saraf",
     "email": "nsaraf98@gmail.com",
@@ -7,8 +7,8 @@
   },
   "description": "",
   "version": "0.0.1",
-  "main": "dist/editable-jsx-tree.cjs.js",
-  "module": "dist/editable-jsx-tree.esm.js",
+  "main": "dist/editable-jsx-ui.cjs.js",
+  "module": "dist/editable-jsx-ui.esm.js",
   "preconstruct": {
     "entrypoints": [
       "index.ts"

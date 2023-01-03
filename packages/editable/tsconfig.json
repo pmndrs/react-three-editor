@@ -1,4 +1,10 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["src/**/*"]
+  "include": [
+    "src/**/*",
+    "../ui/src/folder",
+    "../ui/src/Chevron.tsx",
+    "../ui/src/StyledFolder.ts",
+    "../ui/src/Tree.tsx"
+  ]
 }

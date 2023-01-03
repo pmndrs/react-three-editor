@@ -1,8 +1,16 @@
-import { createPlugin, styled, useInputContext } from "@editable-jsx/controls"
-import { EditableElement } from "../EditableElement"
-import { TreeElement } from "./TreeElement"
+import { styled } from "leva/plugin"
 
-const TreeRoot = styled("div", {
+import { ReactNode, useRef } from "react"
+import { Chevron } from "./Chevron"
+import ContextMenuDemo from "./ContextMenu"
+import {
+  StyledContent,
+  StyledFolder,
+  StyledTitle,
+  StyledWrapper
+} from "./StyledFolder"
+
+export const Tree = styled("div", {
   // borderTop: "1px solid $elevation1",
   // borderBottom: "1px solid $elevation1",
   padding: "$sm 0px",
@@ -26,23 +34,94 @@ const TreeRoot = styled("div", {
   }
 })
 
-type Settings = {
-  items: { [key: string]: EditableElement }
-  scrollable: boolean
-}
-
-export const tree = createPlugin<Settings, {}, Settings>({
-  normalize({ items, scrollable }, path, data) {
-    return { settings: { items, scrollable }, value: {} }
-  },
-  component() {
-    const context = useInputContext<{ settings: Settings }>()
+export function TreeItem({
+  title,
+  children,
+  collapsed,
+  setCollapsed,
+  selected,
+  visible,
+  collapsible,
+  dirty
+}: {
+  title: ReactNode
+  children: ReactNode
+  collapsed: boolean
+  setCollapsed: (flag: boolean) => void
+  selected: boolean
+  visible: boolean
+  collapsible: boolean
+  dirty?: boolean
+}) {
+  if (!collapsible) {
     return (
-      <TreeRoot scrollable={context.settings.scrollable}>
-        {Object.values(context.settings.items).map((v) => (
-          <TreeElement element={v} key={v.id} />
-        ))}
-      </TreeRoot>
+      <StyledFolder dirty={dirty}>
+        <ContextMenuDemo>
+          <StyledTitle selected={selected} visible={visible}>
+            <Chevron hidden={true} toggled={!collapsed} />
+            <div style={{ marginLeft: "2px" }} />
+            {title}
+          </StyledTitle>
+        </ContextMenuDemo>
+      </StyledFolder>
+    )
+  } else {
+    return (
+      <CollapsibleTreeItem
+        dirty={dirty!}
+        title={title}
+        children={children}
+        collapsed={collapsed}
+        setCollapsed={setCollapsed}
+        selected={selected}
+        hideChevron={false}
+        visible={visible}
+      />
     )
   }
-})
+}
+
+function CollapsibleTreeItem({
+  title,
+  dirty,
+  children,
+  collapsed,
+  setCollapsed,
+  selected,
+  hideChevron,
+  visible
+}: {
+  title: ReactNode
+  children: ReactNode
+  collapsed: boolean
+  setCollapsed: (flag: boolean) => void
+  selected: boolean
+  hideChevron: boolean
+  visible: boolean
+  dirty: boolean
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+
+  return (
+    <StyledFolder ref={ref} dirty={dirty}>
+      <ContextMenuDemo>
+        <StyledTitle selected={selected} visible={visible}>
+          <Chevron
+            hidden={hideChevron}
+            toggled={!collapsed}
+            onClick={() => {
+              setCollapsed(!collapsed)
+            }}
+          />
+          <div style={{ marginLeft: "2px" }} />
+          {title}
+        </StyledTitle>
+      </ContextMenuDemo>
+      <StyledWrapper isRoot={false} fill={true} flat={true}>
+        <StyledContent isRoot={false} toggled={!collapsed}>
+          <div>{children}</div>
+        </StyledContent>
+      </StyledWrapper>
+    </StyledFolder>
+  )
+}

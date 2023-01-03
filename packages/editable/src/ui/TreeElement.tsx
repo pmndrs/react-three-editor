@@ -1,6 +1,6 @@
+import { TreeItem } from "@editable-jsx/ui"
 import { EditableElement } from "../EditableElement"
 import { ElementName } from "../ui/ElementName"
-import { TreeItem } from "./TreeItem"
 
 export function TreeElement({ element }: { element: EditableElement }) {
   const selected = element.useIsSelected()

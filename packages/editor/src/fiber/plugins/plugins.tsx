@@ -56,7 +56,7 @@ export const orbitControls = {
   icon: (entity: EditableElement) => "mdi:orbit-variant",
   controls: (entity: EditableElement) => {
     return {
-      target: primitives.ref({
+      object: primitives.ref({
         element: entity,
         path: ["ref", "object"]
       }),

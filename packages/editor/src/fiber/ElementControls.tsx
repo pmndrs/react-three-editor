@@ -1,12 +1,14 @@
-import { EditableElement } from "@editable-jsx/core"
+import {
+  EditableElement,
+  element as elementProperties
+} from "@editable-jsx/core"
 import { levaStore, useControls } from "leva"
-import { element as elementProperties } from "../ui/leva/element"
 
 export function useElementControls(
   entity: EditableElement,
   { store, order, ...options }: { store: typeof levaStore; order?: number }
 ) {
-  let entityStore = entity.store!
+  let entityStore = entity.properties!
   useControls(
     () => {
       return {

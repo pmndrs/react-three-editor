@@ -1,8 +1,8 @@
-import { EditableElement } from "@editable-jsx/core/EditableElement"
-import { StyledIcon } from "./folder/StyledFolder"
+import { HoveredIcon } from "@editable-jsx/ui"
+import { EditableElement } from "../EditableElement"
 
 export function OpenInEditorButton({ element }: { element: EditableElement }) {
   return (
-    <StyledIcon icon="pepicons-code" onClick={(e) => element.openInEditor()} />
+    <HoveredIcon icon="pepicons-code" onClick={(e) => element.openInEditor()} />
   )
 }

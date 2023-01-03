@@ -16,7 +16,6 @@ export {
   useThree
 } from "@react-three/fiber"
 export { button, buttonGroup, folder, levaStore as defaultPanel } from "leva"
-export { useControls } from "../ui/leva/useControls"
 export { EditorCanvas as Canvas, EditorUI } from "./Canvas"
 export { CameraGizmos } from "./controls/CameraGizmos"
 export { PerformanceControls } from "./controls/PerformanceControls"

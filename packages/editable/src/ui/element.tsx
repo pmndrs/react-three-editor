@@ -1,9 +1,14 @@
-import { LevaPanel } from "leva"
-import { createPlugin, styled, useInputContext } from "leva/plugin"
-import { ElementName } from "../ElementName"
-import { StyledIcon } from "../folder/StyledFolder"
+import {
+  ControlsPanel,
+  createPlugin,
+  HoveredIcon,
+  styled,
+  useInputContext
+} from "@editable-jsx/ui"
+import { EditableElement } from "../EditableElement"
+import { ElementName } from "./ElementName"
 
-export const StyledTitle = styled("div", {
+const ElementTitle = styled("div", {
   $flex: "",
   color: "$folderTextColor",
   userSelect: "none",
@@ -22,14 +27,14 @@ export const StyledTitle = styled("div", {
     fill: "$folderWidgetColor",
     opacity: 0.6
   },
-  [`> ${StyledIcon}`]: {
+  [`> ${HoveredIcon}`]: {
     opacity: 0
   },
   "&:hover > svg": {
     fill: "$folderWidgetColor",
     opacity: 1
   },
-  [`&:hover > & > ${StyledIcon}`]: {
+  [`&:hover > & > ${HoveredIcon}`]: {
     opacity: 1
   },
   variants: {
@@ -53,7 +58,7 @@ export const StyledTitle = styled("div", {
 
 export const element = createPlugin({
   normalize(input: {
-    element: Editable
+    element: EditableElement
     collapsed?: boolean
     children?: boolean
     dirty?: boolean
@@ -69,7 +74,7 @@ export const element = createPlugin({
   },
   component: (props) => {
     const context = useInputContext<{
-      value: { element: Editable }
+      value: { element: EditableElement }
       settings: {
         collapsed: boolean
         children: boolean
@@ -80,10 +85,10 @@ export const element = createPlugin({
 
     return (
       <div>
-        <StyledTitle>
+        <ElementTitle>
           <ElementName element={context.value.element} />
-        </StyledTitle>
-        <LevaPanel
+        </ElementTitle>
+        <ControlsPanel
           fill
           titleBar={false}
           flat
@@ -95,8 +100,8 @@ export const element = createPlugin({
               sm: "4px"
             }
           }}
-          store={context.value.element.store}
-        />{" "}
+          store={context.value.element.properties}
+        />
       </div>
     )
   }

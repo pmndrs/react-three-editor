@@ -1,16 +1,19 @@
-import { Components, createPlugin, useInputContext } from "leva/plugin"
-import { MouseEvent, useCallback } from "react"
-import { useDropzone } from "react-dropzone"
-import { TextureLoader } from "three"
+import { PropType } from "@editable-jsx/core"
 import {
+  Components,
+  createPlugin,
   DropZone,
   ImageContainer,
   ImageLargePreview,
   ImagePreview,
   Instructions,
-  Remove
-} from "../../ui/ImageInput"
-import { usePopin } from "../../ui/usePopin"
+  Remove,
+  useDropzone,
+  useInputContext,
+  usePopin
+} from "@editable-jsx/ui"
+import { MouseEvent, useCallback } from "react"
+import { TextureLoader } from "three"
 
 export const levaTexture = createPlugin({
   sanitize(value: any) {

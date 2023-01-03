@@ -1,5 +1,6 @@
 import { Components, createPlugin, styled, useInputContext } from "leva/plugin"
-export const StyledInputRow = styled(Components.Row, {
+
+const StyledInputRow = styled(Components.Row, {
   columnGap: "$colGap",
   gridTemplateColumns: "auto 1fr"
 })
