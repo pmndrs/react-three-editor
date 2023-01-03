@@ -12,7 +12,7 @@ export class SetElementPosition extends ExecutableCommand {
   }
 
   execute(redo?: boolean | undefined): void {
-    this.element.store?.setValueAtPath(
+    this.element.properties.setValueAtPath(
       "transform.position",
       this.position,
       false
@@ -24,7 +24,7 @@ export class SetElementPosition extends ExecutableCommand {
   }
 
   undo(): void {
-    this.element.store?.setValueAtPath(
+    this.element.properties.setValueAtPath(
       "transform.position",
       this.oldPosition,
       false

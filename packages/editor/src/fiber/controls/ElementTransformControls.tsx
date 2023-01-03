@@ -5,8 +5,10 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
 import { Event, MathUtils, Object3D, Vector3Tuple } from "three"
 import { TransformControls as TransformControlsImpl } from "three-stdlib"
+import { SetElementRotation, SetElementScale } from "../commands"
 import { SetElementPosition } from "../commands/SetPosition"
 import { eq } from "../prop-types/eq"
+import { ThreeEditableElement } from "../ThreeEditor"
 
 const serializeTransform = (
   object?: Object3D
@@ -20,7 +22,7 @@ const serializeTransform = (
 })
 
 export type ElementTransformControlsProps = {
-  element: Editable
+  element: ThreeEditableElement
 }
 
 export function ElementTransformControls({
@@ -54,37 +56,37 @@ export function ElementTransformControls({
       const { position, rotation, scale } = serializeTransform(object)
       if (
         mode === "translate" &&
-        !eq.array(element.store?.get("transform.position"), position)
+        !eq.array(element.properties.get("transform.position"), position)
       ) {
         // when we get an update from the transform controls, we know that the `ref` and the
         // transformControls are correctly set. We need to set the leva controls, mark it dirty,
         // and set the props if needed
-        element.store?.setValueAtPath("transform.position", position, false)
+        element.properties.setValueAtPath("transform.position", position, false)
         element.changeProp(
           "position",
           position?.map((v: number) => Number(v.toFixed(3)))
         )
       } else if (
         mode === "rotation" &&
-        !eq.angles(element.store?.get("transform.rotation"), rotation)
+        !eq.angles(element.properties.get("transform.rotation"), rotation)
       ) {
         // when we get an update from the transform controls, we know that the `ref` and the
         // transformControls are correctly set. We need to set the leva controls, mark it dirty,
         // and set the props if needed
         let radians = rotation.map((v) => MathUtils.degToRad(v))
-        element.store?.setValueAtPath("transform.rotation", rotation, false)
+        element.properties.setValueAtPath("transform.rotation", rotation, false)
         element.changeProp(
           "rotation",
           radians?.map((v) => Number(v.toFixed(3)))
         )
       } else if (
         mode === "scale" &&
-        !eq.array(element.store?.get("transform.scale"), scale)
+        !eq.array(element.properties.get("transform.scale"), scale)
       ) {
         // when we get an update from the transform controls, we know that the `ref` and the
         // transformControls are correctly set. We need to set the leva controls, mark it dirty,
         // and set the props if needed
-        element.store?.setValueAtPath("transform.scale", scale, false)
+        element.properties.setValueAtPath("transform.scale", scale, false)
         element.changeProp(
           "scale",
           scale?.map((v: number) => Number(v.toFixed(3)))

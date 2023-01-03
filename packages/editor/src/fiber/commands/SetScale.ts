@@ -1,9 +1,7 @@
+import { EditableElement, Editor, ExecutableCommand } from "@editable-jsx/core"
 import { Vector3Tuple } from "three"
-import { EditableElement } from "../EditableElement"
-import { Editor } from "../Editor"
-import { AbstractCommand } from "../HistoryManager"
 
-export class SetElementScale extends AbstractCommand {
+export class SetElementScale extends ExecutableCommand {
   constructor(
     public editor: Editor,
     public element: EditableElement,
@@ -14,7 +12,7 @@ export class SetElementScale extends AbstractCommand {
   }
 
   execute(redo?: boolean | undefined): void {
-    this.element.store?.setValueAtPath("transform.scale", this.scale, false)
+    this.element.properties.setValueAtPath("transform.scale", this.scale, false)
     this.element.changeProp(
       "scale",
       this.scale?.map((v: number) => Number(v.toFixed(3)))
@@ -22,7 +20,11 @@ export class SetElementScale extends AbstractCommand {
   }
 
   undo(): void {
-    this.element.store?.setValueAtPath("transform.scale", this.oldScale, false)
+    this.element.properties.setValueAtPath(
+      "transform.scale",
+      this.oldScale,
+      false
+    )
     this.element.changeProp(
       "scale",
       this.oldScale?.map((v: number) => Number(v.toFixed(3)))

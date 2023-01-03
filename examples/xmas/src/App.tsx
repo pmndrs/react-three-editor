@@ -19,7 +19,7 @@ function App() {
             <Suspense fallback={null}>
                 <Model />
                 <ambientLight intensity={3.15} position={[2.697, 0.793, -4.613]} />
-                <spotLight position={[7.725, 7.439, -0.234]} angle={0.15} penumbra={1} shadow-mapSize={[512, 512]} castShadow>
+                <spotLight position={[-6.315, 8.077, -18.682]} angle={0.15} penumbra={1} shadow-mapSize={[512, 512]} castShadow>
                     {}
                 </spotLight>
                 <PerspectiveCamera makeDefault position={[0, 5, 6]} />

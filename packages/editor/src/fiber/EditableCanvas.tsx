@@ -1,12 +1,15 @@
+import { JSXSource } from "@editable-jsx/controls"
 import { useEditor } from "@editable-jsx/core"
-import { Canvas as FiberCanvas } from "@react-three/fiber"
+import { Canvas as FiberCanvas, Props } from "@react-three/fiber"
 import { FiberProvider } from "its-fine"
 import { forwardRef, Suspense } from "react"
-import { CanvasProps, EditorUI } from "./Canvas"
 import { EditorControls } from "./controls/EditorControls"
 import { EditorBounds } from "./EditorBounds"
 import { EditorRoot } from "./EditorRoot"
-import { ThreeCanvas } from "./ThreeCanvas"
+import { EditorUI } from "./ThreeFiberEditor"
+import { ThreeTunnel } from "./ThreeTunnel"
+
+export type CanvasProps = Props & { _source?: JSXSource }
 
 export const EditableCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
   function EditorCanvas(props, ref) {
@@ -44,7 +47,7 @@ export const EditableCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
         </EditorBounds>
 
         {/** Used by editor elements that need to live inside the R3F provider/scene */}
-        <ThreeCanvas.Out />
+        <ThreeTunnel.Out />
 
         {/*
          * Editor UI. This can be overriden by using the EditorUI.In component

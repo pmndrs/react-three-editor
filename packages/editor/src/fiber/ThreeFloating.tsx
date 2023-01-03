@@ -1,18 +1,27 @@
 import { Floating, FloatingContext } from "@editable-jsx/controls"
 import { useThree } from "@react-three/fiber"
 import { PropsWithChildren } from "react"
-import { ThreeCanvas } from "./ThreeCanvas"
+import { ThreeTunnel } from "./ThreeTunnel"
 
-export function ThreeFloating({
+function ThreeFloating({
   children
 }: {
   children: (size: { width: number; height: number }) => JSX.Element
 }) {
   return (
-    <ThreeCanvas.In>
-      <ThreeCanvasFloating>{children}</ThreeCanvasFloating>
-    </ThreeCanvas.In>
+    <ThreeTunnel.In>
+      <ThreeFloatingIn>{children}</ThreeFloatingIn>
+    </ThreeTunnel.In>
   )
+}
+
+function ThreeFloatingIn({
+  children
+}: {
+  children: (size: { width: number; height: number }) => JSX.Element
+}) {
+  const size = useThree((s) => s.size)
+  return <Floating.In>{children(size)}</Floating.In>
 }
 
 export function ThreeFloatingProvider({ children }: PropsWithChildren<{}>) {
@@ -21,12 +30,4 @@ export function ThreeFloatingProvider({ children }: PropsWithChildren<{}>) {
       {children}
     </FloatingContext.Provider>
   )
-}
-function ThreeCanvasFloating({
-  children
-}: {
-  children: (size: { width: number; height: number }) => JSX.Element
-}) {
-  const size = useThree((s) => s.size)
-  return <Floating.In>{children(size)}</Floating.In>
 }

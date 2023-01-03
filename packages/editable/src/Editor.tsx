@@ -45,6 +45,13 @@ export type EditorStoreStateType = {
   settingsPanel: string
 }
 
+type RpcServerFunctions = {
+  save(patches: EditPatch | EditPatch[]): Promise<void>
+  initializeComponentsWatcher(): Promise<
+    { fileName: string; components: string[] }[]
+  >
+}
+
 export class Editor<T extends EditableElement = EditableElement>
   extends EventTarget
   implements ISettings
@@ -126,7 +133,7 @@ export class Editor<T extends EditableElement = EditableElement>
   remount?: () => void
   rootId: string
 
-  service: MachineInterpreter<typeof editorMachine>
+  service
   send
 
   machine = editorMachine
@@ -151,9 +158,17 @@ export class Editor<T extends EditableElement = EditableElement>
     this.useStore = this.store
 
     this.service = persisted(
-      interpret(editorMachine, {
-        devTools: true
-      }),
+      interpret(
+        editorMachine.withConfig({
+          actions: {
+            selectElement(context, event, meta) {},
+            addNewElement(context, event, meta) {}
+          }
+        }),
+        {
+          devTools: true
+        }
+      ),
       "r3f-editor.machine"
     )
 
@@ -188,14 +203,14 @@ export class Editor<T extends EditableElement = EditableElement>
     this.commandBar = new CommandBarManager(this, this.commands)
     this.panels = new PanelManager(this.settings)
 
+    this.loader = new ComponentLoader(this.client)
+    this.loader.initialize()
+
     this.rootId = ""
 
     this.expanded = localStorage.getItem("collapased")
       ? new Set(JSON.parse(localStorage.getItem("collapased")!))
       : new Set()
-
-    this.loader = new ComponentLoader(this.client)
-    this.loader.initialize()
   }
 
   useState<

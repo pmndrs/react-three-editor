@@ -1,9 +1,7 @@
+import { EditableElement, Editor, ExecutableCommand } from "@editable-jsx/core"
 import { MathUtils, Vector3Tuple } from "three"
-import { EditableElement } from "../EditableElement"
-import { Editor } from "../Editor"
-import { AbstractCommand } from "../HistoryManager"
 
-export class SetElementRotation extends AbstractCommand {
+export class SetElementRotation extends ExecutableCommand {
   constructor(
     public editor: Editor,
     public element: EditableElement,
@@ -15,7 +13,7 @@ export class SetElementRotation extends AbstractCommand {
 
   execute(redo?: boolean | undefined): void {
     let radians = this.rotation.map((v) => MathUtils.degToRad(v))
-    this.element.store?.setValueAtPath(
+    this.element.properties.setValueAtPath(
       "transform.rotation",
       this.rotation,
       false
@@ -28,7 +26,7 @@ export class SetElementRotation extends AbstractCommand {
 
   undo(): void {
     let radians = this.oldRotaion.map((v) => MathUtils.degToRad(v))
-    this.element.store?.setValueAtPath(
+    this.element.properties.setValueAtPath(
       "transform.rotation",
       this.oldRotaion,
       false

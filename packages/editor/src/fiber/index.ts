@@ -16,12 +16,12 @@ export {
   useThree
 } from "@react-three/fiber"
 export { button, buttonGroup, folder, levaStore as defaultPanel } from "leva"
-export { EditorCanvas as Canvas, EditorUI } from "./Canvas"
 export { CameraGizmos } from "./controls/CameraGizmos"
 export { PerformanceControls } from "./controls/PerformanceControls"
 export { SceneControls } from "./controls/SceneControls"
 export { SelectedElementControls } from "./controls/SelectedElementControls"
 export { editor } from "./editor"
+export { EditorCanvas as Canvas, EditorUI } from "./ThreeFiberEditor"
 export {
   Stages,
   useEditorFrame,

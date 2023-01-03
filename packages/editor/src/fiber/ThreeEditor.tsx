@@ -5,7 +5,7 @@ import { useBounds, useHelper } from "@react-three/drei"
 import { FC, useCallback } from "react"
 import { Object3D } from "three"
 
-class ThreeEditableElement extends EditableElement {
+export class ThreeEditableElement extends EditableElement {
   useHelper(arg0: string, helper: any, ...args: any[]): void {
     const isEditing = this.editor.useStates("editing")
     const prop = this.editor.useSettings("helpers", {
@@ -42,12 +42,14 @@ class ThreeEditableElement extends EditableElement {
     return this.object || this.ref instanceof Object3D
   }
 
-  object
+  object?: Object3D
 }
 
 export class ThreeEditor extends Editor {
   ContextBridge!: FC
   elementConstructor = ThreeEditableElement
+  canvasSize: any
+  scene: any
   findEditableElement(obj: any) {
     return obj?.__r3f?.editable
   }

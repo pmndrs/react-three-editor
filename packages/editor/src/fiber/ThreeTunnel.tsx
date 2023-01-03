@@ -1,3 +1,3 @@
 import { createMultiTunnel } from "@editable-jsx/controls"
 
-export const ThreeCanvas = createMultiTunnel()
+export const ThreeTunnel = createMultiTunnel()

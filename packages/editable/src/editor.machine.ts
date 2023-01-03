@@ -28,6 +28,7 @@ export const editorMachine =
           | { type: "START_TRANSFORMING" }
           | { type: "STOP_TRANSFORMING" }
           | { type: "APPEND_ELEMENT"; elementId: string; parentId: string }
+          | { type: "REMOVE_ELEMENT"; elementId: string; parentId: string }
       },
       states: {
         editing: {
