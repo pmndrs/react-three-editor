@@ -1,8 +1,0 @@
-{
-  "extends": "../../tsconfig.json",
-  "include": [
-    "src/**/*",
-    "../panels/src/ui/ResizablePanels.tsx",
-    "../panels/src/ui/PanelGroup.tsx"
-  ]
-}

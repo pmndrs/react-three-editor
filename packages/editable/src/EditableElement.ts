@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import {
   ControlledStore,
   createControlledStore,
@@ -6,11 +7,10 @@ import {
   InputTypes,
   JSXSource,
   mergeRefs
-} from "@editable-jsx/state"
-import { toast } from "@editable-jsx/ui"
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
+} from "../../state-utils/dist/editable-jsx-state.cjs"
+import { toast } from "../../ui-utils/dist/editable-jsx-ui.cjs"
 import { Editor } from "./Editor"
-import { PropChange } from "./prop-types/types";
+import { PropChange } from "./prop-types/types"
 
 /**
  * An editable element is a wrapper around a React element that can be edited in the editor.

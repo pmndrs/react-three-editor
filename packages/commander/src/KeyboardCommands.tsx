@@ -1,4 +1,4 @@
-import { useKeyboardShortcut } from "@editable-jsx/ui"
+import { useKeyboardShortcut } from "../../ui-utils/dist/editable-jsx-ui.cjs"
 import { useCommandManager } from "./CommandManager"
 import { isCommand } from "./utils"
 

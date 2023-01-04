@@ -1,4 +1,4 @@
-import { styled } from "@editable-jsx/ui"
+import { styled } from "../../ui-utils/dist/editable-jsx-ui.cjs"
 
 export { PanelManager } from "./PanelManager"
 export { PanelsProvider } from "./PanelsProvider"

@@ -1,5 +1,3 @@
-import { createStore, Store } from "@editable-jsx/state"
-import { Icon } from "@editable-jsx/ui"
 import { Command } from "cmdk"
 import {
   createContext,
@@ -8,6 +6,11 @@ import {
   useCallback,
   useContext
 } from "react"
+import {
+  createStore,
+  Store
+} from "../../state-utils/dist/editable-jsx-state.cjs"
+import { Icon } from "../../ui-utils/dist/editable-jsx-ui.cjs"
 import {
   CommandManager,
   CommandType,

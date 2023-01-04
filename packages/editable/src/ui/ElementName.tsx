@@ -1,4 +1,4 @@
-import { HoveredIcon, Icon } from "@editable-jsx/ui"
+import { HoveredIcon, Icon } from "../../../ui-utils/dist/editable-jsx-ui.cjs"
 import { EditableElement } from "../EditableElement"
 import { ElementIcon } from "./ElementIcon"
 import { OpenInEditorButton } from "./OpenInEditorButton"

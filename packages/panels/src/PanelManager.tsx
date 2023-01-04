@@ -14,7 +14,7 @@ import {
   Subscribable,
   useSelector,
   useSettings
-} from "@editable-jsx/state"
+} from "../../state-utils/dist/editable-jsx-state.cjs"
 import { panelMachine } from "./panels.machine"
 
 type PanelSettings = {

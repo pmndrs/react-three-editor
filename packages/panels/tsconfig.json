@@ -1,8 +1,4 @@
 {
   "extends": "../../tsconfig.json",
-  "include": [
-    "src/**/*",
-    "../editor/src/fiber/ThreeFloating.tsx",
-    "../editor/src/fiber/ThreeCanvas.tsx"
-  ]
+  "include": ["src/**/*"]
 }

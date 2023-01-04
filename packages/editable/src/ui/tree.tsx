@@ -1,4 +1,8 @@
-import { createPlugin, Tree, useInputContext } from "@editable-jsx/ui"
+import {
+  createPlugin,
+  Tree,
+  useInputContext
+} from "../../../ui-utils/dist/editable-jsx-ui.cjs"
 import { EditableElement } from "../EditableElement"
 
 type TreeProps = {

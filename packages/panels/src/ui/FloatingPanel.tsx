@@ -1,5 +1,11 @@
-import { DragState, Floating, styled, useTransform, ControlsPanel } from "@editable-jsx/ui"
 import { memo, useEffect } from "react"
+import {
+  ControlsPanel,
+  DragState,
+  Floating,
+  styled,
+  useTransform
+} from "../../../ui-utils/dist/editable-jsx-ui.cjs"
 import { usePanel } from "../usePanel"
 import { usePanelManager } from "../usePanelManager"
 import { TitleWithFilter } from "./PanelTitle"
