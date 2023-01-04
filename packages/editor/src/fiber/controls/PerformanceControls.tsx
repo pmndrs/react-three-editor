@@ -62,7 +62,7 @@ export function PerformanceControls({
     <>
       <Perf headless />
       <PerfControls panel={panel} order={order} render={render} />
-      <PerformanceMonitor panel={panel} />
+      <PerformanceMonitor panel={panel} render={render} />
     </>
   )
 }
