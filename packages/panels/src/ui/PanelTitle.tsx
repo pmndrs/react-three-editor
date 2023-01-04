@@ -1,10 +1,5 @@
+import { Chevron, DragState, styled, useDrag } from "@editable-jsx/ui"
 import React, { forwardRef, useEffect, useMemo, useRef, useState } from "react"
-import {
-  Chevron,
-  DragState,
-  styled,
-  useDrag
-} from "../../../ui-utils/dist/editable-jsx-ui.cjs"
 
 const iconWidth = 40
 

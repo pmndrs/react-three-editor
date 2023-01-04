@@ -1,4 +1,4 @@
-import { EditPatch } from "../types"
+import { EditPatch } from "@editable-jsx/state"
 
 export type RpcServerFunctions = {
   save(patches: EditPatch | EditPatch[]): Promise<void>

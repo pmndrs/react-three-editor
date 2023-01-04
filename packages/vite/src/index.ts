@@ -51,6 +51,7 @@ export type PluginOptions = {
   babelPlugins?: PluginItem[]
   editable?: (node: JSXElementType) => boolean
   componentsDir?: string
+  enabled?: boolean
 }
 
 export function r3f({

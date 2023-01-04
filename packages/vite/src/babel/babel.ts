@@ -14,17 +14,29 @@ const FILE_NAME_VAR = "_jsxFileName"
 const isSourceAttr = (attr: t.Node) =>
   t.isJSXAttribute(attr) && attr.name.name === TRACE_ID
 
+function getName(v: t.LVal | null | undefined): string | null {
+  if (!v) return null
+  if (t.isIdentifier(v)) return v.name
+  // if (t.isObjectPattern(v)) return v.properties.map(getName).join(".")
+  // if (t.isArrayPattern(v)) return v.elements.map(getName).join(".")
+  if (t.isRestElement(v)) return getName(v.argument)
+  if (t.isAssignmentPattern(v)) return getName(v.left)
+  return ""
+}
+
 function findParentReactComponent(
   path: NodePath
 ): NodePath<t.FunctionDeclaration | t.VariableDeclarator> {
-  return path.findParent(
-    (path) =>
+  let el
+  return path.findParent((path) =>
+    Boolean(
       (path.isFunctionDeclaration() &&
         path.get("id").isIdentifier() &&
         path.get("id").node?.name.match(/^[A-Z]/)) ||
-      (path.isVariableDeclarator() &&
-        path.get("id").isIdentifier() &&
-        path.get("id").node?.name.match(/^[A-Z]/))
+        (path.isVariableDeclarator() &&
+          ((el = path.get("id")), el.isIdentifier()) &&
+          el.node?.name.match(/^[A-Z]/))
+    )
   ) as any
 }
 
@@ -36,7 +48,7 @@ const createNodeFromNullish = <T, N extends t.Node>(
 const makeTrace = (
   fileNameIdentifier: t.Identifier,
   { line, column }: { line: number; column: number },
-  componentName: string,
+  componentName: string | null,
   moduleName: string,
   elementName: string
 ) => {
@@ -72,7 +84,10 @@ export const reactThreeEditorBabel = (api: ConfigAPI): PluginObj => {
           const {
             node: { body }
           } = pass
-          const importPath = (program.opts as any)["imports"]
+          const importPath = (program.opts as any)["imports"] as {
+            path: string
+            imports: string[]
+          }
 
           body.unshift(
             t.importDeclaration(
@@ -105,14 +120,17 @@ export const reactThreeEditorBabel = (api: ConfigAPI): PluginObj => {
 
         let componentName = null
         if (parentComponent) {
-          componentName = parentComponent.get("id").node?.name
+          componentName = getName(parentComponent.get("id").node)
         }
 
         let elementName =
           node.name.type === "JSXIdentifier" ? node.name.name : null
 
         function isEditableElement(el: JSXElementType) {
-          return state.opts.isEditable(el)
+          let f = (state.opts as any)["isEditable"] as (
+            el: JSXElementType
+          ) => boolean
+          return f(el)
         }
 
         if (t.isJSXIdentifier(node.name) && node.name.name.match(/^[a-z]/)) {
@@ -224,11 +242,11 @@ export const reactThreeEditorBabel = (api: ConfigAPI): PluginObj => {
             t.jsxIdentifier(TRACE_ID),
             t.jsxExpressionContainer(
               makeTrace(
-                t.cloneNode(state.fileNameIdentifier),
+                t.cloneNode(state.fileNameIdentifier as t.Identifier),
                 node.loc.start,
-                componentName,
-                basename(state.filename, extname(state.filename)),
-                elementName
+                componentName ?? null,
+                basename(state.filename!, extname(state.filename!)),
+                elementName!
               )
             )
           )
@@ -246,7 +264,7 @@ export const reactThreeEditorBabel = (api: ConfigAPI): PluginObj => {
           const parentComponent = findParentReactComponent(path)
 
           if (parentComponent) {
-            const componentName = parentComponent.get("id").node.name
+            const componentName = getName(parentComponent.get("id").node)
             parentComponent.state = parentComponent.state?.["count"]
               ? { count: parentComponent.state?.["count"] + 1 }
               : { count: 0 }
@@ -265,7 +283,7 @@ export const reactThreeEditorBabel = (api: ConfigAPI): PluginObj => {
           const parentComponent = findParentReactComponent(path)
 
           if (parentComponent) {
-            const componentName = parentComponent.get("id").node?.name
+            const componentName = getName(parentComponent.get("id").node)
             parentComponent.state = parentComponent.state?.["count"]
               ? { count: parentComponent.state?.["count"] + 1 }
               : { count: 0 }

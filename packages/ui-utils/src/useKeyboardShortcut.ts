@@ -1,5 +1,5 @@
+import { useSettings } from "@editable-jsx/state"
 import { useHotkeys } from "react-hotkeys-hook"
-import { useSettings } from "../../state-utils/dist/editable-jsx-state.cjs"
 
 export function useKeyboardShortcut(
   name: string,

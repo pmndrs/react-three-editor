@@ -1,4 +1,4 @@
-import { client } from "../vite/client"
+import { client } from "@editable-jsx/vite/src/client"
 import { DEFAULT_EDITOR_PLUGINS } from "./plugins/index"
 import { ThreeEditor } from "./ThreeEditor"
 

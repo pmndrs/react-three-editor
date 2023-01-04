@@ -1,6 +1,4 @@
 import { PropType } from "@editable-jsx/core"
-import { MouseEvent, useCallback } from "react"
-import { TextureLoader } from "three"
 import {
   Components,
   createPlugin,
@@ -13,7 +11,9 @@ import {
   useDropzone,
   useInputContext,
   usePopin
-} from "../../../../ui-utils/dist/editable-jsx-ui.cjs"
+} from "@editable-jsx/ui"
+import { MouseEvent, useCallback } from "react"
+import { TextureLoader } from "three"
 
 export const levaTexture = createPlugin({
   sanitize(value: any) {

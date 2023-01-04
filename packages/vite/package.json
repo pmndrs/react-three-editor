@@ -1,5 +1,5 @@
 {
-  "name": "@editable-jsx/state",
+  "name": "@editable-jsx/vite",
   "author": {
     "name": "Nikhil Saraf",
     "email": "nsaraf98@gmail.com",
@@ -7,8 +7,8 @@
   },
   "description": "",
   "version": "0.0.1",
-  "main": "dist/editable-jsx-state.cjs.js",
-  "module": "dist/editable-jsx-state.esm.js",
+  "main": "dist/editable-jsx-vite.cjs.js",
+  "module": "dist/editable-jsx-vite.esm.js",
   "preconstruct": {
     "entrypoints": [
       "index.ts"
@@ -47,6 +47,8 @@
     "@babel/generator": "^7.20.4",
     "@babel/helper-plugin-utils": "^7.20.2",
     "@babel/template": "^7.18.10",
+    "@editable-jsx/state": "workspace:^0.0.1",
+    "@editable-jsx/ui": "workspace:^0.0.1",
     "@iconify/react": "^4.0.1",
     "@radix-ui/colors": "^0.1.8",
     "@radix-ui/react-context-menu": "^2.1.0",
@@ -75,15 +77,23 @@
     "react-dropzone": "^14.2.3",
     "react-hot-toast": "^2.4.0",
     "react-hotkeys-hook": "^4.0.6",
+    "react-resizable-panels": "^0.0.11",
+    "react-virtualized-auto-sizer": "^1.0.7",
+    "three-stdlib": "^2.20.4",
     "tunnel-rat": "^0.1.0",
+    "vite-dev-rpc": "^0.1.0",
     "xstate": "^4.35.1",
     "zustand": "^3.7.2"
   },
   "peerDependencies": {
+    "@react-three/fiber": "*",
+    "@react-three/rapier": "*",
     "react": "*",
-    "react-dom": "*"
+    "react-dom": "*",
+    "three": "*"
   },
   "devDependencies": {
+    "@react-three/rapier": "^0.10.0",
     "@types/babel__core": "^7.1.20",
     "@types/babel__helper-plugin-utils": "^7.10.0",
     "@types/babel__template": "^7.4.1",

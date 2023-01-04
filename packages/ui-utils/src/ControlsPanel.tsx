@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import {
   ControlledStore,
   defaultStore
-} from "../../state-utils/dist/editable-jsx-state.cjs"
+} from "@editable-jsx/state"
 
 import { ComponentProps } from "react"
 

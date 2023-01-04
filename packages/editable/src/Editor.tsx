@@ -15,7 +15,6 @@ import { PanelManager } from "@editable-jsx/panels"
 import { Editable, editable } from "./editable"
 import { HistoryManager } from "./history"
 
-import { BirpcReturn } from "birpc"
 import {
   createStore,
   EditPatch,
@@ -30,7 +29,8 @@ import {
   Settings,
   Store,
   useSelector
-} from "../../state-utils/dist/editable-jsx-state.cjs"
+} from "@editable-jsx/state"
+import { BirpcReturn } from "birpc"
 import { ComponentLoader } from "./component-loader"
 import { editorMachine } from "./editor.machine"
 import { EditorPlugin } from "./EditorPlugin"

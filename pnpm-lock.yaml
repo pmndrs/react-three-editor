@@ -121,8 +121,8 @@ importers:
     dependencies:
       '@react-spring/core': 9.5.5_react@18.2.0
       '@react-spring/three': 9.5.5_7l5c7g5ph6e5ybhvldx3hsiylq
-      '@react-three/drei': 9.50.5_xa6xk36nauwxkzngvitxgjpnr4
-      '@react-three/editor': link:../../packages/editor
+      '@react-three/drei': 9.51.1_xa6xk36nauwxkzngvitxgjpnr4
+      '@react-three/editor': link:../../packages/three
       '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
       '@use-gesture/react': 10.2.23_react@18.2.0
       react: 18.2.0
@@ -170,7 +170,7 @@ importers:
       '@react-spring/three': 9.5.5_7l5c7g5ph6e5ybhvldx3hsiylq
       '@react-three/cannon': 6.5.0_5vev7faaoviyued4os46ge772q
       '@react-three/drei': 9.46.4_xa6xk36nauwxkzngvitxgjpnr4
-      '@react-three/editor': link:../../packages/editor
+      '@react-three/editor': link:../../packages/three
       '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
       '@types/react': 18.0.26
       '@types/react-dom': 18.0.9
@@ -220,7 +220,7 @@ importers:
       '@react-spring/core': 9.5.5_react@18.2.0
       '@react-spring/three': 9.5.5_7l5c7g5ph6e5ybhvldx3hsiylq
       '@react-three/drei': 9.46.4_xa6xk36nauwxkzngvitxgjpnr4
-      '@react-three/editor': link:../../packages/editor
+      '@react-three/editor': link:../../packages/three
       '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
       '@types/react-reconciler': 0.28.0
       '@use-gesture/react': 10.2.23_react@18.2.0
@@ -278,7 +278,7 @@ importers:
       '@react-spring/core': 9.5.5_react@18.2.0
       '@react-spring/three': 9.5.5_7l5c7g5ph6e5ybhvldx3hsiylq
       '@react-three/drei': 9.46.4_xa6xk36nauwxkzngvitxgjpnr4
-      '@react-three/editor': link:../../packages/editor
+      '@react-three/editor': link:../../packages/three
       '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
       '@use-gesture/react': 10.2.23_react@18.2.0
       react: 18.2.0
@@ -319,7 +319,7 @@ importers:
     dependencies:
       '@react-spring/three': 9.5.5_7l5c7g5ph6e5ybhvldx3hsiylq
       '@react-three/drei': 9.46.4_xa6xk36nauwxkzngvitxgjpnr4
-      '@react-three/editor': link:../../packages/editor
+      '@react-three/editor': link:../../packages/three
       '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
       '@types/three': 0.135.0
       leva: 0.9.34_biqbaboplfbrettd7655fr4n2y
@@ -350,7 +350,7 @@ importers:
     dependencies:
       '@react-spring/three': 9.5.5_7l5c7g5ph6e5ybhvldx3hsiylq
       '@react-three/drei': 9.46.4_xa6xk36nauwxkzngvitxgjpnr4
-      '@react-three/editor': link:../../packages/editor
+      '@react-three/editor': link:../../packages/three
       '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
       '@types/three': 0.135.0
       leva: 0.9.34_biqbaboplfbrettd7655fr4n2y
@@ -406,7 +406,7 @@ importers:
       three: 0.147.0
       tunnel-rat: 0.1.0_react@18.2.0
     devDependencies:
-      '@react-three/editor': link:../../packages/editor
+      '@react-three/editor': link:../../packages/three
       '@types/react': 18.0.26
       '@types/react-dom': 18.0.9
       '@types/styled-components': 5.1.26
@@ -437,7 +437,7 @@ importers:
     dependencies:
       '@react-spring/three': 9.5.5_7l5c7g5ph6e5ybhvldx3hsiylq
       '@react-three/drei': 9.46.4_xa6xk36nauwxkzngvitxgjpnr4
-      '@react-three/editor': link:../../packages/editor
+      '@react-three/editor': link:../../packages/three
       '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
       '@types/three': 0.135.0
       leva: 0.9.34_biqbaboplfbrettd7655fr4n2y
@@ -471,7 +471,7 @@ importers:
     dependencies:
       '@react-spring/three': 9.5.5_7l5c7g5ph6e5ybhvldx3hsiylq
       '@react-three/drei': 9.46.4_xa6xk36nauwxkzngvitxgjpnr4
-      '@react-three/editor': link:../../packages/editor
+      '@react-three/editor': link:../../packages/three
       '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
       '@types/three': 0.135.0
       leva: 0.9.34_biqbaboplfbrettd7655fr4n2y
@@ -503,7 +503,7 @@ importers:
     dependencies:
       '@react-spring/three': 9.5.5_7l5c7g5ph6e5ybhvldx3hsiylq
       '@react-three/drei': 9.48.1_xa6xk36nauwxkzngvitxgjpnr4
-      '@react-three/editor': link:../../packages/editor
+      '@react-three/editor': link:../../packages/three
       '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
       '@types/three': 0.135.0
       leva: 0.9.34_biqbaboplfbrettd7655fr4n2y
@@ -577,8 +577,8 @@ importers:
       '@babel/generator': 7.20.5
       '@babel/helper-plugin-utils': 7.20.2
       '@babel/template': 7.18.10
-      '@editable-jsx/state': link:../state
-      '@editable-jsx/ui': link:../ui
+      '@editable-jsx/state': link:../state-utils
+      '@editable-jsx/ui': link:../ui-utils
       '@iconify/react': 4.0.1_react@18.2.0
       '@radix-ui/colors': 0.1.8
       '@radix-ui/react-context-menu': 2.1.0_biqbaboplfbrettd7655fr4n2y
@@ -692,8 +692,8 @@ importers:
       '@babel/template': 7.18.10
       '@editable-jsx/commander': link:../commander
       '@editable-jsx/panels': link:../panels
-      '@editable-jsx/state': link:../state
-      '@editable-jsx/ui': link:../ui
+      '@editable-jsx/state': link:../state-utils
+      '@editable-jsx/ui': link:../ui-utils
       '@iconify/react': 4.0.1_react@18.2.0
       '@radix-ui/colors': 0.1.8
       '@radix-ui/react-context-menu': 2.1.0_biqbaboplfbrettd7655fr4n2y
@@ -724,129 +724,6 @@ importers:
       react-hotkeys-hook: 4.0.6_biqbaboplfbrettd7655fr4n2y
       react-resizable-panels: 0.0.11_biqbaboplfbrettd7655fr4n2y
       react-virtualized-auto-sizer: 1.0.7_biqbaboplfbrettd7655fr4n2y
-      three-stdlib: 2.20.4
-      tunnel-rat: 0.1.0_react@18.2.0
-      vite-dev-rpc: 0.1.0_vite@3.2.5
-      xstate: 4.35.1
-      zustand: 3.7.2_react@18.2.0
-    devDependencies:
-      '@react-three/rapier': 0.10.0_react@18.2.0
-      '@types/babel__core': 7.1.20
-      '@types/babel__helper-plugin-utils': 7.10.0
-      '@types/babel__template': 7.4.1
-      '@types/debug': 4.1.7
-      '@types/formidable': 2.0.5
-      '@types/fs-extra': 9.0.13
-      '@types/object-path': 0.11.1
-      esbuild: 0.15.18
-      react: 18.2.0
-      react-dom: 18.2.0_react@18.2.0
-      vite: 3.2.5
-
-  packages/editor:
-    specifiers:
-      '@babel/core': ^7.19.6
-      '@babel/generator': ^7.20.4
-      '@babel/helper-plugin-utils': ^7.20.2
-      '@babel/template': ^7.18.10
-      '@editable-jsx/commander': workspace:^0.0.1
-      '@editable-jsx/core': workspace:^0.0.1
-      '@editable-jsx/panels': workspace:^0.0.1
-      '@editable-jsx/state': workspace:^0.0.1
-      '@editable-jsx/ui': workspace:^0.0.1
-      '@iconify/react': ^4.0.1
-      '@radix-ui/colors': ^0.1.8
-      '@radix-ui/react-context-menu': ^2.1.0
-      '@radix-ui/react-icons': ^1.1.1
-      '@radix-ui/react-popover': ^1.0.2
-      '@react-three/drei': ^9.46.4
-      '@react-three/rapier': ^0.10.0
-      '@stitches/react': ^1.2.8
-      '@types/babel__core': ^7.1.20
-      '@types/babel__generator': ^7.6.4
-      '@types/babel__helper-plugin-utils': ^7.10.0
-      '@types/babel__template': ^7.4.1
-      '@types/debug': ^4.1.7
-      '@types/formidable': ^2.0.5
-      '@types/fs-extra': ^9.0.13
-      '@types/object-path': ^0.11.1
-      '@types/react-virtualized-auto-sizer': ^1.0.1
-      '@use-gesture/react': ^10.2.23
-      '@vinxi/recast': ^0.21.5
-      '@vitejs/plugin-react': ^2.0.1
-      '@xstate/react': ^3.0.1
-      birpc: ^0.2.3
-      change-case: ^4.1.2
-      cmdk: ^0.1.21
-      debug: ^4.3.4
-      esbuild: ^0.15.15
-      fast-glob: ^3.2.12
-      formidable: ^2.1.1
-      fp-ts: ^2.12.3
-      fs-extra: ^10.1.0
-      hash-sum: ^2.0.0
-      its-fine: ^1.0.8
-      leva: ^0.9.34
-      object-path: ^0.11.8
-      prettier: ^2.8.0
-      r3f-perf: ^6.5.0
-      react: ^18.2.0
-      react-dom: ^18.2.0
-      react-dropzone: ^14.2.3
-      react-hot-toast: ^2.4.0
-      react-hotkeys-hook: ^4.0.6
-      react-resizable-panels: ^0.0.11
-      react-virtualized-auto-sizer: ^1.0.7
-      suspend-react: ^0.0.8
-      three-stdlib: ^2.20.4
-      tunnel-rat: ^0.1.0
-      vite: ^3.0.7
-      vite-dev-rpc: ^0.1.0
-      xstate: ^4.35.1
-      zustand: ^3.7.2
-    dependencies:
-      '@babel/core': 7.20.5
-      '@babel/generator': 7.20.5
-      '@babel/helper-plugin-utils': 7.20.2
-      '@babel/template': 7.18.10
-      '@editable-jsx/commander': link:../commander
-      '@editable-jsx/core': link:../editable
-      '@editable-jsx/panels': link:../panels
-      '@editable-jsx/state': link:../state
-      '@editable-jsx/ui': link:../ui
-      '@iconify/react': 4.0.1_react@18.2.0
-      '@radix-ui/colors': 0.1.8
-      '@radix-ui/react-context-menu': 2.1.0_biqbaboplfbrettd7655fr4n2y
-      '@radix-ui/react-icons': 1.1.1_react@18.2.0
-      '@radix-ui/react-popover': 1.0.2_biqbaboplfbrettd7655fr4n2y
-      '@react-three/drei': 9.46.4_biqbaboplfbrettd7655fr4n2y
-      '@stitches/react': 1.2.8_react@18.2.0
-      '@types/babel__generator': 7.6.4
-      '@types/react-virtualized-auto-sizer': 1.0.1
-      '@use-gesture/react': 10.2.23_react@18.2.0
-      '@vinxi/recast': 0.21.5
-      '@vitejs/plugin-react': 2.2.0_vite@3.2.5
-      '@xstate/react': 3.0.1_react@18.2.0+xstate@4.35.1
-      birpc: 0.2.3
-      change-case: 4.1.2
-      cmdk: 0.1.21_biqbaboplfbrettd7655fr4n2y
-      debug: 4.3.4
-      fast-glob: 3.2.12
-      formidable: 2.1.1
-      fp-ts: 2.13.1
-      fs-extra: 10.1.0
-      hash-sum: 2.0.0
-      its-fine: 1.0.8_react@18.2.0
-      leva: 0.9.34_biqbaboplfbrettd7655fr4n2y
-      object-path: 0.11.8
-      prettier: 2.8.0
-      r3f-perf: 6.6.0_xtpvfhsrdad6nughsgptsnwwii
-      react-dropzone: 14.2.3_react@18.2.0
-      react-hot-toast: 2.4.0_biqbaboplfbrettd7655fr4n2y
-      react-hotkeys-hook: 4.0.6_biqbaboplfbrettd7655fr4n2y
-      react-resizable-panels: 0.0.11_biqbaboplfbrettd7655fr4n2y
-      react-virtualized-auto-sizer: 1.0.7_biqbaboplfbrettd7655fr4n2y
-      suspend-react: 0.0.8_react@18.2.0
       three-stdlib: 2.20.4
       tunnel-rat: 0.1.0_react@18.2.0
       vite-dev-rpc: 0.1.0_vite@3.2.5
@@ -926,8 +803,8 @@ importers:
       '@babel/generator': 7.20.5
       '@babel/helper-plugin-utils': 7.20.2
       '@babel/template': 7.18.10
-      '@editable-jsx/state': link:../state
-      '@editable-jsx/ui': link:../ui
+      '@editable-jsx/state': link:../state-utils
+      '@editable-jsx/ui': link:../ui-utils
       '@iconify/react': 4.0.1_react@18.2.0
       '@radix-ui/colors': 0.1.8
       '@radix-ui/react-context-menu': 2.1.0_biqbaboplfbrettd7655fr4n2y
@@ -977,7 +854,7 @@ importers:
       react-dom: 18.2.0_react@18.2.0
       vite: 3.2.5
 
-  packages/state:
+  packages/state-utils:
     specifiers:
       '@babel/core': ^7.19.6
       '@babel/generator': ^7.20.4
@@ -1007,7 +884,6 @@ importers:
       change-case: ^4.1.2
       cmdk: ^0.1.21
       debug: ^4.3.4
-      edit: link:../edit
       esbuild: ^0.15.15
       fast-glob: ^3.2.12
       formidable: ^2.1.1
@@ -1036,7 +912,7 @@ importers:
       '@radix-ui/react-context-menu': 2.1.0_biqbaboplfbrettd7655fr4n2y
       '@radix-ui/react-icons': 1.1.1_react@18.2.0
       '@radix-ui/react-popover': 1.0.2_biqbaboplfbrettd7655fr4n2y
-      '@react-three/drei': 9.50.3_biqbaboplfbrettd7655fr4n2y
+      '@react-three/drei': 9.50.5_biqbaboplfbrettd7655fr4n2y
       '@stitches/react': 1.2.8_react@18.2.0
       '@types/babel__generator': 7.6.4
       '@types/react-virtualized-auto-sizer': 1.0.1
@@ -1048,7 +924,6 @@ importers:
       change-case: 4.1.2
       cmdk: 0.1.21_biqbaboplfbrettd7655fr4n2y
       debug: 4.3.4
-      edit: link:../edit
       fast-glob: 3.2.12
       formidable: 2.1.1
       fp-ts: 2.13.1
@@ -1056,7 +931,7 @@ importers:
       leva: 0.9.34_biqbaboplfbrettd7655fr4n2y
       object-path: 0.11.8
       prettier: 2.8.0
-      r3f-perf: 6.6.0_mtn7emrs54ptfw7qlrwmcjaqsm
+      r3f-perf: 6.6.0_5b2ec72idhlsk7nuq7fy3yaqha
       react-dropzone: 14.2.3_react@18.2.0
       react-hot-toast: 2.4.0_biqbaboplfbrettd7655fr4n2y
       react-hotkeys-hook: 4.0.6_biqbaboplfbrettd7655fr4n2y
@@ -1076,7 +951,132 @@ importers:
       react-dom: 18.2.0_react@18.2.0
       vite: 3.2.5
 
-  packages/tree:
+  packages/three:
+    specifiers:
+      '@babel/core': ^7.19.6
+      '@babel/generator': ^7.20.4
+      '@babel/helper-plugin-utils': ^7.20.2
+      '@babel/template': ^7.18.10
+      '@editable-jsx/commander': workspace:^0.0.1
+      '@editable-jsx/core': workspace:^0.0.1
+      '@editable-jsx/panels': workspace:^0.0.1
+      '@editable-jsx/state': workspace:^0.0.1
+      '@editable-jsx/ui': workspace:^0.0.1
+      '@editable-jsx/vite': workspace:^0.0.1
+      '@iconify/react': ^4.0.1
+      '@radix-ui/colors': ^0.1.8
+      '@radix-ui/react-context-menu': ^2.1.0
+      '@radix-ui/react-icons': ^1.1.1
+      '@radix-ui/react-popover': ^1.0.2
+      '@react-three/drei': ^9.46.4
+      '@react-three/rapier': ^0.10.0
+      '@stitches/react': ^1.2.8
+      '@types/babel__core': ^7.1.20
+      '@types/babel__generator': ^7.6.4
+      '@types/babel__helper-plugin-utils': ^7.10.0
+      '@types/babel__template': ^7.4.1
+      '@types/debug': ^4.1.7
+      '@types/formidable': ^2.0.5
+      '@types/fs-extra': ^9.0.13
+      '@types/object-path': ^0.11.1
+      '@types/react-virtualized-auto-sizer': ^1.0.1
+      '@use-gesture/react': ^10.2.23
+      '@vinxi/recast': ^0.21.5
+      '@vitejs/plugin-react': ^2.0.1
+      '@xstate/react': ^3.0.1
+      birpc: ^0.2.3
+      change-case: ^4.1.2
+      cmdk: ^0.1.21
+      debug: ^4.3.4
+      esbuild: ^0.15.15
+      fast-glob: ^3.2.12
+      formidable: ^2.1.1
+      fp-ts: ^2.12.3
+      fs-extra: ^10.1.0
+      hash-sum: ^2.0.0
+      its-fine: ^1.0.8
+      leva: ^0.9.34
+      object-path: ^0.11.8
+      prettier: ^2.8.0
+      r3f-perf: ^6.5.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
+      react-dropzone: ^14.2.3
+      react-hot-toast: ^2.4.0
+      react-hotkeys-hook: ^4.0.6
+      react-resizable-panels: ^0.0.11
+      react-virtualized-auto-sizer: ^1.0.7
+      suspend-react: ^0.0.8
+      three-stdlib: ^2.20.4
+      tunnel-rat: ^0.1.0
+      vite: ^3.0.7
+      vite-dev-rpc: ^0.1.0
+      xstate: ^4.35.1
+      zustand: ^3.7.2
+    dependencies:
+      '@babel/core': 7.20.5
+      '@babel/generator': 7.20.5
+      '@babel/helper-plugin-utils': 7.20.2
+      '@babel/template': 7.18.10
+      '@editable-jsx/commander': link:../commander
+      '@editable-jsx/core': link:../editable
+      '@editable-jsx/panels': link:../panels
+      '@editable-jsx/state': link:../state-utils
+      '@editable-jsx/ui': link:../ui-utils
+      '@editable-jsx/vite': link:../vite
+      '@iconify/react': 4.0.1_react@18.2.0
+      '@radix-ui/colors': 0.1.8
+      '@radix-ui/react-context-menu': 2.1.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-icons': 1.1.1_react@18.2.0
+      '@radix-ui/react-popover': 1.0.2_biqbaboplfbrettd7655fr4n2y
+      '@react-three/drei': 9.50.5_biqbaboplfbrettd7655fr4n2y
+      '@stitches/react': 1.2.8_react@18.2.0
+      '@types/babel__generator': 7.6.4
+      '@types/react-virtualized-auto-sizer': 1.0.1
+      '@use-gesture/react': 10.2.23_react@18.2.0
+      '@vinxi/recast': 0.21.5
+      '@vitejs/plugin-react': 2.2.0_vite@3.2.5
+      '@xstate/react': 3.0.1_react@18.2.0+xstate@4.35.1
+      birpc: 0.2.3
+      change-case: 4.1.2
+      cmdk: 0.1.21_biqbaboplfbrettd7655fr4n2y
+      debug: 4.3.4
+      fast-glob: 3.2.12
+      formidable: 2.1.1
+      fp-ts: 2.13.1
+      fs-extra: 10.1.0
+      hash-sum: 2.0.0
+      its-fine: 1.0.8_react@18.2.0
+      leva: 0.9.34_biqbaboplfbrettd7655fr4n2y
+      object-path: 0.11.8
+      prettier: 2.8.0
+      r3f-perf: 6.6.0_zqtnhyj5stj7lzqri35wncxmse
+      react-dropzone: 14.2.3_react@18.2.0
+      react-hot-toast: 2.4.0_biqbaboplfbrettd7655fr4n2y
+      react-hotkeys-hook: 4.0.6_biqbaboplfbrettd7655fr4n2y
+      react-resizable-panels: 0.0.11_biqbaboplfbrettd7655fr4n2y
+      react-virtualized-auto-sizer: 1.0.7_biqbaboplfbrettd7655fr4n2y
+      suspend-react: 0.0.8_react@18.2.0
+      three-stdlib: 2.20.4
+      tunnel-rat: 0.1.0_react@18.2.0
+      vite-dev-rpc: 0.1.0_vite@3.2.5
+      xstate: 4.35.1
+      zustand: 3.7.2_react@18.2.0
+    devDependencies:
+      '@react-three/rapier': 0.10.0_react@18.2.0
+      '@types/babel__core': 7.1.20
+      '@types/babel__helper-plugin-utils': 7.10.0
+      '@types/babel__template': 7.4.1
+      '@types/debug': 4.1.7
+      '@types/formidable': 2.0.5
+      '@types/fs-extra': 9.0.13
+      '@types/object-path': 0.11.1
+      esbuild: 0.15.18
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      vite: 3.2.5
+
+  packages/ui-utils:
     specifiers:
       '@babel/core': ^7.19.6
       '@babel/generator': ^7.20.4
@@ -1135,13 +1135,13 @@ importers:
       '@babel/generator': 7.20.5
       '@babel/helper-plugin-utils': 7.20.2
       '@babel/template': 7.18.10
-      '@editable-jsx/state': link:../state
+      '@editable-jsx/state': link:../state-utils
       '@iconify/react': 4.0.1_react@18.2.0
       '@radix-ui/colors': 0.1.8
       '@radix-ui/react-context-menu': 2.1.0_biqbaboplfbrettd7655fr4n2y
       '@radix-ui/react-icons': 1.1.1_react@18.2.0
       '@radix-ui/react-popover': 1.0.2_biqbaboplfbrettd7655fr4n2y
-      '@react-three/drei': 9.50.2_biqbaboplfbrettd7655fr4n2y
+      '@react-three/drei': 9.50.5_biqbaboplfbrettd7655fr4n2y
       '@stitches/react': 1.2.8_react@18.2.0
       '@types/babel__generator': 7.6.4
       '@types/react-virtualized-auto-sizer': 1.0.1
@@ -1160,7 +1160,7 @@ importers:
       leva: 0.9.34_biqbaboplfbrettd7655fr4n2y
       object-path: 0.11.8
       prettier: 2.8.0
-      r3f-perf: 6.6.0_6oiqauhdk2ifndotnyi5dlp4hy
+      r3f-perf: 6.6.0_zqtnhyj5stj7lzqri35wncxmse
       react-dropzone: 14.2.3_react@18.2.0
       react-hot-toast: 2.4.0_biqbaboplfbrettd7655fr4n2y
       react-hotkeys-hook: 4.0.6_biqbaboplfbrettd7655fr4n2y
@@ -1185,13 +1185,14 @@ importers:
       react-dom: 18.2.0_react@18.2.0
       vite: 3.2.5
 
-  packages/ui:
+  packages/vite:
     specifiers:
       '@babel/core': ^7.19.6
       '@babel/generator': ^7.20.4
       '@babel/helper-plugin-utils': ^7.20.2
       '@babel/template': ^7.18.10
       '@editable-jsx/state': workspace:^0.0.1
+      '@editable-jsx/ui': workspace:^0.0.1
       '@iconify/react': ^4.0.1
       '@radix-ui/colors': ^0.1.8
       '@radix-ui/react-context-menu': ^2.1.0
@@ -1244,13 +1245,14 @@ importers:
       '@babel/generator': 7.20.5
       '@babel/helper-plugin-utils': 7.20.2
       '@babel/template': 7.18.10
-      '@editable-jsx/state': link:../state
+      '@editable-jsx/state': link:../state-utils
+      '@editable-jsx/ui': link:../ui-utils
       '@iconify/react': 4.0.1_react@18.2.0
       '@radix-ui/colors': 0.1.8
       '@radix-ui/react-context-menu': 2.1.0_biqbaboplfbrettd7655fr4n2y
       '@radix-ui/react-icons': 1.1.1_react@18.2.0
       '@radix-ui/react-popover': 1.0.2_biqbaboplfbrettd7655fr4n2y
-      '@react-three/drei': 9.50.3_biqbaboplfbrettd7655fr4n2y
+      '@react-three/drei': 9.50.5_biqbaboplfbrettd7655fr4n2y
       '@stitches/react': 1.2.8_react@18.2.0
       '@types/babel__generator': 7.6.4
       '@types/react-virtualized-auto-sizer': 1.0.1
@@ -1269,7 +1271,7 @@ importers:
       leva: 0.9.34_biqbaboplfbrettd7655fr4n2y
       object-path: 0.11.8
       prettier: 2.8.0
-      r3f-perf: 6.6.0_dy57blvyqkscogj2d4i42me6ni
+      r3f-perf: 6.6.0_zqtnhyj5stj7lzqri35wncxmse
       react-dropzone: 14.2.3_react@18.2.0
       react-hot-toast: 2.4.0_biqbaboplfbrettd7655fr4n2y
       react-hotkeys-hook: 4.0.6_biqbaboplfbrettd7655fr4n2y
@@ -5315,39 +5317,6 @@ packages:
       - typescript
     dev: false
 
-  /@react-three/drei/9.46.4_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-jrX+gMHlLLcjOy4VvjGEJz6EauzKUXscLi2hmLUhTZ2PI4SwcaZJNKf4KP639XqA4CL1fpIkA/GTmBwVKTUn8A==}
-    peerDependencies:
-      '@react-three/fiber': '>=8.0'
-      react: '>=18.0'
-      react-dom: '>=18.0'
-      three: '>=0.137'
-    peerDependenciesMeta:
-      react-dom:
-        optional: true
-    dependencies:
-      '@babel/runtime': 7.20.6
-      '@react-spring/three': 9.5.5_react@18.2.0
-      '@use-gesture/react': 10.2.23_react@18.2.0
-      detect-gpu: 5.0.1
-      glsl-noise: 0.0.0
-      lodash.clamp: 4.0.3
-      lodash.omit: 4.5.0
-      lodash.pick: 4.4.0
-      meshline: 3.0.4
-      react: 18.2.0
-      react-composer: 5.0.3_react@18.2.0
-      react-dom: 18.2.0_react@18.2.0
-      react-merge-refs: 1.1.0
-      stats.js: 0.17.0
-      suspend-react: 0.0.8_react@18.2.0
-      three-mesh-bvh: 0.5.19
-      three-stdlib: 2.20.4
-      troika-three-text: 0.46.4
-      utility-types: 3.10.0
-      zustand: 3.7.2_react@18.2.0
-    dev: false
-
   /@react-three/drei/9.46.4_xa6xk36nauwxkzngvitxgjpnr4:
     resolution: {integrity: sha512-jrX+gMHlLLcjOy4VvjGEJz6EauzKUXscLi2hmLUhTZ2PI4SwcaZJNKf4KP639XqA4CL1fpIkA/GTmBwVKTUn8A==}
     peerDependencies:
@@ -5483,39 +5452,6 @@ packages:
       zustand: 3.7.2_react@18.2.0
     dev: false
 
-  /@react-three/drei/9.50.2_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-LUlwPwQkx40JMq2j5eADugIx2PyAZUZu88sEnRZ91zxr4mEqdFkMD2BE5g3QP/yyognsBgeMHiexrZVW69TcLw==}
-    peerDependencies:
-      '@react-three/fiber': '>=8.0'
-      react: '>=18.0'
-      react-dom: '>=18.0'
-      three: '>=0.137'
-    peerDependenciesMeta:
-      react-dom:
-        optional: true
-    dependencies:
-      '@babel/runtime': 7.20.6
-      '@react-spring/three': 9.5.5_react@18.2.0
-      '@use-gesture/react': 10.2.23_react@18.2.0
-      detect-gpu: 5.0.1
-      glsl-noise: 0.0.0
-      lodash.clamp: 4.0.3
-      lodash.omit: 4.5.0
-      lodash.pick: 4.4.0
-      meshline: 3.1.6
-      react: 18.2.0
-      react-composer: 5.0.3_react@18.2.0
-      react-dom: 18.2.0_react@18.2.0
-      react-merge-refs: 1.1.0
-      stats.js: 0.17.0
-      suspend-react: 0.0.8_react@18.2.0
-      three-mesh-bvh: 0.5.19
-      three-stdlib: 2.20.4
-      troika-three-text: 0.47.1
-      utility-types: 3.10.0
-      zustand: 3.7.2_react@18.2.0
-    dev: false
-
   /@react-three/drei/9.50.3_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-Px6kjbPbX9JfF7OK+Nobt7hwQ8slSsvvoao36awZtIhmM9O+AxCBGohFTMqOPiXxFIt7rsnyKtYlC+s993lJnA==}
     peerDependencies:
@@ -5549,8 +5485,41 @@ packages:
       zustand: 3.7.2_react@18.2.0
     dev: false
 
-  /@react-three/drei/9.50.5_xa6xk36nauwxkzngvitxgjpnr4:
+  /@react-three/drei/9.50.5_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-fAeUrP+wvKwa4YuDhaoPieSeeDZ2pZ2xlW2IGtiD+ZaTrkCrrCKr7I2EsjXX3tAC9zjV0BN/8PcI68trmBv3vA==}
+    peerDependencies:
+      '@react-three/fiber': '>=8.0'
+      react: '>=18.0'
+      react-dom: '>=18.0'
+      three: '>=0.137'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.20.6
+      '@react-spring/three': 9.5.5_react@18.2.0
+      '@use-gesture/react': 10.2.23_react@18.2.0
+      detect-gpu: 5.0.5
+      glsl-noise: 0.0.0
+      lodash.clamp: 4.0.3
+      lodash.omit: 4.5.0
+      lodash.pick: 4.4.0
+      meshline: 3.1.6
+      react: 18.2.0
+      react-composer: 5.0.3_react@18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-merge-refs: 1.1.0
+      stats.js: 0.17.0
+      suspend-react: 0.0.8_react@18.2.0
+      three-mesh-bvh: 0.5.21
+      three-stdlib: 2.20.4
+      troika-three-text: 0.47.1
+      utility-types: 3.10.0
+      zustand: 3.7.2_react@18.2.0
+    dev: false
+
+  /@react-three/drei/9.51.1_xa6xk36nauwxkzngvitxgjpnr4:
+    resolution: {integrity: sha512-2mjzXIdDNo1kgsCZsnJ0mIY6kyYYCENlnjTIYBFO1F9TfdBArIZnb1op7ogtNgjRysDQ/Ut7nWyI2xgD68+/Wg==}
     peerDependencies:
       '@react-three/fiber': '>=8.0'
       react: '>=18.0'
@@ -5608,7 +5577,7 @@ packages:
     dependencies:
       '@babel/runtime': 7.20.6
       '@types/react-reconciler': 0.26.7
-      its-fine: 1.0.6_react@18.2.0
+      its-fine: 1.0.8_react@18.2.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-reconciler: 0.27.0_react@18.2.0
@@ -14645,14 +14614,6 @@ packages:
       is-object: 1.0.2
     dev: true
 
-  /its-fine/1.0.6_react@18.2.0:
-    resolution: {integrity: sha512-VZJZPwVT2kxe5KQv+TxCjojfLiUIut8zXDNLTxcM7gJ/xQ/bSPk5M0neZ+j3myy45KKkltY1mm1jyJgx3Fxsdg==}
-    peerDependencies:
-      react: '>=18.0'
-    dependencies:
-      '@types/react-reconciler': 0.28.0
-      react: 18.2.0
-
   /its-fine/1.0.8_react@18.2.0:
     resolution: {integrity: sha512-MagTA9/J6kN3aEQsQu6by3nyrttCm0whCOYo4SfiNzOfYgcr1cb29mJ3zgluaJboaWOL/lHzJeMXi/QGSCfX1Q==}
     peerDependencies:
@@ -14660,7 +14621,6 @@ packages:
     dependencies:
       '@types/react-reconciler': 0.28.0
       react: 18.2.0
-    dev: false
 
   /jake/10.8.5:
     resolution: {integrity: sha512-sVpxYeuAhWt0OTWITwT98oyV0GsXyMlXCF+3L1SuafBVUIr/uILGRB+NqwkzhgXKvoJpDIpQvqkUALgdmQsQxw==}
@@ -16994,12 +16954,6 @@ packages:
   /merge2/1.4.1:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
     engines: {node: '>= 8'}
-
-  /meshline/3.0.4:
-    resolution: {integrity: sha512-o4kwwnhgYLyNwcB6i+qHejuN9l129p7mdF0vsqzWEAHGw5SBwD9q0ut+tX3G3om8PUW7GOQQa5V4t3I7wMN41Q==}
-    peerDependencies:
-      three: '>=0.137'
-    dev: false
 
   /meshline/3.0.4_three@0.147.0:
     resolution: {integrity: sha512-o4kwwnhgYLyNwcB6i+qHejuN9l129p7mdF0vsqzWEAHGw5SBwD9q0ut+tX3G3om8PUW7GOQQa5V4t3I7wMN41Q==}
@@ -20046,7 +20000,7 @@ packages:
     engines: {node: '>=10'}
     dev: false
 
-  /r3f-perf/6.6.0_6oiqauhdk2ifndotnyi5dlp4hy:
+  /r3f-perf/6.6.0_5b2ec72idhlsk7nuq7fy3yaqha:
     resolution: {integrity: sha512-qwpGsOl4DessBJN9BuYkE4hteSQNErRWpAABxlMDmIdpRbQjxlEjje7O6pqHDAU864njTrpHjN9BryWZmWn9dA==}
     peerDependencies:
       '@react-three/drei': '*'
@@ -20057,11 +20011,10 @@ packages:
       three-stdlib: '*'
     dependencies:
       '@radix-ui/react-icons': 1.1.1_react@18.2.0
-      '@react-three/drei': 9.50.2_biqbaboplfbrettd7655fr4n2y
+      '@react-three/drei': 9.50.5_biqbaboplfbrettd7655fr4n2y
       '@stitches/react': 1.2.8_react@18.2.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      three-stdlib: 2.20.4
       zustand: 3.7.2_react@18.2.0
     dev: false
 
@@ -20123,24 +20076,6 @@ packages:
       zustand: 3.7.2_react@18.2.0
     dev: false
 
-  /r3f-perf/6.6.0_mtn7emrs54ptfw7qlrwmcjaqsm:
-    resolution: {integrity: sha512-qwpGsOl4DessBJN9BuYkE4hteSQNErRWpAABxlMDmIdpRbQjxlEjje7O6pqHDAU864njTrpHjN9BryWZmWn9dA==}
-    peerDependencies:
-      '@react-three/drei': '*'
-      '@react-three/fiber': '*'
-      react: '>=18.0'
-      react-dom: '>=18.0'
-      three: '*'
-      three-stdlib: '*'
-    dependencies:
-      '@radix-ui/react-icons': 1.1.1_react@18.2.0
-      '@react-three/drei': 9.50.3_biqbaboplfbrettd7655fr4n2y
-      '@stitches/react': 1.2.8_react@18.2.0
-      react: 18.2.0
-      react-dom: 18.2.0_react@18.2.0
-      zustand: 3.7.2_react@18.2.0
-    dev: false
-
   /r3f-perf/6.6.0_o2zxrxgtlpaij7qbvedy7amgjm:
     resolution: {integrity: sha512-qwpGsOl4DessBJN9BuYkE4hteSQNErRWpAABxlMDmIdpRbQjxlEjje7O6pqHDAU864njTrpHjN9BryWZmWn9dA==}
     peerDependencies:
@@ -20181,7 +20116,7 @@ packages:
       zustand: 3.7.2_react@18.2.0
     dev: true
 
-  /r3f-perf/6.6.0_xtpvfhsrdad6nughsgptsnwwii:
+  /r3f-perf/6.6.0_zqtnhyj5stj7lzqri35wncxmse:
     resolution: {integrity: sha512-qwpGsOl4DessBJN9BuYkE4hteSQNErRWpAABxlMDmIdpRbQjxlEjje7O6pqHDAU864njTrpHjN9BryWZmWn9dA==}
     peerDependencies:
       '@react-three/drei': '*'
@@ -20192,7 +20127,7 @@ packages:
       three-stdlib: '*'
     dependencies:
       '@radix-ui/react-icons': 1.1.1_react@18.2.0
-      '@react-three/drei': 9.46.4_biqbaboplfbrettd7655fr4n2y
+      '@react-three/drei': 9.50.5_biqbaboplfbrettd7655fr4n2y
       '@stitches/react': 1.2.8_react@18.2.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -22893,6 +22828,12 @@ packages:
     dependencies:
       three: 0.147.0
 
+  /three-mesh-bvh/0.5.21:
+    resolution: {integrity: sha512-TGXPk7YwtlU5rgQJYA25OT6yAdBMeekfC4BTkGNtTWA5glb2rmEpjxvhZncRQSl73QZir2LFOQT0FjfzgG55xw==}
+    peerDependencies:
+      three: '>= 0.123.0'
+    dev: false
+
   /three-mesh-bvh/0.5.21_three@0.147.0:
     resolution: {integrity: sha512-TGXPk7YwtlU5rgQJYA25OT6yAdBMeekfC4BTkGNtTWA5glb2rmEpjxvhZncRQSl73QZir2LFOQT0FjfzgG55xw==}
     peerDependencies:
@@ -23097,17 +23038,6 @@ packages:
       escape-string-regexp: 1.0.5
     dev: true
 
-  /troika-three-text/0.46.4:
-    resolution: {integrity: sha512-Qsv0HhUKTZgSmAJs5wvO7YlBoJSP9TGPLmrg+K9pbQq4lseQdcevbno/WI38bwJBZ/qS56hvfqEzY0zUEFzDIw==}
-    peerDependencies:
-      three: '>=0.103.0'
-    dependencies:
-      bidi-js: 1.0.2
-      troika-three-utils: 0.46.0
-      troika-worker-utils: 0.46.0
-      webgl-sdf-generator: 1.1.1
-    dev: false
-
   /troika-three-text/0.46.4_three@0.147.0:
     resolution: {integrity: sha512-Qsv0HhUKTZgSmAJs5wvO7YlBoJSP9TGPLmrg+K9pbQq4lseQdcevbno/WI38bwJBZ/qS56hvfqEzY0zUEFzDIw==}
     peerDependencies:
@@ -23140,12 +23070,6 @@ packages:
       troika-three-utils: 0.47.0_three@0.147.0
       troika-worker-utils: 0.47.0
       webgl-sdf-generator: 1.1.1
-    dev: false
-
-  /troika-three-utils/0.46.0:
-    resolution: {integrity: sha512-llHyrXAcwzr0bpg80GxsIp73N7FuImm4WCrKDJkAqcAsWmE5pfP9+Qzw+oMWK1P/AdHQ79eOrOl9NjyW4aOw0w==}
-    peerDependencies:
-      three: '>=0.103.0'
     dev: false
 
   /troika-three-utils/0.46.0_three@0.147.0:

@@ -1,6 +1,6 @@
 import { useEditor } from "@editable-jsx/core"
 import { Panel, PanelProps } from "@editable-jsx/panels"
-import { multiToggle } from "../../../../ui-utils/dist/editable-jsx-ui.cjs"
+import { multiToggle } from "@editable-jsx/ui"
 import { DynamicIsland } from "./BottomBar"
 
 function ControlledPanel(

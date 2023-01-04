@@ -1,6 +1,3 @@
-import { Components, createPlugin, useInputContext } from "leva/plugin"
-import { MouseEvent, useCallback } from "react"
-import { useDropzone } from "react-dropzone"
 import {
   DropZone,
   ImageContainer,
@@ -8,7 +5,10 @@ import {
   Instructions,
   Remove,
   usePopin
-} from "../../../../ui-utils/dist/editable-jsx-ui.cjs"
+} from "@editable-jsx/ui"
+import { Components, createPlugin, useInputContext } from "leva/plugin"
+import { MouseEvent, useCallback } from "react"
+import { useDropzone } from "react-dropzone"
 
 export const gltf = createPlugin({
   sanitize(value: any) {

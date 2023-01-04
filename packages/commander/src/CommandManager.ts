@@ -1,8 +1,5 @@
+import { createStore, Store } from "@editable-jsx/state"
 import { createContext, useContext } from "react"
-import {
-  createStore,
-  Store
-} from "../../state-utils/dist/editable-jsx-state.cjs"
 
 export type CommandType<T = any> = {
   type: "seperator" | "command" | "group"

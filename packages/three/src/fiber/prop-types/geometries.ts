@@ -1,8 +1,8 @@
 import { EditableElement, PropInput } from "@editable-jsx/core"
+import { Schema } from "@editable-jsx/state"
 import { folder } from "leva"
 import { BufferGeometry } from "three"
 import { all } from "."
-import { Schema } from "../../../../state-utils/dist/editable-jsx-state.cjs"
 
 function args({
   element,

@@ -1,8 +1,8 @@
+import { ControlsPanel } from "@editable-jsx/ui"
 import {
   Panel as ResizablePanel,
   PanelResizeHandle
 } from "react-resizable-panels"
-import { ControlsPanel } from "../../../ui-utils/dist/editable-jsx-ui.cjs"
 import { usePanel } from "../usePanel"
 import { usePanelManager } from "../usePanelManager"
 import { PanelGhost } from "./PanelGhost"

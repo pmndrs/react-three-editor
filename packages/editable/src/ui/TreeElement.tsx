@@ -1,4 +1,4 @@
-import { TreeItem } from "../../../ui-utils/dist/editable-jsx-ui.cjs"
+import { TreeItem } from "@editable-jsx/ui"
 import { EditableElement } from "../EditableElement"
 import { ElementName } from "../ui/ElementName"
 

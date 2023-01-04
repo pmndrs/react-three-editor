@@ -1,9 +1,6 @@
+import { Floating, FloatingContext } from "@editable-jsx/ui"
 import { useThree } from "@react-three/fiber"
 import { PropsWithChildren } from "react"
-import {
-  Floating,
-  FloatingContext
-} from "../../../ui-utils/dist/editable-jsx-ui.cjs"
 import { ThreeTunnel } from "./ThreeTunnel"
 
 function ThreeFloating({

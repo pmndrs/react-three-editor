@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import {
   ControlledStore,
   createControlledStore,
@@ -7,8 +6,9 @@ import {
   InputTypes,
   JSXSource,
   mergeRefs
-} from "../../state-utils/dist/editable-jsx-state.cjs"
-import { toast } from "../../ui-utils/dist/editable-jsx-ui.cjs"
+} from "@editable-jsx/state"
+import { toast } from "@editable-jsx/ui"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { Editor } from "./Editor"
 import { PropChange } from "./prop-types/types"
 

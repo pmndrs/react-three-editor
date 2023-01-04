@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { EditableElement, Editor } from "@editable-jsx/core"
+import { multiToggle } from "@editable-jsx/ui"
 import { useBounds, useHelper } from "@react-three/drei"
 import { Size, useStore } from "@react-three/fiber"
 import { FC, PropsWithChildren, useCallback } from "react"
 import { Camera, Object3D, Raycaster, Scene } from "three"
-import { multiToggle } from "../../../ui-utils/dist/editable-jsx-ui.cjs"
 
 export class ThreeEditableElement extends EditableElement {
   object3D?: Object3D

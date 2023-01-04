@@ -1,14 +1,11 @@
 import { createProp, PropInput } from "@editable-jsx/core"
+import { folder, Schema } from "@editable-jsx/state"
 import {
   ClampToEdgeWrapping,
   MirroredRepeatWrapping,
   RepeatWrapping,
   Texture
 } from "three"
-import {
-  folder,
-  Schema
-} from "../../../../state-utils/dist/editable-jsx-state.cjs"
 import { imageTexture } from "./imageTexture"
 import { primitives } from "./primitives"
 

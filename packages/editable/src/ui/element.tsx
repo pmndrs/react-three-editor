@@ -4,7 +4,7 @@ import {
   HoveredIcon,
   styled,
   useInputContext
-} from "../../../ui-utils/dist/editable-jsx-ui.cjs"
+} from "@editable-jsx/ui"
 import { EditableElement } from "../EditableElement"
 import { ElementName } from "./ElementName"
 

@@ -1,5 +1,5 @@
+import { Icon } from "@editable-jsx/ui"
 import { ComponentProps } from "react"
-import { Icon } from "../../../ui-utils/dist/editable-jsx-ui.cjs"
 import { EditableElement } from "../EditableElement"
 
 export function ElementIcon({

@@ -1,4 +1,4 @@
-import { HoveredIcon } from "../../../ui-utils/dist/editable-jsx-ui.cjs"
+import { HoveredIcon } from "@editable-jsx/ui"
 import { EditableElement } from "../EditableElement"
 
 export function OpenInEditorButton({ element }: { element: EditableElement }) {

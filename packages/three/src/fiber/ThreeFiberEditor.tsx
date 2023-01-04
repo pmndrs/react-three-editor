@@ -1,11 +1,7 @@
 import { CommandBar } from "@editable-jsx/commander"
 import { PanelContainer, PanelGroup } from "@editable-jsx/panels"
+import { createMultiTunnel, Floating, Toaster } from "@editable-jsx/ui"
 import { forwardRef } from "react"
-import {
-  createMultiTunnel,
-  Floating,
-  Toaster
-} from "../../../ui-utils/dist/editable-jsx-ui.cjs"
 import { AllCommands } from "../commands"
 import { ComponentsTray } from "./ComponentsTray"
 import { EditorPanels } from "./controls/EditorPanels"

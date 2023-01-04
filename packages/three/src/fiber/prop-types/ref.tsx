@@ -9,7 +9,7 @@ import {
   HoveredIcon,
   styled,
   useInputContext
-} from "../../../../ui-utils/dist/editable-jsx-ui.cjs"
+} from "@editable-jsx/ui"
 
 const StyledFolder = styled("div", {})
 const StyledTitle = styled("div", {

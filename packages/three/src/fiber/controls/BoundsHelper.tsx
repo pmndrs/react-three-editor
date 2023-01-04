@@ -1,9 +1,9 @@
 import { EditableElement } from "@editable-jsx/core"
+import { multiToggle } from "@editable-jsx/ui"
 import { useHelper } from "@react-three/drei"
 import { applyProps } from "@react-three/fiber"
 import { ReactNode, useEffect, useMemo } from "react"
 import { BoxHelper, Group } from "three"
-import { multiToggle } from "../../../../ui-utils/dist/editable-jsx-ui.cjs"
 
 export function BoundsHelper({
   editableElement: element,
