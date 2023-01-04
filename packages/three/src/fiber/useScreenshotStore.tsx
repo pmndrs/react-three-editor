@@ -1,7 +1,7 @@
 import { EditorContext } from "@editable-jsx/core"
 import { createStore } from "@editable-jsx/state"
 import { createMultiTunnel } from "@editable-jsx/ui"
-import { createRoot, ReconcilerRoot } from "@react-three/fiber"
+import { createRoot, ReconcilerRoot, _roots } from "@react-three/fiber"
 import { ReactNode, useLayoutEffect as useEffect, useRef } from "react"
 import { editor } from "./editor"
 
@@ -36,6 +36,7 @@ export const useScreenshotStore = createStore<{
   root: null as ReconcilerRoot<any> | null,
   setCanvas: (canvas: HTMLCanvasElement) => {
     if (!canvas) return
+    if (_roots.get(canvas)) return
     let root = createRoot(canvas).configure({
       gl: {
         preserveDrawingBuffer: true

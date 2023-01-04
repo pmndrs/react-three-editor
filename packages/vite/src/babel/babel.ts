@@ -223,7 +223,7 @@ export const reactThreeEditorBabel = (api: ConfigAPI): PluginObj => {
                 )
               )
             )
-            node.name = t.jsxIdentifier("EditableComponent")
+            node.name = t.jsxIdentifier("Editable")
           }
         }
 

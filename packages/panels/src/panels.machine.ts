@@ -55,7 +55,7 @@ export const panelMachine =
               on: {
                 STOP_DRAGGING: {
                   target: "#panels.idle",
-                  actions: ["stopDragging", "dockToLeftPanel"]
+                  actions: ["dockToLeftPanel"]
                 },
                 DRAGGING: [
                   {
@@ -91,8 +91,7 @@ export const panelMachine =
               on: {
                 STOP_DRAGGING: {
                   target: "#panels.idle",
-
-                  actions: ["stopDragging", "dockToRightPanel"]
+                  actions: ["dockToRightPanel"]
                 },
                 DRAGGING: [
                   {

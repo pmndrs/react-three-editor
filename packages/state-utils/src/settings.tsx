@@ -1,4 +1,5 @@
 import { useControls } from "leva"
+import { StoreType } from "leva/dist/declarations/src/types"
 import { FolderSettings, Schema, SchemaToValues } from "leva/plugin"
 import { createContext, useContext } from "react"
 import { ControlledStore, defaultStore } from "./store"
@@ -36,7 +37,7 @@ export function useSettings<S extends Schema>(
     settings.path(name),
     schema,
     settings.deps || [],
-    settings.store
+    settings.store as StoreType
   )
 
   return props as any
@@ -55,7 +56,7 @@ function resolveSettings(sets: ISettingsImpl, arg0: { [key: string]: any }) {
 }
 
 export class Settings {
-  store: ControlledStore = defaultStore
+  store: ControlledStore = defaultStore as ControlledStore
 
   static getSettingsAtPath(settings: ISettingsImpl, path: string) {
     return settings.store.get(path)
@@ -71,7 +72,7 @@ export class Settings {
       settings.path(name),
       schema as any,
       settings.deps || [],
-      settings.store
+      settings.store as StoreType
     )
   }
 
@@ -85,7 +86,7 @@ export class Settings {
       {},
       options,
       {
-        store: settings.store
+        store: settings.store as StoreType
       },
       settings.deps || []
     )

@@ -2,7 +2,7 @@ import { createEditable, setEditable, useEditor } from "@editable-jsx/core"
 import { OrbitControls } from "@react-three/drei"
 import { useThree } from "@react-three/fiber"
 import { levaStore } from "leva"
-import { forwardRef, useEffect, useRef } from "react"
+import { forwardRef, Suspense, useEffect, useRef } from "react"
 import { Camera, MathUtils } from "three"
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib"
 
@@ -19,6 +19,8 @@ setEditable(
     )
   })
 )
+
+setEditable(Suspense, Suspense)
 
 // @ts-ignore
 window.leva = levaStore

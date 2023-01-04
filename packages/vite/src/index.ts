@@ -17,6 +17,7 @@ const transformElements = [
 ]
 
 let shouldEdit = (node: JSXElementType) => {
+  return true
   let isEditableComponent = (node: t.JSXOpeningElement) =>
     node.attributes.some(
       (attr) =>

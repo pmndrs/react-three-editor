@@ -18,8 +18,23 @@ export const setEditable = (
   if (typeof component === "string") {
     // @ts-ignore
     memo[component] = editable
+  } else if (typeof component === "symbol") {
+    // @ts-ignore
+    memo[component] = editable
   } else {
     memo.set(component, editable)
+  }
+}
+
+export const getEditable = (component: any) => {
+  if (typeof component === "string") {
+    // @ts-ignore
+    return memo[component]
+  } else if (typeof component === "symbol") {
+    // @ts-ignore
+    return memo[component]
+  } else {
+    return memo.get(component)
   }
 }
 
@@ -28,10 +43,10 @@ export const Editable = forwardRef(
     const editor = useContext(EditorContext)
     const EditableComponent = useMemo(() => {
       if (editor) {
-        if (!memo.get(component) && editor) {
-          memo.set(component, createEditable(component))
+        if (!getEditable(component) && editor) {
+          setEditable(component, createEditable(component))
         }
-        return memo.get(component)
+        return getEditable(component)
       }
       return component
     }, [component, editor])

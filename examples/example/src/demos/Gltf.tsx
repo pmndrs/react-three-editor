@@ -1,6 +1,6 @@
-import React, { Suspense, useEffect, useReducer } from "react"
-import { Canvas, editable, EditorPanel } from "@react-three/editor/fiber"
+import { Canvas, editable } from "@react-three/editor/fiber"
 import { useLoader } from "@react-three/fiber"
+import React, { Suspense, useEffect, useReducer } from "react"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader"
 
 let a = editable
@@ -33,7 +33,6 @@ export default function App() {
           <Test />
         </group>
       </Suspense>
-      <EditorPanel />
     </Canvas>
   )
 }

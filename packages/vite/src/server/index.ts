@@ -1,7 +1,7 @@
 import { Plugin } from "vite"
+import { ServerOptions } from "../types"
 import { configureServer } from "./configureServer"
 import { filesToSkipOnHmr } from "./filesToSkipOnHmr"
-import { ServerOptions } from "../types"
 
 export const editor = (options: ServerOptions = {}): Plugin => {
   return {
@@ -23,7 +23,7 @@ export const editor = (options: ServerOptions = {}): Plugin => {
           attrs: {
             type: "text/css",
             rel: "stylesheet",
-            href: "node_modules/@react-three/editor/assets/style.css"
+            href: "/node_modules/@react-three/editor/assets/style.css"
           }
         }
       ]

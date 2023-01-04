@@ -1,6 +1,6 @@
-import React, { useRef, useCallback, useMemo } from "react"
+import { Canvas } from "@react-three/editor/fiber"
 import { extend } from "@react-three/fiber"
-import { Canvas, editable, EditorPanel } from "@react-three/editor/fiber"
+import React, { useCallback, useMemo, useRef } from "react"
 import * as THREE from "three"
 
 export class DotMaterial extends THREE.ShaderMaterial {
@@ -78,7 +78,6 @@ export default function App() {
       raycaster={{ params: { Points: { threshold: 0.2 } } }}
     >
       <Particles pointCount={1000} />
-      <EditorPanel />
     </Canvas>
   )
 }
