@@ -1,3 +1,3 @@
-import { createMultiTunnel } from "@editable-jsx/controls"
+import { createMultiTunnel } from "@editable-jsx/ui"
 
 export const commandBarTunnel = createMultiTunnel()

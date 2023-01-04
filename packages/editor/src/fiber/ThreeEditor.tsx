@@ -2,17 +2,20 @@
 import { EditableElement, Editor } from "@editable-jsx/core"
 import { multiToggle } from "@editable-jsx/ui"
 import { useBounds, useHelper } from "@react-three/drei"
-import { FC, useCallback } from "react"
-import { Object3D } from "three"
+import { Size, useStore } from "@react-three/fiber"
+import { FC, PropsWithChildren, useCallback } from "react"
+import { Camera, Object3D, Raycaster, Scene } from "three"
 
 export class ThreeEditableElement extends EditableElement {
+  object3D?: Object3D
+
   useHelper(arg0: string, helper: any, ...args: any[]): void {
     const isEditing = this.editor.useStates("editing")
     const prop = this.editor.useSettings("helpers", {
       [arg0]: multiToggle({
         label: arg0,
         data: "selected",
-        options: ["all", "selected", "none"]
+        options: ["all", "selected", "none"] as const
       })
     })[arg0]
 
@@ -31,31 +34,31 @@ export class ThreeEditableElement extends EditableElement {
   }
 
   setObject3D(item: Object3D<Event>) {
-    this.object = item
+    this.object3D = item
   }
 
   getObject3D() {
-    return this.object || this.ref
+    return this.object3D || this.ref
   }
 
   isObject3D() {
-    return this.object || this.ref instanceof Object3D
+    return this.object3D || this.ref instanceof Object3D
   }
-
-  object?: Object3D
 }
 
 export class ThreeEditor extends Editor {
-  ContextBridge!: FC
+  ContextBridge!: FC<PropsWithChildren>
   elementConstructor = ThreeEditableElement
-  canvasSize: any
-  scene: any
+  threeStore!: ReturnType<typeof useStore>
+  canvasSize!: Size
+  scene!: Scene
+  camera!: Camera
+  raycaster!: Raycaster
+  bounds!: ReturnType<typeof useBounds>
+
   findEditableElement(obj: any) {
     return obj?.__r3f?.editable
   }
-
-  camera: unknown
-  bounds!: ReturnType<typeof useBounds>
 
   useElement(
     Component: any,

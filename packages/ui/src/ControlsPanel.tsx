@@ -1,10 +1,25 @@
+import { ControlledStore, defaultStore } from "@editable-jsx/state"
 import { Leva as DefaultControls, LevaPanel as Controls } from "leva"
+import { StoreType } from "leva/dist/declarations/src/types"
 import { useEffect, useState } from "react"
-import { usePanel } from "../usePanel"
-import { PanelProps } from "./types"
+
+import { ComponentProps } from "react"
+
+export type PanelProps = {
+  store: ControlledStore
+  title: string
+  width?: number
+  collapsed?: boolean
+  side: string
+  lazy?: boolean
+  floating?: boolean
+  size?: {
+    width: number
+  }
+} & Omit<ComponentProps<typeof Controls>, "store">
 
 export function ControlsPanel({
-  panel: id,
+  store,
   title,
   width = 280,
   collapsed = false,
@@ -13,8 +28,6 @@ export function ControlsPanel({
   size = { width: 1000 },
   ...props
 }: PanelProps) {
-  const panel = usePanel(id)
-
   const [_collapsed, setCollapsed] = useState(lazy ? true : collapsed)
 
   useEffect(() => {
@@ -23,9 +36,9 @@ export function ControlsPanel({
 
   return (
     <>
-      {panel.store ? (
+      {store && store !== defaultStore ? (
         <Controls
-          store={panel.store}
+          store={store as StoreType}
           fill={true}
           flat={true}
           titleBar={false}

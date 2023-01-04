@@ -1,5 +1,5 @@
-import { JSXSource } from "@editable-jsx/controls"
 import { useEditor } from "@editable-jsx/core"
+import { JSXSource } from "@editable-jsx/state"
 import { Canvas as FiberCanvas, Props } from "@react-three/fiber"
 import { FiberProvider } from "its-fine"
 import { forwardRef, Suspense } from "react"

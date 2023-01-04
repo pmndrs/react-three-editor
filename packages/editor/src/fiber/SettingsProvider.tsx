@@ -1,4 +1,4 @@
-import { SettingsContext } from "@editable-jsx/controls"
+import { SettingsContext } from "@editable-jsx/state"
 import { useEditor } from "@editable-jsx/core"
 import { PropsWithChildren, useMemo } from "react"
 

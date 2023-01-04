@@ -1,5 +1,5 @@
-import { createProp, PropInput } from "@editable-jsx/core"
-import { EditableElement } from "@editable-jsx/core/EditableElement"
+import { createProp, EditableElement } from "@editable-jsx/core"
+import { InputTypes } from "@editable-jsx/state/src"
 import { OrbitControls } from "@react-three/drei"
 import { folder } from "leva"
 import {
@@ -13,7 +13,6 @@ import {
   Material,
   Mesh,
   Object3D,
-  OrthographicCamera,
   PointLight,
   SpotLight,
   SpotLightHelper
@@ -21,12 +20,21 @@ import {
 import { TransformHelper } from "../controls/TransformHelper"
 import { all } from "../prop-types"
 import { primitives } from "../prop-types/primitives"
-import { replace } from "../prop-types/replace"
+import { ThreeEditableElement } from "../ThreeEditor"
+import { EditorControlsPlugin } from "../types"
+import { cameraControls } from "./cameraControls"
 
-export const transform = {
-  applicable: (entity: EditableElement) => entity.ref instanceof Object3D,
-  icon: (entity: EditableElement) => "ph:cube",
-  controls: (entity: EditableElement) => {
+function createPlugin<
+  Element extends EditableElement = EditableElement,
+  T extends EditorControlsPlugin<Element> = EditorControlsPlugin<Element>
+>(a: T): T {
+  return a
+}
+
+export const transform = createPlugin<ThreeEditableElement>({
+  applicable: (entity) => entity.ref instanceof Object3D,
+  icon: (entity) => "ph:cube",
+  controls: (entity) => {
     return {
       transform: all.transform({
         element: entity,
@@ -34,26 +42,26 @@ export const transform = {
       })
     }
   }
-}
+})
 
-export const camera = {
-  applicable: (entity: EditableElement) => entity.ref?.isCamera,
-  icon: (entity: EditableElement) => "ph:video-camera-bold",
-  controls: (entity: EditableElement) => {
+export const camera = createPlugin<ThreeEditableElement>({
+  applicable: (entity) => entity.ref?.isCamera,
+  icon: (entity) => "ph:video-camera-bold",
+  controls: (entity) => {
     return {
       camera: cameraControls({ element: entity, path: ["ref"] })
     }
   },
-  helper: ({ element }: { element: EditableElement }) => {
+  helper: ({ element }) => {
     element.useHelper("camera", CameraHelper)
     return null
   }
-}
+})
 
-export const orbitControls = {
-  applicable: (entity: EditableElement) => entity.type === OrbitControls,
-  icon: (entity: EditableElement) => "mdi:orbit-variant",
-  controls: (entity: EditableElement) => {
+export const orbitControls = createPlugin<ThreeEditableElement>({
+  applicable: (entity) => entity.type === OrbitControls,
+  icon: (entity) => "mdi:orbit-variant",
+  controls: (entity) => {
     return {
       object: primitives.ref({
         element: entity,
@@ -77,13 +85,12 @@ export const orbitControls = {
       )
     }
   }
-}
+})
 
-export const directionalLight = {
-  applicable: (entity: EditableElement) =>
-    entity.ref instanceof DirectionalLight,
-  icon: (entity: EditableElement) => "mdi:car-light-dimmed",
-  controls: (entity: EditableElement) => {
+export const directionalLight = createPlugin<ThreeEditableElement>({
+  applicable: (entity) => entity.ref instanceof DirectionalLight,
+  icon: (entity) => "mdi:car-light-dimmed",
+  controls: (entity) => {
     return {
       color: primitives.color({
         element: entity,
@@ -100,16 +107,16 @@ export const directionalLight = {
       })
     }
   },
-  helper: ({ element }: { element: EditableElement }) => {
+  helper: ({ element }) => {
     element.useHelper("directionalLight", DirectionalLightHelper)
     return null
   }
-}
+})
 
-export const pointLight = {
-  applicable: (entity: EditableElement) => entity.ref instanceof PointLight,
-  icon: (entity: EditableElement) => "ph:lightbulb-filament-bold",
-  controls: (entity: EditableElement) => {
+export const pointLight = createPlugin<ThreeEditableElement>({
+  applicable: (entity) => entity.ref instanceof PointLight,
+  icon: (entity) => "ph:lightbulb-filament-bold",
+  controls: (entity) => {
     return {
       color: primitives.color({
         element: entity,
@@ -122,12 +129,12 @@ export const pointLight = {
       })
     }
   }
-}
+})
 
-export const ambientLight = {
-  applicable: (entity: EditableElement) => entity.ref instanceof AmbientLight,
-  icon: (entity: EditableElement) => "ph:sun-bold",
-  controls: (entity: EditableElement) => {
+export const ambientLight = createPlugin<ThreeEditableElement>({
+  applicable: (entity) => entity.ref instanceof AmbientLight,
+  icon: (entity) => "ph:sun-bold",
+  controls: (entity) => {
     return {
       color: primitives.color({
         element: entity,
@@ -140,12 +147,12 @@ export const ambientLight = {
       })
     }
   }
-}
+})
 
-export const spotLight = {
-  applicable: (entity: EditableElement) => entity.ref instanceof SpotLight,
-  icon: (entity: EditableElement) => "mdi:spotlight-beam",
-  controls: (entity: EditableElement) => {
+export const spotLight = createPlugin<ThreeEditableElement>({
+  applicable: (entity) => entity.ref instanceof SpotLight,
+  icon: (entity) => "mdi:spotlight-beam",
+  controls: (entity) => {
     return {
       intensity: primitives.number({
         element: entity,
@@ -167,21 +174,21 @@ export const spotLight = {
       })
     }
   },
-  helper: ({ element }: { element: EditableElement }) => {
+  helper: ({ element }) => {
     element.useHelper("spotLight", SpotLightHelper)
     return null
   }
-}
+})
 
-export const transformWithoutRef = {
-  applicable: (entity: EditableElement) =>
+export const transformWithoutRef = createPlugin<ThreeEditableElement>({
+  applicable: (entity) =>
     (!entity.forwardedRef &&
       (entity.currentProps.position ||
         entity.currentProps.rotation ||
         entity.currentProps.scale)) ||
     // RigidBody from rapier
     entity.ref?.raw,
-  controls: (entity: EditableElement) => {
+  controls: (entity) => {
     return {
       transform: folder(
         {
@@ -208,7 +215,7 @@ export const transformWithoutRef = {
       )
     }
   },
-  helper: ({ element }: { element: EditableElement }) => {
+  helper: ({ element }: { element }) => {
     return (
       <TransformHelper
         key={element.id}
@@ -217,20 +224,20 @@ export const transformWithoutRef = {
       />
     )
   }
-}
+})
 
-export const reactComponent = {
-  applicable: (entity: EditableElement) => !entity.forwardedRef,
-  icon: (entity: EditableElement) => "mdi:react"
-}
+export const reactComponent = createPlugin<ThreeEditableElement>({
+  applicable: (entity) => !entity.forwardedRef,
+  icon: (entity) => "mdi:react"
+})
 
-export const rigidBody = {
-  applicable: (entity: EditableElement) => entity.ref?.raw,
-  icon: (entity: EditableElement) => "tabler:3d-cube-sphere"
-}
+export const rigidBody = createPlugin<ThreeEditableElement>({
+  applicable: (entity) => entity.ref?.raw,
+  icon: (entity) => "tabler:3d-cube-sphere"
+})
 
-export const propControls = {
-  applicable: (entity: EditableElement) =>
+export const propControls = createPlugin<ThreeEditableElement>({
+  applicable: (entity) =>
     !entity.forwardedRef ||
     entity.type.controls ||
     (entity.forwardedRef &&
@@ -238,7 +245,7 @@ export const propControls = {
       !(entity.ref instanceof Light) &&
       !(entity.ref instanceof Camera) &&
       !(entity.ref instanceof Material)),
-  controls: (entity: EditableElement) => {
+  controls: (entity) => {
     let controls: Record<string, any> = {}
     if (entity.type.controls) {
       Object.entries(entity.type.controls)
@@ -289,73 +296,21 @@ export const propControls = {
     })
     return controls
   }
-}
+})
 
-export const color = {
-  applicable: (entity: EditableElement) => entity.ref instanceof Color,
-  controls: (entity: EditableElement) => {
+export const color = createPlugin<ThreeEditableElement>({
+  applicable: (entity) => entity.ref instanceof Color,
+  controls: (entity) => {
     return {
       args: {
+        type: InputTypes.NUMBER,
         value: 0,
-        render: (args: any) => {
-          false
-        }
+        render: () => false
       },
       color: primitives.unknown({
         element: entity,
-        path: ["currentProps", "args", "0"]
+        path: ["args", "0"]
       })
     }
   }
-}
-
-function cameraControls({ element, path }: PropInput) {
-  return folder({
-    near: primitives.number({
-      element: element,
-      path: [...path, "near"],
-      min: 0.1,
-      max: 100
-    }),
-    far: primitives.number({
-      element: element,
-      path: [...path, "far"],
-      min: 0.1,
-      max: 10000
-    }),
-    ...(element.ref instanceof OrthographicCamera
-      ? {
-          zoom: primitives.number({
-            element: element,
-            path: [...path, "zoom"]
-          }),
-          top: primitives.number({
-            element: element,
-            path: [...replace(path, "ref", "currentProps"), "top"]
-          }),
-          bottom: primitives.number({
-            element: element,
-            path: [...replace(path, "ref", "currentProps"), "bottom"]
-          }),
-          left: primitives.number({
-            element: element,
-            path: [...replace(path, "ref", "currentProps"), "left"]
-          }),
-          right: primitives.number({
-            element: element,
-            path: [...replace(path, "ref", "currentProps"), "right"]
-          })
-        }
-      : {}),
-
-    fov: primitives.number({
-      element: element,
-      min: 0,
-      max: 100,
-      path: [...path, "fov"],
-      onChange(value) {
-        element.ref.updateProjectionMatrix()
-      }
-    })
-  })
-}
+})

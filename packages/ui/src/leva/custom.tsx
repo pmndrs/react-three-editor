@@ -10,7 +10,7 @@ type CustomInputContextProps = InputContextProps & {
 
 export const custom = createPlugin<
   {
-    data: any
+    data: string
     component: (input: CustomInputContextProps) => JSX.Element
   },
   string,

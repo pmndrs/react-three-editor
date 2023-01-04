@@ -1,6 +1,5 @@
 import { useEditor } from "@editable-jsx/core"
 import { TransformControls } from "@react-three/drei"
-import { mergeRefs } from "leva/plugin"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
 import { Event, MathUtils, Object3D, Vector3Tuple } from "three"
@@ -102,11 +101,11 @@ export function ElementTransformControls({
       const draggingChanged = ({ value, target }: any) => {
         draggingRef.current = !!value
         if (draggingRef.current) {
-          element.editor.send("START_TRANSFORMING", {
+          editor.send("START_TRANSFORMING", {
             elementId: element.treeId
           })
         } else {
-          element.editor.send("STOP_TRANSFORMING", {
+          editor.send("STOP_TRANSFORMING", {
             elementId: element.treeId
           })
         }
@@ -152,7 +151,7 @@ export function ElementTransformControls({
         control.removeEventListener("dragging-changed", draggingChanged)
       }
     }
-  }, [element])
+  }, [element, editor])
 
   const onChange = useCallback(
     (event?: Event) => {
@@ -172,7 +171,7 @@ export function ElementTransformControls({
   const [object, setRef] = useState(() => element.getObject3D())
 
   useEffect(() => {
-    element.addEventListener("ref-changed", (e: CustomEvent<{ ref: any }>) => {
+    element.addEventListener("ref-changed", (e: Event) => {
       if (e.detail.ref instanceof Object3D) {
         setRef(e.detail.ref)
       }
@@ -183,12 +182,7 @@ export function ElementTransformControls({
     <TransformControls
       object={object}
       key={element.id}
-      ref={mergeRefs([
-        ref,
-        (r: TransformControlsImpl) => {
-          // element.transformControls$ = r
-        }
-      ])}
+      ref={ref}
       onChange={onChange}
     />
   )

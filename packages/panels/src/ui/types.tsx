@@ -6,7 +6,7 @@ export type PanelProps = {
   title: string
   width?: number
   collapsed?: boolean
-  side: string
+  side: "left" | "right"
   lazy?: boolean
   floating?: boolean
   size?: {

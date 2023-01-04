@@ -1,10 +1,10 @@
-import { EditableElement } from "@editable-jsx/core/EditableElement"
+import { EditableElement } from "@editable-jsx/core"
 import { Schema } from "leva/plugin"
 import { ReactNode } from "react"
 
-export type EditorControlsPlugin = {
-  applicable(element: EditableElement): boolean
-  controls?(element: EditableElement): Schema
-  icon?(element: EditableElement): string
-  helper?(props: { element: EditableElement }): ReactNode
+export type EditorControlsPlugin<T extends EditableElement> = {
+  applicable(element: T): boolean
+  controls?(element: T): Schema
+  icon?(element: T): string
+  helper?(props: { element: T }): ReactNode
 }

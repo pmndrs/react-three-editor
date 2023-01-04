@@ -22,19 +22,18 @@ import {
   ISettings,
   ISettingsImpl,
   JSXSource,
-  MachineInterpreter,
+  MachineState,
   persisted,
   Schema,
   SchemaToValues,
   Settings,
   Store,
-  Subscribable,
   useSelector
-} from "@editable-jsx/controls"
+} from "@editable-jsx/state"
 import { BirpcReturn } from "birpc"
-import { Raycaster } from "three"
 import { ComponentLoader } from "./component-loader"
 import { editorMachine } from "./editor.machine"
+import { EditorPlugin } from "./EditorPlugin"
 import { Helpers } from "./helpers"
 import { Tree } from "./Tree"
 
@@ -67,10 +66,9 @@ export class Editor<T extends EditableElement = EditableElement>
    * a store to keep track of all the editor state, eg. settings, mode, selected element, etc.
    */
   store: Store<EditorStoreStateType>
+  useStore
 
   tree?: Tree
-
-  useStore
 
   /**
    * used to add undo/redo functionality
@@ -89,12 +87,97 @@ export class Editor<T extends EditableElement = EditableElement>
    */
   loader: ComponentLoader
 
+  panels: PanelManager
   /**
    * a set with all the tree-ids of the expanded elements
    */
   expanded: Set<string>
 
-  panels: PanelManager
+  remount?: () => void
+
+  rootId: string
+
+  /**
+   * state machine that controls the editor
+   */
+  machine = editorMachine
+  service
+  send
+
+  settings: ISettingsImpl
+
+  constructor(
+    public plugins: any[],
+    public client: BirpcReturn<RpcServerFunctions>
+  ) {
+    super()
+
+    this.store = createStore("editor", () => ({
+      selectedId: null as null | string,
+      selectedKey: null as null | string,
+      elements: {},
+      settingsPanel: "settings"
+    }))
+
+    this.useStore = this.store
+
+    this.service = persisted(
+      interpret(
+        editorMachine.withConfig({
+          actions: {
+            // selectElement(context, event, meta) {},
+            addNewElement(context, event, meta) {}
+          }
+        }),
+        {
+          devTools: true
+        }
+      ),
+      "r3f-editor.machine"
+    )
+
+    this.send = this.service.send.bind(this.service)
+
+    let core = new Settings()
+
+    let settingsPath = (path?: string | undefined) => {
+      return (
+        `world.` +
+        `${this.state.toStrings()[0]} settings` +
+        (path ? "." + path : "")
+      )
+    }
+    let editor = this
+
+    this.settings = {
+      get: (key: string) =>
+        Settings.getSettingsAtPath(this.settings, settingsPath(key)),
+      set: (values) => Settings.setSettingsAtPaths(this.settings, values),
+      path: settingsPath,
+      store: core.store,
+      get deps() {
+        return [editor.mode]
+      }
+    }
+
+    this.history = new HistoryManager()
+
+    this.commands = new CommandManager(this)
+
+    this.commandBar = new CommandBarManager(this, this.commands)
+
+    this.panels = new PanelManager(this.settings)
+
+    this.loader = new ComponentLoader(this.client)
+    this.loader.initialize()
+
+    // initialize root to nothing
+    this.rootId = ""
+
+    this.expanded = localStorage.getItem("collapased")
+      ? new Set(JSON.parse(localStorage.getItem("collapased")!))
+      : new Set()
+  }
 
   /**
    * used by the React API to wrap the React element with whatever we need,
@@ -130,97 +213,7 @@ export class Editor<T extends EditableElement = EditableElement>
     }
   }
 
-  remount?: () => void
-  rootId: string
-
-  service
-  send
-
-  machine = editorMachine
-
-  raycaster?: Raycaster
-
-  settings: ISettingsImpl
-
-  constructor(
-    public plugins: any[],
-    public client: BirpcReturn<RpcServerFunctions>
-  ) {
-    super()
-
-    this.store = createStore("editor", () => ({
-      selectedId: null as null | string,
-      selectedKey: null as null | string,
-      elements: {},
-      settingsPanel: "settings"
-    }))
-
-    this.useStore = this.store
-
-    this.service = persisted(
-      interpret(
-        editorMachine.withConfig({
-          actions: {
-            selectElement(context, event, meta) {},
-            addNewElement(context, event, meta) {}
-          }
-        }),
-        {
-          devTools: true
-        }
-      ),
-      "r3f-editor.machine"
-    )
-
-    this.send = this.service.send.bind(this.service)
-
-    let core = new Settings()
-
-    let settingsPath = (path?: string | undefined) => {
-      return (
-        `world.` +
-        `${this.state.toStrings()[0]} settings` +
-        (path ? "." + path : "")
-      )
-    }
-
-    let editor = this
-    this.settings = {
-      get: (key: string) =>
-        Settings.getSettingsAtPath(this.settings, settingsPath(key)),
-      set: (values) => Settings.setSettingsAtPaths(this.settings, values),
-      path: settingsPath,
-      store: core.store,
-      get deps() {
-        return [editor.mode]
-      }
-    }
-
-    this.history = new HistoryManager()
-
-    this.commands = new CommandManager(this)
-
-    this.commandBar = new CommandBarManager(this, this.commands)
-    this.panels = new PanelManager(this.settings)
-
-    this.loader = new ComponentLoader(this.client)
-    this.loader.initialize()
-
-    this.rootId = ""
-
-    this.expanded = localStorage.getItem("collapased")
-      ? new Set(JSON.parse(localStorage.getItem("collapased")!))
-      : new Set()
-  }
-
-  useState<
-    T,
-    TEmitted = MachineInterpreter<typeof editorMachine> extends Subscribable<
-      infer Emitted
-    >
-      ? Emitted
-      : never
-  >(selector: (emitted: TEmitted) => T): T {
+  useState<T>(selector: (emitted: MachineState<typeof editorMachine>) => T): T {
     return useSelector(this.service, selector)
   }
 
@@ -229,7 +222,7 @@ export class Editor<T extends EditableElement = EditableElement>
   }
 
   useMode<K extends string | undefined>(name?: K) {
-    return this.useState(() => this.state.toStrings()[0])
+    return this.useState((state) => state.toStrings()[0])
   }
 
   useSelectedElement() {
@@ -237,13 +230,14 @@ export class Editor<T extends EditableElement = EditableElement>
   }
 
   useStates(arg0: string) {
-    return this.useState((s) => s.toStrings()[0] === arg0)
+    return this.useState((state) => state.toStrings()[0] === arg0)
   }
 
   get state() {
     return this.service.getSnapshot()
   }
 
+  // should be overriden by subclasses
   setRef(element: any, ref: any) {}
 
   async saveDiff(diff: EditPatch) {
@@ -256,9 +250,13 @@ export class Editor<T extends EditableElement = EditableElement>
     }
   }
 
-  /**
-   * ELEMENT TREE
-   */
+  /***********************************
+   *            ELEMENT TREE
+   * ********************************/
+
+  get root() {
+    return this.store.getState().elements[this.rootId]
+  }
 
   createElement(
     id: string,
@@ -446,10 +444,6 @@ export class Editor<T extends EditableElement = EditableElement>
     ]
   }
 
-  get root() {
-    return this.store.getState().elements[this.rootId]
-  }
-
   getElementById(id: string): EditableElement {
     return this.store.getState().elements[id]
   }
@@ -467,9 +461,9 @@ export class Editor<T extends EditableElement = EditableElement>
     throw new Error("Method not implemented.")
   }
 
-  /**
-   * SELECTION
-   */
+  /***********************************
+   *            SELECTION
+   * ********************************/
 
   get selectedElement() {
     if (this.state.context.selectedId) {
@@ -518,10 +512,7 @@ export class Editor<T extends EditableElement = EditableElement>
    * PLUGINS
    */
 
-  addPlugin(plugin: {
-    applicable: (arg0: any) => boolean
-    debug?: (arg0: any, arg1: any, arg2?: any) => () => void
-  }) {
+  addPlugin(plugin: EditorPlugin) {
     this.plugins.push(plugin)
   }
 }

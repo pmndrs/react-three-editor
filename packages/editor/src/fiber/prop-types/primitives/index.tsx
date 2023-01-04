@@ -1,6 +1,6 @@
-import { createProps } from "@editable-jsx/core"
+import { createPropTypes } from "@editable-jsx/core"
 import * as types from "./types"
 
-export const primitives = createProps({
+export const primitives = createPropTypes({
   ...types
 })

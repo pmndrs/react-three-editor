@@ -1,4 +1,4 @@
-import { createMultiTunnel } from "@editable-jsx/controls"
+import { createMultiTunnel } from "@editable-jsx/ui"
 
 export const Panels = createMultiTunnel()
 export const LeftPanelGroup = createMultiTunnel()

@@ -1,5 +1,5 @@
-import { createStore, Store } from "@editable-jsx/controls"
-import { Icon } from "@iconify/react"
+import { createStore, Store } from "@editable-jsx/state"
+import { Icon } from "@editable-jsx/ui"
 import { Command } from "cmdk"
 import {
   createContext,
@@ -8,7 +8,11 @@ import {
   useCallback,
   useContext
 } from "react"
-import { CommandManager, CommandType, useCommandManager } from "./CommandManager"
+import {
+  CommandManager,
+  CommandType,
+  useCommandManager
+} from "./CommandManager"
 import { commandBarTunnel } from "./tunnel"
 
 export const CommandBarContext = createContext({} as CommandBarManager)

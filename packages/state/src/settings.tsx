@@ -65,7 +65,7 @@ export class Settings {
     settings: ISettingsImpl,
     name: string,
     schema: Schema,
-    { hidden }
+    { hidden }: { hidden?: boolean } = {}
   ): SchemaToValues<S> {
     return usePersistedControls(
       settings.path(name),

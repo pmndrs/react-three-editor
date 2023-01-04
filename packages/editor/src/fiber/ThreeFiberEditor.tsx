@@ -1,13 +1,13 @@
 import { CommandBar } from "@editable-jsx/commander"
-import { createMultiTunnel, Floating, Toaster } from "@editable-jsx/controls"
 import { PanelContainer, PanelGroup } from "@editable-jsx/panels"
+import { createMultiTunnel, Floating, Toaster } from "@editable-jsx/ui"
 import { forwardRef } from "react"
 import { AllCommands } from "../commands"
 import { ComponentsTray } from "./ComponentsTray"
 import { EditorPanels } from "./controls/EditorPanels"
 import { CanvasProps, EditableCanvas } from "./EditableCanvas"
 import { editor } from "./editor"
-import { EditorProvider } from "./EditorProvider"
+import { ThreeEditorProvider } from "./ThreeEditorProvider"
 import { ScreenshotCanvas } from "./useScreenshotStore"
 
 export const EditorUI = createMultiTunnel()
@@ -15,12 +15,9 @@ export const EditorUI = createMultiTunnel()
 export const EditorCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
   (props, ref) => {
     return (
-      <EditorProvider editor={editor}>
+      <ThreeEditorProvider editor={editor}>
         {/* Registers all the commands: keyboard shortcuts & command palette */}
         <AllCommands />
-
-        {/* Headless canvas for screenshots */}
-        <ScreenshotCanvas />
 
         {/* Panels active in the editor */}
         <EditorPanels />
@@ -43,7 +40,10 @@ export const EditorCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
 
         {/* Toaster for alerts */}
         <Toaster />
-      </EditorProvider>
+
+        {/* Headless canvas for screenshots */}
+        <ScreenshotCanvas />
+      </ThreeEditorProvider>
     )
   }
 )

@@ -1,5 +1,5 @@
-import { folder, Schema } from "@editable-jsx/controls"
 import { createProp, PropInput } from "@editable-jsx/core"
+import { folder, Schema } from "@editable-jsx/state"
 import {
   ClampToEdgeWrapping,
   MirroredRepeatWrapping,

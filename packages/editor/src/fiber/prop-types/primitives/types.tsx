@@ -1,7 +1,7 @@
+import { PropType } from "@editable-jsx/core"
 import { MathUtils } from "three"
 import { GLTFLoader } from "three-stdlib"
 import { getEditableElement } from ".."
-import { PropType } from "../core/createProp"
 import { gltf as levaGltf } from "../gltf"
 import { ref as levaRef } from "../ref"
 

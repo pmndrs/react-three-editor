@@ -1,5 +1,5 @@
-import { Schema } from "@editable-jsx/controls"
 import { EditableElement, PropInput } from "@editable-jsx/core"
+import { Schema } from "@editable-jsx/state"
 import { folder } from "leva"
 import { BufferGeometry } from "three"
 import { all } from "."
@@ -23,7 +23,7 @@ function args({
       }
     },
     ...fields
-  }
+  } satisfies Schema
 }
 
 export const boxGeometryControls = (

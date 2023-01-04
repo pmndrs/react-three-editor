@@ -3,11 +3,11 @@ import {
   CommandManagerContext
 } from "@editable-jsx/commander"
 import { EditorContext, useEditor } from "@editable-jsx/core"
-import { PanelManagerContext } from "@editable-jsx/panels"
+import { PanelsProvider } from "@editable-jsx/panels"
 import { SettingsProvider } from "./SettingsProvider"
 import { ThreeFloatingProvider } from "./ThreeFloating"
 
-export function EditorProvider({
+export function ThreeEditorProvider({
   editor,
   children
 }: {
@@ -19,9 +19,9 @@ export function EditorProvider({
       <SettingsProvider>
         <CommandManagerContext.Provider value={editor.commands}>
           <CommandBarContext.Provider value={editor.commandBar}>
-            <PanelManagerContext.Provider value={editor.panels}>
+            <PanelsProvider manager={editor.panels}>
               <ThreeFloatingProvider>{children}</ThreeFloatingProvider>
-            </PanelManagerContext.Provider>
+            </PanelsProvider>
           </CommandBarContext.Provider>
         </CommandManagerContext.Provider>
       </SettingsProvider>

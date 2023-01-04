@@ -1,11 +1,11 @@
-import { Components, InputOptions } from "leva/plugin"
+import { Components, CustomInput, InputOptions } from "leva/plugin"
 
 import { MultiToggle } from "../MultiToggle"
 import { custom } from "./custom"
 
-export function multiToggle(
-  props: InputOptions & { options: string[]; data?: string }
-) {
+export function multiToggle<TOptions extends readonly string[]>(
+  props: InputOptions & { options: TOptions; data?: string }
+): CustomInput<TOptions[number]> {
   return custom({
     data: props.options[0],
     ...props,
@@ -21,5 +21,5 @@ export function multiToggle(
         </Components.Row>
       )
     }
-  })
+  }) as any
 }

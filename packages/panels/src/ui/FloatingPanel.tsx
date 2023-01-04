@@ -1,13 +1,7 @@
-import {
-  DragState,
-  Floating,
-  styled,
-  useTransform
-} from "@editable-jsx/controls"
+import { DragState, Floating, styled, useTransform, ControlsPanel } from "@editable-jsx/ui"
 import { memo, useEffect } from "react"
 import { usePanel } from "../usePanel"
 import { usePanelManager } from "../usePanelManager"
-import { ControlsPanel } from "./ControlsPanel"
 import { TitleWithFilter } from "./PanelTitle"
 import { LeftPanelGroup, RightPanelGroup } from "./tunnels"
 import { PanelProps } from "./types"
@@ -154,6 +148,7 @@ export function FloatingControlsPanel(
 ) {
   const panelManager = usePanelManager()
   const position = usePanelPosition({ width: 320, ...props })
+  const panel = usePanel(props.panel)
 
   return (
     <FloatingPanelRoot
@@ -189,7 +184,12 @@ export function FloatingControlsPanel(
           overflow: "scroll"
         }}
       >
-        <ControlsPanel {...props} width={320} collapsed={false} />
+        <ControlsPanel
+          {...props}
+          width={320}
+          collapsed={false}
+          store={panel.store}
+        />
       </div>
     </FloatingPanelRoot>
   )

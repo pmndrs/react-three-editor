@@ -2,17 +2,15 @@
 import {
   ControlledStore,
   createControlledStore,
-  DataInput,
   EditPatch,
+  InputTypes,
   JSXSource,
-  LevaInputs,
   mergeRefs
-} from "@editable-jsx/controls"
-import { multiToggle } from "@editable-jsx/ui"
+} from "@editable-jsx/state"
+import { toast } from "@editable-jsx/ui"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
-import { toast } from "react-hot-toast"
 import { Editor } from "./Editor"
-import { PropChange } from "./prop-types/types"
+import { PropChange } from "./prop-types/types";
 
 /**
  * An editable element is a wrapper around a React element that can be edited in the editor.
@@ -44,6 +42,16 @@ export class EditableElement<
   dirty: any = false
   properties: ControlledStore = createControlledStore()
   editor: Editor = {} as any
+  index: string | undefined
+  refs = {
+    setKey: null as Dispatch<SetStateAction<number>> | null,
+    forceUpdate: null as Dispatch<SetStateAction<number>> | null,
+    setMoreChildren: null as Dispatch<SetStateAction<any[]>> | null,
+    deleted: false,
+    key: 0
+  }
+  mounted: boolean = false
+  args = [] as any[]
 
   constructor(
     public id: string,
@@ -55,18 +63,6 @@ export class EditableElement<
     super()
   }
 
-  index: string | undefined
-
-  refs = {
-    setKey: null as Dispatch<SetStateAction<number>> | null,
-    forceUpdate: null as Dispatch<SetStateAction<number>> | null,
-    setMoreChildren: null as Dispatch<SetStateAction<any[]>> | null,
-    deleted: false,
-    key: 0
-  }
-
-  mounted: boolean = false
-
   remount() {
     this.refs.setKey?.((i) => i + 1)
   }
@@ -75,12 +71,8 @@ export class EditableElement<
     this.refs.forceUpdate?.((i) => i + 1)
   }
 
-  args = [] as any[]
-
   useName() {
-    return this.properties.useStore(
-      (s) => (s.data["name"] as DataInput).value as string
-    )
+    return this.properties.useStore((s) => s.data["name"].value as string)
   }
 
   useChildren() {
@@ -123,7 +115,7 @@ export class EditableElement<
         {
           name: {
             value: this.displayName,
-            type: LevaInputs.STRING,
+            type: InputTypes.STRING,
             label: "name",
             render: () => false
           }
@@ -533,29 +525,5 @@ export class EditableElement<
 
   get deleted() {
     return this.refs.deleted
-  }
-
-  useHelper(arg0: string, helper: any, ...args: any[]) {
-    const isEditing = this.editor.useStates("editing")
-    const prop = this.editor.useSettings("helpers", {
-      [arg0]: multiToggle({
-        label: arg0,
-        data: "selected",
-        options: ["all", "selected", "none"]
-      })
-    })[arg0]
-
-    const isSelected = this.useIsSelected()
-
-    let ref = isEditing
-      ? prop === "all"
-        ? this
-        : prop === "selected" && isSelected
-        ? this
-        : undefined
-      : undefined
-
-    // @ts-ignore
-    useHelper(ref as any, helper, ...(args ?? []))
   }
 }

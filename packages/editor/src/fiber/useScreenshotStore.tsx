@@ -1,5 +1,6 @@
-import { createMultiTunnel, createStore } from "@editable-jsx/controls"
 import { EditorContext } from "@editable-jsx/core"
+import { createStore } from "@editable-jsx/state"
+import { createMultiTunnel } from "@editable-jsx/ui"
 import { createRoot, ReconcilerRoot } from "@react-three/fiber"
 import { ReactNode, useLayoutEffect as useEffect, useRef } from "react"
 import { editor } from "./editor"

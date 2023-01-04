@@ -1,4 +1,4 @@
-import { Icon } from "@iconify/react"
+import { Icon } from "@editable-jsx/ui"
 import { ComponentProps } from "react"
 import { EditableElement } from "../EditableElement"
 

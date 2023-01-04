@@ -1,9 +1,10 @@
+import { ControlsPanel } from "@editable-jsx/ui"
 import {
   Panel as ResizablePanel,
   PanelResizeHandle
 } from "react-resizable-panels"
+import { usePanel } from "../usePanel"
 import { usePanelManager } from "../usePanelManager"
-import { ControlsPanel } from "./ControlsPanel"
 import { PanelGhost } from "./PanelGhost"
 import { TitleWithFilter } from "./PanelTitle"
 import { LeftPanelGroup, RightPanelGroup } from "./tunnels"
@@ -12,17 +13,18 @@ import { PanelProps } from "./types"
 export function DockedPanel({
   title,
   side,
-  panel,
+  panel: id,
   lazy,
   order = 0,
   width
 }: PanelProps & { order?: number }) {
   let PanelGroup = side === "left" ? LeftPanelGroup : RightPanelGroup
   const panelManager = usePanelManager()
+  const panel = usePanel(id)
   return (
     <PanelGroup.In>
       <ResizablePanel id={`${side}-${order}`} defaultSize={0.5} order={order}>
-        <PanelGhost panel={panel} />
+        <PanelGhost panel={id} />
         <TitleWithFilter
           title={title}
           setFilter={() => {}}
@@ -31,7 +33,7 @@ export function DockedPanel({
           filterEnabled={true}
           onDrag={(e) => {
             panelManager.send("DRAGGING", {
-              panel: panel,
+              panel: id,
               event: {
                 offset: e.offset,
                 movement: e.movement,
@@ -42,7 +44,7 @@ export function DockedPanel({
           }}
           onDragEnd={(e) => {
             panelManager.send("STOP_DRAGGING", {
-              panel: panel,
+              panel: id,
               event: {
                 offset: e.offset,
                 movement: e.movement,
@@ -60,7 +62,7 @@ export function DockedPanel({
           }}
         >
           <ControlsPanel
-            panel={panel}
+            store={panel.store}
             title={title}
             side={side}
             width={width}

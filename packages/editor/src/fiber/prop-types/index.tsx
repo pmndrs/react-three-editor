@@ -1,4 +1,4 @@
-import { createProps } from "@editable-jsx/core"
+import { createPropTypes } from "@editable-jsx/core"
 
 import { material } from "./materials"
 import { mesh } from "./mesh"
@@ -10,7 +10,7 @@ export function getEditableElement(obj: any): any {
   return obj?.__r3f?.editable
 }
 
-export const all = createProps({
+export const all = createPropTypes({
   ...types,
   material,
   texture,

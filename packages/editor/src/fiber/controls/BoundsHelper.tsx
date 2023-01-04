@@ -1,3 +1,5 @@
+import { EditableElement } from "@editable-jsx/core"
+import { multiToggle } from "@editable-jsx/ui"
 import { useHelper } from "@react-three/drei"
 import { applyProps } from "@react-three/fiber"
 import { ReactNode, useEffect, useMemo } from "react"
@@ -8,7 +10,7 @@ export function BoundsHelper({
   props,
   children
 }: {
-  editableElement: Editable
+  editableElement: EditableElement
   props: any
   children: ReactNode
 }) {

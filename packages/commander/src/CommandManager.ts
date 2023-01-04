@@ -1,4 +1,4 @@
-import { createStore, Store } from "@editable-jsx/controls"
+import { createStore, Store } from "@editable-jsx/state"
 import { createContext, useContext } from "react"
 
 export type CommandType<T = any> = {

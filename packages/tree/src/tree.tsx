@@ -1,4 +1,4 @@
-import { createPlugin, styled, useInputContext } from "@editable-jsx/controls"
+import { createPlugin, styled, useInputContext } from "@editable-jsx/state"
 import { EditableElement } from "../EditableElement"
 import { TreeElement } from "./TreeElement"
 

@@ -1,4 +1,4 @@
-import { Floating, FloatingContext } from "@editable-jsx/controls"
+import { Floating, FloatingContext } from "@editable-jsx/ui"
 import { useThree } from "@react-three/fiber"
 import { PropsWithChildren } from "react"
 import { ThreeTunnel } from "./ThreeTunnel"

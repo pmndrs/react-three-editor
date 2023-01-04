@@ -63,3 +63,5 @@ export function createMultiTunnel(): MultiTunnel {
     useTunnels
   }
 }
+
+export { default as tunnel } from "tunnel-rat"
