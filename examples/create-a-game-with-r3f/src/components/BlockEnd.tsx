@@ -7,8 +7,8 @@ export function BlockEnd({ position }: { position: Vector3 }) {
   return (
     <group position={position}>
       <mesh position={[0, 0, 0]} scale={[4, 0.2, 4]} receiveShadow>
-        <memo.boxGeometry name="box" />
-        <memo.meshStandardMaterial name="floor1Material" color="limegreen" />
+        <memo.boxGeometry />
+        <memo.meshStandardMaterial color="limegreen" />
       </mesh>
       <RigidBody type="fixed" colliders="hull" position={[0, 1, 0]}>
         <primitive

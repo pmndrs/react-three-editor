@@ -1,8 +1,9 @@
-import { ThreeElements } from "@react-three/fiber"
-import { createElement, forwardRef } from "react"
+import { applyProps, ThreeElements } from "@react-three/fiber"
+import { forwardRef } from "react"
 import * as THREE from "three"
 
-export const cache = {}
+const keycache = {}
+const objcache = new WeakMap()
 
 export const memo: {
   [k in keyof ThreeElements]: React.FC<React.PropsWithRef<ThreeElements[k]>>
@@ -16,18 +17,31 @@ export const memo: {
         return obj[prop]
       }
 
-      obj[prop] = function ({ name, args, ...props }: any, ref) {
-        let cachedKey = `${prop}:${name}`
-        if (!cache[cachedKey]) {
-          let className = prop.charAt(0).toUpperCase() + prop.slice(1)
-          cache[cachedKey] = new THREE[className](...(args ?? []))
+      obj[prop] = function (
+        { name, args = [], _source, children, ...props }: any,
+        ref
+      ) {
+        let type = THREE[prop.charAt(0).toUpperCase() + prop.slice(1)]
+        let object
+        const typeName = prop
+        const key = name
+          ? name
+          : JSON.stringify({ type: typeName, args, ...props })
+        const cachedkey = keycache[key]
+        if (cachedkey) object = objcache.get(cachedkey)
+        else {
+          let el = new type(...args)
+          el.__r3f = { handlers: {} }
+          applyProps(el, { name, ...props })
+          objcache.set((keycache[key] = {}), el)
+          object = el
         }
-        return createElement("primitive", {
-          object: cache[cachedKey],
-          name: name,
-          ...props,
-          ref: ref
-        })
+
+        return (
+          <primitive key={key} object={object} ref={ref}>
+            {children}
+          </primitive>
+        )
       }
 
       obj[prop] = forwardRef(obj[prop])

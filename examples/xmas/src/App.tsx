@@ -1,5 +1,6 @@
-import { ContactShadows, Environment, Loader, OrbitControls } from "@react-three/drei"
-import { Canvas, extend } from "@react-three/fiber"
+import { ContactShadows, Environment, Loader, OrbitControls, PerspectiveCamera } from "@react-three/drei"
+import { Canvas, extend, useLoader } from "@react-three/fiber"
+import SplineLoader from "@splinetool/loader"
 import { Suspense } from "react"
 import { UnrealBloomPass } from "three-stdlib"
 import { Model } from "./model"
@@ -7,6 +8,16 @@ import { Model } from "./model"
 extend({
   UnrealBloomPass,
 })
+
+function M() {
+  return (
+    <primitive
+      object={useLoader(SplineLoader, "https://prod.spline.design/3OUNA3v5TaJM06OM/scene.splinecode")}
+      position={[1, 1, 1]}
+      scale={[0.1, 0.1, 0.1]}
+    />
+  )
+}
 
 function App() {
   return (
@@ -19,14 +30,15 @@ function App() {
         }}>
         <Suspense fallback={null}>
           <Model />
-          <ambientLight intensity={0.35} position={[2.697, 0.793, -4.613]} />
+          <M />
+          <ambientLight intensity={0.1} position={[2.697, 0.793, -4.613]} />
           <spotLight
-            position={[7.725, 7.439, -0.234]}
+            position={[-6.315, 8.077, -18.682]}
             angle={0.15}
             penumbra={1}
             shadow-mapSize={[512, 512]}
-            castShadow
-          />
+            castShadow></spotLight>
+          <PerspectiveCamera makeDefault position={[0, 5, 6]} far={6500} />
           <Environment preset="dawn" />
           <ContactShadows position={[0, -0.5, 0]} opacity={0.4} scale={10} blur={4} far={4} color="red" />
           <OrbitControls
@@ -51,7 +63,6 @@ function App() {
           background: "#417469",
         }}
       />
-      {}
     </>
   )
 }

@@ -15,11 +15,5 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": [
-    "./src",
-    "./typings/*.d.ts",
-    "../packages/*",
-    "../../packages/editor/src/fiber/EditorPanel.tsx",
-    "../../packages/editor/src/rapier.tsx"
-  ]
+  "include": ["./src"]
 }

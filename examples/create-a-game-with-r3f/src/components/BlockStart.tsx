@@ -1,9 +1,7 @@
 import { Vector3 } from "@react-three/fiber"
 import { memo } from "../memo"
 
-export const boxGeometry = (
-  <memo.boxGeometry name="box" args={[1.0000000000000004]} />
-)
+export const boxGeometry = <memo.boxGeometry />
 
 export function BlockStart({ position = [0, 0, 0] as Vector3 }) {
   return (
@@ -15,7 +13,7 @@ export function BlockStart({ position = [0, 0, 0] as Vector3 }) {
         scale={[4, 0.2, 4]}
       >
         {boxGeometry}
-        <memo.meshStandardMaterial name="floor1Material" color="limegreen" />
+        <memo.meshStandardMaterial color="limegreen" />
       </mesh>
     </group>
   )

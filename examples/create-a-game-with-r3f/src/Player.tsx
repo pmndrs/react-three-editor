@@ -1,4 +1,4 @@
-import { Sparkles, useKeyboardControls } from "@react-three/drei"
+import { useKeyboardControls } from "@react-three/drei"
 import { useEditor } from "@react-three/editor"
 import { addPlugin } from "@react-three/editor/src/fiber/plugins"
 import { useFrame } from "@react-three/fiber"
@@ -135,7 +135,6 @@ export function Player() {
           opacity={0.7}
         />
       </mesh>
-
     </RigidBody>
-  );
+  )
 }

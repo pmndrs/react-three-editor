@@ -1,0 +1,109 @@
+{
+  "name": "@editable-jsx/panels",
+  "author": {
+    "name": "Nikhil Saraf",
+    "email": "nsaraf98@gmail.com",
+    "url": "https://github.com/nksaraf"
+  },
+  "description": "",
+  "version": "0.0.1",
+  "main": "dist/editable-jsx-panels.cjs.js",
+  "module": "dist/editable-jsx-panels.esm.js",
+  "preconstruct": {
+    "entrypoints": [
+      "index.ts"
+    ]
+  },
+  "files": [
+    "dist/**",
+    "LICENSE",
+    "README.md"
+  ],
+  "license": "MIT",
+  "sideEffects": false,
+  "scripts": {
+    "build": "preconstruct build"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      [
+        "@babel/preset-react",
+        {
+          "runtime": "automatic"
+        }
+      ],
+      [
+        "@babel/preset-typescript",
+        {
+          "isTSX": true,
+          "allExtensions": true
+        }
+      ]
+    ]
+  },
+  "dependencies": {
+    "@babel/core": "^7.19.6",
+    "@babel/generator": "^7.20.4",
+    "@babel/helper-plugin-utils": "^7.20.2",
+    "@babel/template": "^7.18.10",
+    "@editable-jsx/state": "workspace:^0.0.1",
+    "@editable-jsx/ui": "workspace:^0.0.1",
+    "@iconify/react": "^4.0.1",
+    "@radix-ui/colors": "^0.1.8",
+    "@radix-ui/react-context-menu": "^2.1.0",
+    "@radix-ui/react-icons": "^1.1.1",
+    "@radix-ui/react-popover": "^1.0.2",
+    "@react-three/drei": "^9.46.4",
+    "@stitches/react": "^1.2.8",
+    "@types/babel__generator": "^7.6.4",
+    "@types/react-virtualized-auto-sizer": "^1.0.1",
+    "@use-gesture/react": "^10.2.23",
+    "@vinxi/recast": "^0.21.5",
+    "@vitejs/plugin-react": "^2.0.1",
+    "@xstate/react": "^3.0.1",
+    "birpc": "^0.2.3",
+    "change-case": "^4.1.2",
+    "cmdk": "^0.1.21",
+    "debug": "^4.3.4",
+    "fast-glob": "^3.2.12",
+    "formidable": "^2.1.1",
+    "fp-ts": "^2.12.3",
+    "fs-extra": "^10.1.0",
+    "leva": "^0.9.34",
+    "object-path": "^0.11.8",
+    "prettier": "^2.8.0",
+    "r3f-perf": "^6.5.0",
+    "react-dropzone": "^14.2.3",
+    "react-hot-toast": "^2.4.0",
+    "react-hotkeys-hook": "^4.0.6",
+    "react-resizable-panels": "^0.0.11",
+    "react-virtualized-auto-sizer": "^1.0.7",
+    "three-stdlib": "^2.20.4",
+    "tunnel-rat": "^0.1.0",
+    "vite-dev-rpc": "^0.1.0",
+    "xstate": "^4.35.1",
+    "zustand": "^3.7.2"
+  },
+  "peerDependencies": {
+    "@react-three/fiber": "*",
+    "@react-three/rapier": "*",
+    "react": "*",
+    "react-dom": "*",
+    "three": "*"
+  },
+  "devDependencies": {
+    "@react-three/rapier": "^0.10.0",
+    "@types/babel__core": "^7.1.20",
+    "@types/babel__helper-plugin-utils": "^7.10.0",
+    "@types/babel__template": "^7.4.1",
+    "@types/debug": "^4.1.7",
+    "@types/formidable": "^2.0.5",
+    "@types/fs-extra": "^9.0.13",
+    "@types/object-path": "^0.11.1",
+    "esbuild": "^0.15.15",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "vite": "^3.0.7"
+  }
+}

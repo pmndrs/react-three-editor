@@ -1,12 +1,7 @@
-import React, { useState, useRef } from "react"
-import { useThree, useFrame } from "@react-three/fiber"
-import {
-  Canvas,
-  EditorPanel,
-  editable,
-  createEditable
-} from "@react-three/editor/fiber"
+import { Canvas } from "@react-three/editor/fiber"
+import { useFrame, useThree } from "@react-three/fiber"
 import { useDrag } from "@use-gesture/react"
+import React, { useRef, useState } from "react"
 
 function Obj({ scale = 1, z = 0, opacity = 1 }) {
   const { viewport } = useThree()
@@ -57,7 +52,6 @@ export default function App() {
       />
       {/* <Obj z={-1} scale={0.5} /> */}
       <Obj opacity={0.8} />
-      <EditorPanel />
     </Canvas>
   )
 }
