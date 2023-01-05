@@ -1,6 +1,7 @@
 import { CommandBar, KeyboardCommands } from "@editable-jsx/commander"
 import { useEditor } from "@editable-jsx/editable"
 import { EditorCamera } from "./EditorCamera"
+import { FiberControls } from "./FiberControls"
 import { PerformanceControls } from "./PerformanceControls"
 import { SceneControls } from "./SceneControls"
 import { SelectedElementControls } from "./SelectedElementControls"
@@ -18,7 +19,8 @@ export function EditorControls() {
       <SceneControls panel="scene" />
       <CommandBar.In />
       <KeyboardCommands />
-      <PerformanceControls panel="settings" order={1} />
+      {/* <PerformanceControls panel="settings" order={1} /> */}
+      <FiberControls panel="settings" order={1} />
       {grid && <gridHelper />}
       {axes && <axesHelper />}
     </>
