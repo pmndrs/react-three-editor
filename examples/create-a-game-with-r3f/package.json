@@ -1,5 +1,5 @@
 {
-  "name": "example",
+  "name": "create-a-game-with-r3f",
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",

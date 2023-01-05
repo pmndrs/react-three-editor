@@ -124,7 +124,7 @@ export class PanelManager implements ISettings {
     this.settings = settings
     this.store = createStore("panels", (set, get) => ({
       panels: {
-        settings: new Panel("settings", this, defaultStore)
+        settings: new Panel("settings", this, defaultStore as ControlledStore)
       }
     }))
 
@@ -210,7 +210,7 @@ export class PanelManager implements ISettings {
     let panelNames = Object.keys(this.panels)
     let settings = {} as Record<string, any>
     for (let i = 0; i < panelNames.length; i++) {
-      settings[this.get(panelNames[i]).settings.path("hidden")] = false
+      settings[`panels.${panelNames[i]}.hidden`] = false
     }
     this.settings.set(settings)
   }
@@ -219,7 +219,7 @@ export class PanelManager implements ISettings {
     let panelNames = Object.keys(this.panels)
     let settings = {} as Record<string, any>
     for (let i = 0; i < panelNames.length; i++) {
-      settings[this.get(panelNames[i]).settings.path("hidden")] = true
+      settings[`panels.${panelNames[i]}.hidden`] = true
     }
 
     this.settings.set(settings)

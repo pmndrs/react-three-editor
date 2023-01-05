@@ -1,4 +1,4 @@
-import { EditableElement } from "@editable-jsx/editable/EditableElement"
+import { EditableElement } from "@editable-jsx/editable"
 import { geometryControls } from "../prop-types/geometries"
 
 export const geometry = {

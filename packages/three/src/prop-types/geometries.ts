@@ -126,7 +126,7 @@ export const sphereGeometryControls = (
           max: 100,
           path: ["args", "0"]
         }),
-        height: all.number({
+        widthSegments: all.number({
           element,
           default: 1,
           step: 0.1,
@@ -134,7 +134,7 @@ export const sphereGeometryControls = (
           max: 100,
           path: ["args", "1"]
         }),
-        depth: all.number({
+        heightSegments: all.number({
           element,
           default: 1,
           step: 0.1,

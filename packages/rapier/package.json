@@ -1,5 +1,5 @@
 {
-  "name": "@editable-jsx/panels",
+  "name": "@editable-jsx/rapier",
   "author": {
     "name": "Nikhil Saraf",
     "email": "nsaraf98@gmail.com",
@@ -7,8 +7,8 @@
   },
   "description": "",
   "version": "0.0.1",
-  "main": "dist/editable-jsx-panels.cjs.js",
-  "module": "dist/editable-jsx-panels.esm.js",
+  "main": "dist/editable-jsx-rapier.cjs.js",
+  "module": "dist/editable-jsx-rapier.esm.js",
   "preconstruct": {
     "entrypoints": [
       "index.ts"

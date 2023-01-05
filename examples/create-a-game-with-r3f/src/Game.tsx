@@ -1,5 +1,5 @@
 import { OrbitControls, Sphere } from "@react-three/drei"
-import { EditorRoot } from "@react-three/editor/fiber"
+import { EditorRoot } from "@react-three/editor"
 import { useFrame, useThree } from "@react-three/fiber"
 import { Physics } from "@react-three/rapier"
 import { useEffect, useRef, useState } from "react"

@@ -30,7 +30,7 @@ export function ElementName({
           element.editor.select(element)
         }}
       >
-        {name + " " + (dirty ? "*" : "")}
+        {name}
       </div>
       <div style={{ marginLeft: "auto" }} />
       <OpenInEditorButton element={element} />

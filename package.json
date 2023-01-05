@@ -11,7 +11,7 @@
     "build:apps": "pnpm build --filter=./apps/*",
     "clean": "rimraf packages/*/*/dist packages/*/dist",
     "clean:vite": "rimraf **/node_modules/.vite",
-    "dev": "turbo dev",
+    "dev": "pnpm --filter=example dev",
     "dev:link": "preconstruct dev",
     "postinstall": "preconstruct dev",
     "test": "turbo test",
