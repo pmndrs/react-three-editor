@@ -87,6 +87,9 @@ export class EditableElement<
     )
   }
 
+  appendChild(id: string) {
+  }
+
   update(source: JSXSource, props: any) {
     this.source = source
     this.currentProps = { ...props }

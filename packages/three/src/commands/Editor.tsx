@@ -1,10 +1,11 @@
 import { useCommands } from "@editable-jsx/commander"
+import { EditableElement } from "@editable-jsx/core"
 import { FC } from "react"
 import { Group, Mesh } from "three"
-import { ThreeEditor } from "../fiber/ThreeEditor"
+import { ThreeEditor } from "../ThreeEditor"
 
 export const EditorCommands: FC = () => {
-  useCommands(() => [
+  useCommands<ThreeEditor>(() => [
     {
       name: "toggle-play-mode",
       type: "command",
@@ -19,8 +20,8 @@ export const EditorCommands: FC = () => {
       }
     },
     {
-      name: "isolate",
-      description: "Isolate element",
+      name: "focus",
+      description: () => "Focus on selected element",
       type: "command",
       shortcut: ["meta", "f"],
       execute(editor) {
@@ -28,7 +29,7 @@ export const EditorCommands: FC = () => {
         let selectedElement = editor.selectedElement
         let selected = selectedElement?.treeId
 
-        function show(c: Editable) {
+        function show(c: EditableElement) {
           if (c.ref instanceof Mesh || c.ref instanceof Group) {
             c.visible = true
           } else {
@@ -38,7 +39,7 @@ export const EditorCommands: FC = () => {
           }
         }
 
-        function hide(c: Editable) {
+        function hide(c: EditableElement) {
           if (c.ref instanceof Mesh || c.ref instanceof Group) {
             c.visible = false
           } else {
@@ -48,7 +49,7 @@ export const EditorCommands: FC = () => {
           }
         }
 
-        function focus(c: Editable, selected: string) {
+        function focus(c: EditableElement, selected: string) {
           if (!selected.startsWith(c.treeId)) {
             hide(c)
           } else if (selected === c.treeId) {
@@ -59,13 +60,13 @@ export const EditorCommands: FC = () => {
           }
         }
 
-        if (selected) {
-          show(el)
-          for (var child of el.children) {
-            focus(child, selected)
-          }
-        }
-        ;(editor as ThreeEditor).bounds.refresh(selectedElement?.ref).fit()
+        // if (selected) {
+        //   show(el)
+        //   for (var child of el.children) {
+        //     focus(child, selected)
+        //   }
+        // }
+        editor.bounds.refresh(selectedElement?.ref).fit()
       }
     },
     {

@@ -1,4 +1,5 @@
 import { createProp, EditableElement } from "@editable-jsx/core"
+import { InputTypes } from "@editable-jsx/state"
 import { OrbitControls } from "@react-three/drei"
 import { folder } from "leva"
 import {
@@ -9,20 +10,17 @@ import {
   DirectionalLight,
   DirectionalLightHelper,
   Light,
-  Material,
   Mesh,
   Object3D,
   PointLight,
   SpotLight,
   SpotLightHelper
 } from "three"
-import { InputTypes } from "../../../../state-utils/src"
 import { TransformHelper } from "../controls/TransformHelper"
 import { all } from "../prop-types"
 import { primitives } from "../prop-types/primitives"
 import { ThreeEditableElement } from "../ThreeEditor"
 import { EditorControlsPlugin } from "../types"
-import { cameraControls } from "./cameraControls"
 
 function createPlugin<
   Element extends EditableElement = EditableElement,
@@ -49,7 +47,7 @@ export const camera = createPlugin<ThreeEditableElement>({
   icon: (entity) => "ph:video-camera-bold",
   controls: (entity) => {
     return {
-      camera: cameraControls({ element: entity, path: ["ref"] })
+      camera: all.camera({ element: entity, path: ["ref"] })
     }
   },
   helper: ({ element }) => {
@@ -215,7 +213,7 @@ export const transformWithoutRef = createPlugin<ThreeEditableElement>({
       )
     }
   },
-  helper: ({ element }: { element }) => {
+  helper: ({ element }) => {
     return (
       <TransformHelper
         key={element.id}
@@ -243,8 +241,7 @@ export const propControls = createPlugin<ThreeEditableElement>({
     (entity.forwardedRef &&
       !(entity.ref instanceof Mesh) &&
       !(entity.ref instanceof Light) &&
-      !(entity.ref instanceof Camera) &&
-      !(entity.ref instanceof Material)),
+      !(entity.ref instanceof Camera)),
   controls: (entity) => {
     let controls: Record<string, any> = {}
     if (entity.type.controls) {

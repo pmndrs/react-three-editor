@@ -1,10 +1,7 @@
+import { ControlledStore, defaultStore } from "@editable-jsx/state"
 import { Leva as DefaultControls, LevaPanel as Controls } from "leva"
 import { StoreType } from "leva/dist/declarations/src/types"
 import { useEffect, useState } from "react"
-import {
-  ControlledStore,
-  defaultStore
-} from "@editable-jsx/state"
 
 import { ComponentProps } from "react"
 
@@ -46,9 +43,9 @@ export function ControlsPanel({
           flat={true}
           titleBar={false}
           theme={{
-            space: {
-              rowGap: "2px"
-            },
+            // space: {
+            //   rowGap: "2px"
+            // },
             sizes: {
               rootWidth: `${width}px`
             }
@@ -63,9 +60,9 @@ export function ControlsPanel({
           flat={true}
           titleBar={false}
           theme={{
-            space: {
-              rowGap: "2px"
-            },
+            // space: {
+            //   rowGap: "2px"
+            // },
             sizes: {
               rootWidth: `${width}px`
             }

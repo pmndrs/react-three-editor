@@ -1,5 +1,5 @@
 import { createPropTypes } from "@editable-jsx/core"
-
+import { camera } from "./camera"
 import { material } from "./materials"
 import { mesh } from "./mesh"
 import * as types from "./primitives/types"
@@ -15,5 +15,6 @@ export const all = createPropTypes({
   material,
   texture,
   mesh,
-  transform
+  transform,
+  camera
 })

@@ -1,9 +1,9 @@
-import { useEditor } from "@editable-jsx/core"
 import { CommandType, useCommands } from "@editable-jsx/commander"
+import { Editor, useEditor } from "@editable-jsx/core"
+import { ComponentType } from "@editable-jsx/core/src/component-loader"
 import { FC, useEffect } from "react"
 import * as THREE from "three"
 import { BufferGeometry, Material, Object3D } from "three"
-import { ComponentType } from "@editable-jsx/core/src/component-loader"
 
 function isClass(v: any) {
   return typeof v === "function" && /^\s*class\s+/.test(v.toString())
@@ -20,7 +20,7 @@ const possibleItemsToAdd = Object.values(THREE)
 
 export const InsertElementsSubCommands: FC = () => {
   const editor = useEditor()
-  useCommands(() => {
+  useCommands<Editor>(() => {
     return possibleItemsToAdd.map((component: any) => {
       return {
         name: component.name,
@@ -29,7 +29,8 @@ export const InsertElementsSubCommands: FC = () => {
         async execute(_editor) {
           _editor.appendNewElement(
             _editor.selectedElement ?? _editor.root,
-            component.name.charAt(0).toLowerCase() + component.name.slice(1)
+            component.name.charAt(0).toLowerCase() + component.name.slice(1),
+            {}
           )
         }
       }

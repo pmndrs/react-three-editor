@@ -42,7 +42,7 @@ export const UICommands: FC = () => {
       description: "Show Dynamic Island",
       type: "command",
       execute(editor) {
-        editor.settings.set("panels.island.hidden", false)
+        editor.settings.set({ "panels.island.hidden": false })
       }
     },
     {
@@ -50,7 +50,7 @@ export const UICommands: FC = () => {
       description: "Hide Dynamic Island",
       type: "command",
       execute(editor) {
-        editor.settings.set("panels.island.hidden", true)
+        editor.settings.set({ "panels.island.hidden": true })
       }
     }
   ])

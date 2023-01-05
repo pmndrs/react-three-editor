@@ -1,11 +1,11 @@
 import { PropInput } from "@editable-jsx/core"
 import { folder } from "leva"
 import { OrthographicCamera } from "three"
-import { primitives } from "../prop-types/primitives"
-import { replace } from "../prop-types/replace"
+import { primitives } from "./primitives"
+import { replace } from "./replace"
 
 export function cameraControls({ element, path }: PropInput) {
-  return folder({
+  return {
     near: primitives.number({
       element: element,
       path: [...path, "near"],
@@ -52,5 +52,9 @@ export function cameraControls({ element, path }: PropInput) {
         element.ref.updateProjectionMatrix()
       }
     })
-  })
+  }
+}
+
+export const camera = ({ element, path }: PropInput) => {
+  return folder(cameraControls({ element, path }))
 }
