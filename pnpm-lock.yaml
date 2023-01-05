@@ -490,6 +490,8 @@ importers:
       '@react-three/drei': ^9.46.4
       '@react-three/editor': workspace:*
       '@react-three/fiber': ^8.9.1
+      '@splinetool/loader': ^0.9.175
+      '@splinetool/r3f-spline': ^1.0.2
       '@types/react': 18.0.25
       '@types/react-dom': ^18.0.9
       '@types/three': ^0.135.0
@@ -505,6 +507,8 @@ importers:
       '@react-three/drei': 9.48.1_xa6xk36nauwxkzngvitxgjpnr4
       '@react-three/editor': link:../../packages/three
       '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
+      '@splinetool/loader': 0.9.175_three@0.147.0
+      '@splinetool/r3f-spline': 1.0.2_azmp4yzo5nc3fitc7tvq5xc34y
       '@types/three': 0.135.0
       leva: 0.9.34_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
@@ -5838,6 +5842,24 @@ packages:
     resolution: {integrity: sha512-BPS4ynJW/o92PUR4wgriz2Ud5gpST5vz6GQfMixEDK0Z8ZCUv2M7SkBLykH56T++Xs+8ln9zTGbOvNGIe02/jw==}
     dependencies:
       '@sinonjs/commons': 1.8.6
+    dev: false
+
+  /@splinetool/loader/0.9.175_three@0.147.0:
+    resolution: {integrity: sha512-lPvKe000gjBcNKL/Gw/nXcYhEeRGNmzAVy2j6RU36GriAwrCbUmvCRa/0eir6tf6lHotCSB1FDb9ULu9YF08VQ==}
+    peerDependencies:
+      three: '>=0.133.0'
+    dependencies:
+      three: 0.147.0
+    dev: false
+
+  /@splinetool/r3f-spline/1.0.2_azmp4yzo5nc3fitc7tvq5xc34y:
+    resolution: {integrity: sha512-Fl1qboRpTE8yJm4BAe1l6j3Xgh3HwIzvtdX2LjCpBiSo21+j0b2rilJpLHfsXJndrq4Hegz6oEUKlPvVWumaHg==}
+    peerDependencies:
+      '@react-three/fiber': '>=7.0.0'
+      '@splinetool/loader': '>=0.9.19'
+    dependencies:
+      '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
+      '@splinetool/loader': 0.9.175_three@0.147.0
     dev: false
 
   /@stitches/react/1.2.8_react@18.2.0:

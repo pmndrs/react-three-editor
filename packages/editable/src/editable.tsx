@@ -43,6 +43,10 @@ export const Editable = forwardRef(
     const editor = useContext(EditorContext)
     const EditableComponent = useMemo(() => {
       if (editor) {
+        if (component.$$typeof === Symbol.for("react.provider")) {
+          return component
+        }
+
         if (!getEditable(component) && editor) {
           setEditable(component, createEditable(component))
         }

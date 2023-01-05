@@ -12,6 +12,7 @@ export {
   createPortal,
   createRoot,
   extend,
+  getRootState,
   useLoader,
   useThree
 } from "@react-three/fiber"
@@ -21,7 +22,7 @@ export { PerformanceControls } from "./controls/PerformanceControls"
 export { SceneControls } from "./controls/SceneControls"
 export { SelectedElementControls } from "./controls/SelectedElementControls"
 export { editor } from "./editor"
-export { EditorCanvas as Canvas, EditorUI } from "./ThreeFiberEditor"
+export { EditorUI, ThreeEditorCanvas as Canvas } from "./ThreeEditorCanvas"
 export {
   Stages,
   useEditorFrame,
