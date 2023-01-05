@@ -1,4 +1,4 @@
-import { EditableContext, EditableElement } from "@editable-jsx/core"
+import { EditableContext, EditableElement } from "@editable-jsx/editable"
 import * as React from "react"
 import { useId } from "react"
 import { editor } from "./editor"

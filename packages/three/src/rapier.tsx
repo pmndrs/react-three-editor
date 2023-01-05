@@ -1,4 +1,4 @@
-import { setEditable } from "@editable-jsx/core"
+import { setEditable } from "@editable-jsx/editable"
 import { Debug, Physics, useRapier } from "@react-three/rapier"
 import { useMemo } from "react"
 import { useEditor } from "./fiber"

@@ -1,5 +1,5 @@
 import { useCommands } from "@editable-jsx/commander"
-import { EditableElement } from "@editable-jsx/core"
+import { EditableElement } from "@editable-jsx/editable"
 import { FC } from "react"
 import { Group, Mesh } from "three"
 import { ThreeEditor } from "../ThreeEditor"

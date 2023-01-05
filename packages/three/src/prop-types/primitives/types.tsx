@@ -1,4 +1,4 @@
-import { PropType } from "@editable-jsx/core"
+import { PropType } from "@editable-jsx/editable"
 import { MathUtils } from "three"
 import { GLTFLoader } from "three-stdlib"
 import { getEditableElement } from ".."

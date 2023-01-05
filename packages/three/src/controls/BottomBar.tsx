@@ -1,5 +1,5 @@
 import { useCommandBar } from "@editable-jsx/commander"
-import { useEditor } from "@editable-jsx/core"
+import { useEditor } from "@editable-jsx/editable"
 import { LeftPanelGroup, RightPanelGroup } from "@editable-jsx/panels"
 import { Floating, Icon, styled } from "@editable-jsx/ui"
 

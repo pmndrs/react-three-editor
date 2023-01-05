@@ -1,4 +1,4 @@
-import { EditorContext } from "@editable-jsx/core"
+import { EditorContext } from "@editable-jsx/editable"
 import { createStore } from "@editable-jsx/state"
 import { createMultiTunnel } from "@editable-jsx/ui"
 import { createRoot, ReconcilerRoot, _roots } from "@react-three/fiber"

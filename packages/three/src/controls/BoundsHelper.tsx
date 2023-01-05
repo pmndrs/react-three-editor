@@ -1,4 +1,4 @@
-import { EditableElement } from "@editable-jsx/core"
+import { EditableElement } from "@editable-jsx/editable"
 import { multiToggle } from "@editable-jsx/ui"
 import { useHelper } from "@react-three/drei"
 import { applyProps } from "@react-three/fiber"

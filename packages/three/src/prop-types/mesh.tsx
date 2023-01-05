@@ -1,4 +1,4 @@
-import { PropInput } from "@editable-jsx/core"
+import { PropInput } from "@editable-jsx/editable"
 import { folder } from "leva"
 import { BufferGeometry, Material, Mesh } from "three"
 import { all, getEditableElement } from "."

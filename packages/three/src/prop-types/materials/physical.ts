@@ -1,4 +1,4 @@
-import { EditableElement } from "@editable-jsx/core/EditableElement"
+import { EditableElement } from "@editable-jsx/editable/EditableElement"
 import { folder } from "leva"
 import { Schema } from "leva/plugin"
 import { MeshPhysicalMaterial } from "three"

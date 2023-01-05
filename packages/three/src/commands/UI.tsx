@@ -1,5 +1,5 @@
 import { useCommands } from "@editable-jsx/commander"
-import { Editor } from "@editable-jsx/core"
+import { Editor } from "@editable-jsx/editable"
 import { FC } from "react"
 
 export const UICommands: FC = () => {

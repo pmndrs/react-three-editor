@@ -1,5 +1,5 @@
 import { CommandBar, KeyboardCommands } from "@editable-jsx/commander"
-import { useEditor } from "@editable-jsx/core"
+import { useEditor } from "@editable-jsx/editable"
 import { EditorCamera } from "./EditorCamera"
 import { PerformanceControls } from "./PerformanceControls"
 import { SceneControls } from "./SceneControls"

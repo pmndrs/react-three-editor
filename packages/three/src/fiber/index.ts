@@ -1,3 +1,4 @@
+export { Editable, editable } from "@editable-jsx/editable"
 export {
   applyProps,
   createEvents,

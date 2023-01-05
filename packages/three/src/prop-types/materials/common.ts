@@ -1,4 +1,4 @@
-import { EditableElement } from "@editable-jsx/core/EditableElement"
+import { EditableElement } from "@editable-jsx/editable/EditableElement"
 import { BackSide, DoubleSide, FrontSide, Material } from "three"
 import { primitives } from "../primitives"
 

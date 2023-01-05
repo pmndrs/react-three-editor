@@ -1,4 +1,4 @@
-import { useEditor } from "@editable-jsx/core"
+import { useEditor } from "@editable-jsx/editable"
 import { Bounds } from "@react-three/drei"
 import { useDrag } from "leva/plugin"
 import { Suspense, useEffect, useState } from "react"

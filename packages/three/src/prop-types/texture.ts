@@ -1,4 +1,4 @@
-import { createProp, PropInput } from "@editable-jsx/core"
+import { createProp, PropInput } from "@editable-jsx/editable"
 import { folder, Schema } from "@editable-jsx/state"
 import {
   ClampToEdgeWrapping,

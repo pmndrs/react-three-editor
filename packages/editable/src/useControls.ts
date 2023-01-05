@@ -1,4 +1,4 @@
-import { EditableContext } from "@editable-jsx/core"
+import { EditableContext } from "@editable-jsx/editable"
 import { useControls as useLevaControls } from "leva"
 import { useContext } from "react"
 

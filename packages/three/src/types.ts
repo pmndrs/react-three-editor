@@ -1,4 +1,4 @@
-import { EditableElement } from "@editable-jsx/core"
+import { EditableElement } from "@editable-jsx/editable"
 import { Schema } from "leva/plugin"
 import { ReactNode } from "react"
 

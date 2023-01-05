@@ -1,4 +1,4 @@
-import { EditableElement } from "@editable-jsx/core/EditableElement"
+import { EditableElement } from "@editable-jsx/editable/EditableElement"
 import { BoxHelper } from "three"
 
 export const group = {

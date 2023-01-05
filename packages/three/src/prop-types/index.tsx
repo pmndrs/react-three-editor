@@ -1,4 +1,4 @@
-import { createPropTypes } from "@editable-jsx/core"
+import { createPropTypes } from "@editable-jsx/editable"
 import { camera } from "./camera"
 import { material } from "./materials"
 import { mesh } from "./mesh"

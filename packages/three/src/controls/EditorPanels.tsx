@@ -1,4 +1,4 @@
-import { useEditor } from "@editable-jsx/core"
+import { useEditor } from "@editable-jsx/editable"
 import { Panel, PanelProps } from "@editable-jsx/panels"
 import { multiToggle } from "@editable-jsx/ui"
 import { DynamicIsland } from "./BottomBar"

@@ -1,5 +1,5 @@
 {
-  "name": "@editable-jsx/core",
+  "name": "@editable-jsx/editable",
   "author": {
     "name": "Nikhil Saraf",
     "email": "nsaraf98@gmail.com",
@@ -7,8 +7,8 @@
   },
   "description": "",
   "version": "0.0.1",
-  "main": "dist/editable-jsx-core.cjs.js",
-  "module": "dist/editable-jsx-core.esm.js",
+  "main": "dist/editable-jsx-editable.cjs.js",
+  "module": "dist/editable-jsx-editable.esm.js",
   "preconstruct": {
     "entrypoints": [
       "index.ts"

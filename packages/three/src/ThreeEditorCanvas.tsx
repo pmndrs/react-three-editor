@@ -1,5 +1,5 @@
 import { CommandBar } from "@editable-jsx/commander"
-import { useEditor } from "@editable-jsx/core"
+import { useEditor } from "@editable-jsx/editable"
 import { PanelContainer, PanelGroup } from "@editable-jsx/panels"
 import { JSXSource } from "@editable-jsx/state"
 import { createMultiTunnel, Floating, Toaster } from "@editable-jsx/ui"

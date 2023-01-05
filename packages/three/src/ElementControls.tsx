@@ -1,7 +1,7 @@
 import {
   EditableElement,
   element as elementProperties
-} from "@editable-jsx/core"
+} from "@editable-jsx/editable"
 import { levaStore, useControls } from "leva"
 
 export function useElementControls(

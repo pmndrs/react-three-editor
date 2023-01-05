@@ -1,4 +1,4 @@
-import { EditorContext, useEditor } from "@editable-jsx/core"
+import { EditorContext, useEditor } from "@editable-jsx/editable"
 import { toggle } from "@editable-jsx/ui"
 import * as fiber from "@react-three/fiber"
 import { folder, useControls } from "leva"

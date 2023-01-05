@@ -1,4 +1,4 @@
-import { EditableElement } from "@editable-jsx/core"
+import { EditableElement } from "@editable-jsx/editable"
 import { useFrame } from "@react-three/fiber"
 import { MathUtils, Object3D } from "three"
 import { eq } from "./prop-types/eq"

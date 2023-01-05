@@ -53,7 +53,7 @@
     "@babel/helper-plugin-utils": "^7.20.2",
     "@babel/template": "^7.18.10",
     "@editable-jsx/commander": "workspace:^0.0.1",
-    "@editable-jsx/core": "workspace:^0.0.1",
+    "@editable-jsx/editable": "workspace:^0.0.1",
     "@editable-jsx/panels": "workspace:^0.0.1",
     "@editable-jsx/state": "workspace:^0.0.1",
     "@editable-jsx/ui": "workspace:^0.0.1",

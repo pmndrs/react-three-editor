@@ -1,4 +1,4 @@
-import { createEditable, setEditable, useEditor } from "@editable-jsx/core"
+import { createEditable, setEditable, useEditor } from "@editable-jsx/editable"
 import { OrbitControls } from "@react-three/drei"
 import { useThree } from "@react-three/fiber"
 import { levaStore } from "leva"

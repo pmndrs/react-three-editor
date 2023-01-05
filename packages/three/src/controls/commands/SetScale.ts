@@ -1,4 +1,8 @@
-import { EditableElement, Editor, ExecutableCommand } from "@editable-jsx/core"
+import {
+  EditableElement,
+  Editor,
+  ExecutableCommand
+} from "@editable-jsx/editable"
 import { Vector3Tuple } from "three"
 
 export class SetElementScale extends ExecutableCommand {

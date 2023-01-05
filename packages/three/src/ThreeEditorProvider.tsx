@@ -2,7 +2,7 @@ import {
   CommandBarContext,
   CommandManagerContext
 } from "@editable-jsx/commander"
-import { EditorContext, useEditor } from "@editable-jsx/core"
+import { EditorContext, useEditor } from "@editable-jsx/editable"
 import { PanelsProvider } from "@editable-jsx/panels"
 import { SettingsProvider } from "./SettingsProvider"
 import { ThreeFloatingProvider } from "./ThreeFloating"

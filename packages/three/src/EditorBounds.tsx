@@ -1,4 +1,4 @@
-import { useEditor } from "@editable-jsx/core"
+import { useEditor } from "@editable-jsx/editable"
 import { Bounds, useBounds } from "@react-three/drei"
 import { useStore, useThree } from "@react-three/fiber"
 import { ReactNode } from "react"

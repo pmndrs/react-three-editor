@@ -1,4 +1,4 @@
-import { createProp, EditableElement } from "@editable-jsx/core"
+import { createProp, EditableElement } from "@editable-jsx/editable"
 import { InputTypes } from "@editable-jsx/state"
 import { OrbitControls } from "@react-three/drei"
 import { folder } from "leva"

@@ -5,7 +5,7 @@ export {
   EditorContext,
   setEditable,
   useEditor
-} from "@editable-jsx/core"
+} from "@editable-jsx/editable"
 export {
   applyProps,
   createEvents,

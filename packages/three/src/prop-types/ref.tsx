@@ -2,7 +2,7 @@ import {
   EditableElement,
   ElementIcon,
   OpenInEditorButton
-} from "@editable-jsx/core"
+} from "@editable-jsx/editable"
 import {
   Components,
   createPlugin,

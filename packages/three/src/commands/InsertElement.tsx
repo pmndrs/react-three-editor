@@ -1,6 +1,6 @@
 import { CommandType, useCommands } from "@editable-jsx/commander"
-import { Editor, useEditor } from "@editable-jsx/core"
-import { ComponentType } from "@editable-jsx/core/src/component-loader"
+import { Editor, useEditor } from "@editable-jsx/editable"
+import { ComponentType } from "@editable-jsx/editable/src/component-loader"
 import { FC, useEffect } from "react"
 import * as THREE from "three"
 import { BufferGeometry, Material, Object3D } from "three"

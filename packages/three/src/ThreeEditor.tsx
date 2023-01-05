@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { EditableElement, Editor } from "@editable-jsx/core"
+import { EditableElement, Editor } from "@editable-jsx/editable"
 import { multiToggle } from "@editable-jsx/ui"
 import { useBounds, useHelper } from "@react-three/drei"
 import { Size, useStore } from "@react-three/fiber"

@@ -1,4 +1,4 @@
-import { EditableElement, useEditor } from "@editable-jsx/core"
+import { EditableElement, useEditor } from "@editable-jsx/editable"
 import { usePanel } from "@editable-jsx/panels"
 import { Fragment, useEffect } from "react"
 import { ElementControls } from "../ElementControls"

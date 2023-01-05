@@ -1,4 +1,4 @@
-import { tree, TreeElement, useEditor } from "@editable-jsx/core"
+import { tree, TreeElement, useEditor } from "@editable-jsx/editable"
 import { usePanel } from "@editable-jsx/panels"
 import { useControls } from "leva"
 
