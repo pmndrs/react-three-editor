@@ -44,7 +44,7 @@ export type EditorStoreStateType = {
   settingsPanel: string
 }
 
-type RpcServerFunctions = {
+export type RpcServerFunctions = {
   save(patches: EditPatch | EditPatch[]): Promise<void>
   initializeComponentsWatcher(): Promise<
     { fileName: string; components: string[] }[]
