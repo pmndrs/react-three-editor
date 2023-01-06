@@ -46,26 +46,15 @@ let findElement = (
 }
 
 const valueExpression = (value: any) => {
-  // if (typeof value.expression === "string") {
-  //   const templ = template(value.expression)
-  //   const ast = templ({})
-  //   if (types.isExpressionStatement(ast)) {
-  //     return types.jsxExpressionContainer(ast.expression)
-  //   }
-  // } else if (Array.isArray(value)) {
-  //   return types.jsxExpressionContainer(
-  //     types.arrayExpression(
-  //       value.map((value) => {
-  //         if (typeof value === "string") {
-  //           return types.stringLiteral(value)
-  //         } else if (typeof value === "number") {
-  //           return types.numericLiteral(value)
-  //         } else if (typeof value === "boolean") {
-  //           return types.booleanLiteral(value)
-  //         }
-  //       }) as any
-  //     )
-  //   )
+  if (typeof value.expression === "string") {
+    // const templ = template(value.expression)
+    // const ast = templ({})
+    // if (types.isExpressionStatement(ast)) {
+    //   return types.jsxExpressionContainer(ast.expression)
+    // }
+  } else if (Array.isArray(value)) {
+    return `{[${value.join(", ")}]}`
+  }
   if (typeof value === "string") {
     return `"${value}"`
   } else if (typeof value === "number") {
@@ -123,7 +112,6 @@ export async function tsMorphPatcher(
       if (!el) {
         throw new Error(`Could not find element`)
       }
-      console.log("setting", el, value)
       Object.entries(value).forEach(([propPath, propValue]) => {
         setAttribute(el!, propPath, propValue)
       })

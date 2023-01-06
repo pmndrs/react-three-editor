@@ -19,7 +19,7 @@ importers:
       '@types/react': ^18.0.22
       '@types/react-dom': ^18.0.7
       '@types/testing-library__jest-dom': ^5.14.5
-      '@types/three': ^0.144.0
+      '@types/three': ^0.147.0
       '@typescript-eslint/eslint-plugin': ^5.17.0
       '@typescript-eslint/parser': ^5.17.0
       eslint: ^8.12.0
@@ -62,7 +62,7 @@ importers:
       '@types/react': 18.0.26
       '@types/react-dom': 18.0.9
       '@types/testing-library__jest-dom': 5.14.5
-      '@types/three': 0.144.0
+      '@types/three': 0.147.1
       '@typescript-eslint/eslint-plugin': 5.47.0_dvmqlqg4r5ba7a4i47pzcunkky
       '@typescript-eslint/parser': 5.47.0_f5jcydormhcqaoeadqwgqigppy
       eslint: 8.30.0
@@ -121,7 +121,7 @@ importers:
     dependencies:
       '@react-spring/core': 9.5.5_react@18.2.0
       '@react-spring/three': 9.5.5_7l5c7g5ph6e5ybhvldx3hsiylq
-      '@react-three/drei': 9.51.6_xa6xk36nauwxkzngvitxgjpnr4
+      '@react-three/drei': 9.51.10_xa6xk36nauwxkzngvitxgjpnr4
       '@react-three/editor': link:../../packages/three-fiber
       '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
       '@use-gesture/react': 10.2.23_react@18.2.0
@@ -270,7 +270,7 @@ importers:
       '@react-three/fiber': ^8.9.1
       '@types/react': 18.0.25
       '@types/react-dom': ^18.0.9
-      '@types/three': ^0.135.0
+      '@types/three': ^0.147.0
       leva: ^0.9.34
       react: 18.2.0
       react-dom: 18.2.0
@@ -282,7 +282,7 @@ importers:
       '@react-three/drei': 9.46.4_xa6xk36nauwxkzngvitxgjpnr4
       '@react-three/editor': link:../../packages/three-fiber
       '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
-      '@types/three': 0.135.0
+      '@types/three': 0.147.1
       leva: 0.9.34_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -301,7 +301,7 @@ importers:
       '@react-three/fiber': ^8.9.1
       '@types/react': 18.0.25
       '@types/react-dom': ^18.0.9
-      '@types/three': ^0.135.0
+      '@types/three': ^0.147.0
       leva: ^0.9.34
       react: 18.2.0
       react-dom: 18.2.0
@@ -313,7 +313,7 @@ importers:
       '@react-three/drei': 9.46.4_xa6xk36nauwxkzngvitxgjpnr4
       '@react-three/editor': link:../../packages/three-fiber
       '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
-      '@types/three': 0.135.0
+      '@types/three': 0.147.1
       leva: 0.9.34_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -336,7 +336,7 @@ importers:
       '@remotion/three': ^3.3.27
       '@types/react': 18.0.25
       '@types/react-dom': ^18.0.9
-      '@types/three': ^0.135.0
+      '@types/three': ^0.147.0
       leva: ^0.9.34
       react: 18.2.0
       react-dom: 18.2.0
@@ -353,7 +353,7 @@ importers:
       '@remotion/media-utils': 3.3.27_biqbaboplfbrettd7655fr4n2y
       '@remotion/player': 3.3.27_biqbaboplfbrettd7655fr4n2y
       '@remotion/three': 3.3.27_xa6xk36nauwxkzngvitxgjpnr4
-      '@types/three': 0.135.0
+      '@types/three': 0.147.1
       leva: 0.9.34_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -377,7 +377,7 @@ importers:
       '@types/react': ^18.0.0
       '@types/react-dom': ^18.0.0
       '@types/styled-components': ^5.1.25
-      '@types/three': ^0.146.0
+      '@types/three': ^0.147.0
       '@vitejs/plugin-react': ^1.3.0
       leva: ^0.9.25
       r3f-perf: ^6.5.0
@@ -411,7 +411,7 @@ importers:
       '@types/react': 18.0.26
       '@types/react-dom': 18.0.9
       '@types/styled-components': 5.1.26
-      '@types/three': 0.146.0
+      '@types/three': 0.147.1
       '@vitejs/plugin-react': 1.3.2
       typescript: 4.9.3
       vite: 4.0.2
@@ -424,7 +424,7 @@ importers:
       '@react-three/fiber': ^8.9.1
       '@types/react': 18.0.25
       '@types/react-dom': ^18.0.9
-      '@types/three': ^0.135.0
+      '@types/three': ^0.147.0
       babel-plugin-glsl: ^1.0.0
       babel-plugin-macros: ^3.1.0
       glsl-noise: ^0.0.0
@@ -439,7 +439,7 @@ importers:
       '@react-three/drei': 9.46.4_xa6xk36nauwxkzngvitxgjpnr4
       '@react-three/editor': link:../../packages/three-fiber
       '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
-      '@types/three': 0.135.0
+      '@types/three': 0.147.1
       leva: 0.9.34_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -461,7 +461,7 @@ importers:
       '@react-three/fiber': ^8.9.1
       '@types/react': 18.0.25
       '@types/react-dom': ^18.0.9
-      '@types/three': ^0.135.0
+      '@types/three': ^0.147.0
       leva: ^0.9.34
       react: 18.2.0
       react-dom: 18.2.0
@@ -473,7 +473,7 @@ importers:
       '@react-three/drei': 9.46.4_xa6xk36nauwxkzngvitxgjpnr4
       '@react-three/editor': link:../../packages/three-fiber
       '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
-      '@types/three': 0.135.0
+      '@types/three': 0.147.1
       leva: 0.9.34_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -5340,6 +5340,41 @@ packages:
       zustand: 3.7.2_react@18.2.0
     dev: false
 
+  /@react-three/drei/9.51.10_xa6xk36nauwxkzngvitxgjpnr4:
+    resolution: {integrity: sha512-FZLjTAqEcmgGp0jZDjzMo8TyXWVb2PJs+v4t5U3eVfBBl5R+yb+C0pM7t6zVn+SQxHGBqlTI/e/CX7IIal3sIA==}
+    peerDependencies:
+      '@react-three/fiber': '>=8.0'
+      react: '>=18.0'
+      react-dom: '>=18.0'
+      three: '>=0.137'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.20.6
+      '@react-spring/three': 9.5.5_7l5c7g5ph6e5ybhvldx3hsiylq
+      '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
+      '@use-gesture/react': 10.2.23_react@18.2.0
+      detect-gpu: 5.0.5
+      glsl-noise: 0.0.0
+      lodash.clamp: 4.0.3
+      lodash.omit: 4.5.0
+      lodash.pick: 4.4.0
+      meshline: 3.1.6_three@0.147.0
+      react: 18.2.0
+      react-composer: 5.0.3_react@18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-merge-refs: 1.1.0
+      stats.js: 0.17.0
+      suspend-react: 0.0.8_react@18.2.0
+      three: 0.147.0
+      three-mesh-bvh: 0.5.21_three@0.147.0
+      three-stdlib: 2.20.4_three@0.147.0
+      troika-three-text: 0.47.1_three@0.147.0
+      utility-types: 3.10.0
+      zustand: 3.7.2_react@18.2.0
+    dev: false
+
   /@react-three/drei/9.51.3_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-iP6iyQj9TttnJ92x5fjunmytkK0YL33afat/F/XzFGgbyNx/R2lvKsuwSVU8YZKfXJxnoiiDdnRnUnFUKKYQlg==}
     peerDependencies:
@@ -6206,21 +6241,10 @@ packages:
       '@types/jest': 29.2.4
     dev: false
 
-  /@types/three/0.135.0:
-    resolution: {integrity: sha512-l7WLhIHjhHMtlpyTSltPPAKLpiMwgMD1hXHj59AVUpYRoZP7Fd9NNOSRSvZBCPLpTHPYojgQvSJCoza9zoL7bg==}
-    dev: false
-
-  /@types/three/0.144.0:
-    resolution: {integrity: sha512-psvEs6q5rLN50jUYZ3D4pZMfxTbdt3A243blt0my7/NcL6chaCZpHe2csbCtx0SOD9fI/XnF3wnVUAYZGqCSYg==}
+  /@types/three/0.147.1:
+    resolution: {integrity: sha512-1dGYrF9E7frAXu3CRUYtTFj97PlA/Q0OedDQBROn3fKjtKXNhXc6/VNgkGod3axJMeNPNFDa6ur9eOcQ+aD0zw==}
     dependencies:
       '@types/webxr': 0.5.0
-    dev: false
-
-  /@types/three/0.146.0:
-    resolution: {integrity: sha512-75AgysUrIvTCB054eQa2pDVFurfeFW8CrMQjpzjt3yHBfuuknoSvvsESd/3EhQxPrz9si3+P0wiDUVsWUlljfA==}
-    dependencies:
-      '@types/webxr': 0.5.0
-    dev: true
 
   /@types/tough-cookie/4.0.2:
     resolution: {integrity: sha512-Q5vtl1W5ue16D+nIaW8JWebSSraJVlK+EthKn7e7UcD4KWsaSJ8BqGPXNaPghgtcn/fhvrN17Tv8ksUsQpiplw==}
@@ -7963,7 +7987,7 @@ packages:
       minipass-pipeline: 1.2.4
       mkdirp: 1.0.4
       p-map: 4.0.0
-      promise-inflight: 1.0.1_bluebird@3.7.2
+      promise-inflight: 1.0.1
       rimraf: 3.0.2
       ssri: 8.0.1
       tar: 6.1.13
@@ -16204,6 +16228,15 @@ packages:
   /progress/2.0.3:
     resolution: {integrity: sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==}
     engines: {node: '>=0.4.0'}
+    dev: false
+
+  /promise-inflight/1.0.1:
+    resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
+    peerDependencies:
+      bluebird: '*'
+    peerDependenciesMeta:
+      bluebird:
+        optional: true
     dev: false
 
   /promise-inflight/1.0.1_bluebird@3.7.2:

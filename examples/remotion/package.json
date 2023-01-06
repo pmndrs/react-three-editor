@@ -22,7 +22,7 @@
     "@remotion/media-utils": "^3.3.27",
     "@remotion/player": "^3.3.27",
     "@remotion/three": "^3.3.27",
-    "@types/three": "^0.135.0",
+    "@types/three": "^0.147.0",
     "leva": "^0.9.34",
     "react": "18.2.0",
     "react-dom": "18.2.0",
