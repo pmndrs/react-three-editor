@@ -100,16 +100,16 @@ export const EditableCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
               </FiberProvider>
             </Suspense>
           </EditorBounds>
+
+          {/** Used by editor elements that need to live inside the R3F provider/scene */}
+          <ThreeTunnel.Out />
+
+          {/*
+           * Editor UI. This can be overriden by using the EditorUI.In component
+           * in your app to override the default UI.
+           */}
+          <EditorUI.Out fallback={<EditorControls />} />
         </FiberRootManager>
-
-        {/** Used by editor elements that need to live inside the R3F provider/scene */}
-        <ThreeTunnel.Out />
-
-        {/*
-         * Editor UI. This can be overriden by using the EditorUI.In component
-         * in your app to override the default UI.
-         */}
-        <EditorUI.Out fallback={<EditorControls />} />
       </FiberCanvas>
     )
   }
