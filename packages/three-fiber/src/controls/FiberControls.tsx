@@ -1,10 +1,15 @@
+import { useEditor } from "@editable-jsx/editable"
 import { usePanel } from "@editable-jsx/panels"
 import { Panel } from "@editable-jsx/panels/src/PanelManager"
-import { useThree } from "@react-three/fiber"
+import {
+  addAfterEffect,
+  addTail,
+  RootState,
+  useThree
+} from "@react-three/fiber"
 import { folder, useControls } from "leva"
 import { StoreType } from "leva/dist/declarations/src/types"
-import { useEffect } from "react"
-import { useFrame } from "../useFrame"
+import { ThreeEditor } from "../ThreeEditor"
 
 function FiberDisplay({
   panel: id = "settings",
@@ -21,10 +26,14 @@ function FiberDisplay({
     {
       fiber: folder(
         {
-          frameloop: { value: "always", disabled: true, order: 0 },
+          root: {
+            options: { app: "appRoot", editor: "editorRoot" },
+            order: -10
+          },
+          frameloop: { value: "always", disabled: true, order: -1 },
+          pointer: { value: { x: 0, y: 0 }, disabled: true, order: 0 },
           clock: folder({
-            elapsedTime: { value: 0, disabled: true },
-            delta: { value: 0, pad: 4, disabled: true }
+            elapsedTime: { value: 0, disabled: true }
           }),
           events: folder({
             priorityE: { label: "priority", value: 1, disabled: true },
@@ -70,22 +79,19 @@ export function FiberControls({
   )
 }
 
-function useControlEffect(
-  panel: Panel,
-  render: (() => boolean) | undefined,
-  key: string,
-  value: any
-) {
-  return useEffect(() => {
-    let data = panel.getData() as any
-    if (render && !render()) {
-      return
-    }
+function syncDataWithState(data: any, state: RootState) {
+  data["fiber.frameloop"].value = state.frameloop
+  data["fiber.pointer"].value = { x: state.pointer.x, y: state.pointer.y }
 
-    data[key].value = value
+  data["fiber.clock.elapsedTime"].value = state.clock.elapsedTime
 
-    panel.setState({ data })
-  }, [panel, render, value, key])
+  data["fiber.events.priorityE"].value = state.events.priority
+  data["fiber.events.enabled"].value = state.events.enabled
+  data["fiber.events.connected"].value = state.events.connected
+
+  data["fiber.internal.active"].value = state.internal.active
+  data["fiber.internal.priorityI"].value = state.internal.priority
+  data["fiber.internal.frames"].value = state.internal.frames
 }
 
 function FiberMonitor({
@@ -96,31 +102,18 @@ function FiberMonitor({
   render?: () => boolean
 }) {
   const panel = usePanel(id)
+  const editor = useEditor<ThreeEditor>()
 
-  const frameloop = useThree((state) => state.frameloop)
-  const active = useThree((state) => state.internal.active)
-  const internalPriority = useThree((state) => state.internal.priority)
-  const eventsPriority = useThree((state) => state.events.priority)
-  const eventsEnabled = useThree((state) => state.events.enabled)
-  const eventsConnected = useThree((state) => state.events.connected)
+  // The after effect never stops firing in v8 so we get constant updates.
+  addAfterEffect(() => {
+    if (render && !render()) return
+    const data = panel.getData() as any
+    const state =
+      data["fiber.root"].value === "appRoot"
+        ? editor.appRoot!.store.getState()
+        : editor.editorRoot!.store.getState()
 
-  useControlEffect(panel, render, "fiber.frameloop", frameloop)
-  useControlEffect(panel, render, "fiber.internal.active", active)
-  useControlEffect(panel, render, "fiber.internal.priorityI", internalPriority)
-  useControlEffect(panel, render, "fiber.events.priorityE", eventsPriority)
-  useControlEffect(panel, render, "fiber.events.enabled", eventsEnabled)
-  useControlEffect(panel, render, "fiber.events.connected", eventsConnected)
-
-  useFrame((state, delta) => {
-    let data = panel.getData() as any
-    if (render && !render()) {
-      return
-    }
-
-    data["fiber.clock.elapsedTime"].value = state.clock.elapsedTime
-    data["fiber.clock.delta"].value = delta
-    data["fiber.internal.frames"].value = state.internal.frames
-
+    syncDataWithState(data, state)
     panel.setState({ data })
   })
 
