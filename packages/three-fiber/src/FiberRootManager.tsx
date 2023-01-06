@@ -10,9 +10,7 @@ import React, { useLayoutEffect, useRef, useState } from "react"
 import { useEditor } from "@editable-jsx/editable"
 import { ThreeEditor } from "./ThreeEditor"
 import { createEditorRoot, Root } from "./root/createEditorRoot"
-import { UseBoundStore } from "zustand"
-
-type PrevFrameLoop = null | "always" | "demand" | "never"
+import { resumeRoot, suspendRoot } from "./root/rootControls"
 
 export function FiberRootManager({ children }: { children: React.ReactNode }) {
   const editor = useEditor<ThreeEditor>()
@@ -30,6 +28,18 @@ export function FiberRootManager({ children }: { children: React.ReactNode }) {
     editor.appRoot = root
   }
 
+  useLayoutEffect(() => {
+    if (!editor.editorRoot) return
+    const editorState = editor.editorRoot.store.getState()
+
+    if (editorState.events?.connect) {
+      editorState.events.connect(
+        editorState.gl.domElement.parentElement?.parentElement
+      )
+    }
+    console.log(editorState.events)
+  }, [editor])
+
   return (
     editor.editorRoot && (
       <context.Provider value={editor.editorRoot.store}>
@@ -44,54 +54,19 @@ function LoopManager() {
   const editor = useEditor<ThreeEditor>()
   const isEditorMode = editor.useStates("editing")
 
-  const [store] = useState({
-    prevFrameloop: null as PrevFrameLoop,
-    prevElapsedTime: 0
-  })
-
   useLayoutEffect(() => {
     for (const [key, root] of _roots) {
       if (key !== editor.canvas) continue
 
-      const appState = root.store.getState()
-      const editorState = editor.editorRoot!.store.getState()
-
       if (isEditorMode) {
-        // Suspend app root
-        store.prevFrameloop = appState.frameloop
-        appState.set({
-          frameloop: "never",
-          internal: { ...appState.internal, active: false }
-        })
-        store.prevElapsedTime = appState.clock.getElapsedTime()
-        appState.clock.stop()
-        appState.setEvents({ enabled: false })
-
-        // Enable editor root
-        editorState.set({
-          frameloop: "always",
-          internal: { ...editorState.internal, active: true }
-        })
+        suspendRoot(root)
+        if (editor.editorRoot) resumeRoot(editor.editorRoot)
       } else {
-        // Enable app root
-        if (store.prevFrameloop !== null) {
-          appState.set({
-            frameloop: store.prevFrameloop,
-            internal: { ...appState.internal, active: true }
-          })
-          appState.clock.start()
-          appState.clock.elapsedTime = store.prevElapsedTime
-          appState.setEvents({ enabled: true })
-        }
-
-        // Suspend editor root
-        editorState.set({
-          frameloop: "never",
-          internal: { ...editorState.internal, active: false }
-        })
+        resumeRoot(root)
+        if (editor.editorRoot) suspendRoot(editor.editorRoot)
       }
     }
-  }, [editor, isEditorMode, store])
+  }, [editor, isEditorMode])
 
   useFrame(({ scene, gl, camera }) => {
     gl.render(scene, camera)

@@ -46,10 +46,20 @@ export function updateCamera(
   }
 }
 
+type ViewportState = Viewport & {
+  getCurrentViewport: (
+    camera?: Camera,
+    target?: THREE.Vector3 | Parameters<THREE.Vector3["set"]>,
+    size?: Size
+  ) => Omit<Viewport, "dpr" | "initialDpr">
+}
+
 export const createStore = (
   sceneProp: THREE.Scene,
   glProp: THREE.WebGLRenderer,
-  cameraProp: THREE.Camera
+  cameraProp: THREE.Camera,
+  sizeProp: Size,
+  viewportProp: ViewportState
 ) => {
   const rootState = create<RootState>((set, get) => {
     const position = new THREE.Vector3()
@@ -105,7 +115,8 @@ export const createStore = (
       // Mock objects that have to be configured
       gl: glProp as unknown as THREE.WebGLRenderer,
       camera: cameraProp as unknown as Camera,
-      raycaster: null as unknown as THREE.Raycaster,
+      raycaster: new THREE.Raycaster(),
+      //   raycaster: null as unknown as THREE.Raycaster,
       events: { priority: 1, enabled: true, connected: false },
       xr: null as unknown as { connect: () => void; disconnect: () => void },
 
@@ -146,19 +157,21 @@ export const createStore = (
         }
       },
 
-      size: { width: 0, height: 0, top: 0, left: 0, updateStyle: false },
-      viewport: {
-        initialDpr: 0,
-        dpr: 0,
-        width: 0,
-        height: 0,
-        top: 0,
-        left: 0,
-        aspect: 0,
-        distance: 0,
-        factor: 0,
-        getCurrentViewport
-      },
+      //   size: { width: 0, height: 0, top: 0, left: 0, updateStyle: false },
+      size: sizeProp,
+      //   viewport: {
+      //     initialDpr: 0,
+      //     dpr: 0,
+      //     width: 0,
+      //     height: 0,
+      //     top: 0,
+      //     left: 0,
+      //     aspect: 0,
+      //     distance: 0,
+      //     factor: 0,
+      //     getCurrentViewport
+      //   },
+      viewport: viewportProp,
 
       setEvents: (events: Partial<EventManager<any>>) =>
         set((state) => ({ ...state, events: { ...state.events, ...events } })),
