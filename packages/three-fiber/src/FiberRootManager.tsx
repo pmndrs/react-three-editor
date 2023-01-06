@@ -37,7 +37,6 @@ export function FiberRootManager({ children }: { children: React.ReactNode }) {
         editorState.gl.domElement.parentElement?.parentElement
       )
     }
-    console.log(editorState.events)
   }, [editor])
 
   return (
@@ -60,10 +59,10 @@ function LoopManager() {
 
       if (isEditorMode) {
         suspendRoot(root)
-        if (editor.editorRoot) resumeRoot(editor.editorRoot)
+        resumeRoot(editor.editorRoot!)
       } else {
         resumeRoot(root)
-        if (editor.editorRoot) suspendRoot(editor.editorRoot)
+        suspendRoot(editor.editorRoot!)
       }
     }
   }, [editor, isEditorMode])
