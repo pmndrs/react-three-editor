@@ -1,9 +1,10 @@
-import { EditorContext } from "@editable-jsx/editable"
+import { EditorContext, useEditor } from "@editable-jsx/editable"
 import { createStore } from "@editable-jsx/state"
 import { createMultiTunnel } from "@editable-jsx/ui"
 import { createRoot, ReconcilerRoot, _roots } from "@react-three/fiber"
 import { ReactNode, useLayoutEffect as useEffect, useRef } from "react"
 import { editor } from "./editor"
+import { ThreeEditor } from "./ThreeEditor"
 
 export const screenshotTunnel = createMultiTunnel()
 
@@ -19,13 +20,13 @@ export const useScreenshotStore = createStore<{
 }>("screenshot", (set, get) => ({
   previewId: null,
   previews: {},
-  registerPreview: (id, ref) => {
+  registerPreview: (id: string, ref: any) => {
     set((s) => {
       s.previews[id] = ref
       return { ...s }
     })
   },
-  unregisterPreview: (id) => {
+  unregisterPreview: (id: string) => {
     set((s) => {
       delete s.previews[id]
       return { ...s }
@@ -115,6 +116,8 @@ const ActiveScreenshot = () => {
 }
 export function ScreenshotCanvas() {
   const setCanvas = useScreenshotStore((s) => s.setCanvas)
+  const editor = useEditor<ThreeEditor>()
+
   return (
     <>
       <div
@@ -126,7 +129,14 @@ export function ScreenshotCanvas() {
           top: -1000
         }}
       >
-        <canvas ref={(el) => setCanvas(el!)} hidden />
+        <canvas
+          ref={(el) => {
+            if (!el) return
+            setCanvas(el)
+            editor.screenshotCanvas = el
+          }}
+          hidden
+        />
       </div>
     </>
   )

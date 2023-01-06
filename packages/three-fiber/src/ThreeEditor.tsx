@@ -1,10 +1,16 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { EditableElement, Editor } from "@editable-jsx/editable"
+import {
+  EditableElement,
+  Editor,
+  RpcServerFunctions
+} from "@editable-jsx/editable"
 import { multiToggle } from "@editable-jsx/ui"
 import { useBounds, useHelper } from "@react-three/drei"
 import { Size, useStore } from "@react-three/fiber"
-import { FC, PropsWithChildren, useCallback } from "react"
+import { BirpcReturn } from "birpc"
+import { FC, MutableRefObject, PropsWithChildren, useCallback } from "react"
 import { Camera, Object3D, Raycaster, Scene } from "three"
+import { Root } from "./root/createEditorRoot"
 
 export class ThreeEditableElement extends EditableElement {
   object3D?: Object3D
@@ -56,6 +62,20 @@ export class ThreeEditor extends Editor {
   raycaster!: Raycaster
   bounds!: ReturnType<typeof useBounds>
 
+  canvas: HTMLCanvasElement | null
+  screenshotCanvas: HTMLCanvasElement | null
+  editorRoot: Root | null
+  appRoot: Root | null
+
+  constructor(plugins: any[], client: BirpcReturn<RpcServerFunctions>) {
+    super(plugins, client)
+
+    this.canvas = null
+    this.screenshotCanvas = null
+    this.editorRoot = null
+    this.appRoot = null
+  }
+
   findEditableElement(obj: any) {
     return obj?.__r3f?.editable
   }
@@ -86,7 +106,7 @@ export class ThreeEditor extends Editor {
                     element.editor.select(element)
                   }
                 },
-                [element]
+                [element, props]
               )
       }
     ]

@@ -4,6 +4,8 @@ import { useId } from "react"
 import { editor } from "./editor"
 import { useContextBridge } from "./useContextBridge"
 
+// TODO: Fix conditional hook calls.
+
 export function EditorRoot({
   children,
   element,
