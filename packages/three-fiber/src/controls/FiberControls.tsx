@@ -96,15 +96,15 @@ function syncDataWithState(data: any, state: RootState) {
   data["fiber.frameloop"].value = state.frameloop
   data["fiber.pointer"].value = { x: state.pointer.x, y: state.pointer.y }
 
-  data["fiber.size.height"].value = state.size?.height
-  data["fiber.size.width"].value = state.size?.width
-  data["fiber.size.top"].value = state.size?.top
-  data["fiber.size.left"].value = state.size?.left
-  data["fiber.size.updateStyle"].value = state.size?.updateStyle
+  data["fiber.size.height"].value = `${state.size?.height}`
+  data["fiber.size.width"].value = `${state.size?.width}`
+  data["fiber.size.top"].value = `${state.size?.top}`
+  data["fiber.size.left"].value = `${state.size?.left}`
+  data["fiber.size.updateStyle"].value = `${state.size?.updateStyle}`
 
-  data["fiber.camera.type"].value = state.camera?.type
-  data["fiber.camera.name"].value = state.camera?.name
-  data["fiber.camera.uuid"].value = state.camera?.uuid
+  data["fiber.camera.type"].value = `${state.camera?.type}`
+  data["fiber.camera.name"].value = `${state.camera?.name}`
+  data["fiber.camera.uuid"].value = `${state.camera?.uuid}`
 
   data["fiber.clock.elapsedTime"].value = state.clock.elapsedTime
 
