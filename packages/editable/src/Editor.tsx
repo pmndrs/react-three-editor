@@ -238,7 +238,9 @@ export class Editor<T extends EditableElement = EditableElement>
   }
 
   // should be overriden by subclasses
-  setRef(element: any, ref: any) {}
+  setRef(element: any, ref: any) {
+    ref._editableElement = element
+  }
 
   async saveDiff(diff: EditPatch) {
     await this.client.save(diff)
@@ -458,6 +460,7 @@ export class Editor<T extends EditableElement = EditableElement>
   }
 
   findEditableElement(el: any): T | null {
+    return el._editableElement
     throw new Error("Method not implemented.")
   }
 

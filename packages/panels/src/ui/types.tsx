@@ -7,9 +7,10 @@ export type PanelProps = {
   width?: number
   collapsed?: boolean
   side: "left" | "right"
-  lazy?: boolean
+  lazy?: boolean | number
   floating?: boolean
   size?: {
     width: number
   }
+  order?: number
 } & Omit<ComponentProps<typeof Controls>, "store">

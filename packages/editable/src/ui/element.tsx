@@ -88,20 +88,22 @@ export const element = createPlugin({
         <ElementTitle>
           <ElementName element={context.value.element} />
         </ElementTitle>
-        <ControlsPanel
-          fill
-          titleBar={false}
-          flat
-          hideCopyButton
-          theme={{
-            space: {
-              // rowGap: "2px",
-              // md: "6px",
-              sm: "4px"
-            }
-          }}
-          store={context.value.element.properties}
-        />
+        <div style={{ height: "100%" }}>
+          <ControlsPanel
+            fill
+            titleBar={false}
+            flat
+            hideCopyButton
+            theme={{
+              space: {
+                // rowGap: "2px",
+                // md: "6px",
+                sm: "4px"
+              }
+            }}
+            store={context.value.element.properties}
+          />
+        </div>
       </div>
     )
   }

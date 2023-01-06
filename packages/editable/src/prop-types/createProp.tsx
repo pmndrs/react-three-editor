@@ -114,14 +114,14 @@ export function createProp(
                 )
                 element.addChange(element, "args", args)
                 element.changed = true
-                element.setProp("args", args)
+                element.setProp(["args"], args)
                 return
               }
 
               let [_, ...p] = path
 
               // record a change in the log to be persisted
-              element.addChange(element, p.join("-"), serializale)
+              element.addChange(element, p, serializale)
               element.changed = true
 
               let propOveride = type.override
@@ -131,7 +131,7 @@ export function createProp(
               // if the prop is serializable, and overridable, we can set the prop
               // on the component and rerender it
               if (propOveride !== undefined) {
-                element.setProp(p.join("-"), propOveride)
+                element.setProp(p, propOveride)
               }
             } else {
               // if a child editable element is the closest editable element and modified,

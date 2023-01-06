@@ -201,9 +201,7 @@ export function FloatingControlsPanel(
   )
 }
 
-export function FloatingPanel(
-  props: PanelProps & { order?: number; lazy?: boolean }
-) {
+export function FloatingPanel(props: PanelProps) {
   // we use the ThreeCanvas tunnel, to get access to the threejs canvas size from the r3f
   // useThree hook (there are otherways to do this)
   return (

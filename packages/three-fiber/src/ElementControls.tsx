@@ -3,6 +3,7 @@ import {
   element as elementProperties
 } from "@editable-jsx/editable"
 import { levaStore, useControls } from "leva"
+import { StoreType } from "leva/dist/declarations/src/types"
 
 export function useElementControls(
   entity: EditableElement,
@@ -16,7 +17,7 @@ export function useElementControls(
       }
     },
     {
-      store: entityStore
+      store: entityStore as StoreType
     },
     [entity]
   )

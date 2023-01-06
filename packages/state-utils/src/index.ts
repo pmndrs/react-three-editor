@@ -23,7 +23,7 @@ export type EditPatchActionType =
   | "deleteElement"
   | "updateAttribute"
 
-export type EditPatch<V = unknown> = {
+export type EditPatch<V = {}> = {
   source: JSXSource
   action_type: EditPatchActionType
   value: V

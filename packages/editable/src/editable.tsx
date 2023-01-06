@@ -39,21 +39,23 @@ export const getEditable = (component: any) => {
 }
 
 export const Editable = forwardRef(
-  ({ component, ...props }: { component: any }, ref) => {
+  ({ __component, ...props }: { __component: any }, ref) => {
     const editor = useContext(EditorContext)
     const EditableComponent = useMemo(() => {
       if (editor) {
-        if (component.$$typeof === Symbol.for("react.provider")) {
-          return component
+        if (__component.$$typeof === Symbol.for("react.provider")) {
+          return __component
         }
 
-        if (!getEditable(component) && editor) {
-          setEditable(component, createEditable(component))
+        if (!getEditable(__component) && editor) {
+          setEditable(__component, createEditable(__component))
         }
-        return getEditable(component)
+        return getEditable(__component)
       }
-      return component
-    }, [component, editor])
+      return __component
+    }, [__component, editor])
+
+    console.log("hereee", EditableComponent, props, __component)
 
     return <EditableComponent {...props} ref={ref} />
   }

@@ -1,7 +1,7 @@
 import { Plugin } from "vite"
 import { ServerOptions } from "../types"
-import { configureServer } from "./configureServer"
-import { filesToSkipOnHmr } from "./filesToSkipOnHmr"
+import { filesToSkipOnHmr } from "./hmr"
+import { configureServer } from "./server"
 
 export const editor = (options: ServerOptions = {}): Plugin => {
   return {
