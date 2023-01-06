@@ -8,7 +8,7 @@ import { multiToggle } from "@editable-jsx/ui"
 import { useBounds, useHelper } from "@react-three/drei"
 import { Size, useStore } from "@react-three/fiber"
 import { BirpcReturn } from "birpc"
-import { FC, MutableRefObject, PropsWithChildren, useCallback } from "react"
+import { FC, PropsWithChildren, useCallback } from "react"
 import { Camera, Object3D, Raycaster, Scene } from "three"
 import { Root } from "./root/createEditorRoot"
 
