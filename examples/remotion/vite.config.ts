@@ -3,4 +3,7 @@ import { defineConfig } from "vite"
 
 export default defineConfig({
   plugins: [r3f({ enabled: true })],
+  optimizeDeps: {
+    exclude: ["three"],
+  },
 })
