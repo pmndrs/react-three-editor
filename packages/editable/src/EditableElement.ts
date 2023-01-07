@@ -1,7 +1,8 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import {
   ControlledStore,
-  createControlledStore, EditPatch,
+  createControlledStore,
+  EditPatch,
   InputTypes,
   JSXSource,
   mergeRefs
@@ -83,7 +84,7 @@ export class EditableElement<
   }
 
   getRootNode() {
-    return this.#root
+    return this.root
   }
 
   remount() {
