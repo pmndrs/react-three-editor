@@ -13,6 +13,8 @@ import { EditorPanels } from "./controls/EditorPanels"
 import { editor } from "./editor"
 import { EditorBounds } from "./EditorBounds"
 import { EditorRoot } from "./EditorRoot"
+import { AppRootProvider, FiberRootManager } from "./FiberRootManager"
+import { ThreeEditor } from "./ThreeEditor"
 import { ThreeEditorProvider } from "./ThreeEditorProvider"
 import { ThreeTunnel } from "./ThreeTunnel"
 import { ScreenshotCanvas } from "./useScreenshotStore"
@@ -59,7 +61,7 @@ export const ThreeEditorCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
 
 export const EditableCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
   function EditorCanvas(props, ref) {
-    const editor = useEditor()
+    const editor = useEditor<ThreeEditor>()
     const canvasSettings = editor.useSettings("scene", {
       shadows: {
         value: true
@@ -82,24 +84,32 @@ export const EditableCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
         }}
         {...canvasProps}
         {...canvasSettings}
+        ref={(el) => {
+          canvasProps.ref = el
+          editor.canvas = el
+        }}
       >
-        {/** drei's Bounds component to be able to focus on elements */}
-        <EditorBounds>
-          <Suspense>
-            <FiberProvider>
-              <EditorRoot element={editableElement}>{children}</EditorRoot>
-            </FiberProvider>
-          </Suspense>
-        </EditorBounds>
+        <FiberRootManager>
+          {/** drei's Bounds component to be able to focus on elements */}
+          <EditorBounds>
+            <Suspense>
+              <FiberProvider>
+                <EditorRoot element={editableElement}>
+                  <AppRootProvider>{children}</AppRootProvider>
+                </EditorRoot>
+              </FiberProvider>
+            </Suspense>
+          </EditorBounds>
 
-        {/** Used by editor elements that need to live inside the R3F provider/scene */}
-        <ThreeTunnel.Out />
+          {/** Used by editor elements that need to live inside the R3F provider/scene */}
+          <ThreeTunnel.Out />
 
-        {/*
-         * Editor UI. This can be overriden by using the EditorUI.In component
-         * in your app to override the default UI.
-         */}
-        <EditorUI.Out fallback={<EditorControls />} />
+          {/*
+           * Editor UI. This can be overriden by using the EditorUI.In component
+           * in your app to override the default UI.
+           */}
+          <EditorUI.Out fallback={<EditorControls />} />
+        </FiberRootManager>
       </FiberCanvas>
     )
   }
