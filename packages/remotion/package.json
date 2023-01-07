@@ -99,8 +99,10 @@
     "three": "*"
   },
   "devDependencies": {
+    "@react-three/editor": "workspace:^0.0.16",
     "@react-three/rapier": "^0.10.0",
     "@remotion/player": "^3.3.27",
+    "@remotion/three": "^3.3.27",
     "@types/babel__core": "^7.1.20",
     "@types/babel__helper-plugin-utils": "^7.10.0",
     "@types/babel__template": "^7.4.1",

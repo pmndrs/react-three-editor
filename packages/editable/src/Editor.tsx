@@ -1,4 +1,5 @@
 import {
+  createContext,
   createElement,
   FC,
   Fragment,
@@ -50,6 +51,8 @@ type RpcServerFunctions = {
     { fileName: string; components: string[] }[]
   >
 }
+
+export const IdContext = createContext("e")
 
 export class Editor<T extends EditableElement = EditableElement>
   extends EventTarget
@@ -383,6 +386,12 @@ export class Editor<T extends EditableElement = EditableElement>
     }
   }
 
+  useId() {
+    const provider = useContext(IdContext)
+    const id = useId()
+
+    return provider ? `${provider}-${id}` : id
+  }
   /**
    * useElement creates a new Element for the given component type and props and returns the element and the props
    * you need to pass to the component
@@ -392,7 +401,7 @@ export class Editor<T extends EditableElement = EditableElement>
    * @returns
    */
   useElement(_Component: any, props: any, forwardRef?: any): [T, any] {
-    const id = props.id || useId()
+    const id = props.id || this.useId()
 
     const editableElement = useMemo(() => {
       return this.createElement(id, props._source ?? {}, _Component, props)

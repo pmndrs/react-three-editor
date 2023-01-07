@@ -70,7 +70,7 @@ export const Phone: React.FC<{
   }, [layout.screen.height, layout.screen.radius, layout.screen.width])
 
   return (
-    <group scale={entranceAnimation} rotation={[0, rotateY, 0]} position={[-1.2829999999999993, 0, -0.8500000000000006]}>
+    <group scale={entranceAnimation} rotation={[0, rotateY, 0]} position={[2.148, 0, -9.153]}>
       <RoundedBox
         radius={0.11395999999999931}
         depth={layout.phone.thickness}

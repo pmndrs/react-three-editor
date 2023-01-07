@@ -1,7 +1,12 @@
 import { CommandBar } from "@editable-jsx/commander"
-import { Editor, setEditable, useEditor } from "@editable-jsx/editable"
+import {
+  Editor,
+  IdContext,
+  setEditable,
+  useEditor
+} from "@editable-jsx/editable"
 import { PanelContainer, PanelGroup } from "@editable-jsx/panels"
-import { SettingsContext } from "@editable-jsx/state"
+import { mergeRefs, SettingsContext } from "@editable-jsx/state"
 import {
   createMultiTunnel,
   Floating,
@@ -9,13 +14,14 @@ import {
   Toaster
 } from "@editable-jsx/ui"
 import { client } from "@editable-jsx/vite/src/client"
+import { transform } from "@react-three/editor/src/plugins/plugins"
 import {
   Player as RemotionPlayer,
   PlayerProps,
   PlayerRef
 } from "@remotion/player"
 // import { Props } from "@react-three/fiber"
-import { forwardRef, useMemo } from "react"
+import { forwardRef, useEffect, useId, useMemo, useRef } from "react"
 
 export const propControls = {
   applicable: (entity) => true,
@@ -154,8 +160,9 @@ export const styleWithoutRef = {
   }
 }
 
-const editor = new Editor([propControls, styleWithoutRef], client)
+const editor = new Editor([transform, propControls, styleWithoutRef], client)
 
+editor.elementConstructor = ThreeEditableElement
 // @ts-ignore
 window.editor = editor
 
@@ -172,6 +179,7 @@ import { EditorRoot } from "./EditorRoot"
 import { primitives } from "./primitives"
 import { SceneControls } from "./SceneControls"
 import { SelectedElementControls } from "./SelectedElementControls"
+import { ThreeEditableElement } from "./ThreeEditor"
 
 function FloatingWindow({ children }: { children: any }) {
   return children({ width: window.innerWidth })
@@ -184,15 +192,18 @@ export function RemotionEditorProvider({
   editor: ReturnType<typeof useEditor>
   children: React.ReactNode
 }) {
+  const id = useId()
   return (
     <EditorContext.Provider value={editor}>
       <SettingsContext.Provider value={editor}>
         <CommandManagerContext.Provider value={editor.commands}>
           <CommandBarContext.Provider value={editor.commandBar}>
             <PanelsProvider manager={editor.panels}>
-              <FloatingContext.Provider value={FloatingWindow}>
-                {children}
-              </FloatingContext.Provider>
+              <IdContext.Provider value={id}>
+                <FloatingContext.Provider value={FloatingWindow}>
+                  {children}
+                </FloatingContext.Provider>
+              </IdContext.Provider>
             </PanelsProvider>
           </CommandBarContext.Provider>
         </CommandManagerContext.Provider>
@@ -233,7 +244,15 @@ export const Player = forwardRef<
               background: "white"
             }}
           >
-            <EditablePlayer {...props} />
+            <EditablePlayer
+              {...props}
+              style={{
+                width: "60vw",
+                aspectRatio: `1 / ${
+                  props.compositionHeight / props.compositionWidth
+                }}`
+              }}
+            />
           </div>
         </div>
         {/* <EditableCanvas {...props} ref={ref} /> */}
@@ -262,19 +281,39 @@ export const EditablePlayer = forwardRef<
   PlayerRef,
   PlayerProps<{}> & { component: React.FC }
 >(function EditorCanvas(props, ref) {
+  const localRef = useRef<PlayerRef>(null)
   const editor = useEditor()
   const canvasSettings = editor.useSettings("scene", {
     shadows: {
       value: true
-    }
+    },
+    initialFrame: 0
   })
+
+  useEffect(() => {
+    console.log(
+      localRef.current?.addEventListener("frameupdate", (e) => {
+        editor.settings.set({
+          "scene.initialFrame": e.detail.frame
+        })
+      })
+    )
+  }, [])
 
   const VideoRoot = useMemo(
     () => createVideoRoot(props.component),
     [props.component]
   )
 
-  return <RemotionPlayer ref={ref} {...props} component={VideoRoot} />
+  return (
+    <RemotionPlayer
+      ref={mergeRefs([ref, localRef])}
+      {...props}
+      {...canvasSettings}
+      component={VideoRoot}
+      clickToPlay={false}
+    />
+  )
 })
 
 function createVideoRoot(Component: any) {
