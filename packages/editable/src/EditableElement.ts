@@ -2,6 +2,7 @@
 import {
   ControlledStore,
   createControlledStore,
+  createStore,
   EditPatch,
   InputTypes,
   JSXSource,
@@ -10,7 +11,72 @@ import {
 import { toast } from "@editable-jsx/ui"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { Editor } from "./Editor"
-import { PropChange } from "./prop-types/types"
+import { PropChange } from "./prop-types"
+
+class Node {
+  #root: Root | null = null
+  #childIds: string[] = []
+  baseURI!: string
+
+  constructor(baseURI: string) {
+    this.baseURI = baseURI
+  }
+
+  getRootNode() {
+    return this.#root
+  }
+
+  ownerDocument!: Document
+
+  get childNodes() {
+    return this.#childIds.map((id) => this.ownerDocument.getElementById(id))
+  }
+
+  appendChild(child: Node) {
+    this.#childIds.push(child.baseURI)
+  }
+
+  removeChild(child: Node) {
+    this.#childIds = this.#childIds.filter((id) => id !== child.baseURI)
+  }
+}
+
+class Element extends Node {
+  id: string
+}
+
+class Root extends Node {}
+
+class Document extends Root {
+  store = createStore("elements", () => ({
+    elements: {} as Record<string, Node>
+  }))
+
+  elementConstructor = Element
+
+  getElementById(id: string): Node {
+    return this.store.getState().elements[id]
+  }
+
+  createElement(
+    id: string,
+    source: JSXSource,
+    componentType: string | import("react").FC<{}>,
+    props: any
+  ): Element {
+    let element = new this.elementConstructor(
+      id,
+      this
+      // source,
+      // componentType,
+      // null,
+      // props
+    )
+
+    element.ownerDocument = this
+    return element
+  }
+}
 
 /**
  * An editable element is a wrapper around a React element that can be edited in the editor.

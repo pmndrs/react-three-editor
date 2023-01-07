@@ -174,6 +174,7 @@ import {
 } from "@editable-jsx/commander"
 import { EditorContext } from "@editable-jsx/editable"
 import { PanelsProvider } from "@editable-jsx/panels"
+import { AllCommands } from "./commands"
 import { EditorPanels } from "./EditorPanels"
 import { EditorRoot } from "./EditorRoot"
 import { primitives } from "./primitives"
@@ -219,7 +220,7 @@ export const Player = forwardRef<
   return (
     <RemotionEditorProvider editor={editor}>
       {/* Registers all the commands: keyboard shortcuts & command palette */}
-      {/* <AllCommands /> */}
+      <AllCommands />
 
       {/* Panels active in the editor */}
       <EditorPanels />
