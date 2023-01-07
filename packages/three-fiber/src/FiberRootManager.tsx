@@ -1,19 +1,12 @@
-import {
-  context,
-  RootState,
-  useFrame,
-  useStore,
-  useThree,
-  _roots
-} from "@react-three/fiber"
-import React, { useLayoutEffect, useRef, useState } from "react"
 import { useEditor } from "@editable-jsx/editable"
-import { ThreeEditor } from "./ThreeEditor"
-import { createEditorRoot, Root } from "./root/createEditorRoot"
+import { context, useFrame, _roots } from "@react-three/fiber"
+import React, { useLayoutEffect, useState } from "react"
+import { EditableThreeRoot } from "./EditableThreeRoot"
+import { createEditorRoot } from "./root/createEditorRoot"
 import { resumeRoot, suspendRoot } from "./root/rootControls"
 
 export function FiberRootManager({ children }: { children: React.ReactNode }) {
-  const editor = useEditor<ThreeEditor>()
+  const editor = useEditor<EditableThreeRoot>()
   const [dummy] = useState(() => {
     const el = document.createElement("div")
     document.body.appendChild(el)
@@ -50,7 +43,7 @@ export function FiberRootManager({ children }: { children: React.ReactNode }) {
 }
 
 function LoopManager() {
-  const editor = useEditor<ThreeEditor>()
+  const editor = useEditor<EditableThreeRoot>()
   const isEditorMode = editor.useStates("editing")
 
   useLayoutEffect(() => {
@@ -75,7 +68,7 @@ function LoopManager() {
 }
 
 export function AppRootProvider({ children }: { children: React.ReactNode }) {
-  const editor = useEditor<ThreeEditor>()
+  const editor = useEditor<EditableThreeRoot>()
   return (
     editor.appRoot && (
       <context.Provider value={editor.appRoot.store}>

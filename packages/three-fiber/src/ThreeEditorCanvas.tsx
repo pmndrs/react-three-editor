@@ -10,11 +10,10 @@ import { AllCommands } from "./commands"
 import { ComponentsTray } from "./ComponentsTray"
 import { EditorControls } from "./controls/EditorControls"
 import { EditorPanels } from "./controls/EditorPanels"
-import { editor } from "./editor"
+import { EditableThreeRoot } from "./EditableThreeRoot"
 import { EditorBounds } from "./EditorBounds"
 import { EditorRoot } from "./EditorRoot"
 import { AppRootProvider, FiberRootManager } from "./FiberRootManager"
-import { ThreeEditor } from "./ThreeEditor"
 import { ThreeEditorProvider } from "./ThreeEditorProvider"
 import { ThreeTunnel } from "./ThreeTunnel"
 import { ScreenshotCanvas } from "./useScreenshotStore"
@@ -26,7 +25,7 @@ export type CanvasProps = Props & { _source?: JSXSource }
 export const ThreeEditorCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
   (props, ref) => {
     return (
-      <ThreeEditorProvider editor={editor}>
+      <ThreeEditorProvider>
         {/* Registers all the commands: keyboard shortcuts & command palette */}
         <AllCommands />
 
@@ -61,14 +60,11 @@ export const ThreeEditorCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
 
 export const EditableCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
   function EditorCanvas(props, ref) {
-    const editor = useEditor<ThreeEditor>()
-    const canvasSettings = editor.useSettings("scene", {
-      shadows: {
-        value: true
-      }
-    })
+    const editor = useEditor()
 
-    const [editableElement, { children, ...canvasProps }] = editor.useElement(
+    // const root = editor.useRoot(EditableThreeRoot)
+
+    const [editableElement, { children, ...canvasProps }] = root.useElement(
       "root",
       {
         ...props,
@@ -80,13 +76,12 @@ export const EditableCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
     return (
       <FiberCanvas
         onPointerMissed={(e: any) => {
-          editor.clearSelection()
+          root.clearSelection()
         }}
         {...canvasProps}
-        {...canvasSettings}
         ref={(el) => {
           canvasProps.ref = el
-          editor.canvas = el
+          root.canvas = el
         }}
       >
         <FiberRootManager>

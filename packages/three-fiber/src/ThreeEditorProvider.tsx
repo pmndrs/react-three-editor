@@ -2,16 +2,18 @@ import {
   CommandBarContext,
   CommandManagerContext
 } from "@editable-jsx/commander"
-import { EditorContext, useEditor } from "@editable-jsx/editable"
+import { Editor, EditorContext } from "@editable-jsx/editable"
 import { PanelsProvider } from "@editable-jsx/panels"
+import { PropsWithChildren } from "react"
+import { editor } from "./editor"
 import { SettingsProvider } from "./SettingsProvider"
 import { ThreeFloatingProvider } from "./ThreeFloating"
 
-export function ThreeEditorProvider({
+export function EditorProvider({
   editor,
   children
 }: {
-  editor: ReturnType<typeof useEditor>
+  editor: Editor
   children: React.ReactNode
 }) {
   return (
@@ -19,12 +21,18 @@ export function ThreeEditorProvider({
       <SettingsProvider>
         <CommandManagerContext.Provider value={editor.commands}>
           <CommandBarContext.Provider value={editor.commandBar}>
-            <PanelsProvider manager={editor.panels}>
-              <ThreeFloatingProvider>{children}</ThreeFloatingProvider>
-            </PanelsProvider>
+            <PanelsProvider manager={editor.panels}>{children}</PanelsProvider>
           </CommandBarContext.Provider>
         </CommandManagerContext.Provider>
       </SettingsProvider>
     </EditorContext.Provider>
+  )
+}
+
+export function ThreeEditorProvider({ children }: PropsWithChildren) {
+  return (
+    <EditorProvider editor={editor}>
+      <ThreeFloatingProvider>{children}</ThreeFloatingProvider>
+    </EditorProvider>
   )
 }

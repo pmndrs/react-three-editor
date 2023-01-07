@@ -2,7 +2,7 @@ import { useEditor } from "@editable-jsx/editable"
 import { Bounds, useBounds } from "@react-three/drei"
 import { useStore, useThree } from "@react-three/fiber"
 import { ReactNode } from "react"
-import { ThreeEditor } from "./ThreeEditor"
+import { EditableThreeRoot } from "./EditableThreeRoot"
 
 export function EditorBounds({ children }: { children: ReactNode }) {
   return (
@@ -13,7 +13,7 @@ export function EditorBounds({ children }: { children: ReactNode }) {
   )
 }
 function AssignBounds() {
-  const editor = useEditor<ThreeEditor>()
+  const editor = useEditor<EditableThreeRoot>()
   const threeStore = useStore()
   const size = useThree((s) => s.size)
   const raycaster = useThree((s) => s.raycaster)

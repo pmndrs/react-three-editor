@@ -1,16 +1,10 @@
 import { useEditor } from "@editable-jsx/editable"
 import { usePanel } from "@editable-jsx/panels"
-import { Panel } from "@editable-jsx/panels/src/PanelManager"
-import {
-  addAfterEffect,
-  addTail,
-  RootState,
-  useThree
-} from "@react-three/fiber"
+import { addAfterEffect, RootState } from "@react-three/fiber"
 import { folder, useControls } from "leva"
 import { StoreType } from "leva/dist/declarations/src/types"
 import { useLayoutEffect } from "react"
-import { ThreeEditor } from "../ThreeEditor"
+import { EditableThreeRoot } from "../EditableThreeRoot"
 
 function FiberDisplay({
   panel: id = "settings",
@@ -130,7 +124,7 @@ function FiberMonitor({
   render?: () => boolean
 }) {
   const panel = usePanel(id)
-  const editor = useEditor<ThreeEditor>()
+  const editor = useEditor<EditableThreeRoot>()
 
   // The after effect never stops firing in v8 so we get constant updates.
   useLayoutEffect(() => {

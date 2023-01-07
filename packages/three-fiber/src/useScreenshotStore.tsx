@@ -3,8 +3,8 @@ import { createStore } from "@editable-jsx/state"
 import { createMultiTunnel } from "@editable-jsx/ui"
 import { createRoot, ReconcilerRoot, _roots } from "@react-three/fiber"
 import { ReactNode, useLayoutEffect as useEffect, useRef } from "react"
+import { EditableThreeRoot } from "./EditableThreeRoot"
 import { editor } from "./editor"
-import { ThreeEditor } from "./ThreeEditor"
 
 export const screenshotTunnel = createMultiTunnel()
 
@@ -91,9 +91,11 @@ export const useScreenshotStore = createStore<{
 
   scene: null as ReactNode | null
 }))
+
 const ActiveScreenshot = () => {
   const previewId = useScreenshotStore((s) => s.previewId)
   const tunnel = screenshotTunnel.useTunnels()
+  const root = useEditableRoot();
 
   if (previewId && tunnel[previewId]) {
     let Out = tunnel[previewId]!.Out
@@ -104,9 +106,9 @@ const ActiveScreenshot = () => {
         <ambientLight />
         {/* <Physics paused={true}> */}
         <group>
-          <editor.ContextBridge>
+          <editor.contextBridge>
             <Out />
-          </editor.ContextBridge>
+          </editor.contextBridge>
         </group>
       </>
     )
@@ -116,7 +118,7 @@ const ActiveScreenshot = () => {
 }
 export function ScreenshotCanvas() {
   const setCanvas = useScreenshotStore((s) => s.setCanvas)
-  const editor = useEditor<ThreeEditor>()
+  const editor = useEditor<EditableThreeRoot>()
 
   return (
     <>

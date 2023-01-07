@@ -8,9 +8,18 @@ import {
   mergeRefs
 } from "@editable-jsx/state"
 import { toast } from "@editable-jsx/ui"
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
-import { Editor } from "./Editor"
+import {
+  createElement,
+  Dispatch,
+  FC,
+  SetStateAction,
+  useEffect,
+  useState
+} from "react"
+import { Editable, editable } from "./editable"
+import { EditableDocument, EditableRoot } from "./EditableRoot"
 import { PropChange } from "./prop-types/types"
+import { REF_SYMBOL } from "./REF_SYMBOL"
 
 /**
  * An editable element is a wrapper around a React element that can be edited in the editor.
@@ -32,7 +41,12 @@ import { PropChange } from "./prop-types/types"
  *
  * */
 export class EditableElement<
-  Ref extends { name?: string; visible?: boolean } = any
+  Ref extends {
+    name?: string
+    visible?: boolean
+    [k: string]: any
+    [REF_SYMBOL]: any
+  } = any
 > extends EventTarget {
   ref?: Ref
   childIds: string[] = []
@@ -41,7 +55,7 @@ export class EditableElement<
   forwardedRef: boolean = false
   dirty: any = false
   properties: ControlledStore = createControlledStore()
-  editor: Editor = {} as any
+  // editor: Editor = {} as any
   index: string | undefined
   refs = {
     setKey: null as Dispatch<SetStateAction<number>> | null,
@@ -53,6 +67,12 @@ export class EditableElement<
   mounted: boolean = false
   args = [] as any[]
 
+  /** assigned by the creator */
+  ownerDocument!: EditableDocument
+
+  /** assigned by the creator */
+  root!: EditableRoot
+
   constructor(
     public id: string,
     public source: JSXSource,
@@ -61,6 +81,10 @@ export class EditableElement<
     public currentProps: any = {}
   ) {
     super()
+  }
+
+  getRootNode() {
+    return this.#root
   }
 
   remount() {
@@ -75,11 +99,11 @@ export class EditableElement<
     return this.properties.useStore((s) => s.data["name"].value as string)
   }
 
-  useChildren() {
-    return this.editor.useStore((s) => [
-      ...(s.elements[this.id]?.children ?? [])
-    ])
-  }
+  // useChildren() {
+  //   return this.editor.useStore((s) => [
+  //     ...(s.elements[this.id]?.children ?? [])
+  //   ])
+  // }
 
   useIsDirty() {
     return this.properties?.useStore(
@@ -87,7 +111,51 @@ export class EditableElement<
     )
   }
 
-  appendChild(id: string) {
+  appendChild(element: EditableElement) {
+    this.childIds.push(element.id)
+  }
+
+  removeChild(element: EditableElement) {
+    this.childIds = this.childIds.filter((id) => id !== element.id)
+  }
+
+  appendNewElement(
+    element: EditableElement,
+    componentType: string | FC,
+    props: any
+  ) {
+    console.log("appendNewElement", componentType)
+    if (typeof componentType === "string") {
+      console.log("appendNewElement", componentType)
+      element.refs.setMoreChildren?.((children) => [
+        ...children,
+        createElement(editable[componentType], {
+          _source: {
+            ...element.source,
+            lineNumber: -1,
+            elementName: componentType
+          },
+          key: children.length,
+          ...props
+        })
+      ])
+    } else {
+      console.log("appendNewElement", componentType)
+      element.refs.setMoreChildren?.((children) => [
+        ...children,
+        createElement(Editable, {
+          component: componentType,
+          _source: {
+            ...element.source,
+            lineNumber: -1,
+            elementName:
+              componentType.displayName || componentType.name || undefined
+          },
+          key: children.length,
+          ...props
+        } as any)
+      ])
+    }
   }
 
   update(source: JSXSource, props: any) {
@@ -169,7 +237,7 @@ export class EditableElement<
 
   setRef(el: Ref) {
     this.ref = el
-    this.editor.setRef(this, el)
+    el[REF_SYMBOL] = this
     this.dispatchEvent(
       new CustomEvent("ref-changed", {
         detail: {
@@ -229,11 +297,11 @@ export class EditableElement<
   }
 
   useIsSelected() {
-    return this.editor.useState((state) => this.isSelected)
+    return this.ownerDocument.useState((state) => this.isSelected)
   }
 
   get isSelected() {
-    return this.editor.state.context.selectedId === this.treeId
+    return this.ownerDocument.state.context.selectedId === this.treeId
   }
 
   useCollapsed(): [any, any] {
@@ -318,7 +386,7 @@ export class EditableElement<
     let controls = {}
     let entity = this
 
-    this.editor.plugins.forEach((plugin) => {
+    this.ownerDocument.plugins.forEach((plugin) => {
       if (plugin.controls && plugin.applicable(entity)) {
         Object.assign(controls, plugin.controls(entity))
       }
@@ -328,8 +396,8 @@ export class EditableElement<
   }
 
   get icon() {
-    for (var i = this.editor.plugins.length - 1; i >= 0; i--) {
-      let plugin = this.editor.plugins[i]
+    for (var i = this.ownerDocument.plugins.length - 1; i >= 0; i--) {
+      let plugin = this.ownerDocument.plugins[i]
       if (plugin.icon && plugin.applicable(this)) {
         return plugin.icon(this)
       }
@@ -349,7 +417,7 @@ export class EditableElement<
     )
 
     try {
-      console.log(await this.editor.save(diffs))
+      console.log(await this.ownerDocument.save(diffs))
       this.changes = {}
       this.changed = false
     } catch (e: any) {
@@ -372,12 +440,12 @@ export class EditableElement<
 
   get children() {
     return this.childIds
-      .map((id) => this.editor.getElementById(id)!)
+      .map((id) => this.ownerDocument.getElementById(id)!)
       .filter(Boolean)
   }
 
   get parent() {
-    return this.editor.getElementById(this.parentId!)
+    return this.ownerDocument.getElementById(this.parentId!)
   }
 
   getObjectByPath<T>(path: string[]): T {
@@ -395,7 +463,7 @@ export class EditableElement<
     if (path.length > 1) {
       for (let i = 0; i < path.length - 1; i++) {
         el = el?.[path[i]]
-        let edit = this.editor.findEditableElement(el)
+        let edit = this.getRootNode().findEditableElement(el)
         if (edit) {
           editable = edit
           remainingPath = path.slice(i + 1)

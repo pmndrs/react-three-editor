@@ -32,14 +32,13 @@ import {
 } from "@editable-jsx/state"
 import { BirpcReturn } from "birpc"
 import { ComponentLoader } from "./component-loader"
+import { EditableDocument } from "./EditableRoot"
 import { editorMachine } from "./editor.machine"
 import { EditorPlugin } from "./EditorPlugin"
 import { Helpers } from "./helpers"
 import { Tree } from "./Tree"
 
 export type EditorStoreStateType = {
-  selectedId: null | string
-  selectedKey: null | string
   elements: Record<string, EditableElement>
   settingsPanel: string
 }
@@ -97,6 +96,8 @@ export class Editor<T extends EditableElement = EditableElement>
 
   rootId: string
 
+  document: EditableDocument
+
   /**
    * state machine that controls the editor
    */
@@ -113,8 +114,6 @@ export class Editor<T extends EditableElement = EditableElement>
     super()
 
     this.store = createStore("editor", () => ({
-      selectedId: null as null | string,
-      selectedKey: null as null | string,
       elements: {},
       settingsPanel: "settings"
     }))

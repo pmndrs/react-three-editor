@@ -26,7 +26,7 @@ export function EditorRoot({
       editor.rootId = element.id
     }, [element])
 
-    editor.ContextBridge = ContextBridge
+    editor.contextBridge = ContextBridge
 
     return (
       <EditableContext.Provider value={element}>
@@ -54,7 +54,7 @@ export function EditorRoot({
       }))
     }, [editableElement])
 
-    editor.ContextBridge = ContextBridge
+    editor.contextBridge = ContextBridge
     return (
       <EditableContext.Provider value={editableElement}>
         {children}

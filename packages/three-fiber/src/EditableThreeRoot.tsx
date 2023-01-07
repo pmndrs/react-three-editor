@@ -1,23 +1,23 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import {
   EditableElement,
-  Editor,
-  RpcServerFunctions
+  EditableRoot,
+  useEditor
 } from "@editable-jsx/editable"
 import { multiToggle } from "@editable-jsx/ui"
 import { useBounds, useHelper } from "@react-three/drei"
 import { Size, useStore } from "@react-three/fiber"
-import { BirpcReturn } from "birpc"
-import { FC, PropsWithChildren, useCallback } from "react"
+import { FC, PropsWithChildren } from "react"
 import { Camera, Object3D, Raycaster, Scene } from "three"
 import { Root } from "./root/createEditorRoot"
 
-export class ThreeEditableElement extends EditableElement {
+export class EditableThreeElement extends EditableElement {
   object3D?: Object3D
 
   useHelper(arg0: string, helper: any, ...args: any[]): void {
-    const isEditing = this.editor.useStates("editing")
-    const prop = this.editor.useSettings("helpers", {
+    const editor = useEditor()
+    const isEditing = editor.useStates("editing")
+    const prop = editor.useSettings("helpers", {
       [arg0]: multiToggle({
         label: arg0,
         data: "selected",
@@ -52,9 +52,9 @@ export class ThreeEditableElement extends EditableElement {
   }
 }
 
-export class ThreeEditor extends Editor {
-  ContextBridge!: FC<PropsWithChildren>
-  elementConstructor = ThreeEditableElement
+export class EditableThreeRoot extends EditableRoot {
+  contextBridge!: FC<PropsWithChildren>
+  elementConstructor = EditableThreeElement
   threeStore!: ReturnType<typeof useStore>
   canvasSize!: Size
   scene!: Scene
@@ -67,54 +67,11 @@ export class ThreeEditor extends Editor {
   editorRoot: Root | null
   appRoot: Root | null
 
-  constructor(plugins: any[], client: BirpcReturn<RpcServerFunctions>) {
-    super(plugins, client)
-
+  constructor() {
+    super()
     this.canvas = null
     this.screenshotCanvas = null
     this.editorRoot = null
     this.appRoot = null
-  }
-
-  findEditableElement(obj: any) {
-    return obj?.__r3f?.editable
-  }
-
-  useElement(
-    Component: any,
-    props: any,
-    forwardRef?: any
-  ): [EditableElement, any] {
-    let [element, overrideProps] = super.useElement(
-      Component,
-      props,
-      forwardRef
-    )
-
-    return [
-      element,
-      {
-        ...overrideProps,
-        onPointerUp:
-          Component === "root"
-            ? undefined
-            : useCallback(
-                (e: any) => {
-                  if (this.state.matches("editing")) {
-                    props.onPointerUp?.(e)
-                    e.stopPropagation()
-                    element.editor.select(element)
-                  }
-                },
-                [element, props]
-              )
-      }
-    ]
-  }
-
-  setRef(element: any, ref: any) {
-    if (ref.__r3f) {
-      ref.__r3f.editable = element
-    }
   }
 }

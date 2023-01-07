@@ -2,10 +2,10 @@ import { useCommands } from "@editable-jsx/commander"
 import { EditableElement } from "@editable-jsx/editable"
 import { FC } from "react"
 import { Group, Mesh } from "three"
-import { ThreeEditor } from "../ThreeEditor"
+import { EditableThreeRoot } from "../EditableThreeRoot"
 
 export const EditorCommands: FC = () => {
-  useCommands<ThreeEditor>(() => [
+  useCommands<EditableThreeRoot>(() => [
     {
       name: "toggle-play-mode",
       type: "command",

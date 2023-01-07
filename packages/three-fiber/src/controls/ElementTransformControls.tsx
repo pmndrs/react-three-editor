@@ -4,8 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
 import { Event, MathUtils, Object3D, Vector3Tuple } from "three"
 import { TransformControls as TransformControlsImpl } from "three-stdlib"
+import { EditableThreeElement } from "../EditableThreeRoot"
 import { eq } from "../prop-types/eq"
-import { ThreeEditableElement } from "../ThreeEditor"
 import { SetElementRotation, SetElementScale } from "./commands"
 import { SetElementPosition } from "./commands/SetPosition"
 
@@ -21,7 +21,7 @@ const serializeTransform = (
 })
 
 export type ElementTransformControlsProps = {
-  element: ThreeEditableElement
+  element: EditableThreeElement
 }
 
 export function ElementTransformControls({
