@@ -315,7 +315,7 @@ export class EditableElement<
   }
 
   changeProp(arg0: string, arg1: number[]) {
-    this.addChange(this, arg0, arg1)
+    this.addChange(this, [arg0], arg1)
     this.changed = true
     this.setProp([arg0], arg1)
   }
@@ -363,6 +363,10 @@ export class EditableElement<
     }
 
     return "ph:cube"
+  }
+
+  select() {
+    this.editor.select(this)
   }
 
   async save() {
@@ -472,17 +476,17 @@ export class EditableElement<
           if (resolvedValue !== undefined) {
             change.value = resolvedValue
 
-            this.setPropValue(change)
+            this.#setPropValue(change)
           }
         })
       } else {
         change.value = loadedValue
 
-        this.setPropValue(change)
+        this.#setPropValue(change)
       }
     } else {
       change.value = input
-      this.setPropValue(change)
+      this.#setPropValue(change)
     }
   }
 
@@ -493,7 +497,7 @@ export class EditableElement<
    * @param param0
    * @returns
    */
-  setPropValue({
+  #setPropValue({
     object,
     type,
     prop,
@@ -520,29 +524,29 @@ export class EditableElement<
         let [...p] = path
 
         // handle the `args` prop by updating the args array
-        if (p[0] === "args") {
-          let prevArgs = this.currentProps.args ?? []
+        if (path[0] === "args") {
+          let prevArgs = this.args ?? []
           let prevPropArgs = this.props.args ?? []
 
           let args = (prevArgs ?? prevPropArgs).map((a: any, i: number) => {
-            if (i === Number(p[1])) {
+            if (i === Number(path[1])) {
               return serializale
             }
             return a
           })
-          this.addChange(this, "args", args)
+          this.addChange(this, ["args"], args)
           this.changed = true
           this.setProp(["args"], args)
           return
         }
 
         // otherwise its a prop on the edited element itself
-        this.addChange(this, p.join("-"), serializale)
+        this.addChange(this, p, serializale)
         this.changed = true
         this.setProp(p, value)
       } else {
         // its a prop on a child editable element
-        this.addChange(closestEditable, remainingPath.join("-"), serializale)
+        this.addChange(closestEditable, remainingPath, serializale)
         this.changed = true
       }
     }

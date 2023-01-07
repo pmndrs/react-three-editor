@@ -7,10 +7,6 @@ export function ElementIcon({
   ...props
 }: { element: EditableElement } & Omit<ComponentProps<typeof Icon>, "icon">) {
   return (
-    <Icon
-      icon={element.icon}
-      onClick={(e) => element.editor.select(element)}
-      {...props}
-    />
+    <Icon icon={element.icon} onClick={(e) => element.select()} {...props} />
   )
 }
