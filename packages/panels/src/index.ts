@@ -1,3 +1,4 @@
+import * as Stitches from "@stitches/react"
 import { styled } from "@editable-jsx/ui"
 
 export { PanelManager } from "./PanelManager"

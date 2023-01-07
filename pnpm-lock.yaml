@@ -121,7 +121,7 @@ importers:
     dependencies:
       '@react-spring/core': 9.5.5_react@18.2.0
       '@react-spring/three': 9.5.5_7l5c7g5ph6e5ybhvldx3hsiylq
-      '@react-three/drei': 9.51.3_xa6xk36nauwxkzngvitxgjpnr4
+      '@react-three/drei': 9.51.6_xa6xk36nauwxkzngvitxgjpnr4
       '@react-three/editor': link:../../packages/three-fiber
       '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
       '@use-gesture/react': 10.2.23_react@18.2.0
@@ -5090,8 +5090,8 @@ packages:
       zustand: 3.7.2_react@18.2.0
     dev: false
 
-  /@react-three/drei/9.51.3_xa6xk36nauwxkzngvitxgjpnr4:
-    resolution: {integrity: sha512-iP6iyQj9TttnJ92x5fjunmytkK0YL33afat/F/XzFGgbyNx/R2lvKsuwSVU8YZKfXJxnoiiDdnRnUnFUKKYQlg==}
+  /@react-three/drei/9.51.6_xa6xk36nauwxkzngvitxgjpnr4:
+    resolution: {integrity: sha512-QB2/o1KN7JFhDHTPRz41d23JyJuKW/sJisvkpC4nOMKEDcp5vfSHihjKJkcA41x8RGIl435SiUMqDEIWsXCSSA==}
     peerDependencies:
       '@react-three/fiber': '>=8.0'
       react: '>=18.0'
