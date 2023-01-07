@@ -16,6 +16,7 @@ import {
   SpotLight,
   SpotLightHelper
 } from "three"
+import { ElementTransformControls } from "../controls/ElementTransformControls"
 import { TransformHelper } from "../controls/TransformHelper"
 import { EditableThreeElement } from "../EditableThreeRoot"
 import { all } from "../prop-types"
@@ -39,6 +40,10 @@ export const transform = createPlugin<EditableThreeElement>({
         path: ["ref"]
       })
     }
+  },
+  helper: ({ element }) => {
+    const isSelected = element.useIsSelected()
+    return isSelected && <ElementTransformControls element={element} />
   }
 })
 

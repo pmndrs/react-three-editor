@@ -1,6 +1,6 @@
 import { PluginItem, types as t } from "@babel/core"
+import { JSXElementType, reactThreeEditorBabel } from "@editable-jsx/babel"
 import react from "@vitejs/plugin-react"
-import { JSXElementType, reactThreeEditorBabel } from "./babel"
 import { editor } from "./server"
 
 const transformElements = [

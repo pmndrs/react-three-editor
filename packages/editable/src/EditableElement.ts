@@ -1,8 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import {
   ControlledStore,
-  createControlledStore,
-  EditPatch,
+  createControlledStore, EditPatch,
   InputTypes,
   JSXSource,
   mergeRefs
@@ -18,7 +17,7 @@ import {
 } from "react"
 import { Editable, editable } from "./editable"
 import { EditableDocument, EditableRoot } from "./EditableRoot"
-import { PropChange } from "./prop-types/types"
+import { PropChange } from "./prop-types"
 import { REF_SYMBOL } from "./REF_SYMBOL"
 
 /**
@@ -340,11 +339,25 @@ export class EditableElement<
     )
   }
 
-  addChange(element: EditableElement, prop: string, value: any) {
+  addChange(element: EditableElement, path: string[], value: any) {
     if (!this.changes[element.id]) {
       this.changes[element.id] = { _source: element.source }
     }
-    this.changes[element.id][prop] = value
+
+    let [prop, rest] = path
+
+    if (rest) {
+      let prev = this.changes[element.id][prop] || {
+        ...element.currentProps[prop]
+      }
+
+      this.changes[element.id][prop] = {
+        ...prev,
+        [rest]: value
+      }
+    } else {
+      this.changes[element.id][prop] = value
+    }
   }
 
   get changed() {
@@ -370,14 +383,28 @@ export class EditableElement<
   }
 
   changeProp(arg0: string, arg1: number[]) {
-    this.addChange(this, arg0, arg1)
+    this.addChange(this, [arg0], arg1)
     this.changed = true
-    this.setProp(arg0, arg1)
+    this.setProp([arg0], arg1)
   }
 
-  setProp(arg0: string, arg1: any) {
-    if (!this.forwardedRef || this.type !== "string" || arg0 === "args") {
-      this.props[arg0] = arg1
+  setProp(arg0: string[], arg1: any) {
+    if (arg0.length > 1) {
+      let propName = arg0.shift() as string
+      this.props[propName] =
+        this.props[propName] || this.currentProps[propName]
+          ? {
+              ...this.currentProps[propName]
+            }
+          : {}
+      this.props[propName][arg0[0]] = arg1
+      this.render()
+      return
+    }
+
+    let propName = arg0.join("-")
+    if (!this.forwardedRef || this.type !== "string" || propName === "args") {
+      this.props[propName] = arg1
       this.render()
     }
   }
@@ -404,6 +431,10 @@ export class EditableElement<
     }
 
     return "ph:cube"
+  }
+
+  select() {
+    this.editor.select(this)
   }
 
   async save() {
@@ -513,17 +544,17 @@ export class EditableElement<
           if (resolvedValue !== undefined) {
             change.value = resolvedValue
 
-            this.setPropValue(change)
+            this.#setPropValue(change)
           }
         })
       } else {
         change.value = loadedValue
 
-        this.setPropValue(change)
+        this.#setPropValue(change)
       }
     } else {
       change.value = input
-      this.setPropValue(change)
+      this.#setPropValue(change)
     }
   }
 
@@ -534,7 +565,7 @@ export class EditableElement<
    * @param param0
    * @returns
    */
-  setPropValue({
+  #setPropValue({
     object,
     type,
     prop,
@@ -561,29 +592,29 @@ export class EditableElement<
         let [...p] = path
 
         // handle the `args` prop by updating the args array
-        if (p[0] === "args") {
-          let prevArgs = this.currentProps.args ?? []
+        if (path[0] === "args") {
+          let prevArgs = this.args ?? []
           let prevPropArgs = this.props.args ?? []
 
           let args = (prevArgs ?? prevPropArgs).map((a: any, i: number) => {
-            if (i === Number(p[1])) {
+            if (i === Number(path[1])) {
               return serializale
             }
             return a
           })
-          this.addChange(this, "args", args)
+          this.addChange(this, ["args"], args)
           this.changed = true
-          this.setProp("args", args)
+          this.setProp(["args"], args)
           return
         }
 
         // otherwise its a prop on the edited element itself
-        this.addChange(this, p.join("-"), serializale)
+        this.addChange(this, p, serializale)
         this.changed = true
-        this.setProp(p.join("-"), value)
+        this.setProp(p, value)
       } else {
         // its a prop on a child editable element
-        this.addChange(closestEditable, remainingPath.join("-"), serializale)
+        this.addChange(closestEditable, remainingPath, serializale)
         this.changed = true
       }
     }

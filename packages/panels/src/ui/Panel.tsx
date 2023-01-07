@@ -2,10 +2,7 @@ import { DockedPanel } from "./DockedPanel"
 import { FloatingPanel } from "./FloatingPanel"
 import { PanelProps } from "./types"
 
-export function Panel({
-  floating,
-  ...props
-}: PanelProps & { order?: number; lazy?: boolean }) {
+export function Panel({ floating, ...props }: PanelProps) {
   if (props.hidden) {
     return null
   }

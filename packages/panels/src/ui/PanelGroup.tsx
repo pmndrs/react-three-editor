@@ -10,6 +10,7 @@ export function DockedPanelGroup({ side = "left" }) {
       style={{
         width: "40vw",
         maxWidth: 320,
+
         height: "100%",
         display: "flex",
         flexDirection: "column"

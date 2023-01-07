@@ -1,4 +1,5 @@
 import {
+  createContext,
   createElement,
   FC,
   Fragment,
@@ -49,6 +50,8 @@ export type RpcServerFunctions = {
     { fileName: string; components: string[] }[]
   >
 }
+
+export const IdContext = createContext("e")
 
 export class Editor<T extends EditableElement = EditableElement>
   extends EventTarget
@@ -237,7 +240,9 @@ export class Editor<T extends EditableElement = EditableElement>
   }
 
   // should be overriden by subclasses
-  setRef(element: any, ref: any) {}
+  setRef(element: any, ref: any) {
+    ref._editableElement = element
+  }
 
   async saveDiff(diff: EditPatch) {
     await this.client.save(diff)
@@ -380,6 +385,13 @@ export class Editor<T extends EditableElement = EditableElement>
     }
   }
 
+  useId() {
+    const provider = useContext(IdContext)
+    const id = useId()
+
+    return provider ? `${provider}-${id}` : id
+  }
+
   /**
    * useElement creates a new Element for the given component type and props and returns the element and the props
    * you need to pass to the component
@@ -389,12 +401,15 @@ export class Editor<T extends EditableElement = EditableElement>
    * @returns
    */
   useElement(_Component: any, props: any, forwardRef?: any): [T, any] {
-    const id = props.id || useId()
+    const id = props.id || this.useId()
 
     const editableElement = useMemo(() => {
+      // let element = this.document.createElement(_Component, props)
       return this.createElement(id, props._source ?? {}, _Component, props)
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [_Component, id])
+
+    // this.document.body.appendChild(editableElement)
 
     // attaches the render, remount functions and returns a key that
     // need to be passed to the React element to cause remounts
@@ -413,6 +428,7 @@ export class Editor<T extends EditableElement = EditableElement>
 
     useEffect(() => {
       if (!editableElement.deleted) {
+        // parent.appendChild(editableElement)
         this.appendElement(editableElement, parent)
         this.send("APPEND_ELEMENT", {
           elementId: editableElement.treeId,
@@ -457,6 +473,7 @@ export class Editor<T extends EditableElement = EditableElement>
   }
 
   findEditableElement(el: any): T | null {
+    return el._editableElement
     throw new Error("Method not implemented.")
   }
 
