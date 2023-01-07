@@ -1,4 +1,8 @@
-import { EditableContext, EditableElement } from "@editable-jsx/editable"
+import {
+  EditableContext,
+  EditableElement,
+  useEditableContext
+} from "@editable-jsx/editable"
 import * as React from "react"
 import { useId } from "react"
 import { editor } from "./editor"
@@ -33,21 +37,27 @@ export function EditorRoot({
     const ContextBridge = useContextBridge()
     const id = useId()
 
-    const [editableElement, overrideProps] = editor.useElement("root", {
-      id: "root" + id,
-      ...props,
-      children
-    })
+    // const [editableElement, overrideProps] = editor.useElement("root", {
+    //   id: "root" + id,
+    //   ...props,
+    //   children
+    // })
 
-    React.useLayoutEffect(() => {
+    const editableElement = useEditableContext()
+
+    React.useEffect(() => {
       editableElement.index = "0"
+      console.log("setting root")
       editor.rootId = editableElement.id
+      editor.store.setState((s) => ({
+        elements: { ...s.elements }
+      }))
     }, [editableElement])
 
     editor.ContextBridge = ContextBridge
     return (
       <EditableContext.Provider value={editableElement}>
-        {overrideProps.children}
+        {children}
       </EditableContext.Provider>
     )
   }

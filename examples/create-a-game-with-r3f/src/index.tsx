@@ -1,9 +1,8 @@
+import "@editable-jsx/rapier"
 import { KeyboardControls } from "@react-three/drei"
-import "@react-three/editor/rapier"
 import { Canvas } from "@react-three/fiber"
 import ReactDOM from "react-dom/client"
-import { Game, store } from "./Game.js"
-import { ImageList } from "./Imagelist.js"
+import Experience from "./Experience"
 import "./style.css"
 const root = ReactDOM.createRoot(document.querySelector("#root"))
 
@@ -36,7 +35,21 @@ root.render(
       }
     ]}
   >
-    <Window>
+    <Canvas
+      ref={(node) => {
+        console.log("hereee")
+        // store.canvas = node
+      }}
+      camera={{
+        fov: 45,
+        near: 0.1,
+        far: 200,
+        position: [2.5, 4, 6]
+      }}
+    >
+      <Experience />
+    </Canvas>
+    {/* <Window>
       <div className="App">
         <Canvas
           ref={(node) => {
@@ -54,6 +67,6 @@ root.render(
         </Canvas>
       </div>
     </Window>
-    <ImageList />
+    <ImageList /> */}
   </KeyboardControls>
 )

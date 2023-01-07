@@ -121,7 +121,7 @@ importers:
     dependencies:
       '@react-spring/core': 9.5.5_react@18.2.0
       '@react-spring/three': 9.5.5_7l5c7g5ph6e5ybhvldx3hsiylq
-      '@react-three/drei': 9.51.6_xa6xk36nauwxkzngvitxgjpnr4
+      '@react-three/drei': 9.51.15_xa6xk36nauwxkzngvitxgjpnr4
       '@react-three/editor': link:../../packages/three-fiber
       '@react-three/fiber': 8.9.1_pvdsq7s4d5knbxbfttptgjiz3a
       '@use-gesture/react': 10.2.23_react@18.2.0
@@ -148,6 +148,7 @@ importers:
 
   examples/create-a-game-with-r3f:
     specifiers:
+      '@editable-jsx/rapier': workspace:*
       '@react-spring/core': ^9.4.4
       '@react-spring/three': ^9.4.4
       '@react-three/drei': ^9.46.4
@@ -178,6 +179,7 @@ importers:
       wouter: ^2.8.0-alpha.2
       zustand: ^3.7.1
     dependencies:
+      '@editable-jsx/rapier': link:../../packages/rapier
       '@react-spring/core': 9.5.5_react@18.2.0
       '@react-spring/three': 9.5.5_7l5c7g5ph6e5ybhvldx3hsiylq
       '@react-three/drei': 9.46.4_xa6xk36nauwxkzngvitxgjpnr4
@@ -786,6 +788,7 @@ importers:
       '@babel/generator': ^7.20.4
       '@babel/helper-plugin-utils': ^7.20.2
       '@babel/template': ^7.18.10
+      '@editable-jsx/editable': workspace:^0.0.1
       '@editable-jsx/state': workspace:^0.0.1
       '@editable-jsx/ui': workspace:^0.0.1
       '@iconify/react': ^4.0.1
@@ -840,6 +843,7 @@ importers:
       '@babel/generator': 7.20.5
       '@babel/helper-plugin-utils': 7.20.2
       '@babel/template': 7.18.10
+      '@editable-jsx/editable': link:../editable
       '@editable-jsx/state': link:../state-utils
       '@editable-jsx/ui': link:../ui-utils
       '@iconify/react': 4.0.1_react@18.2.0
@@ -5057,41 +5061,8 @@ packages:
       zustand: 3.7.2_react@18.2.0
     dev: false
 
-  /@react-three/drei/9.51.3_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-iP6iyQj9TttnJ92x5fjunmytkK0YL33afat/F/XzFGgbyNx/R2lvKsuwSVU8YZKfXJxnoiiDdnRnUnFUKKYQlg==}
-    peerDependencies:
-      '@react-three/fiber': '>=8.0'
-      react: '>=18.0'
-      react-dom: '>=18.0'
-      three: '>=0.137'
-    peerDependenciesMeta:
-      react-dom:
-        optional: true
-    dependencies:
-      '@babel/runtime': 7.20.6
-      '@react-spring/three': 9.5.5_react@18.2.0
-      '@use-gesture/react': 10.2.23_react@18.2.0
-      detect-gpu: 5.0.5
-      glsl-noise: 0.0.0
-      lodash.clamp: 4.0.3
-      lodash.omit: 4.5.0
-      lodash.pick: 4.4.0
-      meshline: 3.1.6
-      react: 18.2.0
-      react-composer: 5.0.3_react@18.2.0
-      react-dom: 18.2.0_react@18.2.0
-      react-merge-refs: 1.1.0
-      stats.js: 0.17.0
-      suspend-react: 0.0.8_react@18.2.0
-      three-mesh-bvh: 0.5.21
-      three-stdlib: 2.20.4
-      troika-three-text: 0.47.1
-      utility-types: 3.10.0
-      zustand: 3.7.2_react@18.2.0
-    dev: false
-
-  /@react-three/drei/9.51.6_xa6xk36nauwxkzngvitxgjpnr4:
-    resolution: {integrity: sha512-QB2/o1KN7JFhDHTPRz41d23JyJuKW/sJisvkpC4nOMKEDcp5vfSHihjKJkcA41x8RGIl435SiUMqDEIWsXCSSA==}
+  /@react-three/drei/9.51.15_xa6xk36nauwxkzngvitxgjpnr4:
+    resolution: {integrity: sha512-PGeJudHY2P9FFsqzhbILXntWo6OmMi9r/+A4AfguYnekWZndqjyWROyurUdXKB95CYPg6R4i8y13osVbRnII9Q==}
     peerDependencies:
       '@react-three/fiber': '>=8.0'
       react: '>=18.0'
@@ -5121,6 +5092,39 @@ packages:
       three-mesh-bvh: 0.5.21_three@0.147.0
       three-stdlib: 2.20.4_three@0.147.0
       troika-three-text: 0.47.1_three@0.147.0
+      utility-types: 3.10.0
+      zustand: 3.7.2_react@18.2.0
+    dev: false
+
+  /@react-three/drei/9.51.3_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-iP6iyQj9TttnJ92x5fjunmytkK0YL33afat/F/XzFGgbyNx/R2lvKsuwSVU8YZKfXJxnoiiDdnRnUnFUKKYQlg==}
+    peerDependencies:
+      '@react-three/fiber': '>=8.0'
+      react: '>=18.0'
+      react-dom: '>=18.0'
+      three: '>=0.137'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.20.6
+      '@react-spring/three': 9.5.5_react@18.2.0
+      '@use-gesture/react': 10.2.23_react@18.2.0
+      detect-gpu: 5.0.5
+      glsl-noise: 0.0.0
+      lodash.clamp: 4.0.3
+      lodash.omit: 4.5.0
+      lodash.pick: 4.4.0
+      meshline: 3.1.6
+      react: 18.2.0
+      react-composer: 5.0.3_react@18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-merge-refs: 1.1.0
+      stats.js: 0.17.0
+      suspend-react: 0.0.8_react@18.2.0
+      three-mesh-bvh: 0.5.21
+      three-stdlib: 2.20.4
+      troika-three-text: 0.47.1
       utility-types: 3.10.0
       zustand: 3.7.2_react@18.2.0
     dev: false

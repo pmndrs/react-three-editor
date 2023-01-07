@@ -1,6 +1,6 @@
 import { useKeyboardControls } from "@react-three/drei"
 import { useEditor } from "@react-three/editor"
-import { addPlugin } from "@react-three/editor/src/fiber/plugins"
+import { addPlugin } from "@react-three/editor/src/plugins"
 import { useFrame } from "@react-three/fiber"
 import { RigidBody, RigidBodyApi, useRapier } from "@react-three/rapier"
 import { useEffect, useRef } from "react"
