@@ -55,8 +55,6 @@ export const Editable = forwardRef(
       return __component
     }, [__component, editor])
 
-    console.log("hereee", EditableComponent, props, __component)
-
     return <EditableComponent {...props} ref={ref} />
   }
 )
