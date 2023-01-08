@@ -1,6 +1,11 @@
 import { useEditor } from "@editable-jsx/editable"
 import { useCallback, useLayoutEffect } from "react"
-import { ThreeEditor } from "./ThreeEditor"
+import { ThreeEditableElement, ThreeEditor } from "./ThreeEditor"
+
+type EditableHit = {
+  element: ThreeEditableElement
+  hit: THREE.Intersection<THREE.Object3D<THREE.Event>>
+}
 
 export function ThreeEventManager() {
   const editor = useEditor<ThreeEditor>()
@@ -20,21 +25,32 @@ export function ThreeEventManager() {
 
     raycaster.setFromCamera(pointer, camera)
     raycaster.layers.disable(editor.gizmoLayer)
-    let hits = raycaster.intersectObjects(scene.children)
-    hits = hits.filter((hit) => {
-      if (editor.isEditable(hit.object)) return hit
+    const hits = raycaster.intersectObjects(scene.children)
+    const editables = [] as EditableHit[]
+
+    hits.forEach((hit) => {
+      if (editor.isEditable(hit.object)) {
+        editables.push({
+          element: editor.findEditableElement(hit.object),
+          hit
+        })
+        return
+      }
+
+      const nearestElement = editor.findNearestEditableElement(hit.object)
+      if (nearestElement) editables.push({ element: nearestElement, hit })
     })
 
-    if (hits.length === 0) {
+    if (editables.length === 0) {
       const fiberRoot = editor.getElementById("root")
       fiberRoot.dispatchEvent(new Event("pointermissed"))
       return
     }
 
-    hits.forEach((hit) => {
-      const element = editor.findEditableElement(hit.object)
-      if (element)
-        element.dispatchEvent(new CustomEvent("pointerup", { detail: { hit } }))
+    editables.forEach((editable) => {
+      editable.element.dispatchEvent(
+        new CustomEvent("pointerup", { detail: { hit: editable.hit } })
+      )
     })
   }, [editor])
 

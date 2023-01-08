@@ -13,6 +13,12 @@ import { FC, PropsWithChildren, useCallback, useEffect } from "react"
 import { Camera, Object3D, Raycaster, Scene } from "three"
 import { Root } from "./root/createEditorRoot"
 
+export type EditableObject3D = THREE.Object3D & {
+  __r3f: {
+    editable: ThreeEditableElement
+  }
+}
+
 export class ThreeEditableElement extends EditableElement {
   object3D?: Object3D
 
@@ -93,8 +99,19 @@ export class ThreeEditor extends Editor {
     return obj?.__r3f?.editable ? true : false
   }
 
-  findEditableElement(obj: any) {
+  findEditableElement(obj: any): ThreeEditableElement {
     return obj?.__r3f?.editable
+  }
+
+  findNearestEditableElement(obj: THREE.Object3D) {
+    let element: ThreeEditableElement | undefined = undefined
+    obj.traverseAncestors((ancestor) => {
+      if (this.isEditable(ancestor as EditableObject3D)) {
+        element = this.findEditableElement(ancestor)
+        return
+      }
+    })
+    return element
   }
 
   useElement(
