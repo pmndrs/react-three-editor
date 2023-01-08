@@ -4,7 +4,7 @@ import { ElementControls } from "./ElementControls"
 import { useEditor } from "./useEditor"
 
 export function SelectedElementControls({
-  panel: store = "scene",
+  panel: store = "properties",
   order
 }: {
   panel?: string

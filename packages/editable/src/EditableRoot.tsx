@@ -110,7 +110,15 @@ export class EditableRoot<
     const id = props.id || this.useId()
 
     const editableElement = useMemo(() => {
-      return this.createElement(id, props._source ?? {}, _Component, props)
+      let editableElement = this.createElement(
+        id,
+        props._source ?? {},
+        _Component,
+        props
+      )
+      editableElement.ownerDocument = this.ownerDocument
+      return editableElement
+
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [_Component, id])
 

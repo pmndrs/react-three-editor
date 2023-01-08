@@ -4,7 +4,7 @@ import { useEditor } from "./useEditor"
 
 export function EditorPanels() {
   const editor = useEditor()
-  const selectedElement = editor.useState(() => editor.selectedElement)
+  const selectedElement = editor.useSelectedElement()
 
   return (
     <>

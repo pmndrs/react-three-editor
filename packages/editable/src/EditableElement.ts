@@ -110,6 +110,8 @@ export class EditableElement<
     this.childIds.push(element.id)
     element.parentId = this.id
     element.index = this.childIds.length - 1 + ""
+
+    this.ownerDocument.editor.send("APPEND_ELEMENT")
   }
 
   removeChild(element: EditableElement) {

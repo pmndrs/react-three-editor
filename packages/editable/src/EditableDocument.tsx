@@ -21,7 +21,7 @@ export class EditableDocument extends EditableRoot {
   }
 
   getElementByTreeId(id: string): EditableElement | null {
-    return this.treeMap.get(id)
+    return [...this.elements.values()].find((el) => el.treeId === id)
   }
 
   createRoot() {
