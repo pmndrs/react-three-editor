@@ -1,6 +1,11 @@
-import * as THREE from 'three'
-import React, { useState, useEffect } from 'react'
-import { Canvas, createPortal, useThree, getRootState } from '@react-three/fiber'
+import * as THREE from "three"
+import React, { useState, useEffect } from "react"
+import {
+  Canvas,
+  createPortal,
+  useThree,
+  getRootState
+} from "@react-three/fiber"
 
 const customCamera1 = new THREE.PerspectiveCamera()
 const customCamera2 = new THREE.PerspectiveCamera()
@@ -19,10 +24,14 @@ export default function App() {
       {createPortal(
         <group>
           {mounted && <Cube position={[0, 0.5, 0]} color="lightblue" />}
-          {createPortal(<Cube position={[0.5, 0, 0]} color="aquamarine" />, scene2, { camera: customCamera2 })}
+          {createPortal(
+            <Cube position={[0.5, 0, 0]} color="aquamarine" />,
+            scene2,
+            { camera: customCamera2 }
+          )}
         </group>,
         scene1,
-        { camera: customCamera1 },
+        { camera: customCamera1 }
       )}
       <primitive object={scene1} />
       <primitive object={scene2} />
@@ -34,7 +43,12 @@ function Cube({ color, ...props }: any) {
   const camera = useThree((state) => state.camera)
   const ref = React.useRef<THREE.Mesh>(null!)
   useEffect(() => {
-    console.log(`from within ${color}.useEffect`, getRootState(ref.current)?.camera, 'camera', camera.uuid)
+    console.log(
+      `from within ${color}.useEffect`,
+      getRootState(ref.current)?.camera,
+      "camera",
+      camera.uuid
+    )
   }, [])
   return (
     <mesh ref={ref} {...props}>

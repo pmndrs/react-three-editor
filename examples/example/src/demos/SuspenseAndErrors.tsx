@@ -1,8 +1,8 @@
-import * as React from 'react'
-import { useState, useEffect } from 'react'
-import { Canvas, useLoader } from '@react-three/fiber'
-import { suspend } from 'suspend-react'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import * as React from "react"
+import { useState, useEffect } from "react"
+import { Canvas, useLoader } from "@react-three/fiber"
+import { suspend } from "suspend-react"
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader"
 
 // Suspends the scene for 2 seconds, simulating loading an async asset
 function AsyncComponent({ cacheKey }: any) {
@@ -12,7 +12,7 @@ function AsyncComponent({ cacheKey }: any) {
 
 // Loads a file that does not exist
 function SimulateError() {
-  useLoader(GLTFLoader, '/doesnotexist.glb')
+  useLoader(GLTFLoader, "/doesnotexist.glb")
   return null
 }
 

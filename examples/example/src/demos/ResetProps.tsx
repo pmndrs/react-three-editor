@@ -1,7 +1,7 @@
-import * as THREE from 'three'
-import React, { useEffect, useState, useRef } from 'react'
-import { Canvas, useThree, useFrame } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
+import * as THREE from "three"
+import React, { useEffect, useState, useRef } from "react"
+import { Canvas, useThree, useFrame } from "@react-three/fiber"
+import { OrbitControls } from "@react-three/drei"
 
 function AdaptivePixelRatio() {
   const gl = useThree((state) => state.gl)
@@ -13,13 +13,13 @@ function AdaptivePixelRatio() {
     const domElement = gl.domElement
     return () => {
       setDpr(initialDpr)
-      domElement.style.imageRendering = 'auto'
+      domElement.style.imageRendering = "auto"
     }
   }, [])
   // Set adaptive pixelratio
   useEffect(() => {
     setDpr(current * initialDpr)
-    gl.domElement.style.imageRendering = current === 1 ? 'auto' : 'pixelated'
+    gl.domElement.style.imageRendering = current === 1 ? "auto" : "pixelated"
   }, [current])
   return null
 }
@@ -39,14 +39,19 @@ function Scene() {
   const group = useRef<THREE.Group>(null!)
   const [showCube, setShowCube] = useState(false)
   const [hovered, setHovered] = useState(false)
-  const [color, setColor] = useState('pink')
+  const [color, setColor] = useState("pink")
 
   useEffect(() => {
-    const interval = setInterval(() => setShowCube((showCube) => !showCube), 1000)
+    const interval = setInterval(
+      () => setShowCube((showCube) => !showCube),
+      1000
+    )
     return () => clearInterval(interval)
   }, [])
 
-  useFrame(({ clock }) => group.current?.rotation.set(Math.sin(clock.elapsedTime), 0, 0))
+  useFrame(({ clock }) =>
+    group.current?.rotation.set(Math.sin(clock.elapsedTime), 0, 0)
+  )
 
   return (
     <>
@@ -58,9 +63,10 @@ function Scene() {
         scale={hovered ? 1.25 : 1}
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
-        onClick={() => setColor(color === 'pink' ? 'peachpuff' : 'pink')}>
+        onClick={() => setColor(color === "pink" ? "peachpuff" : "pink")}
+      >
         <sphereGeometry args={[0.5, 32, 32]} />
-        <meshStandardMaterial color={showCube ? 'white' : 'red'} />
+        <meshStandardMaterial color={showCube ? "white" : "red"} />
       </mesh>
       <group ref={group}>
         {showCube ? (
@@ -77,7 +83,11 @@ function Scene() {
         <mesh position={[-2, -2, 0]}>
           <sphereGeometry args={[0.2, 32, 32]} />
           <meshPhongMaterial>
-            {showCube ? <color attach="color" args={[0, 0, 1]} /> : <color attach="color" args={[1, 0, 0]} />}
+            {showCube ? (
+              <color attach="color" args={[0, 0, 1]} />
+            ) : (
+              <color attach="color" args={[1, 0, 0]} />
+            )}
           </meshPhongMaterial>
         </mesh>
       </group>

@@ -5,7 +5,7 @@ import { useHotkeys } from "react-hotkeys-hook"
 import { Event, MathUtils, Object3D, Vector3Tuple } from "three"
 import { TransformControls as TransformControlsImpl } from "three-stdlib"
 import { eq } from "../prop-types/eq"
-import { ThreeEditableElement } from "../ThreeEditor"
+import { ThreeEditableElement, ThreeEditor } from "../ThreeEditor"
 import { SetElementRotation, SetElementScale } from "./commands"
 import { SetElementPosition } from "./commands/SetPosition"
 
@@ -29,7 +29,7 @@ export function ElementTransformControls({
 }: ElementTransformControlsProps) {
   const ref = useRef<TransformControlsImpl>(null!)
   const draggingRef = useRef<boolean>(false)
-  const editor = useEditor()
+  const editor = useEditor<ThreeEditor>()
   const oldTransform = useRef<{
     position: Vector3Tuple
     rotation: Vector3Tuple

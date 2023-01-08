@@ -1,7 +1,7 @@
-import * as THREE from 'three'
-import * as React from 'react'
-import { useCallback, useEffect, useState } from 'react'
-import { Canvas, useFrame, useThree, createPortal } from '@react-three/fiber'
+import * as THREE from "three"
+import * as React from "react"
+import { useCallback, useEffect, useState } from "react"
+import { Canvas, useFrame, useThree, createPortal } from "@react-three/fiber"
 import {
   useGLTF,
   PerspectiveCamera,
@@ -11,27 +11,42 @@ import {
   ArcballControls,
   TransformControls,
   CameraShake,
-  Bounds,
-} from '@react-three/drei'
+  Bounds
+} from "@react-three/drei"
 
 export function Soda(props: any) {
   const [hovered, spread] = useHover()
   const { nodes, materials } = useGLTF(
-    'https://market-assets.fra1.cdn.digitaloceanspaces.com/market-assets/models/soda-bottle/model.gltf',
+    "https://market-assets.fra1.cdn.digitaloceanspaces.com/market-assets/models/soda-bottle/model.gltf"
   ) as any
   return (
     <group {...props} {...spread} dispose={null}>
       <mesh geometry={nodes.Mesh_sodaBottle.geometry}>
-        <meshStandardMaterial color={hovered ? 'red' : 'green'} roughness={0} metalness={0.8} envMapIntensity={2} />
+        <meshStandardMaterial
+          color={hovered ? "red" : "green"}
+          roughness={0}
+          metalness={0.8}
+          envMapIntensity={2}
+        />
       </mesh>
-      <mesh geometry={nodes.Mesh_sodaBottle_1.geometry} material={materials.red} material-envMapIntensity={0} />
+      <mesh
+        geometry={nodes.Mesh_sodaBottle_1.geometry}
+        material={materials.red}
+        material-envMapIntensity={0}
+      />
     </group>
   )
 }
 
 function useHover() {
   const [hovered, hover] = useState(false)
-  return [hovered, { onPointerOver: (e: any) => (e.stopPropagation(), hover(true)), onPointerOut: () => hover(false) }]
+  return [
+    hovered,
+    {
+      onPointerOver: (e: any) => (e.stopPropagation(), hover(true)),
+      onPointerOut: () => hover(false)
+    }
+  ]
 }
 
 function View({ index = 1, children, clearColor, placement }: any) {
@@ -39,31 +54,31 @@ function View({ index = 1, children, clearColor, placement }: any) {
   const [scene] = useState(() => new THREE.Scene())
   const [position] = useState(() => new THREE.Vector2())
   const [el] = useState(() => {
-    const div = document.createElement('div')
+    const div = document.createElement("div")
     div.style.zIndex = index
-    div.style.position = 'absolute'
-    div.style.width = div.style.height = '50%'
+    div.style.position = "absolute"
+    div.style.width = div.style.height = "50%"
     return div
   })
 
   useEffect(() => {
     switch (placement) {
-      case 'topright':
+      case "topright":
         position.set(1, 1)
-        el.style.top = el.style.right = '0px'
+        el.style.top = el.style.right = "0px"
         break
-      case 'topleft':
+      case "topleft":
         position.set(0, 1)
-        el.style.top = el.style.left = '0px'
+        el.style.top = el.style.left = "0px"
         break
-      case 'bottomright':
+      case "bottomright":
         position.set(1, 0)
-        el.style.bottom = el.style.right = '0px'
+        el.style.bottom = el.style.right = "0px"
         break
-      case 'bottomleft':
+      case "bottomleft":
       default:
         position.set(0, 0)
-        el.style.bottom = el.style.left = '0px'
+        el.style.bottom = el.style.left = "0px"
         break
     }
   }, [placement])
@@ -80,7 +95,10 @@ function View({ index = 1, children, clearColor, placement }: any) {
     if (event.target === el) {
       const width = state.size.width
       const height = state.size.height
-      state.pointer.set((event.offsetX / width) * 2 - 1, -(event.offsetY / height) * 2 + 1)
+      state.pointer.set(
+        (event.offsetX / width) * 2 - 1,
+        -(event.offsetY / height) * 2 + 1
+      )
       state.raycaster.setFromCamera(state.pointer, state.camera)
     }
   }, [])
@@ -94,8 +112,8 @@ function View({ index = 1, children, clearColor, placement }: any) {
         scene,
         {
           events: { compute, priority: events.priority + index, connected: el },
-          size: { width: size.width / 2, height: size.height / 2 },
-        },
+          size: { width: size.width / 2, height: size.height / 2 }
+        }
       )}
     </>
   )
@@ -121,23 +139,39 @@ function Container({ children, index, clearColor, position }: any) {
 
 const App = () => (
   <Canvas dpr={[1, 2]} camera={{ position: [0, 0, 5] }}>
-    <View index={1} placement="bottomleft" clearColor={new THREE.Color('orange').convertLinearToSRGB()}>
+    <View
+      index={1}
+      placement="bottomleft"
+      clearColor={new THREE.Color("orange").convertLinearToSRGB()}
+    >
       <OrthographicCamera makeDefault zoom={100} />
       <Scene preset="lobby" />
       <OrbitControls makeDefault />
     </View>
-    <View index={2} placement="bottomright" clearColor={new THREE.Color('hotpink').convertLinearToSRGB()}>
+    <View
+      index={2}
+      placement="bottomright"
+      clearColor={new THREE.Color("hotpink").convertLinearToSRGB()}
+    >
       <PerspectiveCamera makeDefault />
       <Scene preset="city" />
       <ArcballControls />
     </View>
-    <View index={3} placement="topleft" clearColor={new THREE.Color('aquamarine').convertLinearToSRGB()}>
+    <View
+      index={3}
+      placement="topleft"
+      clearColor={new THREE.Color("aquamarine").convertLinearToSRGB()}
+    >
       <PerspectiveCamera makeDefault />
       <Scene preset="dawn" />
       <OrbitControls makeDefault />
       <CameraShake intensity={2} />
     </View>
-    <View index={4} placement="topright" clearColor={new THREE.Color('lightblue').convertLinearToSRGB()}>
+    <View
+      index={4}
+      placement="topright"
+      clearColor={new THREE.Color("lightblue").convertLinearToSRGB()}
+    >
       <PerspectiveCamera makeDefault />
       <Scene preset="warehouse" />
       <OrbitControls makeDefault />

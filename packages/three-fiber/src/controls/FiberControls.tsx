@@ -56,7 +56,8 @@ function FiberDisplay({
           internal: folder({
             active: { value: false, disabled: true },
             priorityI: { label: "priority", value: 0, disabled: true },
-            frames: { value: 0, disabled: true }
+            frames: { value: 0, disabled: true },
+            initialClick: { value: { x: 0, y: 0 }, disabled: true }
           })
         },
         {
@@ -120,6 +121,10 @@ function syncDataWithState(data: any, state: RootState) {
   data["fiber.internal.active"].value = state.internal.active
   data["fiber.internal.priorityI"].value = state.internal.priority
   data["fiber.internal.frames"].value = state.internal.frames
+  data["fiber.internal.initialClick"].value = {
+    x: state.internal.initialClick[0],
+    y: state.internal.initialClick[1]
+  }
 }
 
 function FiberMonitor({

@@ -1,6 +1,6 @@
-import * as THREE from 'three'
-import React, { useEffect, useReducer } from 'react'
-import { Canvas } from '@react-three/fiber'
+import * as THREE from "three"
+import React, { useEffect, useReducer } from "react"
+import { Canvas } from "@react-three/fiber"
 
 const invisibleLayer = new THREE.Layers()
 invisibleLayer.set(4)
@@ -35,8 +35,14 @@ export default function App() {
   })
   return (
     <Canvas camera={{ layers: visibleLayers }}>
-      <Box position={[-0.5, 0, 0]} layers={!visible ? invisibleLayer : visibleLayers} />
-      <Sphere position={[0.5, 0, 0]} layers={visible ? invisibleLayer : visibleLayers} />
+      <Box
+        position={[-0.5, 0, 0]}
+        layers={!visible ? invisibleLayer : visibleLayers}
+      />
+      <Sphere
+        position={[0.5, 0, 0]}
+        layers={visible ? invisibleLayer : visibleLayers}
+      />
     </Canvas>
   )
 }
