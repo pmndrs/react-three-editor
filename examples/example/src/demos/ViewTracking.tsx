@@ -1,23 +1,45 @@
-import * as React from 'react'
-import * as THREE from 'three'
-import { useGLTF, Preload, OrbitControls, PerspectiveCamera, TransformControls, Environment } from '@react-three/drei'
-import { Canvas, createPortal, ThreeEvent, useFrame, useThree } from '@react-three/fiber'
-import { useCallback, useEffect, useReducer, useRef, useState } from 'react'
-import useRefs from 'react-use-refs'
+import * as React from "react"
+import * as THREE from "three"
+import {
+  useGLTF,
+  Preload,
+  OrbitControls,
+  PerspectiveCamera,
+  TransformControls,
+  Environment
+} from "@react-three/drei"
+import {
+  Canvas,
+  createPortal,
+  ThreeEvent,
+  useFrame,
+  useThree
+} from "@react-three/fiber"
+import { useCallback, useEffect, useReducer, useRef, useState } from "react"
+import useRefs from "react-use-refs"
 
 function Soda(props: any) {
   const ref = useRef<THREE.Group>(null!)
   const [hovered, spread] = useHover()
   const { nodes, materials } = useGLTF(
-    'https://market-assets.fra1.cdn.digitaloceanspaces.com/market-assets/models/soda-bottle/model.gltf',
+    "https://market-assets.fra1.cdn.digitaloceanspaces.com/market-assets/models/soda-bottle/model.gltf"
   ) as any
   useFrame((state, delta) => (ref.current.rotation.y += delta))
   return (
     <group ref={ref} {...props} {...spread} dispose={null}>
       <mesh geometry={nodes.Mesh_sodaBottle.geometry}>
-        <meshStandardMaterial color={hovered ? 'red' : 'green'} roughness={0} metalness={0.8} envMapIntensity={2} />
+        <meshStandardMaterial
+          color={hovered ? "red" : "green"}
+          roughness={0}
+          metalness={0.8}
+          envMapIntensity={2}
+        />
       </mesh>
-      <mesh geometry={nodes.Mesh_sodaBottle_1.geometry} material={materials.red} material-envMapIntensity={0} />
+      <mesh
+        geometry={nodes.Mesh_sodaBottle_1.geometry}
+        material={materials.red}
+        material-envMapIntensity={0}
+      />
     </group>
   )
 }
@@ -27,15 +49,17 @@ function useHover() {
   return [
     hovered,
     {
-      onPointerOver: (e: ThreeEvent<PointerEvent>) => (e.stopPropagation(), hover(true)),
-      onPointerOut: () => hover(false),
-    },
+      onPointerOver: (e: ThreeEvent<PointerEvent>) => (
+        e.stopPropagation(), hover(true)
+      ),
+      onPointerOut: () => hover(false)
+    }
   ]
 }
 
 function Duck(props: any) {
   const { scene } = useGLTF(
-    'https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/duck/model.gltf',
+    "https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/duck/model.gltf"
   ) as any
   useFrame((state, delta) => (scene.rotation.x = scene.rotation.y += delta))
   return <primitive object={scene} {...props} />
@@ -43,7 +67,7 @@ function Duck(props: any) {
 
 function Candy(props: any) {
   const { scene } = useGLTF(
-    'https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/candy-bucket/model.gltf',
+    "https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/candy-bucket/model.gltf"
   ) as any
   useFrame((state, delta) => (scene.rotation.z = scene.rotation.y += delta))
   return <primitive object={scene} {...props} />
@@ -51,7 +75,7 @@ function Candy(props: any) {
 
 function Flash(props: any) {
   const { scene } = useGLTF(
-    'https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/lightning/model.gltf',
+    "https://vazxmixjsiawhamofees.supabase.co/storage/v1/object/public/models/lightning/model.gltf"
   )
   useFrame((state, delta) => (scene.rotation.y += delta))
   return <primitive object={scene} {...props} />
@@ -59,7 +83,7 @@ function Flash(props: any) {
 
 function Apple(props: any) {
   const { scene } = useGLTF(
-    'https://market-assets.fra1.cdn.digitaloceanspaces.com/market-assets/models/apple-half/model.gltf',
+    "https://market-assets.fra1.cdn.digitaloceanspaces.com/market-assets/models/apple-half/model.gltf"
   )
   useFrame((state, delta) => (scene.rotation.x = scene.rotation.y += delta))
   return <primitive object={scene} {...props} />
@@ -78,8 +102,19 @@ function Container({ scene, index, children, frames, rect, track }: any) {
       frameCount++
     }
 
-    const { left = 0, right = 0, top = 0, bottom = 0, width = 0, height = 0 } = rect.current || {}
-    const isOffscreen = bottom < 0 || top > state.size.height || right < 0 || left > state.size.width
+    const {
+      left = 0,
+      right = 0,
+      top = 0,
+      bottom = 0,
+      width = 0,
+      height = 0
+    } = rect.current || {}
+    const isOffscreen =
+      bottom < 0 ||
+      top > state.size.height ||
+      right < 0 ||
+      left > state.size.width
 
     const positiveYUpBottom = state.size.height - bottom
     const aspect = width / height
@@ -121,7 +156,13 @@ function Container({ scene, index, children, frames, rect, track }: any) {
   return ready && children
 }
 
-export const View = ({ track, index = 1, frames = Infinity, children, ...props }: any) => {
+export const View = ({
+  track,
+  index = 1,
+  frames = Infinity,
+  children,
+  ...props
+}: any) => {
   const rect = useRef<DOMRect>()
   const [scene] = useState(() => new THREE.Scene())
 
@@ -136,17 +177,23 @@ export const View = ({ track, index = 1, frames = Infinity, children, ...props }
         state.raycaster.setFromCamera(state.pointer, state.camera)
       }
     },
-    [rect],
+    [rect]
   )
 
   return (
     <>
       {createPortal(
-        <Container frames={frames} scene={scene} track={track} rect={rect} index={index}>
+        <Container
+          frames={frames}
+          scene={scene}
+          track={track}
+          rect={rect}
+          index={index}
+        >
           {children}
         </Container>,
         scene,
-        { events: { compute } },
+        { events: { compute } }
       )}
     </>
   )
@@ -162,46 +209,72 @@ export default function App() {
         <div
           ref={view1}
           className="translateX"
-          style={{ margin: '0.2em', width: 400, height: 200, display: 'inline-block' }}
+          style={{
+            margin: "0.2em",
+            width: 400,
+            height: 200,
+            display: "inline-block"
+          }}
         />
         This is perhaps the biggest update to Fiber yet.
         <div
           ref={view2}
           className="scale"
-          style={{ margin: '0.2em', width: 400, height: 200, display: 'inline-block' }}
+          style={{
+            margin: "0.2em",
+            width: 400,
+            height: 200,
+            display: "inline-block"
+          }}
         />
         We've tried our best to keep breaking-changes to a minimum,
         <div
           ref={view3}
           className="translateY"
-          style={{ margin: '0.2em', width: 400, height: 200, display: 'inline-block' }}
+          style={{
+            margin: "0.2em",
+            width: 400,
+            height: 200,
+            display: "inline-block"
+          }}
         />
         they mostly affect rarely used api's like attach.
         <div
           ref={view4}
           className="scale"
-          style={{ margin: '0.2em', width: 400, height: 200, display: 'inline-block' }}
+          style={{
+            margin: "0.2em",
+            width: 400,
+            height: 200,
+            display: "inline-block"
+          }}
         />
         This release brings a ton of performance related fixes,
         <div
           ref={view5}
           className="translateX"
-          style={{ margin: '0.2em', width: 400, height: 200, display: 'inline-block' }}
+          style={{
+            margin: "0.2em",
+            width: 400,
+            height: 200,
+            display: "inline-block"
+          }}
         />
         but also includes some new and ground-breaking features.
       </div>
       <Canvas
         onCreated={(state) => state.events.connect?.(ref.current)}
         style={{
-          pointerEvents: 'none',
-          position: 'fixed',
+          pointerEvents: "none",
+          position: "fixed",
           top: 0,
           left: 0,
-          width: '100vw',
-          height: '100vh',
-        }}>
+          width: "100vw",
+          height: "100vh"
+        }}
+      >
         <View track={view1}>
-          <color attach="background" args={['lightpink']} />
+          <color attach="background" args={["lightpink"]} />
           <Scene />
           <TransformControls>
             <Soda scale={6} position={[0, -1.6, 0]} />
@@ -210,7 +283,7 @@ export default function App() {
           <OrbitControls makeDefault />
         </View>
         <View track={view2}>
-          <color attach="background" args={['lightblue']} />
+          <color attach="background" args={["lightblue"]} />
           <Scene />
           <TransformControls>
             <Apple scale={10} />
@@ -218,19 +291,19 @@ export default function App() {
           <PerspectiveCamera makeDefault fov={40} position={[0, 0, 6]} />
         </View>
         <View track={view3}>
-          <color attach="background" args={['lightgreen']} />
+          <color attach="background" args={["lightgreen"]} />
           <Scene />
           <Duck scale={2} />
           <PerspectiveCamera makeDefault fov={40} position={[0, 0, 6]} />
         </View>
         <View track={view4}>
-          <color attach="background" args={['peachpuff']} />
+          <color attach="background" args={["peachpuff"]} />
           <Scene />
           <Candy scale={3} />
           <PerspectiveCamera makeDefault fov={40} position={[0, 0, 6]} />
         </View>
         <View track={view5}>
-          <color attach="background" args={['orange']} />
+          <color attach="background" args={["orange"]} />
           <Scene />
           <Flash scale={3} />
           <PerspectiveCamera makeDefault fov={40} position={[0, 0, 6]} />

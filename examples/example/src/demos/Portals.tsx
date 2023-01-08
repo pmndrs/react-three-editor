@@ -12,7 +12,7 @@ export function Lights() {
       <pointLight position={[20, 30, 10]} />
       <pointLight position={[-11.846, 0.934, -10]} color="blue" />
     </>
-  );
+  )
 }
 
 export function Farm(props: any) {
@@ -151,7 +151,7 @@ function App() {
         <Soda scale={[5, 5, 5]} position={[4.109, -0.377, 3]} />
       </group>
     </Canvas>
-  );
+  )
 }
 
 export default App

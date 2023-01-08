@@ -1,8 +1,11 @@
-import * as THREE from 'three'
-import React, { useState, useRef } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
+import * as THREE from "three"
+import React, { useState, useRef } from "react"
+import { Canvas, useFrame } from "@react-three/fiber"
 
-const mesh = new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshBasicMaterial({ color: 'red' }))
+const mesh = new THREE.Mesh(
+  new THREE.BoxGeometry(),
+  new THREE.MeshBasicMaterial({ color: "red" })
+)
 const group = new THREE.Group()
 group.add(mesh)
 
@@ -20,15 +23,18 @@ function Box(props: any) {
       onPointerOut={(e) => setHovered(false)}
       onClick={() => setClicked(!clicked)}
       scale={clicked ? [1.5, 1.5, 1.5] : [1, 1, 1]}
-      {...props}>
+      {...props}
+    >
       <boxGeometry />
-      <meshBasicMaterial color={hovered ? 'hotpink' : 'aquamarine'} />
+      <meshBasicMaterial color={hovered ? "hotpink" : "aquamarine"} />
     </mesh>
   )
 }
 
 function Box2(props: any) {
-  return <primitive object={group} {...props} onClick={() => console.log('hi')} />
+  return (
+    <primitive object={group} {...props} onClick={() => console.log("hi")} />
+  )
 }
 
 export default function App() {
