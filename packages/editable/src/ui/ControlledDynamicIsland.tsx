@@ -1,5 +1,5 @@
-import { useEditor } from "@editable-jsx/editable"
 import { multiToggle } from "@editable-jsx/ui"
+import { useEditor } from "../useEditor"
 import { DynamicIsland } from "./BottomBar"
 
 export function ControlledDynamicIsland() {

@@ -5,6 +5,8 @@ import "./styles.css"
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RemotionRoot />
+    <div>
+      <RemotionRoot />
+    </div>
   </StrictMode>,
 )

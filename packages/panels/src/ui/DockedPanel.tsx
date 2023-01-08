@@ -7,7 +7,7 @@ import { usePanel } from "../usePanel"
 import { usePanelManager } from "../usePanelManager"
 import { PanelGhost } from "./PanelGhost"
 import { TitleWithFilter } from "./PanelTitle"
-import { LeftPanelGroup, RightPanelGroup } from "./tunnels"
+import { PanelGroups } from "./tunnels"
 import { PanelProps } from "./types"
 
 export function DockedPanel({
@@ -18,7 +18,7 @@ export function DockedPanel({
   order = 0,
   width
 }: PanelProps & { order?: number }) {
-  let PanelGroup = side === "left" ? LeftPanelGroup : RightPanelGroup
+  let PanelGroup = PanelGroups[side]
   const panelManager = usePanelManager()
   const panel = usePanel(id)
   return (

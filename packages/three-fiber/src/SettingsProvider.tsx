@@ -7,8 +7,8 @@ export function SettingsProvider({ children }: PropsWithChildren) {
   const mode = editor.useMode()
 
   const settings = useMemo(
-    () => ({ settings: editor.settings }),
-    [mode, editor.settings]
+    () => ({ settings: editor.modeSettings }),
+    [mode, editor.modeSettings]
   )
 
   return (

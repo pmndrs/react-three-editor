@@ -16,6 +16,7 @@ export interface Typegen0 {
     addNewElement: "STOP_DRAGGING"
     clearSelection: "CLEAR_SELECTION"
     selectElement: "SELECT"
+    selectRoot: "SELECT_ROOT"
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {

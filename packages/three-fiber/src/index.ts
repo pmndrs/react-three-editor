@@ -6,6 +6,7 @@ export {
   setEditable,
   useEditor
 } from "@editable-jsx/editable"
+export { SceneControls } from "@editable-jsx/editable/src/SceneControls"
 export {
   applyProps,
   createEvents,
@@ -19,8 +20,6 @@ export {
 export { button, buttonGroup, folder, levaStore as defaultPanel } from "leva"
 export { CameraGizmos } from "./controls/CameraGizmos"
 export { PerformanceControls } from "./controls/PerformanceControls"
-export { SceneControls } from "./controls/SceneControls"
-export { SelectedElementControls } from "./controls/SelectedElementControls"
 export { editor } from "./editor"
 export { EditorRoot } from "./EditorRoot"
 export { EditorUI, ThreeEditorCanvas as Canvas } from "./ThreeEditorCanvas"

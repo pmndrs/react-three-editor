@@ -1,4 +1,4 @@
-import { EditableElement } from "@editable-jsx/editable"
+import { EditableElement, useEditor } from "@editable-jsx/editable"
 import { multiToggle } from "@editable-jsx/ui"
 import { useHelper } from "@react-three/drei"
 import { applyProps } from "@react-three/fiber"
@@ -14,12 +14,13 @@ export function BoundsHelper({
   props: any
   children: ReactNode
 }) {
+  const editor = useEditor()
   const item = useMemo(() => new Group(), [])
 
   // @ts-ignore
   element.bounds = item
 
-  const { bounds } = element.editor.useSettings("helpers", {
+  const { bounds } = editor.useSettings("helpers", {
     bounds: multiToggle({
       data: "selected",
       options: ["all", "selected", "none"]

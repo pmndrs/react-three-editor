@@ -1,6 +1,9 @@
-import { tree, TreeElement, useEditor } from "@editable-jsx/editable"
 import { usePanel } from "@editable-jsx/panels"
 import { useControls } from "leva"
+import { StoreType } from "leva/dist/declarations/src/types"
+import { tree } from "./ui/tree"
+import { TreeElement } from "./ui/TreeElement"
+import { useEditor } from "./useEditor"
 
 export function SceneControls({
   panel: store = "scene",
@@ -11,7 +14,7 @@ export function SceneControls({
 }) {
   const editor = useEditor()
   const panel = usePanel(store)
-  const root = editor.store((state) => editor.root)
+  const root = editor.store((state) => editor.document)
 
   editor.useSettings("scene", {
     fontSize: {
@@ -39,12 +42,13 @@ export function SceneControls({
     {
       scene: tree({
         root,
+        editor,
         scrollable: false,
         order: order,
         component: TreeElement
       })
     },
-    { store: panel.store },
+    { store: panel.store as StoreType },
     [root, order]
   )
 

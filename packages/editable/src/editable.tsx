@@ -1,4 +1,5 @@
 import { FC, forwardRef, ReactNode, Ref, useContext, useMemo } from "react"
+import { EditableRootContext } from "./EditableRoot"
 import { EditorContext } from "./EditorContext"
 
 type Elements = {
@@ -71,17 +72,19 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
 
   if (hasRef) {
     return forwardRef(function Editable(props: any, forwardRef) {
-      const editor = useContext(EditorContext)
-      if (!editor) return <Component {...props} ref={forwardRef} />
+      const editorRoot = useContext(EditableRootContext)
+      console.log(editorRoot)
+      if (!editorRoot) return <Component {...props} ref={forwardRef} />
 
-      return editor.renderElement(Component, props, forwardRef ?? true)
+      return editorRoot.renderElement(Component, props, forwardRef ?? true)
     })
   } else {
     return function Editable(props: any) {
-      const editor = useContext(EditorContext)
-      if (!editor) return <Component {...props} />
+      const editorRoot = useContext(EditableRootContext)
+      console.log(editorRoot)
+      if (!editorRoot) return <Component {...props} />
 
-      return editor.renderElement(Component, props, false)
+      return editorRoot.renderElement(Component, props, false)
     }
   }
 }

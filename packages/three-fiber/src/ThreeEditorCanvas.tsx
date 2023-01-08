@@ -1,5 +1,5 @@
 import { CommandBar } from "@editable-jsx/commander"
-import { useEditor } from "@editable-jsx/editable"
+import { EditableRootProvider, useEditor } from "@editable-jsx/editable"
 import { PanelContainer, PanelGroup } from "@editable-jsx/panels"
 import { JSXSource } from "@editable-jsx/state"
 import { createMultiTunnel, Floating, Toaster } from "@editable-jsx/ui"
@@ -9,10 +9,8 @@ import { forwardRef, Suspense } from "react"
 import { AllCommands } from "./commands"
 import { ComponentsTray } from "./ComponentsTray"
 import { EditorControls } from "./controls/EditorControls"
-import { EditorPanels } from "./controls/EditorPanels"
 import { EditableThreeRoot } from "./EditableThreeRoot"
 import { EditorBounds } from "./EditorBounds"
-import { EditorRoot } from "./EditorRoot"
 import { AppRootProvider, FiberRootManager } from "./FiberRootManager"
 import { ThreeEditorProvider } from "./ThreeEditorProvider"
 import { ThreeTunnel } from "./ThreeTunnel"
@@ -64,20 +62,18 @@ export const EditableCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
 
     // const root = editor.useRoot(EditableThreeRoot)
 
-    const [editableElement, { children, ...canvasProps }] = root.useElement(
-      "root",
-      {
-        ...props,
-        id: "root"
-      },
-      ref
-    )
+    const [root, { children, ...canvasProps }] =
+      editor.document.useRoot<EditableThreeRoot>(
+        EditableThreeRoot,
+        {
+          ...props,
+          id: "root"
+        },
+        ref
+      )
 
     return (
       <FiberCanvas
-        onPointerMissed={(e: any) => {
-          root.clearSelection()
-        }}
         {...canvasProps}
         ref={(el) => {
           canvasProps.ref = el
@@ -89,9 +85,9 @@ export const EditableCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
           <EditorBounds>
             <Suspense>
               <FiberProvider>
-                <EditorRoot element={editableElement}>
+                <EditableRootProvider root={root}>
                   <AppRootProvider>{children}</AppRootProvider>
-                </EditorRoot>
+                </EditableRootProvider>
               </FiberProvider>
             </Suspense>
           </EditorBounds>

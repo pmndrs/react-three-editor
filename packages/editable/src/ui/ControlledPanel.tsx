@@ -1,10 +1,8 @@
-import { useEditor } from "@editable-jsx/editable"
 import { Panel, PanelProps } from "@editable-jsx/panels"
 import { multiToggle } from "@editable-jsx/ui"
+import { useEditor } from "../useEditor"
 
-export function ControlledPanel(
-  props: PanelProps & { order?: number; lazy?: boolean }
-) {
+export function ControlledPanel(props: PanelProps) {
   const editor = useEditor()
   const { side, floating, hidden } = editor.useSettings(
     "panels." + props.panel,

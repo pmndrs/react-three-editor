@@ -1,22 +1,6 @@
-import { useEditor } from "@editable-jsx/editable"
-import { Panel, PanelProps } from "@editable-jsx/panels"
-import { multiToggle } from "@editable-jsx/ui"
-
-function ControlledPanel(props: PanelProps) {
-  const editor = useEditor()
-  const { side, floating, hidden } = editor.useSettings(
-    "panels." + props.panel,
-    {
-      side: multiToggle({
-        data: props.side ?? "left",
-        options: ["left", "right"] as const
-      }),
-      floating: props.floating ?? false,
-      hidden: props.hidden ?? false
-    }
-  )
-  return <Panel {...props} side={side} floating={floating} hidden={hidden} />
-}
+import { ControlledDynamicIsland } from "./ui/ControlledDynamicIsland"
+import { ControlledPanel } from "./ui/ControlledPanel"
+import { useEditor } from "./useEditor"
 
 export function EditorPanels() {
   const editor = useEditor()
@@ -36,7 +20,6 @@ export function EditorPanels() {
           panel="properties"
           title="properties"
           side="right"
-          lazy
           key={selectedElement.id}
           order={1}
         />
@@ -48,7 +31,7 @@ export function EditorPanels() {
           side="right"
         />
       )}
+      <ControlledDynamicIsland />
     </>
-    // <DynamicIsland />
   )
 }

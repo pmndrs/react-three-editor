@@ -24,6 +24,18 @@ const deviceType: Device = "phone"
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      {/* <Composition
+        id="Scene"
+        component={Scene}
+        durationInFrames={300}
+        fps={30}
+        width={1280}
+        height={720}
+        defaultProps={{
+          videoSrc: deviceType === "phone" ? "/phone.mp4" : "/tablet.mp4",
+          baseScale: deviceType === "phone" ? 1 : 1.8,
+        }}
+      /> */}
       <Player
         id="Scene"
         component={Scene}

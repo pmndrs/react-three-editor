@@ -74,7 +74,7 @@ export function ElementRef({ element }: { element: EditableElement }) {
           flex: 1
         }}
         onClick={(e) => {
-          element.editor.select(element)
+          element.ownerDocument.editor.select(element)
         }}
       >
         {name}

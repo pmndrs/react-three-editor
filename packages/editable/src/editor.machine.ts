@@ -9,6 +9,7 @@ export const editorMachine =
       initial: "editing",
       context: {
         selectedId: null as string | null,
+        selectedRootId: null as string | null,
         addingElement: null as { type: string; id: string } | null,
         ghostPosition: [0, 0, 0] as [number, number, number]
       },
@@ -24,6 +25,7 @@ export const editorMachine =
           | { type: "STOP_ADDING" }
           | { type: "START_EDITING" }
           | { type: "SELECT"; elementId: string }
+          | { type: "SELECT_ROOT"; rootId: string }
           | { type: "CLEAR_SELECTION" }
           | { type: "START_TRANSFORMING" }
           | { type: "STOP_TRANSFORMING" }
@@ -32,6 +34,11 @@ export const editorMachine =
       },
       states: {
         editing: {
+          on: {
+            SELECT_ROOT: {
+              actions: ["selectRoot"]
+            }
+          },
           initial: "idle",
           states: {
             idle: {
@@ -139,10 +146,11 @@ export const editorMachine =
         selectElement: assign({
           selectedId: (_, event) => event.elementId
         }),
+        selectRoot: assign({
+          selectedRootId: (_, event) => event.rootId
+        }),
         clearSelection: assign({
-          selectedId: () => null as string | null,
-          addingElement: () => null as { type: string; id: string } | null,
-          ghostPosition: () => [0, 0, 0] as [number, number, number]
+          selectedId: (_, event) => null as unknown as string | null
         })
 
         // addNewElement: assign({

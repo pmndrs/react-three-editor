@@ -1,10 +1,11 @@
 import { CommandBar, KeyboardCommands } from "@editable-jsx/commander"
-import { useEditor } from "@editable-jsx/editable"
+import {
+  SceneControls,
+  SelectedElementControls,
+  useEditor
+} from "@editable-jsx/editable"
 import { EditorCamera } from "./EditorCamera"
 import { FiberControls } from "./FiberControls"
-import { PerformanceControls } from "./PerformanceControls"
-import { SceneControls } from "./SceneControls"
-import { SelectedElementControls } from "./SelectedElementControls"
 
 export function EditorControls() {
   const { grid, axes } = useEditor().useSettings("helpers", {

@@ -1,8 +1,8 @@
 import { getVideoMetadata, VideoMetadata } from "@remotion/media-utils"
-import { ThreeCanvas, useVideoTexture } from "@remotion/three"
+import { useVideoTexture } from "@remotion/three"
 import React, { useEffect, useRef, useState } from "react"
-import { AbsoluteFill, useVideoConfig, Video } from "remotion"
-import { Phone } from "./Phone"
+import { AbsoluteFill, useVideoConfig } from "remotion"
+import { Video } from "./Video"
 
 const container: React.CSSProperties = {
   backgroundColor: "white",
@@ -30,15 +30,15 @@ export const Scene: React.FC<{
   const texture = useVideoTexture(videoRef)
   return (
     <AbsoluteFill style={container}>
-      <Video ref={videoRef} src={videoSrc} style={videoStyle} />
-      {videoData ? (
+      <Video />
+      {/* {videoData ? (
         <ThreeCanvas linear width={width} height={height}>
           <ambientLight intensity={1.5} color={0xffffff} />
           <pointLight position={[10, 10, 0]} />
 
-          <Phone baseScale={baseScale} videoTexture={texture} aspectRatio={videoData.aspectRatio} />
+          <Phone baseScale={baseScale} aspectRatio={videoData.aspectRatio} />
         </ThreeCanvas>
-      ) : null}
+      ) : null} */}
     </AbsoluteFill>
   )
 }

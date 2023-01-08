@@ -1206,6 +1206,7 @@ importers:
       three-stdlib: ^2.20.4
       ts-morph: ^17.0.1
       tunnel-rat: ^0.1.0
+      use-resize-observer: ^9.1.0
       vite: ^3.0.7
       vite-dev-rpc: ^0.1.0
       xstate: ^4.35.1
@@ -1273,6 +1274,7 @@ importers:
       esbuild: 0.15.18
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+      use-resize-observer: 9.1.0_biqbaboplfbrettd7655fr4n2y
       vite: 3.2.5
 
   packages/state-utils:
@@ -4367,6 +4369,10 @@ packages:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.0
       '@jridgewell/sourcemap-codec': 1.4.14
+
+  /@juggle/resize-observer/3.4.0:
+    resolution: {integrity: sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==}
+    dev: true
 
   /@manypkg/cli/0.19.2:
     resolution: {integrity: sha512-DXx/P1lyunNoFWwOj1MWBucUhaIJljoiAGOpO2fE0GKMBCI6EZBZD0Up1+fQZoXBecKXRgV9mGgLvIB2fOQ0KQ==}
@@ -19500,6 +19506,17 @@ packages:
     dependencies:
       react: 18.2.0
     dev: false
+
+  /use-resize-observer/9.1.0_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-R25VqO9Wb3asSD4eqtcxk8sJalvIOYBqS8MNZlpDSQ4l4xMQxC/J7Id9HoTqPq8FwULIn0PVW+OAqF2dyYbjow==}
+    peerDependencies:
+      react: 16.8.0 - 18
+      react-dom: 16.8.0 - 18
+    dependencies:
+      '@juggle/resize-observer': 3.4.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: true
 
   /use-sidecar/1.1.2_react@18.2.0:
     resolution: {integrity: sha512-epTbsLuzZ7lPClpz2TyryBfztm7m+28DlEv2ZCQ3MDr5ssiwyOwGH/e5F9CkfWjJ1t4clvI58yF822/GUkjjhw==}

@@ -1,10 +1,8 @@
-import {
-  EditableElement,
-  element as elementProperties
-} from "@editable-jsx/editable"
 import { ControlledStore } from "@editable-jsx/state"
 import { useControls } from "leva"
 import { StoreType } from "leva/dist/declarations/src/types"
+import { EditableElement } from "./EditableElement"
+import { element } from "./ui/element"
 
 export function useElementControls(
   entity: EditableElement,
@@ -25,7 +23,7 @@ export function useElementControls(
 
   useControls(
     {
-      [entity.id]: elementProperties({
+      [entity.id]: element({
         element: entity,
         panel: true,
         collapsed: false,

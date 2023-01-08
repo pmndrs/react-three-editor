@@ -1,7 +1,7 @@
 import { useCommandBar } from "@editable-jsx/commander"
-import { useEditor } from "@editable-jsx/editable"
 import { PanelGroups } from "@editable-jsx/panels"
 import { Floating, Icon, styled } from "@editable-jsx/ui"
+import { useEditor } from "../useEditor"
 
 const StyledIcon = styled(Icon, {})
 

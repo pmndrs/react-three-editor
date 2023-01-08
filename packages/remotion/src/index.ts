@@ -1,3 +1,4 @@
 export * from "@editable-jsx/editable"
 export * from "./EditablePlayer"
-import "./newFile"
+export * from "./Player"
+import "./ThreeCanvas"

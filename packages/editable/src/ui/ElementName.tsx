@@ -27,7 +27,7 @@ export function ElementName({
           flex: 1
         }}
         onClick={(e) => {
-          element.select()
+          element.ownerDocument.editor.select(element)
         }}
       >
         {name}

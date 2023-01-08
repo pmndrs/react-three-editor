@@ -8,18 +8,13 @@ import {
   mergeRefs
 } from "@editable-jsx/state"
 import { toast } from "@editable-jsx/ui"
-import {
-  createElement,
-  Dispatch,
-  FC,
-  SetStateAction,
-  useEffect,
-  useState
-} from "react"
+import { createElement, Dispatch, FC, SetStateAction, useState } from "react"
 import { Editable, editable } from "./editable"
-import { EditableDocument, EditableRoot } from "./EditableRoot"
+import type { EditableDocument } from "./EditableDocument"
+import { EditableRoot } from "./EditableRoot"
 import { PropChange } from "./prop-types"
 import { REF_SYMBOL } from "./REF_SYMBOL"
+import { useEditor } from "./useEditor"
 
 /**
  * An editable element is a wrapper around a React element that can be edited in the editor.
@@ -113,10 +108,14 @@ export class EditableElement<
 
   appendChild(element: EditableElement) {
     this.childIds.push(element.id)
+    element.parentId = this.id
+    element.index = this.childIds.length - 1 + ""
   }
 
   removeChild(element: EditableElement) {
+    element.parentId = null
     this.childIds = this.childIds.filter((id) => id !== element.id)
+    element.index = ""
   }
 
   appendNewElement(
@@ -297,41 +296,15 @@ export class EditableElement<
   }
 
   useIsSelected() {
-    return this.ownerDocument.useState((state) => this.isSelected)
+    const editor = useEditor()
+    return editor.useState(
+      (state) => editor.state.context.selectedId === this.treeId
+    )
   }
 
-  get isSelected() {
-    return this.ownerDocument.state.context.selectedId === this.treeId
-  }
-
-  useCollapsed(): [any, any] {
-    let storedCollapsedState =
-      this.editor.expanded.size > 0
-        ? this.editor.expanded.has(this.treeId)
-          ? false
-          : true
-        : !this.editor.isSelected(this) && this.isPrimitive()
-
-    const [collapsed, setCollapsed] = useState(storedCollapsedState)
-
-    useEffect(() => {
-      if (collapsed) {
-        this.editor.expanded.delete(this.treeId)
-        localStorage.setItem(
-          "collapased",
-          JSON.stringify(Array.from(this.editor.expanded))
-        )
-      } else {
-        this.editor.expanded.add(this.treeId)
-        localStorage.setItem(
-          "collapased",
-          JSON.stringify(Array.from(this.editor.expanded))
-        )
-      }
-    }, [collapsed])
-
-    return [collapsed, setCollapsed]
-  }
+  // get isSelected() {
+  //   return editor.state.context.selectedId === this.treeId
+  // }
 
   isPrimitive(): boolean {
     return (
@@ -414,7 +387,7 @@ export class EditableElement<
     let controls = {}
     let entity = this
 
-    this.ownerDocument.plugins.forEach((plugin) => {
+    this.ownerDocument.editor.plugins.forEach((plugin) => {
       if (plugin.controls && plugin.applicable(entity)) {
         Object.assign(controls, plugin.controls(entity))
       }
@@ -424,8 +397,8 @@ export class EditableElement<
   }
 
   get icon() {
-    for (var i = this.ownerDocument.plugins.length - 1; i >= 0; i--) {
-      let plugin = this.ownerDocument.plugins[i]
+    for (var i = this.ownerDocument.editor.plugins.length - 1; i >= 0; i--) {
+      let plugin = this.ownerDocument.editor.plugins[i]
       if (plugin.icon && plugin.applicable(this)) {
         return plugin.icon(this)
       }
@@ -435,7 +408,7 @@ export class EditableElement<
   }
 
   select() {
-    this.editor.select(this)
+    this.ownerDocument.editor.select(this)
   }
 
   async save() {
@@ -449,7 +422,7 @@ export class EditableElement<
     )
 
     try {
-      console.log(await this.ownerDocument.save(diffs))
+      console.log(await this.ownerDocument.save())
       this.changes = {}
       this.changed = false
     } catch (e: any) {

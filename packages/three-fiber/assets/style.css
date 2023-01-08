@@ -35,6 +35,27 @@
   height: 8px;
   background-color: var(--leva-colors-elevation2);
 }
+
+.horizontal-handle {
+  height: 100%;
+  position: relative;
+  width: 8px;
+  background-color: var(--leva-colors-elevation2);
+}
+
+.horizontal-handle::after {
+  content: " ";
+  display: block;
+  width: 1px;
+  height: 100%;
+}
+
+.horizontal-panel {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
 .vertical-handle::after {
   content: " ";
   display: block;

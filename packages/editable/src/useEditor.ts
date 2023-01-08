@@ -1,6 +1,6 @@
 import { useContext } from "react"
 import { EditableRoot, EditableRootContext } from "./EditableRoot"
-import { Editor } from "./Editor"
+import type { Editor } from "./Editor"
 import { EditorContext } from "./EditorContext"
 
 export const useEditor = <T extends Editor>(): T => {

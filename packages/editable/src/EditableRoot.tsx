@@ -12,7 +12,9 @@ import { EditableContext as EditableElementContext } from "./EditableContext"
 import { EditableElement } from "./EditableElement"
 
 import { JSXSource } from "@editable-jsx/state"
+import { Editor } from "./Editor"
 import { Helpers } from "./helpers"
+import { IdContext } from "./IdContext"
 import { REF_SYMBOL } from "./REF_SYMBOL"
 
 export const EditableRootContext = createContext<EditableRoot>(null)
@@ -32,8 +34,10 @@ export class EditableRoot<
    */
   elementConstructor = EditableElement
 
-  constructor() {
-    super()
+  editor!: Editor
+
+  constructor(...args) {
+    super(...args)
   }
 
   /**
@@ -85,8 +89,13 @@ export class EditableRoot<
     )
 
     element.root = this
-    element.ownerDocument = this.ownerDocument
     return element as any as T
+  }
+
+  useId() {
+    const idContext = useContext(IdContext)
+    const id = useId()
+    return idContext ? `${idContext}-${id}` : id
   }
 
   /**
@@ -98,7 +107,7 @@ export class EditableRoot<
    * @returns
    */
   useElement(_Component: any, props: any, forwardRef?: any): [T, any] {
-    const id = props.id || useId()
+    const id = props.id || this.useId()
 
     const editableElement = useMemo(() => {
       return this.createElement(id, props._source ?? {}, _Component, props)
@@ -121,6 +130,9 @@ export class EditableRoot<
     const parent = useContext(EditableElementContext)!
 
     useEffect(() => {
+      editableElement.ownerDocument = this.ownerDocument
+      editableElement.ownerDocument.elements.set(id, editableElement)
+
       if (!editableElement.deleted) {
         if (parent) {
           parent.appendChild(editableElement)
@@ -129,6 +141,8 @@ export class EditableRoot<
         }
       }
       return () => {
+        editableElement.ownerDocument.elements.delete(id)
+        // editableElement.dispose()
         if (parent) {
           parent.removeChild(editableElement)
         } else {
@@ -178,31 +192,4 @@ export class EditableRoot<
   //     hidden
   //   })
   // }
-}
-
-export class EditableDocument extends EditableRoot {
-  getElementById(id: string): EditableElement {
-    return this.store.getState().elements[id]
-  }
-
-  getElementByTreeId(id: string): EditableElement | null {
-    let els = this.store.getState().elements
-    let el = Object.values(els).find((e) => e.treeId === id)
-    if (el) {
-      return el
-    }
-    return null
-  }
-  getElementById(id: string): EditableElement {
-    return this.store.getState().elements[id]
-  }
-
-  getElementByTreeId(id: string): EditableElement | null {
-    let els = this.store.getState().elements
-    let el = Object.values(els).find((e) => e.treeId === id)
-    if (el) {
-      return el
-    }
-    return null
-  }
 }

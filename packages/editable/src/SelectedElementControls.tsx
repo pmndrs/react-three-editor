@@ -1,10 +1,10 @@
-import { useEditor } from "@editable-jsx/editable"
 import { usePanel } from "@editable-jsx/panels"
 import { Fragment, useEffect } from "react"
 import { ElementControls } from "./ElementControls"
+import { useEditor } from "./useEditor"
 
 export function SelectedElementControls({
-  panel: store = "properties",
+  panel: store = "scene",
   order
 }: {
   panel?: string

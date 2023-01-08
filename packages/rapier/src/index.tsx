@@ -44,7 +44,7 @@ export function RapierPlugin() {
       }
     }
 
-    editor.addPlugin(plugin)
+    editor.registerPlugin(plugin)
     return () => {
       editor.plugins = editor.plugins.filter((p) => p !== plugin)
     }

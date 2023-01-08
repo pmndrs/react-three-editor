@@ -1,18 +1,11 @@
-import { CommandBar } from "@editable-jsx/commander"
 import {
+  EditableRoot,
   Editor,
-  IdContext,
   setEditable,
   useEditor
 } from "@editable-jsx/editable"
-import { PanelContainer, PanelGroup } from "@editable-jsx/panels"
-import { mergeRefs, SettingsContext } from "@editable-jsx/state"
-import {
-  createMultiTunnel,
-  Floating,
-  FloatingContext,
-  Toaster
-} from "@editable-jsx/ui"
+import { mergeRefs } from "@editable-jsx/state"
+import { createMultiTunnel } from "@editable-jsx/ui"
 import { client } from "@editable-jsx/vite/src/client"
 import { transform } from "@react-three/editor/src/plugins/plugins"
 import {
@@ -21,317 +14,85 @@ import {
   PlayerRef
 } from "@remotion/player"
 // import { Props } from "@react-three/fiber"
-import { forwardRef, useEffect, useId, useMemo, useRef } from "react"
+import { forwardRef, useEffect, useRef } from "react"
 
-export const propControls = {
-  applicable: (entity) => true,
-  controls: (entity) => {
-    let controls: Record<string, any> = {}
-    if (entity.type.controls) {
-      Object.entries(entity.type.controls)
-        .map(([k, { type = "unknown", value, ...v }]: any) => {
-          return [
-            k,
-            primitives[type as keyof typeof primitives]({
-              ...v,
-              element: entity,
-              path: ["currentProps", k],
-              default: value
-            })
-          ]
-        })
-        .forEach(([k, v]) => {
-          controls[k] = v
-        })
-    }
+import { EditableRootProvider } from "@editable-jsx/editable/src/EditableRootProvider"
+import { Player } from "./Player"
+import { propControls } from "./propControls"
+import { styleWithoutRef } from "./styleWithoutRef"
 
-    let IGNORED_PROPS = ["_source", "children"]
+export const editor = new Editor({
+  plugins: [transform, propControls, styleWithoutRef],
+  client
+})
 
-    let isControllable = (v: any) => {
-      return (
-        typeof v === "number" ||
-        typeof v === "string" ||
-        typeof v === "boolean" ||
-        Array.isArray(v)
-      )
-    }
-
-    Object.entries(entity.currentProps).forEach(([k, v]) => {
-      if (!controls[k] && !IGNORED_PROPS.includes(k) && isControllable(v)) {
-        let val = entity.currentProps[k]
-
-        let props = {}
-        if (typeof val === "number") {
-          props.step = val / 100.0
-          if (val % 1 === 0) {
-            props.step = 1
-          }
-        }
-        controls[k] = primitives.unknown({
-          element: entity,
-          path: ["currentProps", k],
-          ...props
-        })
-      }
-    })
-
-    console.log(controls)
-    return controls
-  }
+class EditableRemotionRoot extends EditableRoot {
+  ref: PlayerRef = null as any
 }
 
-export const style = {
-  applicable: (entity) => entity.forwardedRef,
-  controls: (entity) => {
-    let controls: Record<string, any> = {}
-
-    let IGNORED_PROPS = ["_source", "children"]
-
-    let isControllable = (v: any) => {
-      return (
-        typeof v === "number" ||
-        typeof v === "string" ||
-        typeof v === "boolean" ||
-        Array.isArray(v)
-      )
-    }
-
-    Object.entries(entity.currentProps.style ?? {}).forEach(([k, v]) => {
-      if (!controls[k] && !IGNORED_PROPS.includes(k) && isControllable(v)) {
-        let val = entity.currentProps[k]
-
-        let props = {}
-        if (typeof val === "number") {
-          props.step = val / 100.0
-          if (val % 1 === 0) {
-            props.step = 1
-          }
-        }
-        controls[k] = primitives.unknown({
-          element: entity,
-          path: ["ref", "style", k],
-          ...props
-        })
-      }
-    })
-
-    console.log(controls)
-    return controls
-  }
-}
-
-export const styleWithoutRef = {
-  applicable: (entity) => true,
-  controls: (entity) => {
-    let controls: Record<string, any> = {}
-
-    let IGNORED_PROPS = ["_source", "children"]
-
-    let isControllable = (v: any) => {
-      return (
-        typeof v === "number" ||
-        typeof v === "string" ||
-        typeof v === "boolean" ||
-        Array.isArray(v)
-      )
-    }
-
-    Object.entries(entity.currentProps.style ?? {}).forEach(([k, v]) => {
-      if (!controls[k] && !IGNORED_PROPS.includes(k) && isControllable(v)) {
-        let val = entity.currentProps[k]
-
-        let props = {}
-        if (typeof val === "number") {
-          props.step = val / 100.0
-          if (val % 1 === 0) {
-            props.step = 1
-          }
-        }
-        controls[k] = primitives.unknown({
-          element: entity,
-          path: ["currentProps", "style", k],
-          ...props
-        })
-      }
-    })
-
-    console.log(controls)
-    return controls
-  }
-}
-
-const editor = new Editor([transform, propControls, styleWithoutRef], client)
-
-editor.elementConstructor = ThreeEditableElement
 // @ts-ignore
 window.editor = editor
 
 export const EditorUI = createMultiTunnel()
 
-import {
-  CommandBarContext,
-  CommandManagerContext
-} from "@editable-jsx/commander"
-import { EditorContext } from "@editable-jsx/editable"
-import { PanelsProvider } from "@editable-jsx/panels"
-import { AllCommands } from "./commands"
-import { EditorPanels } from "./EditorPanels"
-import { EditorRoot } from "./EditorRoot"
-import { primitives } from "./primitives"
-import { SceneControls } from "./SceneControls"
-import { SelectedElementControls } from "./SelectedElementControls"
-import { ThreeEditableElement } from "./ThreeEditor"
-
-function FloatingWindow({ children }: { children: any }) {
-  return children({ width: window.innerWidth })
-}
-
-export function RemotionEditorProvider({
-  editor,
-  children
-}: {
-  editor: ReturnType<typeof useEditor>
-  children: React.ReactNode
-}) {
-  const id = useId()
-  return (
-    <EditorContext.Provider value={editor}>
-      <SettingsContext.Provider value={editor}>
-        <CommandManagerContext.Provider value={editor.commands}>
-          <CommandBarContext.Provider value={editor.commandBar}>
-            <PanelsProvider manager={editor.panels}>
-              <IdContext.Provider value={id}>
-                <FloatingContext.Provider value={FloatingWindow}>
-                  {children}
-                </FloatingContext.Provider>
-              </IdContext.Provider>
-            </PanelsProvider>
-          </CommandBarContext.Provider>
-        </CommandManagerContext.Provider>
-      </SettingsContext.Provider>
-    </EditorContext.Provider>
-  )
-}
-
-export const Player = forwardRef<
-  PlayerRef,
-  PlayerProps<{}> & { component: React.FC }
->((props, ref) => {
-  return (
-    <RemotionEditorProvider editor={editor}>
-      {/* Registers all the commands: keyboard shortcuts & command palette */}
-      <AllCommands />
-
-      {/* Panels active in the editor */}
-      <EditorPanels />
-      <SelectedElementControls />
-
-      {/* Editor layout and the Canvas in the middle */}
-      <PanelContainer>
-        <PanelGroup side="left" />
-        <div
-          style={{
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            background: "#CBD5E1"
-          }}
-        >
-          <div
-            style={{
-              background: "white"
-            }}
-          >
-            <EditablePlayer
-              {...props}
-              style={{
-                width: "60vw",
-                aspectRatio: `1 / ${
-                  props.compositionHeight / props.compositionWidth
-                }}`
-              }}
-            />
-          </div>
-        </div>
-        {/* <EditableCanvas {...props} ref={ref} /> */}
-        <PanelGroup side="right" />
-      </PanelContainer>
-
-      {/* Tray of user component library to pick and place entities */}
-      {/* <ComponentsTray /> */}
-
-      {/* Command bar dialog */}
-      <CommandBar.Out />
-
-      {/* Floating UI, panels, bottom bar */}
-      <Floating.Out />
-
-      {/* Toaster for alerts */}
-      <Toaster />
-
-      {/* Headless canvas for screenshots */}
-      {/* <ScreenshotCanvas /> */}
-    </RemotionEditorProvider>
-  )
-})
-
 export const EditablePlayer = forwardRef<
   PlayerRef,
   PlayerProps<{}> & { component: React.FC }
->(function EditorCanvas(props, ref) {
-  const localRef = useRef<PlayerRef>(null)
+>(function EditablePlayer(props, ref) {
   const editor = useEditor()
-  const canvasSettings = editor.useSettings("scene", {
-    shadows: {
-      value: true
+  const localRef = useRef<PlayerRef>(null)
+  const [editableRoot, overrideProps] = editor.document.useRoot(
+    EditableRoot,
+    {
+      ...props
     },
-    initialFrame: 0
+    ref
+  )
+  const canvasSettings = editor.useSettings("scene", {
+    initialFrame: {
+      value: 0,
+      render: () => false
+    }
   })
 
   useEffect(() => {
-    console.log(
-      localRef.current?.addEventListener("frameupdate", (e) => {
-        editor.settings.set({
-          "scene.initialFrame": e.detail.frame
-        })
+    localRef.current?.addEventListener("frameupdate", (e) => {
+      editor.modeSettings.set({
+        "scene.initialFrame": e.detail.frame
       })
-    )
+    })
   }, [])
-
-  const VideoRoot = useMemo(
-    () => createVideoRoot(props.component),
-    [props.component]
-  )
 
   return (
     <RemotionPlayer
-      ref={mergeRefs([ref, localRef])}
+      ref={mergeRefs([overrideProps.ref, localRef])}
       {...props}
       {...canvasSettings}
       component={VideoRoot}
+      inputProps={{
+        component: props.component,
+        root: editableRoot,
+        ...props.inputProps
+      }}
       clickToPlay={false}
     />
   )
 })
 
-function createVideoRoot(Component: any) {
-  return function VideoRoot(props) {
-    const [editableElement, { children }] = editor.useElement("root", {
-      ...props,
-      id: "root"
-    })
-    return (
-      <>
-        <EditorRoot element={editableElement}>
-          <Component {...props} />
-          <SceneControls />
-        </EditorRoot>
-      </>
-    )
-  }
+function VideoRoot({
+  component: Component,
+  root,
+  ...props
+}: {
+  component: React.FC
+  root: EditableRoot
+}) {
+  return (
+    <EditableRootProvider root={root}>
+      <Component {...props} />
+    </EditableRootProvider>
+  )
 }
 
 setEditable(Player, Player)
+setEditable(EditablePlayer, EditablePlayer)

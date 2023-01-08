@@ -25,7 +25,7 @@ type PanelSettings = {
 
 export class Panel implements ISettings {
   #store: ControlledStore
-  settings: ISettingsImpl<PanelSettings>
+  modeSettings: ISettingsImpl<PanelSettings>
   constructor(
     public name: string,
     public manager: PanelManager,
@@ -36,27 +36,27 @@ export class Panel implements ISettings {
     this.#store.name = name
 
     let panel = this
-    this.settings = {
-      store: this.manager.settings.store,
+    this.modeSettings = {
+      store: this.manager.modeSettings.store,
       path: (path: string) =>
-        this.manager.settings.path(
+        this.manager.modeSettings.path(
           "panels." + this.name + (path ? "." + path : "")
         ),
       get: (path: keyof PanelSettings) => {
         return Settings.getSettingsAtPath(
-          this.settings,
-          this.settings.path(path)
+          this.modeSettings,
+          this.modeSettings.path(path)
         )
       },
       get deps() {
-        return panel.manager.settings.deps || []
+        return panel.manager.modeSettings.deps || []
       },
       set: (arg0: {
         [key in keyof PanelSettings]?:
           | PanelSettings[key]
           | ((prev: PanelSettings[key]) => PanelSettings[key])
       }) => {
-        Settings.setSettingsAtPaths(this.settings, arg0)
+        Settings.setSettingsAtPaths(this.modeSettings, arg0)
       }
     }
   }
@@ -92,14 +92,14 @@ export class Panel implements ISettings {
   }
 
   dock(side: "left" | "right") {
-    this.settings.set({
+    this.modeSettings.set({
       floating: false,
       side
     })
   }
 
   isFloating(): boolean {
-    return this.settings.get("floating")
+    return this.modeSettings.get("floating")
   }
 
   useSettings<S extends Schema>(arg1: S, hidden?: boolean): SchemaToValues<S> {
@@ -114,14 +114,14 @@ export class PanelManager implements ISettings {
   }>
   useStore
 
-  settings: ISettingsImpl
+  modeSettings: ISettingsImpl
   /** State Machine */
   service
   send
   subscribe
 
   constructor(settings: ISettingsImpl<any>) {
-    this.settings = settings
+    this.modeSettings = settings
     this.store = createStore("panels", (set, get) => ({
       panels: {
         settings: new Panel("settings", this, defaultStore as ControlledStore)
@@ -145,7 +145,7 @@ export class PanelManager implements ISettings {
             this.get(event.panel).dock("right")
           },
           stopDragging: (context, event) => {
-            this.get(event.panel).settings.set({
+            this.get(event.panel).modeSettings.set({
               position: (prevPosition) => [
                 prevPosition[0] + event.event.movement[0],
                 prevPosition[1] + event.event.movement[1]
@@ -153,7 +153,7 @@ export class PanelManager implements ISettings {
             })
           },
           undock: (context, event) => {
-            this.get(event.panel).settings.set({
+            this.get(event.panel).modeSettings.set({
               position: event.event.xy,
               floating: true
             })
@@ -212,7 +212,7 @@ export class PanelManager implements ISettings {
     for (let i = 0; i < panelNames.length; i++) {
       settings[`panels.${panelNames[i]}.hidden`] = false
     }
-    this.settings.set(settings)
+    this.modeSettings.set(settings)
   }
 
   hideAllPanels() {
@@ -222,6 +222,6 @@ export class PanelManager implements ISettings {
       settings[`panels.${panelNames[i]}.hidden`] = true
     }
 
-    this.settings.set(settings)
+    this.modeSettings.set(settings)
   }
 }
