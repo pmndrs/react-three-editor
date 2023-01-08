@@ -10,6 +10,7 @@
     "@react-spring/core": "^9.4.4",
     "@react-spring/three": "^9.4.4",
     "@react-three/drei": "^9.46.4",
+    "@editable-jsx/rapier": "workspace:*",
     "@react-three/editor": "workspace:*",
     "@react-three/fiber": "^8.8.9",
     "@types/react-reconciler": "^0.28.0",

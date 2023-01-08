@@ -1,13 +1,21 @@
-import * as THREE from 'three'
-import React, { useState, useEffect, useReducer } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
+import * as THREE from "three"
+import React, { useState, useEffect, useReducer } from "react"
+import { Canvas, useFrame } from "@react-three/fiber"
 
 function Test() {
   const [o1] = useState(
-    () => new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshBasicMaterial({ color: 'hotpink' })),
+    () =>
+      new THREE.Mesh(
+        new THREE.BoxGeometry(),
+        new THREE.MeshBasicMaterial({ color: "hotpink" })
+      )
   )
   const [o2] = useState(
-    () => new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshBasicMaterial({ color: 'aquamarine' })),
+    () =>
+      new THREE.Mesh(
+        new THREE.BoxGeometry(),
+        new THREE.MeshBasicMaterial({ color: "aquamarine" })
+      )
   )
   const [which, toggle] = useReducer((state) => !state, true)
   useEffect(() => {

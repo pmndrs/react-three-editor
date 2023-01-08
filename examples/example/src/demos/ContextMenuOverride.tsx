@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Canvas } from '@react-three/fiber'
+import React, { useState } from "react"
+import { Canvas } from "@react-three/fiber"
 
 export default function App() {
   const [state, set] = useState(false)
@@ -8,7 +8,8 @@ export default function App() {
     <Canvas
       orthographic
       camera={{ zoom: 150, fov: 75, position: [0, 0, 25] }}
-      onPointerMissed={() => console.log('canvas.missed')}>
+      onPointerMissed={() => console.log("canvas.missed")}
+    >
       <ambientLight />
       <pointLight position={[10, 10, 10]} />
       <mesh
@@ -17,9 +18,10 @@ export default function App() {
           ev.nativeEvent.preventDefault()
           set((value) => !value)
         }}
-        onPointerMissed={() => console.log('mesh.missed')}>
+        onPointerMissed={() => console.log("mesh.missed")}
+      >
         <boxBufferGeometry args={[1, 1, 1]} />
-        <meshPhysicalMaterial color={state ? 'hotpink' : 'blue'} />
+        <meshPhysicalMaterial color={state ? "hotpink" : "blue"} />
       </mesh>
     </Canvas>
   )

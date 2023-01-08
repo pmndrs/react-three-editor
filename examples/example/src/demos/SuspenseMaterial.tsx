@@ -1,7 +1,7 @@
-import * as React from 'react'
-import { Suspense, useReducer } from 'react'
-import { Canvas } from '@react-three/fiber'
-import { suspend } from 'suspend-react'
+import * as React from "react"
+import { Suspense, useReducer } from "react"
+import { Canvas } from "@react-three/fiber"
+import { suspend } from "suspend-react"
 
 export default function App() {
   const [arg, inc] = useReducer((x) => x + 1, 0)

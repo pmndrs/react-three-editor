@@ -1,5 +1,5 @@
-import * as THREE from 'three'
-import React, { useRef, useState } from 'react'
+import * as THREE from "three"
+import React, { useRef, useState } from "react"
 import {
   RenderProps,
   extend,
@@ -7,11 +7,11 @@ import {
   unmountComponentAtNode,
   useFrame,
   events,
-  ReconcilerRoot,
-} from '@react-three/fiber'
-import useMeasure, { Options as ResizeOptions } from 'react-use-measure'
-import mergeRefs from 'react-merge-refs'
-import { SVGRenderer } from 'three-stdlib'
+  ReconcilerRoot
+} from "@react-three/fiber"
+import useMeasure, { Options as ResizeOptions } from "react-use-measure"
+import mergeRefs from "react-merge-refs"
+import { SVGRenderer } from "three-stdlib"
 
 function TorusKnot() {
   const [hovered, hover] = useState(false)
@@ -21,9 +21,13 @@ function TorusKnot() {
     ref.current.rotation.set(t, t, t)
   })
   return (
-    <mesh ref={ref} onPointerOver={() => hover(true)} onPointerOut={() => hover(false)}>
+    <mesh
+      ref={ref}
+      onPointerOver={() => hover(true)}
+      onPointerOut={() => hover(false)}
+    >
       <torusKnotGeometry args={[10, 3, 128, 16]} />
-      <meshBasicMaterial color={hovered ? 'orange' : 'hotpink'} />
+      <meshBasicMaterial color={hovered ? "orange" : "hotpink"} />
     </mesh>
   )
 }
@@ -31,13 +35,15 @@ function TorusKnot() {
 export default function () {
   return (
     <Canvas camera={{ position: [0, 0, 50] }}>
-      <color attach="background" args={['#dedddf']} />
+      <color attach="background" args={["#dedddf"]} />
       <TorusKnot />
     </Canvas>
   )
 }
 
-interface Props extends Omit<RenderProps<HTMLCanvasElement>, 'size' | 'gl'>, React.HTMLAttributes<HTMLDivElement> {
+interface Props
+  extends Omit<RenderProps<HTMLCanvasElement>, "size" | "gl">,
+    React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode
   resize?: ResizeOptions
 }
@@ -45,9 +51,15 @@ interface Props extends Omit<RenderProps<HTMLCanvasElement>, 'size' | 'gl'>, Rea
 function Canvas({ children, resize, style, className, ...props }: Props) {
   React.useMemo(() => extend(THREE), [])
 
-  const [bind, size] = useMeasure({ scroll: true, debounce: { scroll: 50, resize: 0 }, ...resize })
+  const [bind, size] = useMeasure({
+    scroll: true,
+    debounce: { scroll: 50, resize: 0 },
+    ...resize
+  })
   const ref = React.useRef<HTMLDivElement>(null!)
-  const [gl] = useState(() => new SVGRenderer() as unknown as THREE.WebGLRenderer)
+  const [gl] = useState(
+    () => new SVGRenderer() as unknown as THREE.WebGLRenderer
+  )
   const root = React.useRef<ReconcilerRoot<HTMLElement>>(null!)
 
   if (size.width > 0 && size.height > 0) {
@@ -69,7 +81,13 @@ function Canvas({ children, resize, style, className, ...props }: Props) {
     <div
       ref={mergeRefs([ref, bind])}
       className={className}
-      style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden', ...style }}
+      style={{
+        position: "relative",
+        width: "100%",
+        height: "100%",
+        overflow: "hidden",
+        ...style
+      }}
     />
   )
 }

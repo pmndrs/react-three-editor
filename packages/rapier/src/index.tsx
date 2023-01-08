@@ -1,7 +1,6 @@
-import { setEditable } from "@editable-jsx/editable"
+import { setEditable, useEditor } from "@editable-jsx/editable"
 import { Debug, Physics, useRapier } from "@react-three/rapier"
 import { useMemo } from "react"
-import { useEditor } from "./fiber"
 
 setEditable(Physics, ({ children, ...props }) => {
   const editor = useEditor()

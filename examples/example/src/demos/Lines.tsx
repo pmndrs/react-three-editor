@@ -1,6 +1,13 @@
-import React, { useRef, useEffect, useState, useCallback, useContext, useMemo } from 'react'
-import { extend, Canvas, useThree } from '@react-three/fiber'
-import { OrbitControls } from 'three-stdlib'
+import React, {
+  useRef,
+  useEffect,
+  useState,
+  useCallback,
+  useContext,
+  useMemo
+} from "react"
+import { extend, Canvas, useThree } from "@react-three/fiber"
+import { OrbitControls } from "three-stdlib"
 extend({ OrbitControls })
 
 function useHover(stopPropagation = true) {
@@ -10,16 +17,19 @@ function useHover(stopPropagation = true) {
       if (stopPropagation) e.stopPropagation()
       setHover(true)
     },
-    [stopPropagation],
+    [stopPropagation]
   )
   const unhover = useCallback(
     (e) => {
       if (stopPropagation) e.stopPropagation()
       setHover(false)
     },
-    [stopPropagation],
+    [stopPropagation]
   )
-  const [bind] = useState(() => ({ onPointerOver: hover, onPointerOut: unhover }))
+  const [bind] = useState(() => ({
+    onPointerOver: hover,
+    onPointerOut: unhover
+  }))
   return [bind, hovered]
 }
 
@@ -29,25 +39,25 @@ function useDrag(onDrag: any, onEnd: any) {
 
   const down = useCallback(
     (e) => {
-      console.log('down')
+      console.log("down")
       setActive(true)
       toggle(false)
       e.stopPropagation()
       e.target.setPointerCapture(e.pointerId)
     },
-    [toggle],
+    [toggle]
   )
 
   const up = useCallback(
     (e) => {
-      console.log('up')
+      console.log("up")
       setActive(false)
       toggle(true)
       e.stopPropagation()
       e.target.releasePointerCapture(e.pointerId)
       if (onEnd) onEnd()
     },
-    [onEnd, toggle],
+    [onEnd, toggle]
   )
 
   const activeRef = useRef<any>()
@@ -59,10 +69,14 @@ function useDrag(onDrag: any, onEnd: any) {
         onDrag(event.unprojectedPoint)
       }
     },
-    [onDrag],
+    [onDrag]
   )
 
-  const [bind] = useState(() => ({ onPointerDown: down, onPointerUp: up, onPointerMove: move }))
+  const [bind] = useState(() => ({
+    onPointerDown: down,
+    onPointerUp: up,
+    onPointerMove: move
+  }))
   return bind
 }
 
@@ -72,7 +86,7 @@ function EndPoint({ position, onDrag, onEnd }: any) {
   return (
     <mesh position={position} {...bindDrag} {...bindHover}>
       <sphereGeometry args={[7.5, 16, 16]} />
-      <meshBasicMaterial color={hovered ? 'hotpink' : [0.1, 0.2, 0.9]} />
+      <meshBasicMaterial color={hovered ? "hotpink" : [0.1, 0.2, 0.9]} />
     </mesh>
   )
 }
@@ -80,7 +94,10 @@ function EndPoint({ position, onDrag, onEnd }: any) {
 function Line({ defaultStart, defaultEnd }: any) {
   const [start, setStart] = useState(defaultStart)
   const [end, setEnd] = useState(defaultEnd)
-  const positions = useMemo(() => new Float32Array([...start, ...end]), [start, end])
+  const positions = useMemo(
+    () => new Float32Array([...start, ...end]),
+    [start, end]
+  )
   const lineRef = useRef<THREE.Line>(null!)
   useEffect(() => {
     const { current } = lineRef
@@ -92,7 +109,12 @@ function Line({ defaultStart, defaultEnd }: any) {
     <>
       <line ref={lineRef as any}>
         <bufferGeometry>
-          <bufferAttribute attach="attributes-position" count={positions.length / 3} array={positions} itemSize={3} />
+          <bufferAttribute
+            attach="attributes-position"
+            count={positions.length / 3}
+            array={positions}
+            itemSize={3}
+          />
         </bufferGeometry>
         <lineBasicMaterial color="black" />
       </line>
@@ -111,13 +133,18 @@ function Controls({ children }: any) {
     const current = ref.current
     const onChange = () => invalidate()
 
-    current.addEventListener('change', onChange)
-    return () => current.removeEventListener('change', onChange)
+    current.addEventListener("change", onChange)
+    return () => current.removeEventListener("change", onChange)
   }, [invalidate])
 
   return (
     <>
-      <orbitControls ref={ref} args={[camera, gl.domElement]} enableDamping enabled={api[0]} />
+      <orbitControls
+        ref={ref}
+        args={[camera, gl.domElement]}
+        enableDamping
+        enabled={api[0]}
+      />
       <camContext.Provider value={api as any}>{children}</camContext.Provider>
     </>
   )
@@ -129,7 +156,8 @@ export default function App() {
       frameloop="demand"
       orthographic
       raycaster={{ params: { Line: { threshold: 5 } } }}
-      camera={{ position: [0, 0, 500], zoom: 1 }}>
+      camera={{ position: [0, 0, 500], zoom: 1 }}
+    >
       <Controls>
         <Line defaultStart={[-100, -100, 0]} defaultEnd={[0, 100, 0]} />
         <Line defaultStart={[0, 100, 0]} defaultEnd={[100, -100, 0]} />
