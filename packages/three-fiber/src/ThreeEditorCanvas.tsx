@@ -5,7 +5,7 @@ import { JSXSource } from "@editable-jsx/state"
 import { createMultiTunnel, Floating, Toaster } from "@editable-jsx/ui"
 import { Canvas as FiberCanvas, Props } from "@react-three/fiber"
 import { FiberProvider } from "its-fine"
-import { forwardRef, Suspense } from "react"
+import { forwardRef, Suspense, useCallback, useEffect } from "react"
 import { AllCommands } from "./commands"
 import { ComponentsTray } from "./ComponentsTray"
 import { EditorControls } from "./controls/EditorControls"
@@ -16,6 +16,7 @@ import { EditorRoot } from "./EditorRoot"
 import { AppRootProvider, FiberRootManager } from "./FiberRootManager"
 import { ThreeEditor } from "./ThreeEditor"
 import { ThreeEditorProvider } from "./ThreeEditorProvider"
+import { ThreeEventManager } from "./ThreeEventManager"
 import { ThreeTunnel } from "./ThreeTunnel"
 import { ScreenshotCanvas } from "./useScreenshotStore"
 
@@ -77,11 +78,17 @@ export const EditableCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
       ref
     )
 
+    const handler = useCallback(() => {
+      editor.clearSelection()
+    }, [editor])
+
+    useEffect(() => {
+      editableElement.addEventListener("pointermissed", handler)
+      return () => editableElement.removeEventListener("pointermissed", handler)
+    }, [editableElement, handler])
+
     return (
       <FiberCanvas
-        onPointerMissed={(e: any) => {
-          editor.clearSelection()
-        }}
         {...canvasProps}
         {...canvasSettings}
         ref={(el) => {
@@ -109,6 +116,8 @@ export const EditableCanvas = forwardRef<HTMLCanvasElement, CanvasProps>(
            * in your app to override the default UI.
            */}
           <EditorUI.Out fallback={<EditorControls />} />
+
+          <ThreeEventManager />
         </FiberRootManager>
       </FiberCanvas>
     )
