@@ -6,10 +6,6 @@ import * as types from "./primitives/types"
 import { texture } from "./texture"
 import { transform } from "./transform"
 
-export function getEditableElement(obj: any): any {
-  return obj?.__r3f?.editable
-}
-
 export const all = createPropTypes({
   ...types,
   material,

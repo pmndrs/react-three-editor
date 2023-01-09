@@ -9,7 +9,7 @@ import { memo, useEffect } from "react"
 import { usePanel } from "../usePanel"
 import { usePanelManager } from "../usePanelManager"
 import { TitleWithFilter } from "./PanelTitle"
-import { LeftPanelGroup, RightPanelGroup } from "./tunnels"
+import { PanelGroups } from "./tunnels"
 import { PanelProps } from "./types"
 
 export const StyledRoot = styled("div", {
@@ -120,8 +120,8 @@ function usePanelPosition({
   size: { width: number }
   width: number
 }) {
-  const leftTunnel = LeftPanelGroup.useTunnels()
-  const rightTunnel = RightPanelGroup.useTunnels()
+  const leftTunnel = PanelGroups.left.useTunnels()
+  const rightTunnel = PanelGroups.right.useTunnels()
 
   let hasLeft = Object.values(leftTunnel).filter(Boolean).length > 0
   let hasRight = Object.values(rightTunnel).filter(Boolean).length > 0
@@ -201,9 +201,7 @@ export function FloatingControlsPanel(
   )
 }
 
-export function FloatingPanel(
-  props: PanelProps & { order?: number; lazy?: boolean }
-) {
+export function FloatingPanel(props: PanelProps) {
   // we use the ThreeCanvas tunnel, to get access to the threejs canvas size from the r3f
   // useThree hook (there are otherways to do this)
   return (

@@ -1,4 +1,5 @@
 import { FC, forwardRef, ReactNode, Ref, useContext, useMemo } from "react"
+import { EditableRootContext } from "./EditableRoot"
 import { EditorContext } from "./EditorContext"
 
 type Elements = {
@@ -39,21 +40,21 @@ export const getEditable = (component: any) => {
 }
 
 export const Editable = forwardRef(
-  ({ component, ...props }: { component: any }, ref) => {
+  ({ __component, ...props }: { __component: any }, ref) => {
     const editor = useContext(EditorContext)
     const EditableComponent = useMemo(() => {
       if (editor) {
-        if (component.$$typeof === Symbol.for("react.provider")) {
-          return component
+        if (__component.$$typeof === Symbol.for("react.provider")) {
+          return __component
         }
 
-        if (!getEditable(component) && editor) {
-          setEditable(component, createEditable(component))
+        if (!getEditable(__component) && editor) {
+          setEditable(__component, createEditable(__component))
         }
-        return getEditable(component)
+        return getEditable(__component)
       }
-      return component
-    }, [component, editor])
+      return __component
+    }, [__component, editor])
 
     return <EditableComponent {...props} ref={ref} />
   }
@@ -71,17 +72,17 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
 
   if (hasRef) {
     return forwardRef(function Editable(props: any, forwardRef) {
-      const editor = useContext(EditorContext)
-      if (!editor) return <Component {...props} ref={forwardRef} />
+      const editorRoot = useContext(EditableRootContext)
+      if (!editorRoot) return <Component {...props} ref={forwardRef} />
 
-      return editor.renderElement(Component, props, forwardRef ?? true)
+      return editorRoot.renderElement(Component, props, forwardRef ?? true)
     })
   } else {
     return function Editable(props: any) {
-      const editor = useContext(EditorContext)
-      if (!editor) return <Component {...props} />
+      const editorRoot = useContext(EditableRootContext)
+      if (!editorRoot) return <Component {...props} />
 
-      return editor.renderElement(Component, props, false)
+      return editorRoot.renderElement(Component, props, false)
     }
   }
 }

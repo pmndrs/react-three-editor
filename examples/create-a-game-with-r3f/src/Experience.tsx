@@ -1,5 +1,5 @@
 import { OrbitControls } from "@react-three/drei"
-import { EditorRoot, extendControls } from "@react-three/editor"
+import { extendControls } from "@react-three/editor"
 import { Physics, RigidBody } from "@react-three/rapier"
 import { BlockAxe } from "./components/BlockAxe.js"
 import { BlockEnd } from "./components/BlockEnd.js"
@@ -37,10 +37,8 @@ export default function Experience() {
     <>
       <OrbitControls makeDefault />
       <Physics>
-        <EditorRoot>
-          <Level />
-          <Lights />
-        </EditorRoot>
+        <Level />
+        <Lights />
         <Player />
         {/* <gridHelper /> */}
       </Physics>

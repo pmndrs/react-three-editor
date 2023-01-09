@@ -9,7 +9,7 @@ export function ElementIcon({
   return (
     <Icon
       icon={element.icon}
-      onClick={(e) => element.editor.select(element)}
+      onClick={(e) => element.ownerDocument.editor.select(element)}
       {...props}
     />
   )

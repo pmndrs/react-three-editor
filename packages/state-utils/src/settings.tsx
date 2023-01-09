@@ -6,7 +6,7 @@ import { ControlledStore, defaultStore } from "./store"
 import { usePersistedControls } from "./usePersistedControls"
 
 export interface ISettings {
-  settings: ISettingsImpl
+  modeSettings: ISettingsImpl
 }
 
 export interface ISettingsImpl<T = any> {

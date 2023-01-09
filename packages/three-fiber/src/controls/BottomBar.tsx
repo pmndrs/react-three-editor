@@ -1,6 +1,6 @@
 import { useCommandBar } from "@editable-jsx/commander"
 import { useEditor } from "@editable-jsx/editable"
-import { LeftPanelGroup, RightPanelGroup } from "@editable-jsx/panels"
+import { PanelGroups } from "@editable-jsx/panels"
 import { Floating, Icon, styled } from "@editable-jsx/ui"
 
 const StyledIcon = styled(Icon, {})
@@ -102,9 +102,9 @@ function BottomBar({
   let mode = editor.useMode()
 
   const hasLeft =
-    Object.values(LeftPanelGroup.useTunnels()).filter(Boolean).length > 0
+    Object.values(PanelGroups.left.useTunnels()).filter(Boolean).length > 0
   const hasRight =
-    Object.values(RightPanelGroup.useTunnels()).filter(Boolean).length > 0
+    Object.values(PanelGroups.right.useTunnels()).filter(Boolean).length > 0
 
   const open = useCommandBar().useStore((s) => s.open)
 

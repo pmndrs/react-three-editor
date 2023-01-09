@@ -1,5 +1,4 @@
 import { OrbitControls, Sphere } from "@react-three/drei"
-import { EditorRoot } from "@react-three/editor"
 import { useFrame, useThree } from "@react-three/fiber"
 import { Physics } from "@react-three/rapier"
 import { useEffect, useRef, useState } from "react"
@@ -71,20 +70,18 @@ export function Game() {
 
   return (
     <Physics>
-      <EditorRoot>
-        <TestTerrain />
-        <Sphere ref={sphereRef} args={[1]} visible={false} />
+      <TestTerrain />
+      <Sphere ref={sphereRef} args={[1]} visible={false} />
 
-        <ambientLight ref={aLightRef} intensity={0.5} />
-        <directionalLight
-          ref={dLightRef}
-          position={[0, 10, 0]}
-          intensity={0.5}
-          castShadow={true}
-        />
+      <ambientLight ref={aLightRef} intensity={0.5} />
+      <directionalLight
+        ref={dLightRef}
+        position={[0, 10, 0]}
+        intensity={0.5}
+        castShadow={true}
+      />
 
-        <OrbitControls />
-      </EditorRoot>
+      <OrbitControls />
     </Physics>
   )
 }

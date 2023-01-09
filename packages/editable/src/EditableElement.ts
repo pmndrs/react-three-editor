@@ -8,9 +8,13 @@ import {
   mergeRefs
 } from "@editable-jsx/state"
 import { toast } from "@editable-jsx/ui"
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
-import { Editor } from "./Editor"
-import { PropChange } from "./prop-types/types"
+import { createElement, Dispatch, FC, SetStateAction, useState } from "react"
+import { Editable, editable } from "./editable"
+import type { EditableDocument } from "./EditableDocument"
+import { EditableRoot } from "./EditableRoot"
+import { PropChange } from "./prop-types"
+import { REF_SYMBOL } from "./REF_SYMBOL"
+import { useEditor } from "./useEditor"
 
 /**
  * An editable element is a wrapper around a React element that can be edited in the editor.
@@ -32,7 +36,12 @@ import { PropChange } from "./prop-types/types"
  *
  * */
 export class EditableElement<
-  Ref extends { name?: string; visible?: boolean } = any
+  Ref extends {
+    name?: string
+    visible?: boolean
+    [k: string]: any
+    [REF_SYMBOL]: any
+  } = any
 > extends EventTarget {
   ref?: Ref
   childIds: string[] = []
@@ -41,7 +50,7 @@ export class EditableElement<
   forwardedRef: boolean = false
   dirty: any = false
   properties: ControlledStore = createControlledStore()
-  editor: Editor = {} as any
+  // editor: Editor = {} as any
   index: string | undefined
   refs = {
     setKey: null as Dispatch<SetStateAction<number>> | null,
@@ -53,14 +62,27 @@ export class EditableElement<
   mounted: boolean = false
   args = [] as any[]
 
-  constructor(
-    public id: string,
-    public source: JSXSource,
-    public type: any,
-    public parentId?: string | null,
-    public currentProps: any = {}
-  ) {
+  /** assigned by the creator */
+  ownerDocument!: EditableDocument
+
+  /** assigned by the creator */
+  root!: EditableRoot
+
+  id: string
+  source: JSXSource
+  type: any
+  parentId?: string | null
+  currentProps: any = {}
+
+  constructor(id: string, source: JSXSource, type: any) {
     super()
+    this.id = id
+    this.source = source
+    this.type = type
+  }
+
+  getRootNode<T extends EditableRoot = EditableRoot>(): T {
+    return this.root as T
   }
 
   remount() {
@@ -75,11 +97,11 @@ export class EditableElement<
     return this.properties.useStore((s) => s.data["name"].value as string)
   }
 
-  useChildren() {
-    return this.editor.useStore((s) => [
-      ...(s.elements[this.id]?.children ?? [])
-    ])
-  }
+  // useChildren() {
+  //   return this.editor.useStore((s) => [
+  //     ...(s.elements[this.id]?.children ?? [])
+  //   ])
+  // }
 
   useIsDirty() {
     return this.properties?.useStore(
@@ -87,7 +109,50 @@ export class EditableElement<
     )
   }
 
-  appendChild(id: string) {
+  appendChild(element: EditableElement) {
+    this.childIds.push(element.id)
+    element.parentId = this.id
+    element.index = this.childIds.length - 1 + ""
+
+    this.ownerDocument.editor.send("APPEND_ELEMENT")
+  }
+
+  removeChild(element: EditableElement) {
+    element.parentId = null
+    this.childIds = this.childIds.filter((id) => id !== element.id)
+    element.index = ""
+  }
+
+  appendNewElement(componentType: string | FC, props: any) {
+    if (typeof componentType === "string") {
+      this.refs.setMoreChildren?.((children) => [
+        ...children,
+        createElement(editable[componentType], {
+          _source: {
+            ...this.source,
+            lineNumber: -1,
+            elementName: componentType
+          },
+          key: children.length,
+          ...props
+        })
+      ])
+    } else {
+      this.refs.setMoreChildren?.((children) => [
+        ...children,
+        createElement(Editable, {
+          component: componentType,
+          _source: {
+            ...this.source,
+            lineNumber: -1,
+            elementName:
+              componentType.displayName || componentType.name || undefined
+          },
+          key: children.length,
+          ...props
+        } as any)
+      ])
+    }
   }
 
   update(source: JSXSource, props: any) {
@@ -145,8 +210,9 @@ export class EditableElement<
   }
 
   get treeId(): string {
+    let parentId = this.parent?.treeId
     return this.parent?.index !== undefined
-      ? this.parent.treeId + "-" + this.index
+      ? parentId + "-" + this.index
       : this.index!
   }
 
@@ -169,7 +235,7 @@ export class EditableElement<
 
   setRef(el: Ref) {
     this.ref = el
-    this.editor.setRef(this, el)
+    el[REF_SYMBOL] = this
     this.dispatchEvent(
       new CustomEvent("ref-changed", {
         detail: {
@@ -229,41 +295,15 @@ export class EditableElement<
   }
 
   useIsSelected() {
-    return this.editor.useState((state) => this.isSelected)
+    const editor = useEditor()
+    return editor.useState(
+      (state) => editor.state.context.selectedId === this.treeId
+    )
   }
 
-  get isSelected() {
-    return this.editor.state.context.selectedId === this.treeId
-  }
-
-  useCollapsed(): [any, any] {
-    let storedCollapsedState =
-      this.editor.expanded.size > 0
-        ? this.editor.expanded.has(this.treeId)
-          ? false
-          : true
-        : !this.editor.isSelected(this) && this.isPrimitive()
-
-    const [collapsed, setCollapsed] = useState(storedCollapsedState)
-
-    useEffect(() => {
-      if (collapsed) {
-        this.editor.expanded.delete(this.treeId)
-        localStorage.setItem(
-          "collapased",
-          JSON.stringify(Array.from(this.editor.expanded))
-        )
-      } else {
-        this.editor.expanded.add(this.treeId)
-        localStorage.setItem(
-          "collapased",
-          JSON.stringify(Array.from(this.editor.expanded))
-        )
-      }
-    }, [collapsed])
-
-    return [collapsed, setCollapsed]
-  }
+  // get isSelected() {
+  //   return editor.state.context.selectedId === this.treeId
+  // }
 
   isPrimitive(): boolean {
     return (
@@ -272,11 +312,25 @@ export class EditableElement<
     )
   }
 
-  addChange(element: EditableElement, prop: string, value: any) {
+  addChange(element: EditableElement, path: string[], value: any) {
     if (!this.changes[element.id]) {
       this.changes[element.id] = { _source: element.source }
     }
-    this.changes[element.id][prop] = value
+
+    let [prop, rest] = path
+
+    if (rest) {
+      let prev = this.changes[element.id][prop] || {
+        ...element.currentProps[prop]
+      }
+
+      this.changes[element.id][prop] = {
+        ...prev,
+        [rest]: value
+      }
+    } else {
+      this.changes[element.id][prop] = value
+    }
   }
 
   get changed() {
@@ -302,14 +356,28 @@ export class EditableElement<
   }
 
   changeProp(arg0: string, arg1: number[]) {
-    this.addChange(this, arg0, arg1)
+    this.addChange(this, [arg0], arg1)
     this.changed = true
-    this.setProp(arg0, arg1)
+    this.setProp([arg0], arg1)
   }
 
-  setProp(arg0: string, arg1: any) {
-    if (!this.forwardedRef || this.type !== "string" || arg0 === "args") {
-      this.props[arg0] = arg1
+  setProp(arg0: string[], arg1: any) {
+    if (arg0.length > 1) {
+      let propName = arg0.shift() as string
+      this.props[propName] =
+        this.props[propName] || this.currentProps[propName]
+          ? {
+              ...this.currentProps[propName]
+            }
+          : {}
+      this.props[propName][arg0[0]] = arg1
+      this.render()
+      return
+    }
+
+    let propName = arg0.join("-")
+    if (!this.forwardedRef || this.type !== "string" || propName === "args") {
+      this.props[propName] = arg1
       this.render()
     }
   }
@@ -318,7 +386,7 @@ export class EditableElement<
     let controls = {}
     let entity = this
 
-    this.editor.plugins.forEach((plugin) => {
+    this.ownerDocument.editor.plugins.forEach((plugin) => {
       if (plugin.controls && plugin.applicable(entity)) {
         Object.assign(controls, plugin.controls(entity))
       }
@@ -328,14 +396,18 @@ export class EditableElement<
   }
 
   get icon() {
-    for (var i = this.editor.plugins.length - 1; i >= 0; i--) {
-      let plugin = this.editor.plugins[i]
+    for (var i = this.ownerDocument.editor.plugins.length - 1; i >= 0; i--) {
+      let plugin = this.ownerDocument.editor.plugins[i]
       if (plugin.icon && plugin.applicable(this)) {
         return plugin.icon(this)
       }
     }
 
     return "ph:cube"
+  }
+
+  select() {
+    this.ownerDocument.editor.select(this)
   }
 
   async save() {
@@ -349,7 +421,7 @@ export class EditableElement<
     )
 
     try {
-      console.log(await this.editor.save(diffs))
+      await this.ownerDocument.save()
       this.changes = {}
       this.changed = false
     } catch (e: any) {
@@ -372,12 +444,12 @@ export class EditableElement<
 
   get children() {
     return this.childIds
-      .map((id) => this.editor.getElementById(id)!)
+      .map((id) => this.ownerDocument.getElementById(id)!)
       .filter(Boolean)
   }
 
   get parent() {
-    return this.editor.getElementById(this.parentId!)
+    return this.ownerDocument.getElementById(this.parentId!)
   }
 
   getObjectByPath<T>(path: string[]): T {
@@ -395,7 +467,7 @@ export class EditableElement<
     if (path.length > 1) {
       for (let i = 0; i < path.length - 1; i++) {
         el = el?.[path[i]]
-        let edit = this.editor.findEditableElement(el)
+        let edit = this.getRootNode().findEditableElement(el)
         if (edit) {
           editable = edit
           remainingPath = path.slice(i + 1)
@@ -445,17 +517,17 @@ export class EditableElement<
           if (resolvedValue !== undefined) {
             change.value = resolvedValue
 
-            this.setPropValue(change)
+            this.#setPropValue(change)
           }
         })
       } else {
         change.value = loadedValue
 
-        this.setPropValue(change)
+        this.#setPropValue(change)
       }
     } else {
       change.value = input
-      this.setPropValue(change)
+      this.#setPropValue(change)
     }
   }
 
@@ -466,7 +538,7 @@ export class EditableElement<
    * @param param0
    * @returns
    */
-  setPropValue({
+  #setPropValue({
     object,
     type,
     prop,
@@ -493,29 +565,29 @@ export class EditableElement<
         let [...p] = path
 
         // handle the `args` prop by updating the args array
-        if (p[0] === "args") {
-          let prevArgs = this.currentProps.args ?? []
+        if (path[0] === "args") {
+          let prevArgs = this.args ?? []
           let prevPropArgs = this.props.args ?? []
 
           let args = (prevArgs ?? prevPropArgs).map((a: any, i: number) => {
-            if (i === Number(p[1])) {
+            if (i === Number(path[1])) {
               return serializale
             }
             return a
           })
-          this.addChange(this, "args", args)
+          this.addChange(this, ["args"], args)
           this.changed = true
-          this.setProp("args", args)
+          this.setProp(["args"], args)
           return
         }
 
         // otherwise its a prop on the edited element itself
-        this.addChange(this, p.join("-"), serializale)
+        this.addChange(this, p, serializale)
         this.changed = true
-        this.setProp(p.join("-"), value)
+        this.setProp(p, value)
       } else {
         // its a prop on a child editable element
-        this.addChange(closestEditable, remainingPath.join("-"), serializale)
+        this.addChange(closestEditable, remainingPath, serializale)
         this.changed = true
       }
     }

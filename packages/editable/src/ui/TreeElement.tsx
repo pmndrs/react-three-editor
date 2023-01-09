@@ -1,12 +1,15 @@
 import { TreeItem } from "@editable-jsx/ui"
+import { useContext } from "react"
 import { EditableElement } from "../EditableElement"
 import { ElementName } from "../ui/ElementName"
+import { TreeContext } from "./tree"
 
 export function TreeElement({ element }: { element: EditableElement }) {
   const selected = element.useIsSelected()
-  const [collapsed, setCollapsed] = element.useCollapsed()
+  const treeContext = useContext(TreeContext)
+  const [collapsed, setCollapsed] = treeContext.useCollapsed(element)
   const dirty = element.useIsDirty()
-  const children = element.useChildren()
+  const children = treeContext.useChildren(element)
   const [visible, setVisible] = element.useVisible()
 
   let collapsible = children.length ? true : false

@@ -1,4 +1,8 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["src/**/*", "../rapier/src/index.tsx"]
+  "include": [
+    "src/**/*",
+    "../rapier/src/index.tsx",
+    "../editable/src/SceneControls.tsx"
+  ]
 }

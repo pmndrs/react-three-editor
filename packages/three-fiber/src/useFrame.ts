@@ -31,7 +31,7 @@ export function useEditorFrame(
       collapsed: true
     },
     {
-      store: editor.settings.store
+      store: editor.modeSettings.store
     }
   )
   return fiber.useFrame((...args) => {
@@ -66,7 +66,7 @@ export function useEditorUpdate(
       )
     },
     {
-      store: editor.settings.store
+      store: editor.modeSettings.store
     }
   )
 
@@ -92,7 +92,7 @@ export function useUpdate(fn: fiber.RenderCallback, ...args: any) {
       })
     },
     {
-      store: editor.settings.store
+      store: editor.modeSettings.store
     }
   )
   return fiber.useUpdate((...args) => {

@@ -1,8 +1,9 @@
 import { PropInput } from "@editable-jsx/editable"
 import { folder } from "leva"
 import { BufferGeometry, Material, Mesh } from "three"
-import { all, getEditableElement } from "."
+import { all } from "."
 import { geometry } from "./geometries"
+import { getEditableElement } from "./getEditableElement"
 import { primitives } from "./primitives"
 
 export const mesh = (input: PropInput) => {

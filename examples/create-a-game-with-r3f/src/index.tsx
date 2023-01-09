@@ -37,7 +37,6 @@ root.render(
   >
     <Canvas
       ref={(node) => {
-        console.log("hereee")
         // store.canvas = node
       }}
       camera={{

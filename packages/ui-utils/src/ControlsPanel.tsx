@@ -7,11 +7,12 @@ import { ComponentProps } from "react"
 
 export type PanelProps = {
   store: ControlledStore
-  title: string
+  title?: string
   width?: number
   collapsed?: boolean
-  side: string
-  lazy?: boolean
+  side?: string
+  lazy?: boolean | number
+  order?: number
   floating?: boolean
   size?: {
     width: number
@@ -31,7 +32,16 @@ export function ControlsPanel({
   const [_collapsed, setCollapsed] = useState(lazy ? true : collapsed)
 
   useEffect(() => {
-    setCollapsed(collapsed)
+    if (typeof lazy === "number") {
+      let timeout = setTimeout(() => {
+        setCollapsed(collapsed)
+      }, lazy)
+      return () => {
+        clearTimeout(timeout)
+      }
+    } else {
+      setCollapsed(collapsed)
+    }
   }, [collapsed])
 
   return (
@@ -46,6 +56,9 @@ export function ControlsPanel({
             // space: {
             //   rowGap: "2px"
             // },
+            colors: {
+              highlight1: "#CBD5E1"
+            },
             sizes: {
               rootWidth: `${width}px`
             }
@@ -60,6 +73,9 @@ export function ControlsPanel({
           flat={true}
           titleBar={false}
           theme={{
+            colors: {
+              highlight1: "#CBD5E1"
+            },
             // space: {
             //   rowGap: "2px"
             // },

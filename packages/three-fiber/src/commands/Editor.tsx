@@ -1,11 +1,11 @@
 import { useCommands } from "@editable-jsx/commander"
-import { EditableElement } from "@editable-jsx/editable"
+import { EditableElement, Editor } from "@editable-jsx/editable"
 import { FC } from "react"
 import { Group, Mesh } from "three"
-import { ThreeEditor } from "../ThreeEditor"
+import { EditableThreeRoot } from "../EditableThreeRoot"
 
 export const EditorCommands: FC = () => {
-  useCommands<ThreeEditor>(() => [
+  useCommands<Editor>(() => [
     {
       name: "toggle-play-mode",
       type: "command",
@@ -66,7 +66,10 @@ export const EditorCommands: FC = () => {
         //     focus(child, selected)
         //   }
         // }
-        editor.bounds.refresh(selectedElement?.ref).fit()
+        selectedElement
+          ?.getRootNode<EditableThreeRoot>()
+          .bounds.refresh(selectedElement?.ref)
+          .fit()
       }
     },
     {

@@ -2,7 +2,7 @@ import { createEditable, setEditable, useEditor } from "@editable-jsx/editable"
 import { OrbitControls } from "@react-three/drei"
 import { useThree } from "@react-three/fiber"
 import { levaStore } from "leva"
-import { forwardRef, Suspense, useEffect, useRef } from "react"
+import { forwardRef, Fragment, Suspense, useEffect, useRef } from "react"
 import { Camera, MathUtils } from "three"
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib"
 
@@ -21,6 +21,7 @@ setEditable(
 )
 
 setEditable(Suspense, Suspense)
+setEditable(Fragment, Fragment)
 
 // @ts-ignore
 window.leva = levaStore
@@ -30,7 +31,7 @@ export function EditorCamera() {
   const editor = useEditor()
   const isEditorMode = editor.useState((s) => s.matches("editing"))
 
-  const cameraSettings = editor.useSettings("camera", {
+  const cameraSettings = editor.useModeSettings("camera", {
     enabled: true,
     position: {
       value: [10, 10, 10],
@@ -58,7 +59,7 @@ export function EditorCamera() {
 
   useEffect(() => {
     function update(e: { target: OrbitControlsImpl }) {
-      editor.settings.set({
+      editor.modeSettings.set({
         "camera.position": e.target.object.position.toArray(),
         "camera.rotation": e.target.object.rotation
           .toArray()
@@ -79,9 +80,11 @@ export function EditorCamera() {
 
   useEffect(() => {
     if (cameraSettings.enabled && controls) {
-      camera.position.fromArray(editor.settings.get("camera.position"))
+      camera.position.fromArray(editor.modeSettings.get("camera.position"))
       camera.rotation.fromArray(
-        editor.settings.get("camera.rotation").map((a) => MathUtils.degToRad(a))
+        editor.modeSettings
+          .get("camera.rotation")
+          .map((a) => MathUtils.degToRad(a))
       )
     }
   }, [camera, controls])

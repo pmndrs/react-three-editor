@@ -16,10 +16,12 @@ import {
   SpotLight,
   SpotLightHelper
 } from "three"
+import { ElementTransformControls } from "../controls/ElementTransformControls"
 import { TransformHelper } from "../controls/TransformHelper"
+import { EditableThreeElement } from "../EditableThreeRoot"
 import { all } from "../prop-types"
 import { primitives } from "../prop-types/primitives"
-import { ThreeEditableElement } from "../ThreeEditor"
+import { ThreeTunnel } from "../ThreeTunnel"
 import { EditorControlsPlugin } from "../types"
 
 function createPlugin<
@@ -29,7 +31,7 @@ function createPlugin<
   return a
 }
 
-export const transform = createPlugin<ThreeEditableElement>({
+export const transform = createPlugin<EditableThreeElement>({
   applicable: (entity) => entity.ref instanceof Object3D,
   icon: (entity) => "ph:cube",
   controls: (entity) => {
@@ -39,10 +41,20 @@ export const transform = createPlugin<ThreeEditableElement>({
         path: ["ref"]
       })
     }
+  },
+  helper: ({ element }) => {
+    const isSelected = element.useIsSelected()
+    return (
+      isSelected && (
+        <ThreeTunnel.In>
+          <ElementTransformControls element={element} />
+        </ThreeTunnel.In>
+      )
+    )
   }
 })
 
-export const camera = createPlugin<ThreeEditableElement>({
+export const camera = createPlugin<EditableThreeElement>({
   applicable: (entity) => entity.ref?.isCamera,
   icon: (entity) => "ph:video-camera-bold",
   controls: (entity) => {
@@ -56,7 +68,7 @@ export const camera = createPlugin<ThreeEditableElement>({
   }
 })
 
-export const orbitControls = createPlugin<ThreeEditableElement>({
+export const orbitControls = createPlugin<EditableThreeElement>({
   applicable: (entity) => entity.type === OrbitControls,
   icon: (entity) => "mdi:orbit-variant",
   controls: (entity) => {
@@ -85,7 +97,7 @@ export const orbitControls = createPlugin<ThreeEditableElement>({
   }
 })
 
-export const directionalLight = createPlugin<ThreeEditableElement>({
+export const directionalLight = createPlugin<EditableThreeElement>({
   applicable: (entity) => entity.ref instanceof DirectionalLight,
   icon: (entity) => "mdi:car-light-dimmed",
   controls: (entity) => {
@@ -111,7 +123,7 @@ export const directionalLight = createPlugin<ThreeEditableElement>({
   }
 })
 
-export const pointLight = createPlugin<ThreeEditableElement>({
+export const pointLight = createPlugin<EditableThreeElement>({
   applicable: (entity) => entity.ref instanceof PointLight,
   icon: (entity) => "ph:lightbulb-filament-bold",
   controls: (entity) => {
@@ -129,7 +141,7 @@ export const pointLight = createPlugin<ThreeEditableElement>({
   }
 })
 
-export const ambientLight = createPlugin<ThreeEditableElement>({
+export const ambientLight = createPlugin<EditableThreeElement>({
   applicable: (entity) => entity.ref instanceof AmbientLight,
   icon: (entity) => "ph:sun-bold",
   controls: (entity) => {
@@ -147,7 +159,7 @@ export const ambientLight = createPlugin<ThreeEditableElement>({
   }
 })
 
-export const spotLight = createPlugin<ThreeEditableElement>({
+export const spotLight = createPlugin<EditableThreeElement>({
   applicable: (entity) => entity.ref instanceof SpotLight,
   icon: (entity) => "mdi:spotlight-beam",
   controls: (entity) => {
@@ -178,7 +190,7 @@ export const spotLight = createPlugin<ThreeEditableElement>({
   }
 })
 
-export const transformWithoutRef = createPlugin<ThreeEditableElement>({
+export const transformWithoutRef = createPlugin<EditableThreeElement>({
   applicable: (entity) =>
     (!entity.forwardedRef &&
       (entity.currentProps.position ||
@@ -224,17 +236,17 @@ export const transformWithoutRef = createPlugin<ThreeEditableElement>({
   }
 })
 
-export const reactComponent = createPlugin<ThreeEditableElement>({
+export const reactComponent = createPlugin<EditableThreeElement>({
   applicable: (entity) => !entity.forwardedRef,
   icon: (entity) => "mdi:react"
 })
 
-export const rigidBody = createPlugin<ThreeEditableElement>({
+export const rigidBody = createPlugin<EditableThreeElement>({
   applicable: (entity) => entity.ref?.raw,
   icon: (entity) => "tabler:3d-cube-sphere"
 })
 
-export const propControls = createPlugin<ThreeEditableElement>({
+export const propControls = createPlugin<EditableThreeElement>({
   applicable: (entity) =>
     !entity.forwardedRef ||
     entity.type.controls ||
@@ -295,7 +307,7 @@ export const propControls = createPlugin<ThreeEditableElement>({
   }
 })
 
-export const color = createPlugin<ThreeEditableElement>({
+export const color = createPlugin<EditableThreeElement>({
   applicable: (entity) => entity.ref instanceof Color,
   controls: (entity) => {
     return {

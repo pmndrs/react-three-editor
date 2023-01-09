@@ -81,7 +81,7 @@ export const TitleContainer = styled("div", {
   "> svg": {
     fill: "$highlight1"
   },
-  color: "$highlight1",
+  color: "$highlight2",
   // paddingRight: iconWidth,
   variants: {
     drag: {
