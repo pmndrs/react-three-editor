@@ -73,7 +73,6 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
   if (hasRef) {
     return forwardRef(function Editable(props: any, forwardRef) {
       const editorRoot = useContext(EditableRootContext)
-      console.log(editorRoot)
       if (!editorRoot) return <Component {...props} ref={forwardRef} />
 
       return editorRoot.renderElement(Component, props, forwardRef ?? true)
@@ -81,7 +80,6 @@ export function createEditable<K extends keyof JSX.IntrinsicElements, P = {}>(
   } else {
     return function Editable(props: any) {
       const editorRoot = useContext(EditableRootContext)
-      console.log(editorRoot)
       if (!editorRoot) return <Component {...props} />
 
       return editorRoot.renderElement(Component, props, false)

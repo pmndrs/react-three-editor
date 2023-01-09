@@ -21,6 +21,7 @@ import { TransformHelper } from "../controls/TransformHelper"
 import { EditableThreeElement } from "../EditableThreeRoot"
 import { all } from "../prop-types"
 import { primitives } from "../prop-types/primitives"
+import { ThreeTunnel } from "../ThreeTunnel"
 import { EditorControlsPlugin } from "../types"
 
 function createPlugin<
@@ -43,7 +44,13 @@ export const transform = createPlugin<EditableThreeElement>({
   },
   helper: ({ element }) => {
     const isSelected = element.useIsSelected()
-    return isSelected && <ElementTransformControls element={element} />
+    return (
+      isSelected && (
+        <ThreeTunnel.In>
+          <ElementTransformControls element={element} />
+        </ThreeTunnel.In>
+      )
+    )
   }
 })
 

@@ -15,7 +15,10 @@ export function PanelRoot({ children }) {
         flexDirection: "row"
       }}
     >
-      <ResizablePanelGroup direction="horizontal">
+      <ResizablePanelGroup
+        direction="horizontal"
+        autoSaveId="editable-vertical-panels"
+      >
         <ResizablePanel
           id={"left"}
           className="horizontal-panel"

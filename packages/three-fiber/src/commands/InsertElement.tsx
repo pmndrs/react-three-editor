@@ -27,11 +27,18 @@ export const InsertElementsSubCommands: FC = () => {
         type: "command",
         parentId: "insert-element",
         async execute(_editor) {
-          _editor.appendNewElement(
-            _editor.selectedElement ?? _editor.root,
-            component.name.charAt(0).toLowerCase() + component.name.slice(1),
-            {}
-          )
+          let selectedElement = _editor.selectedElement
+          if (selectedElement) {
+            selectedElement.appendNewElement(
+              component.name.charAt(0).toLowerCase() + component.name.slice(1),
+              {}
+            )
+          } else {
+            _editor.document.appendNewElement(
+              component.name.charAt(0).toLowerCase() + component.name.slice(1),
+              {}
+            )
+          }
         }
       }
     })

@@ -36,8 +36,8 @@ export class EditableRoot<
 
   editor!: Editor
 
-  constructor(...args) {
-    super(...args)
+  constructor(id: string, source: JSXSource, componentType: string | FC) {
+    super(id, source, componentType)
   }
 
   /**
@@ -175,7 +175,7 @@ export class EditableRoot<
   }
 
   findEditableElement(el: any): T | null {
-    return el[REF_SYMBOL]
+    return el?.[REF_SYMBOL]
   }
 
   /***********************************

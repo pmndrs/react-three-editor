@@ -280,6 +280,25 @@ export class Editor<T extends EditableElement = EditableElement>
     })
   }
 
+  useModeSettings<S extends Schema>(
+    name: string,
+    arg1: S,
+    hidden?: boolean
+  ): SchemaToValues<S> {
+    // make sure to rerender when the mode changes
+    this.useMode()
+
+    Settings.useSettingsFolder(this.modeSettings, undefined, {
+      order: -1,
+      render: () => this.selectedElement === null,
+      collapsed: true
+    })
+
+    return Settings.useSettings(this.modeSettings, name, arg1, {
+      hidden
+    })
+  }
+
   /**
    * PLUGINS
    */

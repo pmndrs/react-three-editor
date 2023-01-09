@@ -1,4 +1,4 @@
-import { useEditor } from "@editable-jsx/editable"
+import { useEditableRoot, useEditor } from "@editable-jsx/editable"
 import { context, useFrame, _roots } from "@react-three/fiber"
 import React, { useLayoutEffect, useState } from "react"
 import { EditableThreeRoot } from "./EditableThreeRoot"
@@ -6,7 +6,7 @@ import { createEditorRoot } from "./root/createEditorRoot"
 import { resumeRoot, suspendRoot } from "./root/rootControls"
 
 export function FiberRootManager({ children }: { children: React.ReactNode }) {
-  const editor = useEditor<EditableThreeRoot>()
+  const editor = useEditableRoot<EditableThreeRoot>()
   const [dummy] = useState(() => {
     const el = document.createElement("div")
     document.body.appendChild(el)
@@ -43,22 +43,24 @@ export function FiberRootManager({ children }: { children: React.ReactNode }) {
 }
 
 function LoopManager() {
-  const editor = useEditor<EditableThreeRoot>()
+  const editableRoot = useEditableRoot<EditableThreeRoot>()
+  const editor = useEditor()
+
   const isEditorMode = editor.useStates("editing")
 
   useLayoutEffect(() => {
     for (const [key, root] of _roots) {
-      if (key !== editor.canvas) continue
+      if (key !== editableRoot.canvas) continue
 
       if (isEditorMode) {
         suspendRoot(root)
-        resumeRoot(editor.editorRoot!)
+        resumeRoot(editableRoot.editorRoot!)
       } else {
         resumeRoot(root)
-        suspendRoot(editor.editorRoot!)
+        suspendRoot(editableRoot.editorRoot!)
       }
     }
-  }, [editor, isEditorMode])
+  }, [editableRoot, isEditorMode])
 
   useFrame(({ scene, gl, camera }) => {
     gl.render(scene, camera)
@@ -68,7 +70,7 @@ function LoopManager() {
 }
 
 export function AppRootProvider({ children }: { children: React.ReactNode }) {
-  const editor = useEditor<EditableThreeRoot>()
+  const editor = useEditableRoot<EditableThreeRoot>()
   return (
     editor.appRoot && (
       <context.Provider value={editor.appRoot.store}>

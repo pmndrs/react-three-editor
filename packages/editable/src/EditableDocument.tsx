@@ -12,7 +12,6 @@ import { EditableRoot } from "./EditableRoot"
 
 export class EditableDocument extends EditableRoot {
   elements = new Map()
-  treeMap = new Map()
 
   roots = new Set()
 
@@ -22,13 +21,6 @@ export class EditableDocument extends EditableRoot {
 
   getElementByTreeId(id: string): EditableElement | null {
     return [...this.elements.values()].find((el) => el.treeId === id)
-  }
-
-  createRoot() {
-    const root = new EditableRoot()
-    root.ownerDocument = this
-    this.roots.add(root)
-    return root
   }
 
   /**
@@ -48,9 +40,10 @@ export class EditableDocument extends EditableRoot {
 
     const editableElement = useMemo(() => {
       console.log("creating root", id)
-      let root = new type(id, props._source ?? {}, type, props)
-      root.ownerDocument = this
-      return root
+      let editableElement = new type(id, props._source ?? {}, type, props)
+      editableElement.root = this
+      editableElement.ownerDocument = this
+      return editableElement
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [type, id])
 

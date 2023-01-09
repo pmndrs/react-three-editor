@@ -25,7 +25,7 @@ export {
   useThree,
   _roots
 } from "@react-three/fiber"
-export { ThreeEditorCanvas as Canvas } from "../ThreeEditorCanvas"
+export { Canvas } from "../Canvas"
 export {
   Stages,
   useEditorFrame,

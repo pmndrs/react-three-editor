@@ -4,11 +4,13 @@ import {
   EditableRoot,
   useEditor
 } from "@editable-jsx/editable"
+import { JSXSource } from "@editable-jsx/state"
 import { multiToggle } from "@editable-jsx/ui"
 import { useBounds, useHelper } from "@react-three/drei"
 import { Size, useStore } from "@react-three/fiber"
 import { FC, PropsWithChildren } from "react"
 import { Camera, Object3D, Raycaster, Scene } from "three"
+import { EditableCanvas } from "./EditableCanvas"
 import { Root } from "./root/createEditorRoot"
 
 export class EditableThreeElement extends EditableElement {
@@ -67,8 +69,8 @@ export class EditableThreeRoot extends EditableRoot {
   editorRoot: Root | null
   appRoot: Root | null
 
-  constructor() {
-    super()
+  constructor(id: string, source: JSXSource) {
+    super(id, source, EditableCanvas as any)
     this.canvas = null
     this.screenshotCanvas = null
     this.editorRoot = null

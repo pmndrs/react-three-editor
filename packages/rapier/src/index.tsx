@@ -10,6 +10,8 @@ setEditable(Physics, ({ children, ...props }) => {
     }
   })
 
+  console.log(paused)
+
   return (
     <Physics {...props} paused={paused}>
       <RapierPlugin />
@@ -49,6 +51,8 @@ export function RapierPlugin() {
       editor.plugins = editor.plugins.filter((p) => p !== plugin)
     }
   }, [editor, rapier])
+
+  console.log(props)
 
   return <>{props.debug ? <Debug /> : null}</>
 }

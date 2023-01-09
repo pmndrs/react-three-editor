@@ -1,3 +1,5 @@
+import { EditableThreeRoot } from "../EditableThreeRoot"
+import { primitives } from "../prop-types/primitives"
 import { EditorControlsPlugin } from "../types"
 import { geometry } from "./geometry"
 import { group } from "./group"
@@ -34,7 +36,19 @@ export const DEFAULT_EDITOR_PLUGINS: EditorControlsPlugin[] = [
   pointLight,
   ambientLight,
   spotLight,
-  color
+  color,
+  {
+    applicable: (e) => e instanceof EditableThreeRoot,
+    controls(e) {
+      return {
+        shadows: primitives.bool({
+          element: e,
+          default: false,
+          path: ["currentProps", "shadows"]
+        })
+      }
+    }
+  }
   // {
   //   applicable: (el) => el.type === "primitive",
   //   controls: (el) => {

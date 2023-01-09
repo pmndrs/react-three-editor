@@ -3,6 +3,7 @@ import { forwardRef, useContext } from "react"
 import { PanelContext } from "react-resizable-panels"
 import useResizeObserver from "use-resize-observer"
 import { EditablePlayer } from "./EditablePlayer"
+
 export const PlayerPanel = forwardRef<
   PlayerRef,
   PlayerProps<{}> & { component: React.FC }

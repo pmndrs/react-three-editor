@@ -68,18 +68,21 @@ export class EditableElement<
   /** assigned by the creator */
   root!: EditableRoot
 
-  constructor(
-    public id: string,
-    public source: JSXSource,
-    public type: any,
-    public parentId?: string | null,
-    public currentProps: any = {}
-  ) {
+  id: string
+  source: JSXSource
+  type: any
+  parentId?: string | null
+  currentProps: any = {}
+
+  constructor(id: string, source: JSXSource, type: any) {
     super()
+    this.id = id
+    this.source = source
+    this.type = type
   }
 
-  getRootNode() {
-    return this.root
+  getRootNode<T extends EditableRoot = EditableRoot>(): T {
+    return this.root as T
   }
 
   remount() {
@@ -120,19 +123,13 @@ export class EditableElement<
     element.index = ""
   }
 
-  appendNewElement(
-    element: EditableElement,
-    componentType: string | FC,
-    props: any
-  ) {
-    console.log("appendNewElement", componentType)
+  appendNewElement(componentType: string | FC, props: any) {
     if (typeof componentType === "string") {
-      console.log("appendNewElement", componentType)
-      element.refs.setMoreChildren?.((children) => [
+      this.refs.setMoreChildren?.((children) => [
         ...children,
         createElement(editable[componentType], {
           _source: {
-            ...element.source,
+            ...this.source,
             lineNumber: -1,
             elementName: componentType
           },
@@ -141,13 +138,12 @@ export class EditableElement<
         })
       ])
     } else {
-      console.log("appendNewElement", componentType)
-      element.refs.setMoreChildren?.((children) => [
+      this.refs.setMoreChildren?.((children) => [
         ...children,
         createElement(Editable, {
           component: componentType,
           _source: {
-            ...element.source,
+            ...this.source,
             lineNumber: -1,
             elementName:
               componentType.displayName || componentType.name || undefined
@@ -214,8 +210,9 @@ export class EditableElement<
   }
 
   get treeId(): string {
+    let parentId = this.parent?.treeId
     return this.parent?.index !== undefined
-      ? this.parent.treeId + "-" + this.index
+      ? parentId + "-" + this.index
       : this.index!
   }
 
@@ -424,7 +421,7 @@ export class EditableElement<
     )
 
     try {
-      console.log(await this.ownerDocument.save())
+      await this.ownerDocument.save()
       this.changes = {}
       this.changed = false
     } catch (e: any) {

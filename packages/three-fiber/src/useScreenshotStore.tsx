@@ -1,4 +1,4 @@
-import { EditorContext, useEditor } from "@editable-jsx/editable"
+import { EditorContext, useEditableRoot, useEditor } from "@editable-jsx/editable"
 import { createStore } from "@editable-jsx/state"
 import { createMultiTunnel } from "@editable-jsx/ui"
 import { createRoot, ReconcilerRoot, _roots } from "@react-three/fiber"
@@ -106,9 +106,9 @@ const ActiveScreenshot = () => {
         <ambientLight />
         {/* <Physics paused={true}> */}
         <group>
-          <editor.contextBridge>
+          <root.contextBridge>
             <Out />
-          </editor.contextBridge>
+          </root.contextBridge>
         </group>
       </>
     )
