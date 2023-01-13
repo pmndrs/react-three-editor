@@ -1,12 +1,20 @@
-import * as THREE from 'three'
-import React, { useRef, useLayoutEffect, useState } from 'react'
-import { Canvas, useFrame, useThree, createPortal } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
+import * as THREE from "three"
+import React, { useRef, useLayoutEffect, useState } from "react"
+import { Canvas, useFrame, useThree, createPortal } from "@react-three/fiber"
+import { OrbitControls } from "@react-three/drei"
 
 function Viewcube() {
-  const { gl, scene: defaultScene, camera: defaultCamera, size, events } = useThree()
+  const {
+    gl,
+    scene: defaultScene,
+    camera: defaultCamera,
+    size,
+    events
+  } = useThree()
   const [scene] = useState(() => new THREE.Scene())
-  const [camera] = useState(() => new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 1000))
+  const [camera] = useState(
+    () => new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 1000)
+  )
 
   useLayoutEffect(() => {
     camera.left = -size.width / 2
@@ -39,12 +47,13 @@ function Viewcube() {
             ref={ref}
             position={[size.width / 2 - 120, size.height / 2 - 120, 0]}
             onPointerOut={(e) => set(null)}
-            onPointerMove={(e) => set(Math.floor((e.faceIndex || 0) / 2))}>
+            onPointerMove={(e) => set(Math.floor((e.faceIndex || 0) / 2))}
+          >
             {[...Array(6)].map((_, index) => (
               <meshLambertMaterial
                 attach={`material-${index}`}
                 key={index}
-                color={hover === index ? 'hotpink' : 'white'}
+                color={hover === index ? "hotpink" : "white"}
               />
             ))}
             <boxGeometry args={[80, 80, 80]} />
@@ -53,7 +62,7 @@ function Viewcube() {
           <pointLight position={[10, 10, 10]} intensity={0.5} />
         </group>,
         scene,
-        { camera, events: { priority: events.priority + 1 } },
+        { camera, events: { priority: events.priority + 1 } }
       )}
     </>
   )

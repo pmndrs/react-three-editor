@@ -1,11 +1,25 @@
-import React, { useState, useRef, useEffect, useMemo, useLayoutEffect } from 'react'
-import { Canvas, FixedStage, Stage, useFrame, useThree, useUpdate, Stages as Standard } from '@react-three/fiber'
-import { a, useSpring } from '@react-spring/three'
-import { OrbitControls } from '@react-three/drei'
-import * as THREE from 'three'
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useMemo,
+  useLayoutEffect
+} from "react"
+import {
+  Canvas,
+  FixedStage,
+  Stage,
+  useFrame,
+  useThree,
+  useUpdate,
+  Stages as Standard
+} from "@react-three/fiber"
+import { a, useSpring } from "@react-spring/three"
+import { OrbitControls } from "@react-three/drei"
+import * as THREE from "three"
 
-const colorA = new THREE.Color('#6246ea')
-const colorB = new THREE.Color('#e45858')
+const colorA = new THREE.Color("#6246ea")
+const colorB = new THREE.Color("#e45858")
 
 const InputStage = new Stage()
 const PhysicsStage = new FixedStage(1 / 30)
@@ -19,7 +33,7 @@ const lifecycle = [
   Standard.Late,
   Standard.Render,
   HudStage,
-  Standard.After,
+  Standard.After
 ]
 
 const Stages = {
@@ -31,14 +45,20 @@ const Stages = {
   Late: Standard.Late,
   Render: Standard.Render,
   Hud: HudStage,
-  After: Standard.After,
+  After: Standard.After
 }
 
 function Update() {
   const groupRef = useRef<THREE.Group>(null!)
   const matRef = useRef<THREE.MeshBasicMaterial>(null!)
-  const [fixed] = useState(() => ({ scale: new THREE.Vector3(), color: new THREE.Color() }))
-  const [prev] = useState(() => ({ scale: new THREE.Vector3(), color: new THREE.Color() }))
+  const [fixed] = useState(() => ({
+    scale: new THREE.Vector3(),
+    color: new THREE.Color()
+  }))
+  const [prev] = useState(() => ({
+    scale: new THREE.Vector3(),
+    color: new THREE.Color()
+  }))
 
   const interpolate = true
   const [active, setActive] = useState(0)
@@ -46,7 +66,7 @@ function Update() {
   // create a common spring that will be used later to interpolate other values
   const { spring } = useSpring({
     spring: active,
-    config: { mass: 5, tension: 400, friction: 50, precision: 0.0001 },
+    config: { mass: 5, tension: 400, friction: 50, precision: 0.0001 }
   })
   // interpolate values from common spring
   const scale = spring.to([0, 1], [1, 2])
@@ -103,7 +123,12 @@ function Update() {
 
   return (
     <group ref={groupRef}>
-      <a.mesh rotation-y={rotation} scale-x={scale} scale-z={scale} onClick={() => setActive(Number(!active))}>
+      <a.mesh
+        rotation-y={rotation}
+        scale-x={scale}
+        scale-z={scale}
+        onClick={() => setActive(Number(!active))}
+      >
         <boxBufferGeometry />
         <meshBasicMaterial ref={matRef} color="#6246ea" />
       </a.mesh>
@@ -114,7 +139,7 @@ function Update() {
 
 export default function App() {
   return (
-    <Canvas stages={lifecycle} frameloop={{ mode: 'auto', render: 'manual' }}>
+    <Canvas stages={lifecycle} frameloop={{ mode: "auto", render: "manual" }}>
       <Update />
     </Canvas>
   )

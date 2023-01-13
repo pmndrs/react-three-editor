@@ -1,9 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
+import React, { useState, useRef, useEffect } from "react"
+import { Canvas, useFrame } from "@react-three/fiber"
 
 const CanvasStyle = {
-  width: '100%',
-  height: '50%',
+  width: "100%",
+  height: "50%"
 }
 
 const Obj = () => {
@@ -47,7 +47,7 @@ function App() {
   }, [])
 
   return (
-    <div style={{ width: '100%', height: '100%' }}>
+    <div style={{ width: "100%", height: "100%" }}>
       <SpinningScene />
       {secondScene && <StaticScene />}
     </div>
