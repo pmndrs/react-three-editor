@@ -111,8 +111,9 @@ export const reactThreeEditorBabel = (api: ConfigAPI): PluginObj => {
         if (
           // the element was generated and doesn't have location information
           !node.loc ||
-          // Already has __source
-          path.node.attributes.some(isSourceAttr)
+          // Already has __source or is fragment
+          path.node.attributes.some(isSourceAttr) ||
+          isReactFragment(node)
         ) {
           return
         }
@@ -236,7 +237,6 @@ export const reactThreeEditorBabel = (api: ConfigAPI): PluginObj => {
             init: t.stringLiteral(state.filename || "")
           })
         }
-
         node.attributes.push(
           t.jsxAttribute(
             t.jsxIdentifier(TRACE_ID),
@@ -298,5 +298,18 @@ export const reactThreeEditorBabel = (api: ConfigAPI): PluginObj => {
         }
       }
     }
+  }
+}
+
+function isReactFragment(node: t.JSXOpeningElement) {
+  if (t.isJSXMemberExpression(node.name)) {
+    if (t.isJSXIdentifier(node.name.object)) {
+      return (
+        node.name.object.name === "React" &&
+        node.name.property.name === "Fragment"
+      )
+    }
+  } else if (t.isJSXIdentifier(node.name)) {
+    return node.name.name === "Fragment"
   }
 }
