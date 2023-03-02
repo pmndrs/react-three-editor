@@ -34,7 +34,7 @@ import { BirpcReturn } from "birpc"
 import { ComponentLoader } from "./component-loader"
 import { editorMachine } from "./editor.machine"
 import { EditorPlugin } from "./EditorPlugin"
-import { Helpers } from "./helpers"
+import { Helpers } from "./Helpers"
 import { Tree } from "./Tree"
 
 export type EditorStoreStateType = {
