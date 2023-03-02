@@ -76,6 +76,12 @@ to test out this repo you need pnpm
 npm install -g pnpm
 ```
 
+or if you're using [corepack](https://github.com/nodejs/corepack), in the repo directory
+
+```bash
+corepack enable
+```
+
 then just open a tab and run
 
 ```bash
