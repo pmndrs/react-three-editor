@@ -10,7 +10,8 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "isolatedModules": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["packages/*/src/**/*"],
   "exclude": ["**/node_modules/**/*", "**/*.spec.ts", "**/*.test.ts"]
