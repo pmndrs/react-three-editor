@@ -5,6 +5,7 @@
   "main": "index.js",
   "author": "Nikhil Saraf <nsaraf98@gmail.com>",
   "license": "MIT",
+  "packageManager": "pnpm@7.28.0",
   "scripts": {
     "build": "pnpm clean && turbo build",
     "build:packages": "pnpm build --filter=./packages/*",
